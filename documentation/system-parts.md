@@ -19,7 +19,9 @@ flowchart LR
   LOGISTICS --> ACCOUNT
 ```
 
-- Tomasz Chojnacki (260365) @tchojnacki - `ACCOUNT`
-- Jakub Zehner (260285) @jakubzehner - `TICKET`
-- Piotr Kot (259560) @piterek130 - `PAYMENT` & `GATEWAY`
-- Przemysław Barcicki (260324) @mlodybercik - `LOGISTICS` & DevOps
+| Team Member                                                                 | System Part           |
+| --------------------------------------------------------------------------- | --------------------- |
+| Tomasz Chojnacki (260365) [@tchojnacki](https://github.com/tchojnacki)      | `ACCOUNT`             |
+| Jakub Zehner (260285) [@jakubzehner](https://github.com/jakubzehner)        | `TICKET`              |
+| Piotr Kot (259560) [@piterek130](https://github.com/piterek130)             | `PAYMENT` & `GATEWAY` |
+| Przemysław Barcicki (260324) [@mlodybercik](https://github.com/mlodybercik) | `LOGISTICS` & DevOps  |
