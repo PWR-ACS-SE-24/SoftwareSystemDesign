@@ -19,7 +19,7 @@ flowchart LR
   LOGISTICS --> ACCOUNT
 ```
 
-- Member 1 (TODO) - `ACCOUNT`
-- Member 2 (TODO) - `TICKET`
-- Member 3 (TODO) - `PAYMENT` & `GATEWAY`
-- Member 4 (TODO) - `LOGISTICS` & DevOps
+- Tomasz Chojnacki (260365) @tchojnacki - `ACCOUNT`
+- Jakub Zehner (260285) @jakubzehner - `TICKET`
+- Piotr Kot (259560) @piterek130 - `PAYMENT` & `GATEWAY`
+- Przemysław Barcicki (260324) @mlodybercik - `LOGISTICS` & DevOps
