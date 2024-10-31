@@ -19,7 +19,9 @@ flowchart LR
   LOGISTICS --> ACCOUNT
 ```
 
-- Member 1 (TODO) - `ACCOUNT`
-- Member 2 (TODO) - `TICKET`
-- Member 3 (TODO) - `PAYMENT` & `GATEWAY`
-- Member 4 (TODO) - `LOGISTICS` & DevOps
+| Team Member                                                                 | System Part           |
+| --------------------------------------------------------------------------- | --------------------- |
+| Tomasz Chojnacki (260365) [@tchojnacki](https://github.com/tchojnacki)      | `ACCOUNT` & `FRONTEND`             |
+| Jakub Zehner (260285) [@jakubzehner](https://github.com/jakubzehner)        | `TICKET` & `FRONTEND`              |
+| Piotr Kot (259560) [@piterek130](https://github.com/piterek130)             | `PAYMENT` & `GATEWAY` & `FRONTEND` |
+| Przemysław Barcicki (260324) [@mlodybercik](https://github.com/mlodybercik) | `LOGISTICS` & `FRONTEND` & DevOps  |
