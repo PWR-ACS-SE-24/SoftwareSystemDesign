@@ -17,21 +17,36 @@ Skład zespołu:
 </div>
 
 # Cel
+
+Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne elementy projektu systemu rozwiązania, które wpływają na jego implementację.
+
 <!--
 Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne elementy projektu systemu rozwiązania, które wpływają na jego implementację.
 [Always address Sections 2 through 6 of this template. Other sections are recommended, depending on the amount of novel architecture, the amount of expected maintenance, the skills of the development team, and the importance of other architectural concerns.]
+
+W obu przykładowych rozwiązaniach ta sekcja jest pusta i nie ma komentarzy, tak ma być?
 -->
 
 # Cele i ograniczenia architektoniczne
 <!--
 [Insert a reference or link to the requirements that must be implemented to realize the architecture.
 Formulate a set of goals that the architecture needs to meet in its structure and behavior. Identify critical issues that must be addressed by the architecture, such as: Are there hardware dependencies that should be isolated from the rest of the system? Does the system need to function efficiently under unusual conditions?]
+
+Wymienić wymagania funkcjonalne i (głównie) niefunkcjonalne, które mają wpływ na architekturę systemu, mogą być z podziałem na epiki.
+
+Proponuję też dodać numerację do wymagań niefunkcjonalnych, żeby można było się do nich łatwiej odwoływać.
 -->
+
+TODO @everyone
 
 # Decyzje i ich uzasadnienie
 <!--
-[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.] 
+[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
+
+Oba przykłady wskazują po kilka możliwych rozwiązań dla każdego celu.
 -->
+
+TODO @everyone
 
 | **Cel** | **Sposób osiągnięcia (taktyki)** |
 | ------- | -------------------------------- |
@@ -40,7 +55,11 @@ Formulate a set of goals that the architecture needs to meet in its structure an
 # Mechanizmy architektoniczne
 <!--
 [List the architectural mechanisms and describe the current state of each one. Initially, each mechanism may be only name and a brief description. They will evolve until the mechanism is a collaboration or pattern that can be directly applied to some aspect of the design.]
+
+Rozpisać dokładniej taktyki z poprzedniego punktu.
 -->
+
+TODO @everyone
 
 ## Mechanizm 1
 <!--
@@ -56,9 +75,19 @@ Formulate a set of goals that the architecture needs to meet in its structure an
 
 ### Diagram kontekstowy
 
+TODO @everyone
+
 ### Scenariusze interakcji
+<!--
+Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagram sekwencji tłumaczący autoryzację.
+-->
+
+TODO @everyone
 
 ### Interfejsy integracyjne - poziom logiczny
+<!-- Dla każdego "zewnętrznego" elementu z diagramu kontekstu. -->
+
+TODO @everyone
 
 <table>
   <tr>
@@ -220,17 +249,225 @@ TODO @everyone: Dodać informację, że większość z naszych węzłów jest sk
 
 ## Model informacyjny
 
-![Clabbert Class Diagram](./images/clabbert-class-diagram.drawio.svg)
-
-![Inferius Class Diagram](./images/inferius-class-diagram.drawio.svg)
-
-![Leprechaun Class Diagram](./images/leprechaun-class-diagram-Leprechaun.drawio.svg)
+### Konto (Tomasz Chojnacki)
 
 TODO @tchojnacki: Dodać diagram klas do Jobberknoll.
 
+### Bilet (Jakub Zehner)
+
+![Clabbert Class Diagram](./images/clabbert-class-diagram.drawio.svg)
+
+### Płatność (Piotr Kot)
+
+![Inferius Class Diagram](./images/inferius-class-diagram.drawio.svg)
+
+### Logistyka (Przemysław Barcicki)
+
+![Leprechaun Class Diagram](./images/leprechaun-class-diagram-Leprechaun.drawio.svg)
+
 ## Projekt bazy danych
 
-<!-- (osobna tabela dla każdej bazy) -->
+### Konto (Tomasz Chojnacki)
+
+TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll i uzupełnić tabelę.
+
+<table>
+  <tr>
+    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+  </tr>
+  <tr>
+    <th>SID</th>
+    <td>Nazwa instancji bazy/Nazwa usługi</td>
+  </tr>
+  <tr>
+    <th>Nazwa serwera</th>
+    <td>Hostname</td>
+  </tr>
+  <tr>
+    <th>Port</th>
+    <td>Port</td>
+  </tr>
+  <tr>
+    <th>Typ</th>
+    <td>Oracle 11gR2 11.1.1.1/...</td>
+  </tr>
+  <tr>
+    <th>Kodowanie znaków</th>
+    <td>UTF-8/...</td>
+  </tr>
+  <tr>
+    <th>Opis</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Technologie</th>
+    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+  </tr>
+  <tr>
+    <th>Backup</th>
+    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+  </tr>
+  <tr>
+    <th colspan="2">Informacje o schemacie</th>
+  </tr>
+  <tr>
+    <th>Nazwa</th>
+    <td>Nazwa schematu</td>
+  </tr>
+  <tr>
+    <th>Początkowa pojemność</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Przyrost pojemności (rok)</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Niezbędne prawa</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Inne</th>
+    <td>...</td>
+  </tr>
+</table>
+
+
+### Bilet (Jakub Zehner)
+
+TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
+
+<table>
+  <tr>
+    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+  </tr>
+  <tr>
+    <th>SID</th>
+    <td>Nazwa instancji bazy/Nazwa usługi</td>
+  </tr>
+  <tr>
+    <th>Nazwa serwera</th>
+    <td>Hostname</td>
+  </tr>
+  <tr>
+    <th>Port</th>
+    <td>Port</td>
+  </tr>
+  <tr>
+    <th>Typ</th>
+    <td>Oracle 11gR2 11.1.1.1/...</td>
+  </tr>
+  <tr>
+    <th>Kodowanie znaków</th>
+    <td>UTF-8/...</td>
+  </tr>
+  <tr>
+    <th>Opis</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Technologie</th>
+    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+  </tr>
+  <tr>
+    <th>Backup</th>
+    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+  </tr>
+  <tr>
+    <th colspan="2">Informacje o schemacie</th>
+  </tr>
+  <tr>
+    <th>Nazwa</th>
+    <td>Nazwa schematu</td>
+  </tr>
+  <tr>
+    <th>Początkowa pojemność</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Przyrost pojemności (rok)</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Niezbędne prawa</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Inne</th>
+    <td>...</td>
+  </tr>
+</table>
+
+
+### Płatność (Piotr Kot)
+
+TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
+
+<table>
+  <tr>
+    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+  </tr>
+  <tr>
+    <th>SID</th>
+    <td>Nazwa instancji bazy/Nazwa usługi</td>
+  </tr>
+  <tr>
+    <th>Nazwa serwera</th>
+    <td>Hostname</td>
+  </tr>
+  <tr>
+    <th>Port</th>
+    <td>Port</td>
+  </tr>
+  <tr>
+    <th>Typ</th>
+    <td>Oracle 11gR2 11.1.1.1/...</td>
+  </tr>
+  <tr>
+    <th>Kodowanie znaków</th>
+    <td>UTF-8/...</td>
+  </tr>
+  <tr>
+    <th>Opis</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Technologie</th>
+    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+  </tr>
+  <tr>
+    <th>Backup</th>
+    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+  </tr>
+  <tr>
+    <th colspan="2">Informacje o schemacie</th>
+  </tr>
+  <tr>
+    <th>Nazwa</th>
+    <td>Nazwa schematu</td>
+  </tr>
+  <tr>
+    <th>Początkowa pojemność</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Przyrost pojemności (rok)</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Niezbędne prawa</th>
+    <td>...</td>
+  </tr>
+  <tr>
+    <th>Inne</th>
+    <td>...</td>
+  </tr>
+</table>
+
+
+### Logistyka (Przemysław Barcicki)
+
+TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun i uzupełnić tabelę.
 
 <table>
   <tr>
@@ -295,6 +532,60 @@ TODO @tchojnacki: Dodać diagram klas do Jobberknoll.
 
 # Widok wytwarzania
 
+## Frontend
+
+TODO @everyone
+
+## Konto (Tomasz Chojnacki)
+
+TODO @tchojnacki: Dodać diagram pakietów i opis architektury.
+
+## Bilet (Jakub Zehner)
+
+TODO @jakubzehner: Dodać diagram pakietów i opis architektury.
+
+## Płatność (Piotr Kot)
+
+TODO @piterek130: Dodać diagram pakietów i opis architektury.
+
+## Logistyka (Przemysław Barcicki)
+
+TODO @mlodybercik: Dodać diagram pakietów i opis architektury.
+
 # Widok współbieżności (opcjonalny)
 
+TODO @everyone
+
 # Realizacja przypadków użycia
+
+## Przypadek 1 (Tomasz Chojnacki)
+
+TODO @tchojnacki
+
+## Przypadek 2 (Tomasz Chojnacki)
+
+TODO @tchojnacki
+
+## Przypadek 3 (Jakub Zehner)
+
+TODO @jakubzehner
+
+## Przypadek 4 (Jakub Zehner)
+
+TODO @jakubzehner
+
+## Przypadek 5 (Piotr Kot)
+
+TODO @piterek130
+
+## Przypadek 6 (Piotr Kot)
+
+TODO @piterek130
+
+## Przypadek 7 (Przemysław Barcicki)
+
+TODO @mlodybercik
+
+## Przypadek 8 (Przemysław Barcicki)
+
+TODO @mlodybercik
