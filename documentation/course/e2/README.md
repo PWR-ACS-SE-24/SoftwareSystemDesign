@@ -251,7 +251,7 @@ TODO @everyone: Dodać informację, że większość z naszych węzłów jest sk
 
 ### Konto (Tomasz Chojnacki)
 
-TODO @tchojnacki: Dodać diagram klas do Jobberknoll.
+![Jobberknoll Class Diagram](./images/class-diagram-jobberknoll.drawio.svg)
 
 ### Bilet (Jakub Zehner)
 
