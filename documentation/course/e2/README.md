@@ -255,15 +255,15 @@ TODO @tchojnacki: Dodać diagram klas do Jobberknoll.
 
 ### Bilet (Jakub Zehner)
 
-![Clabbert Class Diagram](./images/clabbert-class-diagram.drawio.svg)
+![Clabbert Class Diagram](./images/class-diagram-clabbert.drawio.svg)
 
 ### Płatność (Piotr Kot)
 
-![Inferius Class Diagram](./images/inferius-class-diagram.drawio.svg)
+![Inferius Class Diagram](./images/class-diagram-inferius.drawio.svg)
 
 ### Logistyka (Przemysław Barcicki)
 
-![Leprechaun Class Diagram](./images/leprechaun-class-diagram-Leprechaun.drawio.svg)
+![Leprechaun Class Diagram](./images/class-diagram-leprechaun.drawio.svg)
 
 ## Projekt bazy danych
 
