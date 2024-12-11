@@ -28,6 +28,7 @@ W obu przykładowych rozwiązaniach ta sekcja jest pusta i nie ma komentarzy, ta
 -->
 
 # Cele i ograniczenia architektoniczne
+
 <!--
 [Insert a reference or link to the requirements that must be implemented to realize the architecture.
 Formulate a set of goals that the architecture needs to meet in its structure and behavior. Identify critical issues that must be addressed by the architecture, such as: Are there hardware dependencies that should be isolated from the rest of the system? Does the system need to function efficiently under unusual conditions?]
@@ -40,6 +41,7 @@ Proponuję też dodać numerację do wymagań niefunkcjonalnych, żeby można by
 TODO @everyone
 
 # Decyzje i ich uzasadnienie
+
 <!--
 [List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
@@ -53,6 +55,7 @@ TODO @everyone
 |         |                                  |
 
 # Mechanizmy architektoniczne
+
 <!--
 [List the architectural mechanisms and describe the current state of each one. Initially, each mechanism may be only name and a brief description. They will evolve until the mechanism is a collaboration or pattern that can be directly applied to some aspect of the design.]
 
@@ -62,11 +65,13 @@ Rozpisać dokładniej taktyki z poprzedniego punktu.
 TODO @everyone
 
 ## Mechanizm 1
+
 <!--
 [Describe the purpose, attributes, and function of the architectural mechanism.]
 -->
 
 # Widoki architektoniczne
+
 <!--
 [Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 -->
@@ -78,6 +83,7 @@ TODO @everyone
 TODO @everyone
 
 ### Scenariusze interakcji
+
 <!--
 Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagram sekwencji tłumaczący autoryzację.
 -->
@@ -85,6 +91,7 @@ Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagr
 TODO @everyone
 
 ### Interfejsy integracyjne - poziom logiczny
+
 <!-- Dla każdego "zewnętrznego" elementu z diagramu kontekstu. -->
 
 TODO @everyone
@@ -156,6 +163,21 @@ TODO @everyone
 </table>
 
 # Widok funkcjonalny
+
+Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodnie z poniższą tabelą:
+
+<!-- TODO: Add colors -->
+
+| **Nazwa podsystemu** | **Część systemu**       | **Główny kontrybutor** | **Posiadane encje**                                                                                         |
+| -------------------- | ----------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Jobberknoll**      | Konto (_account_)       | Tomasz Chojnacki       | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
+| **Clabbert**         | Bilet (_ticket_)        | Jakub Zehner           | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
+| **Inferius**         | Płatność (_payment_)    | Piotr Kot              | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
+| **Leprechaun**       | Logistyka (_logistics_) | Przemysław Barcicki    | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
+| **Phoenix**          | API Gateway             | Piotr Kot              | —                                                                                                           |
+| TODO                 | Frontend                | —                      | —                                                                                                           |
+
+<!-- TODO: Add external services, name Frontend -->
 
 ![Diagram komponentów](./images/component-diagram-main.drawio.svg)
 
@@ -332,7 +354,6 @@ TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll i uzupełnić tabelę
   </tr>
 </table>
 
-
 ### Bilet (Jakub Zehner)
 
 TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
@@ -398,7 +419,6 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
   </tr>
 </table>
 
-
 ### Płatność (Piotr Kot)
 
 TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
@@ -463,7 +483,6 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
     <td>...</td>
   </tr>
 </table>
-
 
 ### Logistyka (Przemysław Barcicki)
 
