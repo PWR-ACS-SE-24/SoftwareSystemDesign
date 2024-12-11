@@ -157,7 +157,7 @@ TODO @everyone
 
 # Widok funkcjonalny
 
-![Diagram komponentów](./images/component-diagram.drawio.svg)
+![Diagram komponentów](./images/component-diagram-main.drawio.svg)
 
 # Widok rozmieszczenia
 
@@ -251,19 +251,19 @@ TODO @everyone: Dodać informację, że większość z naszych węzłów jest sk
 
 ### Konto (Tomasz Chojnacki)
 
-![Jobberknoll Class Diagram](./images/class-diagram-jobberknoll.drawio.svg)
+![Diagram klas Jobberknoll](./images/class-diagram-jobberknoll.drawio.svg)
 
 ### Bilet (Jakub Zehner)
 
-![Clabbert Class Diagram](./images/class-diagram-clabbert.drawio.svg)
+![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
 ### Płatność (Piotr Kot)
 
-![Inferius Class Diagram](./images/class-diagram-inferius.drawio.svg)
+![Diagram klas Inferius](./images/class-diagram-inferius.drawio.svg)
 
 ### Logistyka (Przemysław Barcicki)
 
-![Leprechaun Class Diagram](./images/class-diagram-leprechaun.drawio.svg)
+![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
 ## Projekt bazy danych
 
