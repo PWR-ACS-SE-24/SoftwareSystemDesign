@@ -21,10 +21,7 @@ Skład zespołu:
 Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne elementy projektu systemu rozwiązania, które wpływają na jego implementację.
 
 <!--
-Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne elementy projektu systemu rozwiązania, które wpływają na jego implementację.
 [Always address Sections 2 through 6 of this template. Other sections are recommended, depending on the amount of novel architecture, the amount of expected maintenance, the skills of the development team, and the importance of other architectural concerns.]
-
-W obu przykładowych rozwiązaniach ta sekcja jest pusta i nie ma komentarzy, tak ma być?
 -->
 
 TODO @jakubzehner
@@ -36,8 +33,6 @@ TODO @jakubzehner
 Formulate a set of goals that the architecture needs to meet in its structure and behavior. Identify critical issues that must be addressed by the architecture, such as: Are there hardware dependencies that should be isolated from the rest of the system? Does the system need to function efficiently under unusual conditions?]
 
 Wymienić wymagania funkcjonalne i (głównie) niefunkcjonalne, które mają wpływ na architekturę systemu, mogą być z podziałem na epiki.
-
-Proponuję też dodać numerację do wymagań niefunkcjonalnych, żeby można było się do nich łatwiej odwoływać.
 -->
 
 TODO @everyone
@@ -66,9 +61,9 @@ Rozpisać dokładniej taktyki z poprzedniego punktu.
 
 TODO @everyone
 
+<!--
 ## Mechanizm 1
 
-<!--
 [Describe the purpose, attributes, and function of the architectural mechanism.]
 -->
 
@@ -88,17 +83,13 @@ TODO @everyone
 
 ## Scenariusze interakcji
 
-<!--
-Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagram sekwencji tłumaczący autoryzację.
--->
-
-TODO @everyone
+TODO @everyone: brainstorming listy scenariuszy, po czym można się podzielić pracą
 
 ## Interfejsy integracyjne
 
 <!-- Dla każdego "zewnętrznego" elementu z diagramu kontekstu. -->
 
-TODO @everyone
+TODO @everyone: prawodpodobnie będzie to jedynie bramka płatności, może wypełni @piterek130 jako specjalista od płatności?
 
 <table>
   <tr>
@@ -205,7 +196,9 @@ Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodni
 
 ## Opis węzłów
 
-TODO @everyone: Dodać informację, że większość z naszych węzłów jest skalowalna horyzontalnie, więc specyfikacja RAM itd. jest do pomnożenia.
+TODO @everyone: Dodać informację, że większość z naszych węzłów jest skalowalna horyzontalnie, więc specyfikacja RAM itd. jest do pomnożenia. Dodatkowo aproksymacja liczby instancji dla każdego serwisu.
+
+TODO @everyone: Trzeba zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ. Będą to w sumie tylko pody, ponieważ na przeglądarkę i bramkę płatności nie mamy wpływu, a bazy danych są opisane w osobnych sekcjach. Może @mlodybercik jako nadworny DevOps?
 
 <table>
   <tr>
@@ -307,261 +300,305 @@ TODO @everyone: Dodać informację, że większość z naszych węzłów jest sk
 
 ### Konto
 
-TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll i uzupełnić tabelę.
+TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
 ### Bilet
 
-TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
+TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
 ### Płatność
 
-TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
+TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
 ### Logistyka
 
-TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun i uzupełnić tabelę.
+TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
