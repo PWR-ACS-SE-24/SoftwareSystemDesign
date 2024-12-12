@@ -181,11 +181,19 @@ Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodni
 
 ## Konto
 
+![Diagram komponentów Jobberknoll](./images/component-diagram-jobberknoll.drawio.svg)
+
 ## Bilet
+
+![Diagram komponentów Clabbert](./images/component-diagram-clabbert.drawio.svg)
 
 ## Płatność
 
+![Diagram komponentów Inferius](./images/component-diagram-inferius.drawio.svg)
+
 ## Logistyka
+
+![Diagram komponentów Leprechaun](./images/component-diagram-leprechaun.drawio.svg)
 
 # Widok rozmieszczenia
 
