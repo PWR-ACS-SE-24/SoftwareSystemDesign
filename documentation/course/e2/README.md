@@ -21,25 +21,24 @@ Skład zespołu:
 Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne elementy projektu systemu rozwiązania, które wpływają na jego implementację.
 
 <!--
-Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne elementy projektu systemu rozwiązania, które wpływają na jego implementację.
 [Always address Sections 2 through 6 of this template. Other sections are recommended, depending on the amount of novel architecture, the amount of expected maintenance, the skills of the development team, and the importance of other architectural concerns.]
-
-W obu przykładowych rozwiązaniach ta sekcja jest pusta i nie ma komentarzy, tak ma być?
 -->
 
+TODO @jakubzehner
+
 # Cele i ograniczenia architektoniczne
+
 <!--
 [Insert a reference or link to the requirements that must be implemented to realize the architecture.
 Formulate a set of goals that the architecture needs to meet in its structure and behavior. Identify critical issues that must be addressed by the architecture, such as: Are there hardware dependencies that should be isolated from the rest of the system? Does the system need to function efficiently under unusual conditions?]
 
 Wymienić wymagania funkcjonalne i (głównie) niefunkcjonalne, które mają wpływ na architekturę systemu, mogą być z podziałem na epiki.
-
-Proponuję też dodać numerację do wymagań niefunkcjonalnych, żeby można było się do nich łatwiej odwoływać.
 -->
 
 TODO @everyone
 
 # Decyzje i ich uzasadnienie
+
 <!--
 [List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
@@ -53,6 +52,7 @@ TODO @everyone
 |         |                                  |
 
 # Mechanizmy architektoniczne
+
 <!--
 [List the architectural mechanisms and describe the current state of each one. Initially, each mechanism may be only name and a brief description. They will evolve until the mechanism is a collaboration or pattern that can be directly applied to some aspect of the design.]
 
@@ -61,33 +61,35 @@ Rozpisać dokładniej taktyki z poprzedniego punktu.
 
 TODO @everyone
 
-## Mechanizm 1
 <!--
+## Mechanizm 1
+
 [Describe the purpose, attributes, and function of the architectural mechanism.]
 -->
 
 # Widoki architektoniczne
+
 <!--
 [Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 -->
 
-## Widok kontekstowy
+TODO @tchojnacki
 
-### Diagram kontekstowy
+# Widok kontekstowy
 
-TODO @everyone
-
-### Scenariusze interakcji
-<!--
-Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagram sekwencji tłumaczący autoryzację.
--->
+## Diagram kontekstowy
 
 TODO @everyone
 
-### Interfejsy integracyjne - poziom logiczny
+## Scenariusze interakcji
+
+TODO @everyone: brainstorming listy scenariuszy, po czym można się podzielić pracą
+
+## Interfejsy integracyjne
+
 <!-- Dla każdego "zewnętrznego" elementu z diagramu kontekstu. -->
 
-TODO @everyone
+TODO @everyone: prawodpodobnie będzie to jedynie bramka płatności, może wypełni @piterek130 jako specjalista od płatności?
 
 <table>
   <tr>
@@ -157,7 +159,34 @@ TODO @everyone
 
 # Widok funkcjonalny
 
-![Diagram komponentów](./images/component-diagram.drawio.svg)
+Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodnie z poniższą tabelą:
+
+| **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor**           | **Posiadane encje**                                                                                         |
+| ------------------------------------------------------------------------ | ----------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| ![#0088ff](https://placehold.co/16x16/0088ff/0088ff.png) **Jobberknoll** | Konto (_account_)       | **Tomasz Chojnacki** (260365)    | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
+| ![#008800](https://placehold.co/16x16/008800/008800.png) **Clabbert**    | Bilet (_ticket_)        | **Jakub Zehner** (260285)        | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
+| ![#ff8800](https://placehold.co/16x16/ff8800/ff8800.png) **Inferius**    | Płatność (_payment_)    | **Piotr Kot** (259560)           | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
+| ![#ff00ff](https://placehold.co/16x16/ff00ff/ff00ff.png) **Leprechaun**  | Logistyka (_logistics_) | **Przemysław Barcicki** (260324) | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
+| ![#ff0000](https://placehold.co/16x16/ff0000/ff0000.png) **Phoenix**     | API Gateway             | **Piotr Kot** (259560)           | —                                                                                                           |
+| ![#8800ff](https://placehold.co/16x16/8800ff/8800ff.png) **Hogwart**     | Frontend                | —                                | —                                                                                                           |
+
+![Diagram komponentów](./images/component-diagram-main.drawio.svg)
+
+## Konto
+
+![Diagram komponentów Jobberknoll](./images/component-diagram-jobberknoll.drawio.svg)
+
+## Bilet
+
+![Diagram komponentów Clabbert](./images/component-diagram-clabbert.drawio.svg)
+
+## Płatność
+
+![Diagram komponentów Inferius](./images/component-diagram-inferius.drawio.svg)
+
+## Logistyka
+
+![Diagram komponentów Leprechaun](./images/component-diagram-leprechaun.drawio.svg)
 
 # Widok rozmieszczenia
 
@@ -167,7 +196,9 @@ TODO @everyone
 
 ## Opis węzłów
 
-TODO @everyone: Dodać informację, że większość z naszych węzłów jest skalowalna horyzontalnie, więc specyfikacja RAM itd. jest do pomnożenia.
+TODO @everyone: Dodać informację, że większość z naszych węzłów jest skalowalna horyzontalnie, więc specyfikacja RAM itd. jest do pomnożenia. Dodatkowo aproksymacja liczby instancji dla każdego serwisu.
+
+TODO @everyone: Trzeba zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ. Będą to w sumie tylko pody, ponieważ na przeglądarkę i bramkę płatności nie mamy wpływu, a bazy danych są opisane w osobnych sekcjach. Może @mlodybercik jako nadworny DevOps?
 
 <table>
   <tr>
@@ -249,284 +280,325 @@ TODO @everyone: Dodać informację, że większość z naszych węzłów jest sk
 
 ## Model informacyjny
 
-### Konto (Tomasz Chojnacki)
+### Konto
 
-![Jobberknoll Class Diagram](./images/class-diagram-jobberknoll.drawio.svg)
+![Diagram klas Jobberknoll](./images/class-diagram-jobberknoll.drawio.svg)
 
-### Bilet (Jakub Zehner)
+### Bilet
 
-![Clabbert Class Diagram](./images/class-diagram-clabbert.drawio.svg)
+![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
-### Płatność (Piotr Kot)
+### Płatność
 
-![Inferius Class Diagram](./images/class-diagram-inferius.drawio.svg)
+![Diagram klas Inferius](./images/class-diagram-inferius.drawio.svg)
 
-### Logistyka (Przemysław Barcicki)
+### Logistyka
 
-![Leprechaun Class Diagram](./images/class-diagram-leprechaun.drawio.svg)
+![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
 ## Projekt bazy danych
 
-### Konto (Tomasz Chojnacki)
+### Konto
 
-TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll i uzupełnić tabelę.
+TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
+### Bilet
 
-### Bilet (Jakub Zehner)
-
-TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
+TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
+### Płatność
 
-### Płatność (Piotr Kot)
-
-TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
+TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
+### Logistyka
 
-### Logistyka (Przemysław Barcicki)
-
-TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun i uzupełnić tabelę.
+TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
 <table>
   <tr>
-    <th colspan="2">Ogólne informacje nt. bazy danych</th>
+    <th>Atrybut</th>
+    <th>Terraform</th>
+    <th>Wartość</th>
   </tr>
   <tr>
-    <th>SID</th>
-    <td>Nazwa instancji bazy/Nazwa usługi</td>
+    <th colspan="3"><div align="center">Informacje ogólne</div></th>
   </tr>
   <tr>
-    <th>Nazwa serwera</th>
-    <td>Hostname</td>
+    <th>Identyfikator</th>
+    <td><code>identifier</code></td>
+    <td>np. <code>unikalny-identyfikator-rds</code></td>
+  </tr>
+  <tr>
+    <th>Silnik i wersja</th>
+    <td><code>engine</code>, <code>engine_version</code></td>
+    <td>np. PostgreSQL 14.14-R1</td>
+  </tr>
+  <tr>
+    <th>Klasa instancji</th>
+    <td><code>instance_class</code></td>
+    <td>np. <code>db.t3.micro</code></td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Połączenie</div></th>
+  </tr>
+  <tr>
+    <th>Nazwa bazy</th>
+    <td><code>db_name</code></td>
+    <td>np. <code>moja_baza</code></td>
+  </tr>
+  <tr>
+    <th>Użytkownik</th>
+    <td><code>username</code></td>
+    <td>np. <code>moj_uzytkownik</code></td>
   </tr>
   <tr>
     <th>Port</th>
-    <td>Port</td>
+    <td><code>port</code></td>
+    <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th>Typ</th>
-    <td>Oracle 11gR2 11.1.1.1/...</td>
+    <th colspan="3"><div align="center">Składowanie</div></th>
   </tr>
   <tr>
-    <th>Kodowanie znaków</th>
-    <td>UTF-8/...</td>
+    <th>Typ składowania</th>
+    <td><code>storage_type</code></td>
+    <td>np. <code>gp2</code></td>
   </tr>
   <tr>
-    <th>Opis</th>
-    <td>...</td>
+    <th>Szyfrowanie bazy</th>
+    <td><code>storage_encrypted</code></td>
+    <td>TAK/NIE</td>
   </tr>
   <tr>
-    <th>Technologie</th>
-    <td>Lista wykorzystywanych technologii w bazie (np. Partitioning)</td>
+    <th>Początkowa pojemność (GB)</th>
+    <td><code>allocated_storage</code></td>
+    <td>np. 20</td>
   </tr>
   <tr>
-    <th>Backup</th>
-    <td>W tym wolumen danych, zakres backupu, częstotliwość, tryb, okres protekcji</td>
+    <th>Przyrost pojemności (GB/rok)</th>
+    <td>—</td>
+    <td>np. 5</td>
   </tr>
   <tr>
-    <th colspan="2">Informacje o schemacie</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <td>Nazwa schematu</td>
-  </tr>
-  <tr>
-    <th>Początkowa pojemność</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Przyrost pojemności (rok)</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Niezbędne prawa</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Inne</th>
-    <td>...</td>
+    <th>Backup (retencja w dniach)</th>
+    <td><code>backup_retention_period</code></td>
+    <td>np. 7</td>
   </tr>
 </table>
 
@@ -536,21 +608,21 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun i uzupełnić tabelę
 
 TODO @everyone
 
-## Konto (Tomasz Chojnacki)
+## Konto
 
-TODO @tchojnacki: Dodać diagram pakietów i opis architektury.
+TODO @tchojnacki: Dodać diagram pakietów, opis architektury i endpointy.
 
-## Bilet (Jakub Zehner)
+## Bilet
 
-TODO @jakubzehner: Dodać diagram pakietów i opis architektury.
+TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
-## Płatność (Piotr Kot)
+## Płatność
 
-TODO @piterek130: Dodać diagram pakietów i opis architektury.
+TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
-## Logistyka (Przemysław Barcicki)
+## Logistyka
 
-TODO @mlodybercik: Dodać diagram pakietów i opis architektury.
+TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 # Widok współbieżności (opcjonalny)
 
@@ -558,34 +630,34 @@ TODO @everyone
 
 # Realizacja przypadków użycia
 
-## Przypadek 1 (Tomasz Chojnacki)
+## Przypadek `ACC/??`
 
 TODO @tchojnacki
 
-## Przypadek 2 (Tomasz Chojnacki)
+## Przypadek `ACC/??`
 
 TODO @tchojnacki
 
-## Przypadek 3 (Jakub Zehner)
+## Przypadek `TIC/??`
 
 TODO @jakubzehner
 
-## Przypadek 4 (Jakub Zehner)
+## Przypadek `TIC/??`
 
 TODO @jakubzehner
 
-## Przypadek 5 (Piotr Kot)
+## Przypadek `PAY/??`
 
 TODO @piterek130
 
-## Przypadek 6 (Piotr Kot)
+## Przypadek `PAY/??`
 
 TODO @piterek130
 
-## Przypadek 7 (Przemysław Barcicki)
+## Przypadek `LOG/??`
 
 TODO @mlodybercik
 
-## Przypadek 8 (Przemysław Barcicki)
+## Przypadek `LOG/??`
 
 TODO @mlodybercik

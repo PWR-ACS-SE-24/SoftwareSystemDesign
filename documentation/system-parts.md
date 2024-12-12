@@ -1,26 +1,5 @@
 # Parts of the system divided between team members
 
-```mermaid
-flowchart LR
-  FRONTEND
-  GATEWAY
-  TICKET
-  PAYMENT
-  ACCOUNT
-  LOGISTICS
-
-  FRONTEND --> GATEWAY
-  GATEWAY --> TICKET
-  GATEWAY --> PAYMENT
-  GATEWAY --> ACCOUNT
-  GATEWAY --> LOGISTICS
-  TICKET --> ACCOUNT
-  TICKET --> PAYMENT
-  TICKET --> LOGISTICS
-  PAYMENT --> ACCOUNT
-  LOGISTICS --> ACCOUNT
-```
-
 | Team Member                                                                 | System part                        |
 | --------------------------------------------------------------------------- | ---------------------------------- |
 | Tomasz Chojnacki (260365) [@tchojnacki](https://github.com/tchojnacki)      | `ACCOUNT` & `FRONTEND`             |
