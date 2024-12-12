@@ -24,10 +24,6 @@ System jest projektowany z myślą o ułatwieniu zakupu biletów, przeglądania 
 
 Kluczowe ograniczenia i decyzje projektowe zawarte w dokumencie wynikają z potrzeb optymalizacji czasu operacji systemu oraz zapewnienia wysokiej dostępności i niezawodności.
 
-<!--
-[Always address Sections 2 through 6 of this template. Other sections are recommended, depending on the amount of novel architecture, the amount of expected maintenance, the skills of the development team, and the importance of other architectural concerns.]
--->
-
 # Cele i ograniczenia architektoniczne
 
 <!--
