@@ -27,6 +27,8 @@ Dokument przedstawia decyzje i ich uzasadnienie oraz ograniczenia i ważne eleme
 W obu przykładowych rozwiązaniach ta sekcja jest pusta i nie ma komentarzy, tak ma być?
 -->
 
+TODO @jakubzehner
+
 # Cele i ograniczenia architektoniczne
 
 <!--
@@ -166,18 +168,14 @@ TODO @everyone
 
 Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodnie z poniższą tabelą:
 
-<!-- TODO: Add colors -->
-
-| **Nazwa podsystemu** | **Część systemu**       | **Główny kontrybutor** | **Posiadane encje**                                                                                         |
-| -------------------- | ----------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **Jobberknoll**      | Konto (_account_)       | Tomasz Chojnacki       | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
-| **Clabbert**         | Bilet (_ticket_)        | Jakub Zehner           | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
-| **Inferius**         | Płatność (_payment_)    | Piotr Kot              | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
-| **Leprechaun**       | Logistyka (_logistics_) | Przemysław Barcicki    | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
-| **Phoenix**          | API Gateway             | Piotr Kot              | —                                                                                                           |
-| TODO                 | Frontend                | —                      | —                                                                                                           |
-
-<!-- TODO: Add external services, name Frontend -->
+| **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor** | **Posiadane encje**                                                                                         |
+| ------------------------------------------------------------------------ | ----------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| ![#0088ff](https://placehold.co/16x16/0088ff/0088ff.png) **Jobberknoll** | Konto (_account_)       | Tomasz Chojnacki       | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
+| ![#008800](https://placehold.co/16x16/008800/008800.png) **Clabbert**    | Bilet (_ticket_)        | Jakub Zehner           | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
+| ![#ff8800](https://placehold.co/16x16/ff8800/ff8800.png) **Inferius**    | Płatność (_payment_)    | Piotr Kot              | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
+| ![#ff00ff](https://placehold.co/16x16/ff00ff/ff00ff.png) **Leprechaun**  | Logistyka (_logistics_) | Przemysław Barcicki    | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
+| ![#ff0000](https://placehold.co/16x16/ff0000/ff0000.png) **Phoenix**     | API Gateway             | Piotr Kot              | —                                                                                                           |
+| ![#8800ff](https://placehold.co/16x16/8800ff/8800ff.png) **Hogwart**     | Frontend                | —                      | —                                                                                                           |
 
 ![Diagram komponentów](./images/component-diagram-main.drawio.svg)
 
@@ -557,19 +555,19 @@ TODO @everyone
 
 ## Konto (Tomasz Chojnacki)
 
-TODO @tchojnacki: Dodać diagram pakietów i opis architektury.
+TODO @tchojnacki: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Bilet (Jakub Zehner)
 
-TODO @jakubzehner: Dodać diagram pakietów i opis architektury.
+TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Płatność (Piotr Kot)
 
-TODO @piterek130: Dodać diagram pakietów i opis architektury.
+TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Logistyka (Przemysław Barcicki)
 
-TODO @mlodybercik: Dodać diagram pakietów i opis architektury.
+TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 # Widok współbieżności (opcjonalny)
 
@@ -577,34 +575,34 @@ TODO @everyone
 
 # Realizacja przypadków użycia
 
-## Przypadek 1 (Tomasz Chojnacki)
+## Przypadek `ACC/??` (Tomasz Chojnacki)
 
 TODO @tchojnacki
 
-## Przypadek 2 (Tomasz Chojnacki)
+## Przypadek `ACC/??` (Tomasz Chojnacki)
 
 TODO @tchojnacki
 
-## Przypadek 3 (Jakub Zehner)
+## Przypadek `TIC/??` (Jakub Zehner)
 
 TODO @jakubzehner
 
-## Przypadek 4 (Jakub Zehner)
+## Przypadek `TIC/??` (Jakub Zehner)
 
 TODO @jakubzehner
 
-## Przypadek 5 (Piotr Kot)
+## Przypadek `PAY/??` (Piotr Kot)
 
 TODO @piterek130
 
-## Przypadek 6 (Piotr Kot)
+## Przypadek `PAY/??` (Piotr Kot)
 
 TODO @piterek130
 
-## Przypadek 7 (Przemysław Barcicki)
+## Przypadek `LOG/??` (Przemysław Barcicki)
 
 TODO @mlodybercik
 
-## Przypadek 8 (Przemysław Barcicki)
+## Przypadek `LOG/??` (Przemysław Barcicki)
 
 TODO @mlodybercik
