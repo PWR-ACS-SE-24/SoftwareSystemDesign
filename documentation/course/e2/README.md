@@ -78,13 +78,13 @@ TODO @everyone
 [Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 -->
 
-## Widok kontekstowy
+# Widok kontekstowy
 
-### Diagram kontekstowy
+## Diagram kontekstowy
 
 TODO @everyone
 
-### Scenariusze interakcji
+## Scenariusze interakcji
 
 <!--
 Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagram sekwencji tłumaczący autoryzację.
@@ -92,7 +92,7 @@ Do dopytania, w jednym dokumencie całkiem pominięte, w drugim jest jeden diagr
 
 TODO @everyone
 
-### Interfejsy integracyjne - poziom logiczny
+## Interfejsy integracyjne
 
 <!-- Dla każdego "zewnętrznego" elementu z diagramu kontekstu. -->
 
@@ -168,16 +168,24 @@ TODO @everyone
 
 Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodnie z poniższą tabelą:
 
-| **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor** | **Posiadane encje**                                                                                         |
-| ------------------------------------------------------------------------ | ----------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------- |
-| ![#0088ff](https://placehold.co/16x16/0088ff/0088ff.png) **Jobberknoll** | Konto (_account_)       | Tomasz Chojnacki       | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
-| ![#008800](https://placehold.co/16x16/008800/008800.png) **Clabbert**    | Bilet (_ticket_)        | Jakub Zehner           | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
-| ![#ff8800](https://placehold.co/16x16/ff8800/ff8800.png) **Inferius**    | Płatność (_payment_)    | Piotr Kot              | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
-| ![#ff00ff](https://placehold.co/16x16/ff00ff/ff00ff.png) **Leprechaun**  | Logistyka (_logistics_) | Przemysław Barcicki    | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
-| ![#ff0000](https://placehold.co/16x16/ff0000/ff0000.png) **Phoenix**     | API Gateway             | Piotr Kot              | —                                                                                                           |
-| ![#8800ff](https://placehold.co/16x16/8800ff/8800ff.png) **Hogwart**     | Frontend                | —                      | —                                                                                                           |
+| **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor**           | **Posiadane encje**                                                                                         |
+| ------------------------------------------------------------------------ | ----------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| ![#0088ff](https://placehold.co/16x16/0088ff/0088ff.png) **Jobberknoll** | Konto (_account_)       | **Tomasz Chojnacki** (260365)    | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
+| ![#008800](https://placehold.co/16x16/008800/008800.png) **Clabbert**    | Bilet (_ticket_)        | **Jakub Zehner** (260285)        | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
+| ![#ff8800](https://placehold.co/16x16/ff8800/ff8800.png) **Inferius**    | Płatność (_payment_)    | **Piotr Kot** (259560)           | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
+| ![#ff00ff](https://placehold.co/16x16/ff00ff/ff00ff.png) **Leprechaun**  | Logistyka (_logistics_) | **Przemysław Barcicki** (260324) | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
+| ![#ff0000](https://placehold.co/16x16/ff0000/ff0000.png) **Phoenix**     | API Gateway             | **Piotr Kot** (259560)           | —                                                                                                           |
+| ![#8800ff](https://placehold.co/16x16/8800ff/8800ff.png) **Hogwart**     | Frontend                | —                                | —                                                                                                           |
 
 ![Diagram komponentów](./images/component-diagram-main.drawio.svg)
+
+## Konto
+
+## Bilet
+
+## Płatność
+
+## Logistyka
 
 # Widok rozmieszczenia
 
@@ -269,25 +277,25 @@ TODO @everyone: Dodać informację, że większość z naszych węzłów jest sk
 
 ## Model informacyjny
 
-### Konto (Tomasz Chojnacki)
+### Konto
 
 ![Diagram klas Jobberknoll](./images/class-diagram-jobberknoll.drawio.svg)
 
-### Bilet (Jakub Zehner)
+### Bilet
 
 ![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
-### Płatność (Piotr Kot)
+### Płatność
 
 ![Diagram klas Inferius](./images/class-diagram-inferius.drawio.svg)
 
-### Logistyka (Przemysław Barcicki)
+### Logistyka
 
 ![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
 ## Projekt bazy danych
 
-### Konto (Tomasz Chojnacki)
+### Konto
 
 TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll i uzupełnić tabelę.
 
@@ -352,7 +360,7 @@ TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll i uzupełnić tabelę
   </tr>
 </table>
 
-### Bilet (Jakub Zehner)
+### Bilet
 
 TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
 
@@ -417,7 +425,7 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert i uzupełnić tabelę.
   </tr>
 </table>
 
-### Płatność (Piotr Kot)
+### Płatność
 
 TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
 
@@ -482,7 +490,7 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius i uzupełnić tabelę.
   </tr>
 </table>
 
-### Logistyka (Przemysław Barcicki)
+### Logistyka
 
 TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun i uzupełnić tabelę.
 
@@ -553,19 +561,19 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun i uzupełnić tabelę
 
 TODO @everyone
 
-## Konto (Tomasz Chojnacki)
+## Konto
 
 TODO @tchojnacki: Dodać diagram pakietów, opis architektury i endpointy.
 
-## Bilet (Jakub Zehner)
+## Bilet
 
 TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
-## Płatność (Piotr Kot)
+## Płatność
 
 TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
-## Logistyka (Przemysław Barcicki)
+## Logistyka
 
 TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
@@ -575,34 +583,34 @@ TODO @everyone
 
 # Realizacja przypadków użycia
 
-## Przypadek `ACC/??` (Tomasz Chojnacki)
+## Przypadek `ACC/??`
 
 TODO @tchojnacki
 
-## Przypadek `ACC/??` (Tomasz Chojnacki)
+## Przypadek `ACC/??`
 
 TODO @tchojnacki
 
-## Przypadek `TIC/??` (Jakub Zehner)
+## Przypadek `TIC/??`
 
 TODO @jakubzehner
 
-## Przypadek `TIC/??` (Jakub Zehner)
+## Przypadek `TIC/??`
 
 TODO @jakubzehner
 
-## Przypadek `PAY/??` (Piotr Kot)
+## Przypadek `PAY/??`
 
 TODO @piterek130
 
-## Przypadek `PAY/??` (Piotr Kot)
+## Przypadek `PAY/??`
 
 TODO @piterek130
 
-## Przypadek `LOG/??` (Przemysław Barcicki)
+## Przypadek `LOG/??`
 
 TODO @mlodybercik
 
-## Przypadek `LOG/??` (Przemysław Barcicki)
+## Przypadek `LOG/??`
 
 TODO @mlodybercik
