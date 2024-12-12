@@ -78,6 +78,8 @@ TODO @everyone
 [Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 -->
 
+TODO @tchojnacki
+
 # Widok kontekstowy
 
 ## Diagram kontekstowy

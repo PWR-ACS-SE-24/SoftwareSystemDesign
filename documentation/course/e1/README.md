@@ -199,48 +199,48 @@ Wymagania niefunkcjonalne zostały podzielone zgodnie z metodyką FURPS+ (Functi
 
 ### Wymagania systemowe
 
-1. Strona internetowa powinna być możliwa do wyświetlenia na przeglądarkach internetowych "Evergreen Browser".
-2. System umożliwia obsługę z użyciem ekranu dotykowego dla funkcjonalności _pasażera_, _kierowcy_, _biletera_.
-3. System umożliwia obsługę z użyciem myszki i klawiatury dla funkcjonalności _administratora_.
+- `NF/SYS/01` - Strona internetowa powinna być możliwa do wyświetlenia na przeglądarkach internetowych "Evergreen Browser".
+- `NF/SYS/02` - System umożliwia obsługę z użyciem ekranu dotykowego dla funkcjonalności _pasażera_, _kierowcy_, _biletera_.
+- `NF/SYS/03` - System umożliwia obsługę z użyciem myszki i klawiatury dla funkcjonalności _administratora_.
 
 ### Użyteczność
 
-1. System powinien być zaprojektowany tak, aby przynajmniej 50% użytkowników więcej względem poprzedniego systemu mogło wykonać podstawowe czynności, takie jak zakup biletu czy sprawdzenie rozkładu jazdy, bez konieczności korzystania z instrukcji lub pomocy technicznej. Sprawdzane poprzez wywiady z użytkownikami.
-2. System powinien być zoptymalizowany zarówno dla urządzeń desktopowych, jak i mobilnych, oferując pełną funkcjonalność na ekranach o rozdzielczościach od 360x800 pikseli (najpopularniejsza rozdzielczość małych telefonów). Wyjątkiem od reguły są interfejsy administratora.
-3. System powinien być dostępny w języku polskim i angielskim.
-4. System powinien oferować dwa motywy kolorystyczne: jasny i ciemny.
-5. System musi być zgodny z wytycznymi WCAG 2.1 poziom AA, umożliwiając dostęp osobom z niepełnosprawnościami, np. poprzez kontrast tekstu, możliwość korzystania z klawiatury, oraz wsparcie czytników ekranu.
-6. Kluczowe operacje, takie jak zakup biletu, powinny być możliwe do wykonania w maksymalnie 5 kliknięciach.
+- `NF/USE/01` - System powinien być zaprojektowany tak, aby przynajmniej 50% użytkowników więcej względem poprzedniego systemu mogło wykonać podstawowe czynności, takie jak zakup biletu czy sprawdzenie rozkładu jazdy, bez konieczności korzystania z instrukcji lub pomocy technicznej. Sprawdzane poprzez wywiady z użytkownikami.
+- `NF/USE/02` - System powinien być zoptymalizowany zarówno dla urządzeń desktopowych, jak i mobilnych, oferując pełną funkcjonalność na ekranach o rozdzielczościach od 360x800 pikseli (najpopularniejsza rozdzielczość małych telefonów). Wyjątkiem od reguły są interfejsy administratora.
+- `NF/USE/03` - System powinien być dostępny w języku polskim i angielskim.
+- `NF/USE/04` - System powinien oferować dwa motywy kolorystyczne: jasny i ciemny.
+- `NF/USE/05` - System musi być zgodny z wytycznymi WCAG 2.1 poziom AA, umożliwiając dostęp osobom z niepełnosprawnościami, np. poprzez kontrast tekstu, możliwość korzystania z klawiatury, oraz wsparcie czytników ekranu.
+- `NF/USE/06` - Kluczowe operacje, takie jak zakup biletu, powinny być możliwe do wykonania w maksymalnie 5 kliknięciach.
 
 ### Niezawodność
 
-1. Klasa niezawodności systemu powinna wynosić co najmniej 99,9%.
-2. W przypadku awarii nieobejmującej sprzętu system powinien mieć możliwość powrotu do stanu sprzed awarii w czasie poniżej 1 godziny.
-3. System powinien wykonywać codzienną kopię zapasową danych.
-4. Dostęp do funkcjonalności pasażerów, bileterów, kierowców i administratorów powinien być możliwy tylko w sposób autoryzowany.
-5. Dostęp do funkcjonalności gościa (logowanie, rejestracja - zgodnie z wymaganiami funkcjonalnymi) powinien być możliwy w sposób nieautoryzowany.
-6. Części systemów powinny komunikować się ze sobą w sposób uniemożliwiający ingerecję osób trzecich.
-7. System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
-8. System powinien respektować zasady RODO.
+- `NF/REL/01` - Klasa niezawodności systemu powinna wynosić co najmniej 99,9%.
+- `NF/REL/02` - W przypadku awarii nieobejmującej sprzętu system powinien mieć możliwość powrotu do stanu sprzed awarii w czasie poniżej 1 godziny.
+- `NF/REL/03` System powinien wykonywać codzienną kopię zapasową danych.
+- `NF/REL/04` Dostęp do funkcjonalności pasażerów, bileterów, kierowców i administratorów powinien być możliwy tylko w sposób autoryzowany.
+- `NF/REL/05` Dostęp do funkcjonalności gościa (logowanie, rejestracja - zgodnie z wymaganiami funkcjonalnymi) powinien być możliwy w sposób nieautoryzowany.
+- `NF/REL/06` Części systemów powinny komunikować się ze sobą w sposób uniemożliwiający ingerecję osób trzecich.
+- `NF/REL/07` System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
+- `NF/REL/08` System powinien respektować zasady RODO.
 
 ### Wydajność
 
-1. System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
+- `NF/PRF/01` - System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
    1. dotyczące biletów w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
    2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
    3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
    4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
-2. System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie).
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie).
 
 ### Wsparcie
 
-1. Zapewniona jest pełna dokumentacja systemu:
+- `NF/SUP/01` - Zapewniona jest pełna dokumentacja systemu:
    1. Dokumentacja powinna być dostępna w języku polskim i angielskim.
    2. Dokumentacja powinna być dostępna w formie pliku PDF.
    3. Dokumentacja powinna zawierać instrukcję obsługi dla użytkowników oraz instrukcję konfiguracji dla administratorów.
    4. Dokumentacja powinna obejmować najczęściej zadawane pytania (FAQ).
-2. Powinno być dostępne wsparcie techniczne w godzinach 8:00-16:00 czasu lokalnego w dni robocze.
-3. System powinien w przejrzysty sposób informować użytkownika o błędach.
+- `NF/SUP/02` - Powinno być dostępne wsparcie techniczne w godzinach 8:00-16:00 czasu lokalnego w dni robocze.
+- `NF/SUP/03` - System powinien w przejrzysty sposób informować użytkownika o błędach.
 
 ## Model informacyjny
 
