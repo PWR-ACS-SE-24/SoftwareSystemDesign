@@ -67,11 +67,44 @@ TODO @everyone
 
 # Widoki architektoniczne
 
-<!--
-[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
--->
+W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpowiednikami z modelu C4:
 
-TODO @tchojnacki
+<table>
+  <tr>
+    <th>Widok</th>
+    <th>Model C4</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Główne</div></th>
+  </tr>
+  <tr>
+    <th><a href="#widok-kontekstowy">Widok kontekstowy</a></th>
+    <td>L1: Diagram kontekstu</td>
+    <td>Przedstawia otoczenie systemu, jego użytkowników, ich typowe interakcje, zewnętrzne systemy oraz ich interfejsy integracyjne.</td>
+  </tr>
+  <tr>
+    <th><a href="#widok-funkcjonalny">Widok funkcjonalny</a></th>
+    <td>L2 + L3: Diagramy kontenerów i komponentów</td>
+    <td>Przedstawia podsystemy systemu, oraz części składowe tych podsystemów z perspektywy logicznej.</td>
+  </tr>
+  <tr>
+    <th><a href="#widok-informacyjny">Widok informacyjny</a></th>
+    <td>L4: Diagram kodu</td>
+    <td>Przedstawia struktury danych oraz powiązania między nimi, w kodzie źródłowym oraz warstwie danych.</td>
+  </tr>
+  <tr>
+    <th colspan="3"><div align="center">Pomocnicze</div></th>
+  </tr>
+  <tr>
+    <th colspan="2"><a href="#widok-rozmieszczenia">Widok rozmieszczenia</a></th>
+    <td>Przedstawia fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym.</td>
+  </tr>
+  <tr>
+    <th colspan="2"><a href="#widok-wytwarzania">Widok wytwarzania</a></th>
+    <td>Przedstawia podział kodu na pakiety, architekturę serwisów oraz interfejsy API.</td>
+  </tr>
+</table>
 
 # Widok kontekstowy
 
@@ -157,7 +190,9 @@ TODO @everyone: prawodpodobnie będzie to jedynie bramka płatności, może wype
 
 # Widok funkcjonalny
 
-Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodnie z poniższą tabelą:
+Powszechne w wielkich systemach jest zastosowanie abstrakcyjnych nazw dla poszczególnych części systemu. Z tego typu rozwiązań korzysta między innymi Airbnb, Twitter, Spotify czy Zalando[^naming-microservices]. Rozwiązanie to ma swoje wady i zalety. Abstrakcyjne nazwy są trudniejsze do zrozumienia dla osób spoza projektu. Z drugiej strony, nazwy opisowe są trudne do utrzymania i w przypadku ciągłych zmian w projekcie mogą stać się nieaktualne i mylące[^names-cute-descriptive]. W projekcie podjęto decyzję o zastosowaniu abstrakcyjnych nazw bazujących na stworzeniach ze świata Harry'ego Pottera. Tam gdzie to możliwe, zastosowano obie nazwy, tj. abstrakcyjną i opisową.
+
+Przypisanie nazw częściom systemu opisuje poniższa tabela:
 
 | **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor**           | **Posiadane encje**                                                                                         |
 | ------------------------------------------------------------------------ | ----------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -171,6 +206,8 @@ Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodni
 ![Diagram komponentów](./images/component-diagram-main.drawio.svg)
 
 ## Konto
+
+W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** odpowiedzialny za pomocniczy komponent *Account Sidecar*, którego celem jest skrócenie czasu oczekiwania *API Gateway* na pozyskanie informacji autoryzacyjnych. W widoku rozmieszczenia, element ten stanowi [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers) dla *API Gateway*, jednakże logicznie związany jest bezpośrednio z serwisem *Account Service* i odpowiedzialność za niego ponosi zespół odpowiedzialny za ten serwis.
 
 ![Diagram komponentów Jobberknoll](./images/component-diagram-jobberknoll.drawio.svg)
 
@@ -190,11 +227,11 @@ Poszczególnym częściom systemu zostały przypisane abstrakcyjne nazwy, zgodni
 
 ## Diagram rozmieszczenia
 
+Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia "1" (pojedyncza instancja) oraz "*" (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego.
+
 ![Diagram rozmieszczenia](./images/deployment-diagram.drawio.svg)
 
 ## Opis węzłów
-
-TODO @everyone: Dodać informację, że większość z naszych węzłów jest skalowalna horyzontalnie, więc specyfikacja RAM itd. jest do pomnożenia. Dodatkowo aproksymacja liczby instancji dla każdego serwisu.
 
 TODO @everyone: Trzeba zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ. Będą to w sumie tylko pody, ponieważ na przeglądarkę i bramkę płatności nie mamy wpływu, a bazy danych są opisane w osobnych sekcjach. Może @mlodybercik jako nadworny DevOps?
 
@@ -279,6 +316,8 @@ TODO @everyone: Trzeba zmienić layout poniższej tabelki, tak żeby pokazywał 
 ## Model informacyjny
 
 ### Konto
+
+Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które przechowuje datę ostatniej modyfikacji konta. Będzie ono wykorzystywane do realizacji wymagań dotyczących bezpieczeństwa, tj. aby zapewnić, że po zmianie danych logowania, bądź jawnym żądaniu zakończenia wszystkich sesji użytkownika, odświeżenie tokenu dostępowego będzie wymagało ponownego zalogowania.
 
 ![Diagram klas Jobberknoll](./images/class-diagram-jobberknoll.drawio.svg)
 
@@ -622,40 +661,39 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
-# Widok współbieżności (opcjonalny)
-
-TODO @everyone
-
 # Realizacja przypadków użycia
 
-## Przypadek `ACC/??`
+## PU `ACC/??`
 
 TODO @tchojnacki
 
-## Przypadek `ACC/??`
+## PU `ACC/??`
 
 TODO @tchojnacki
 
-## Przypadek `TIC/??`
+## PU `TIC/??`
 
 TODO @jakubzehner
 
-## Przypadek `TIC/??`
+## PU `TIC/??`
 
 TODO @jakubzehner
 
-## Przypadek `PAY/??`
+## PU `PAY/??`
 
 TODO @piterek130
 
-## Przypadek `PAY/??`
+## PU `PAY/??`
 
 TODO @piterek130
 
-## Przypadek `LOG/??`
+## PU `LOG/??`
 
 TODO @mlodybercik
 
-## Przypadek `LOG/??`
+## PU `LOG/??`
 
 TODO @mlodybercik
+
+[^naming-microservices]: [SRCco.de - Naming Applications and Microservices](https://srcco.de/posts/naming-applications-components-microservices.html)
+[^names-cute-descriptive]: [Names should be cute, not descriptive](https://ntietz.com/blog/name-your-projects-cutesy-things)
