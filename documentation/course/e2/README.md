@@ -76,7 +76,7 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
     <th>Opis</th>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Główne</div></th>
+    <th colspan="3">Główne</th>
   </tr>
   <tr>
     <th><a href="#widok-kontekstowy">Widok kontekstowy</a></th>
@@ -94,7 +94,7 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
     <td>Przedstawia struktury danych oraz powiązania między nimi, w kodzie źródłowym oraz warstwie danych.</td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Pomocnicze</div></th>
+    <th colspan="3">Pomocnicze</th>
   </tr>
   <tr>
     <th colspan="2"><a href="#widok-rozmieszczenia">Widok rozmieszczenia</a></th>
@@ -227,7 +227,7 @@ W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** o
 
 ## Diagram rozmieszczenia
 
-Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia "1" (pojedyncza instancja) oraz "*" (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego.
+Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia `1` (pojedyncza instancja) oraz `*` (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego, stereotypem [`<<manifest>>`](https://www.uml-diagrams.org/deployment-diagrams.html#manifestation).
 
 ![Diagram rozmieszczenia](./images/deployment-diagram.drawio.svg)
 
@@ -337,7 +337,62 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ### Konto
 
-TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
+
+W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
+
+Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, bez żadnych dodatkowych klas. Klasa `Account` zawiera dane wspólne dla wszystkich typów kont, natomiast klasy `Admin`, `Driver`, `Inspector` i `Passenger` dziedziczą po niej, przy czym jedynie `Passenger` dodaje dodatkowe informacje w formie pola `phoneNumber`. Jednocześnie, najczęściej zapytania będą dotyczyły wszystkich kont, a nie jedynie jednego typu. W związku z tym, zdecydowano się na zamodelowanie kont **w postaci jednej tabeli** z dodatkową kolumną określającą typ konta (*table-per-hierarchy*). Alternatywami dla tego podejścia są *table-per-type* (tabela dla każdej klasy dziedziczącej, łączona z tabelą dla klasy bazowej) oraz *table-per-concrete-class* (tabela dla każdej klasy dziedziczącej, z powielonymi danymi z klasy bazowej). Podejścia te przeznaczone są jednak raczej dla sytuacji, w których klasy nie mają wielu danych wspólnych oraz gdy zapytania dotyczą konkretnych klas dziedziczących[^ef-inheritance]. Jako wartość rozróżniającą zastosowano kolumnę `account_type` z wartościami `A` (*admin*), `D` (*driver*), `I` (*inspector*) i `P` (*passenger*). Kolumna `phoneNumber` musi być pusta dla kont innych niż `Passenger`.
+
+![Diagram bazodanowy Jobberknoll](./images/database-diagram-jobberknoll.drawio.svg)
+
+<table>
+  <tr>
+    <th colspan="3">Indeksy</th>
+  </tr>
+  <tr>
+    <th>Kolumna</th>
+    <th>Typ</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <td><code>account.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>account.account_type</code></td>
+    <td>bitmap</td>
+    <td>Indeks wspierający wyszukiwanie kont według typu.</td>
+  </tr>
+  <tr>
+    <td><code>account.email</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks wspierający utrzymanie unikalności adresów e-mail oraz ich wyszukiwanie.</td>
+  </tr>
+  <tr>
+    <th colspan="3">Ograniczenia</th>
+  </tr>
+  <tr>
+    <td colspan="3"><code>account.account_type IN ('A', 'D', 'I', 'P')</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>account.full_name <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>account.email <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>account.phone_number IS NULL OR account.account_type = 'P'</code></td>
+  </tr>
+</table>
+
+Zdecydowano się na silnik **PostgreSQL**, ze względu na jego popularność, znajomość w zespole, wsparcie na AWS RDS oraz licencję open-source. Wykorzystano najnowszą stabilną wersję **17.2**, która zapewnia najnowsze funkcje i poprawki bezpieczeństwa. PostgreSQL nie oferuje wersji LTS, natomiast każda wersja jest wspierana przez co najmniej 5 lat[^postgres-version].
+
+Jako klasę instancji wybrano **`db.t4g.medium`**. Jest to najnowsza generacja typów i poszczególne modele różnią się praktycznie jedynie liczbą vCPU oraz pamięcią RAM. Wersja `medium` jest przeznaczona dla systemów o średnim obciążeniu i oferuje 2 vCPU oraz 4 GiB RAM. Jako typ składowania wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez amazon typem generalnego przeznaczenia. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 255 + 255 + 60 + 1 + 8 + 16 = 599 bajtów. Oprócz tego, stosowane są dwa indeksy dodatkowe, o estymacjach 4 + 4 / 8 = 5 bajtów oraz 255 + 4 = 259 bajtów. Sumarycznie, rząd tabeli wynosi 599 + 5 + 259 = 863 bajty, czyli w zaokrągleniu w górę **1 KB na użytkownika**. Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia], górna granica wynosi **2 mln unikalnych użytkowników** (2 GB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (1.2 GB). Ponieważ minimalny rozmiar bazy danych na RDS wynosi **20 GB** i tak przerasta potrzeby systemu, został on wybrany jako początkowy rozmiar bazy z pomniejszeniem przyrostu do **1 GB rocznie**, biorąc pod uwagę to, że każda aproksymacja zawyżała wynik oraz istnieje nadwyżka miejsca początkowego.
+
+Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalnie wykorzystywany, że błędy w przechowywanych danych powinny być proste do zauważenia. Dodatkowo, dane dotyczące kont są wrażliwe i podlegają regulacjom. W związku z tym, zdecydowano się na czas retencji backupów wynoszący **7 dni**, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje danych zbyt długo.
 
 <table>
   <tr>
@@ -346,68 +401,68 @@ TODO @tchojnacki: Dodać diagram bazodanowy do Jobberknoll, dodać uzasadnienia 
     <th>Wartość</th>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Informacje ogólne</div></th>
+    <th colspan="3">Informacje ogólne</th>
   </tr>
   <tr>
     <th>Identyfikator</th>
     <td><code>identifier</code></td>
-    <td>np. <code>unikalny-identyfikator-rds</code></td>
+    <td><code>rds-jobberknoll</code></td>
   </tr>
   <tr>
     <th>Silnik i wersja</th>
     <td><code>engine</code>, <code>engine_version</code></td>
-    <td>np. PostgreSQL 14.14-R1</td>
+    <td>PostgreSQL 17.2</td>
   </tr>
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td>np. <code>db.t3.micro</code></td>
+    <td><code>db.t4g.medium</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Połączenie</div></th>
+    <th colspan="3">Połączenie</th>
   </tr>
   <tr>
     <th>Nazwa bazy</th>
     <td><code>db_name</code></td>
-    <td>np. <code>moja_baza</code></td>
+    <td><code>jobberknoll</code></td>
   </tr>
   <tr>
     <th>Użytkownik</th>
     <td><code>username</code></td>
-    <td>np. <code>moj_uzytkownik</code></td>
+    <td><code>postgres</code></td>
   </tr>
   <tr>
     <th>Port</th>
     <td><code>port</code></td>
-    <td>np. <code>5432</code></td>
+    <td><code>5432</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Składowanie</div></th>
+    <th colspan="3">Składowanie</th>
   </tr>
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td>np. <code>gp2</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
     <td><code>storage_encrypted</code></td>
-    <td>TAK/NIE</td>
+    <td>TAK</td>
   </tr>
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>np. 20</td>
+    <td>20</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>np. 5</td>
+    <td>1</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>np. 7</td>
+    <td>7</td>
   </tr>
 </table>
 
@@ -422,7 +477,7 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
     <th>Wartość</th>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Informacje ogólne</div></th>
+    <th colspan="3">Informacje ogólne</th>
   </tr>
   <tr>
     <th>Identyfikator</th>
@@ -440,7 +495,7 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
     <td>np. <code>db.t3.micro</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Połączenie</div></th>
+    <th colspan="3">Połączenie</th>
   </tr>
   <tr>
     <th>Nazwa bazy</th>
@@ -458,7 +513,7 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
     <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Składowanie</div></th>
+    <th colspan="3">Składowanie</th>
   </tr>
   <tr>
     <th>Typ składowania</th>
@@ -498,7 +553,7 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
     <th>Wartość</th>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Informacje ogólne</div></th>
+    <th colspan="3">Informacje ogólne</th>
   </tr>
   <tr>
     <th>Identyfikator</th>
@@ -516,7 +571,7 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
     <td>np. <code>db.t3.micro</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Połączenie</div></th>
+    <th colspan="3">Połączenie</th>
   </tr>
   <tr>
     <th>Nazwa bazy</th>
@@ -534,7 +589,7 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
     <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Składowanie</div></th>
+    <th colspan="3">Składowanie</th>
   </tr>
   <tr>
     <th>Typ składowania</th>
@@ -574,7 +629,7 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
     <th>Wartość</th>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Informacje ogólne</div></th>
+    <th colspan="3">Informacje ogólne</th>
   </tr>
   <tr>
     <th>Identyfikator</th>
@@ -592,7 +647,7 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
     <td>np. <code>db.t3.micro</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Połączenie</div></th>
+    <th colspan="3">Połączenie</th>
   </tr>
   <tr>
     <th>Nazwa bazy</th>
@@ -610,7 +665,7 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
     <td>np. <code>5432</code></td>
   </tr>
   <tr>
-    <th colspan="3"><div align="center">Składowanie</div></th>
+    <th colspan="3">Składowanie</th>
   </tr>
   <tr>
     <th>Typ składowania</th>
@@ -697,3 +752,8 @@ TODO @mlodybercik
 
 [^naming-microservices]: [SRCco.de - Naming Applications and Microservices](https://srcco.de/posts/naming-applications-components-microservices.html)
 [^names-cute-descriptive]: [Names should be cute, not descriptive](https://ntietz.com/blog/name-your-projects-cutesy-things)
+[^acid-base]: [AWS - ACID vs BASE Databases](https://aws.amazon.com/compare/the-difference-between-acid-and-base-database)
+[^ef-inheritance]: [EF Core - Inheritance](https://learn.microsoft.com/en-us/ef/core/modeling/inheritance)
+[^postgres-version]: [PostgreSQL - Versioning Policy](https://www.postgresql.org/support/versioning)
+[^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
+[^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
