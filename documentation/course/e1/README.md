@@ -145,21 +145,21 @@ W zakres projektu wchodzi:
 - `PAY/04` - Jako _pasażer_ chcę mieć możliwość wyboru _BLIK_ jako metodę płatności.
 - `PAY/05` - Jako _pasażer_ chcę mieć możliwość wyboru karty kredytowej jako metodę płatności.
 - `PAY/06` - Jako _pasażer_ chcę mieć możliwość wyboru _portfela_ jako metody płatności. 
-- `PAY/07` - jako _pasażer_ chcę mieć możliwość dodania środków do swojego _portfela_.
-- `PAY/08` - jako _pasażer_ chcę mieć możliwość sprawdzenia stanu swojego _portfela_.
-- `PAY/09` - jako _pasażer_ chcę mieć możliwość przeglądania historii doładowań _portfela_.
-- `PAY/10` - jako _pasażer_ chcę mieć możliwość przeglądania historii płatności.
-- `PAY/11` - jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą _BLIK_.
-- `PAY/12` - jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą karty kredytowej.
-- `PAY/13` - jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą _portfela_.
-- `PAY/14` - jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą _BLIK_.
-- `PAY/15` - jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą karty kredytowej.
-- `PAY/16` - jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą _portfela_.
-- `PAY/17` - jako _pasażer_ chcę mieć możliwość przeglądania wystawionych _mandatów_.
-- `PAY/18` - jako _pasażer_ chcę mieć możliwość wyświetlenia szczegółów _mandatu_.
-- `PAY/19` - jako _bileter_ chcę mieć możliwość wystawienia _mandatu_.
-- `PAY/20` - jako _bileter_ chcę mieć możliwość zmiany _statusu mandatu_ na _anulowany_
-- `PAY/21` - jako _bileter_ chcę mieć możliwość przeglądania historii _mandatów_.
+- `PAY/07` - Jako _pasażer_ chcę mieć możliwość dodania środków do swojego _portfela_.
+- `PAY/08` - Jako _pasażer_ chcę mieć możliwość sprawdzenia stanu swojego _portfela_.
+- `PAY/09` - Jako _pasażer_ chcę mieć możliwość przeglądania historii doładowań _portfela_.
+- `PAY/10` - Jako _pasażer_ chcę mieć możliwość przeglądania historii płatności.
+- `PAY/11` - Jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą _BLIK_.
+- `PAY/12` - Jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą karty kredytowej.
+- `PAY/13` - Jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą _portfela_.
+- `PAY/14` - Jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą _BLIK_.
+- `PAY/15` - Jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą karty kredytowej.
+- `PAY/16` - Jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą _portfela_.
+- `PAY/17` - Jako _pasażer_ chcę mieć możliwość przeglądania wystawionych _mandatów_.
+- `PAY/18` - Jako _pasażer_ chcę mieć możliwość wyświetlenia szczegółów _mandatu_.
+- `PAY/19` - Jako _bileter_ chcę mieć możliwość wystawienia _mandatu_.
+- `PAY/20` - Jako _bileter_ chcę mieć możliwość zmiany _statusu mandatu_ na _anulowany_
+- `PAY/21` - Jako _bileter_ chcę mieć możliwość przeglądania historii _mandatów_.
 
 ### Logistyka (Przemysław Barcicki)
 
@@ -216,29 +216,30 @@ Wymagania niefunkcjonalne zostały podzielone zgodnie z metodyką FURPS+ (Functi
 
 - `NF/REL/01` - Klasa niezawodności systemu powinna wynosić co najmniej 99,9%.
 - `NF/REL/02` - W przypadku awarii nieobejmującej sprzętu system powinien mieć możliwość powrotu do stanu sprzed awarii w czasie poniżej 1 godziny.
-- `NF/REL/03` System powinien wykonywać codzienną kopię zapasową danych.
-- `NF/REL/04` Dostęp do funkcjonalności pasażerów, bileterów, kierowców i administratorów powinien być możliwy tylko w sposób autoryzowany.
-- `NF/REL/05` Dostęp do funkcjonalności gościa (logowanie, rejestracja - zgodnie z wymaganiami funkcjonalnymi) powinien być możliwy w sposób nieautoryzowany.
-- `NF/REL/06` Części systemów powinny komunikować się ze sobą w sposób uniemożliwiający ingerecję osób trzecich.
-- `NF/REL/07` System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
-- `NF/REL/08` System powinien respektować zasady RODO.
+- `NF/REL/03` - System powinien wykonywać codzienną kopię zapasową danych.
+- `NF/REL/04` - Dostęp do funkcjonalności pasażerów, bileterów, kierowców i administratorów powinien być możliwy tylko w sposób autoryzowany.
+- `NF/REL/05` - Dostęp do funkcjonalności gościa (logowanie, rejestracja - zgodnie z wymaganiami funkcjonalnymi) powinien być możliwy w sposób nieautoryzowany.
+- `NF/REL/06` - Części systemów powinny komunikować się ze sobą w sposób uniemożliwiający ingerecję osób trzecich.
+- `NF/REL/07` - System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
+- `NF/REL/08` - System powinien respektować zasady RODO.
+- `NF/REL/09` - System powinien przetworzyć wszystkie płatności i emaile niezależnie od dostępności usługi w momencie ich zlecenia.
 
 ### Wydajność
 
 - `NF/PRF/01` - System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
-   1. dotyczące biletów w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
-   2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
-   3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
-   4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
-- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie).
+  1. dotyczące biletów w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
+  2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
+  3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
+  4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników [^nf-prf-2].
 
 ### Wsparcie
 
 - `NF/SUP/01` - Zapewniona jest pełna dokumentacja systemu:
-   1. Dokumentacja powinna być dostępna w języku polskim i angielskim.
-   2. Dokumentacja powinna być dostępna w formie pliku PDF.
-   3. Dokumentacja powinna zawierać instrukcję obsługi dla użytkowników oraz instrukcję konfiguracji dla administratorów.
-   4. Dokumentacja powinna obejmować najczęściej zadawane pytania (FAQ).
+  1. Dokumentacja powinna być dostępna w języku polskim i angielskim.
+  2. Dokumentacja powinna być dostępna w formie pliku PDF.
+  3. Dokumentacja powinna zawierać instrukcję obsługi dla użytkowników oraz instrukcję konfiguracji dla administratorów.
+  4. Dokumentacja powinna obejmować najczęściej zadawane pytania (FAQ).
 - `NF/SUP/02` - Powinno być dostępne wsparcie techniczne w godzinach 8:00-16:00 czasu lokalnego w dni robocze.
 - `NF/SUP/03` - System powinien w przejrzysty sposób informować użytkownika o błędach.
 
@@ -963,3 +964,5 @@ classDiagram
 ![LOG/21](images/Accident2.png)
 
 ![LOG/22](images/Accident1.png)
+
+[^nf-prf-2]: Zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie.

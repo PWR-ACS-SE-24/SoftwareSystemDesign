@@ -28,52 +28,121 @@ Kluczowe ograniczenia i decyzje projektowe zawarte w dokumencie wynikają z potr
 
 # Cele i ograniczenia architektoniczne
 
-<!--
-[Insert a reference or link to the requirements that must be implemented to realize the architecture.
-Formulate a set of goals that the architecture needs to meet in its structure and behavior. Identify critical issues that must be addressed by the architecture, such as: Are there hardware dependencies that should be isolated from the rest of the system? Does the system need to function efficiently under unusual conditions?]
+Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wpływ na architekturę systemu:
 
-Wymienić wymagania funkcjonalne i (głównie) niefunkcjonalne, które mają wpływ na architekturę systemu, mogą być z podziałem na epiki.
--->
+**Wymagania funkcjonalne:**
 
-TODO @everyone
+- `ACC/01` - Jako _gość_ chcę mieć możliwość rejestracji _konta_ _pasażera_.
+- `ACC/02` - Jako _gość_ chcę mieć możliwość zalogowania się do _konta_ (_administratora_, _biletera_, _kierowcy_, _pasażera_).
+- `ACC/03` - Jako _osoba zalogowana_ chcę mieć możliwość wylogowania się ze swojego _konta_.
+- `TIC/09` - Jako _pasażer_ chcę mieć możliwość okazania _biletu_ do _sprawdzenia ważności biletu_.
+- `TIC/12` - Jako _bileter_ chcę mieć możliwość _sprawdzenia ważności_ _biletu_ _pasażera_.
+- `PAY/11` - Jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą _BLIK_.
+- `PAY/12` - Jako _pasażer_ chcę mieć możliwość zapłaty za _bilet_ za pomocą karty kredytowej.
+- `PAY/14` - Jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą _BLIK_.
+- `PAY/16` - Jako _pasażer_ chcę mieć możliwość zapłaty za wystawiony _mandat_ za pomocą _portfela_.
+
+**Wymagania niefunkcjonalne:**
+
+- `NF/SYS/01` - Strona internetowa powinna być możliwa do wyświetlenia na przeglądarkach internetowych "Evergreen Browser".
+- `NF/SYS/02` - System umożliwia obsługę z użyciem ekranu dotykowego dla funkcjonalności _pasażera_, _kierowcy_, _biletera_.
+- `NF/SYS/03` - System umożliwia obsługę z użyciem myszki i klawiatury dla funkcjonalności _administratora_.
+- `NF/REL/01` - Klasa niezawodności systemu powinna wynosić co najmniej 99,9%.
+- `NF/REL/02` - W przypadku awarii nieobejmującej sprzętu system powinien mieć możliwość powrotu do stanu sprzed awarii w czasie poniżej 1 godziny.
+- `NF/REL/03` - System powinien wykonywać codzienną kopię zapasową danych.
+- `NF/REL/04` - Dostęp do funkcjonalności pasażerów, bileterów, kierowców i administratorów powinien być możliwy tylko w sposób autoryzowany.
+- `NF/REL/06` - Części systemów powinny komunikować się ze sobą w sposób uniemożliwiający ingerecję osób trzecich.
+- `NF/REL/07` - System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
+- `NF/REL/09` - System powinien przetworzyć wszystkie płatności i emaile niezależnie od dostępności usługi w momencie ich zlecenia.
+- `NF/PRF/01` - System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
+  1. dotyczące biletów w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
+  2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
+  3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
+  4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie).
 
 # Decyzje i ich uzasadnienie
 
-<!--
-[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
-
-Oba przykłady wskazują po kilka możliwych rozwiązań dla każdego celu.
--->
-
-TODO @everyone
-
-| **Cel** | **Sposób osiągnięcia (taktyki)** |
-| ------- | -------------------------------- |
-|         |                                  |
+| **Cele (wymagania + poprzednie decyzje)**                  | **Mechanizmy (taktyki)**                                                              |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `NF/REL/01`, `NF/PRF/01`, `NF/PRF/02`                      | [`M/01`: Architektura mikroserwisów](#m01-architektura-mikroserwisów)                 |
+| `NF/REL/01`, `NF/REL/07`, `NF/PRF/01`, `NF/PRF/02`         | [`M/02`: Load balancing usług](#m02-load-balancing-usług)                             |
+| `NF/REL/01`, `NF/REL/02`, `NF/REL/07`, `M/01`              | [`M/03`: Healthchecki dla serwisów](#m03-healthchecki-dla-serwisów)                   |
+| `NF/REL/01`, `NF/REL/03`, `NF/REL/07`, `M/01`              | [`M/04`: Wdrożenie w chmurze AWS](#m04-wdrożenie-w-chmurze-aws)                       |
+| `NF/REL/02`, `NF/REL/07`, `NF/REL/09`, `M/04`              | [`M/05`: Kolejki SQS dla płatności i emaili](#m05-kolejki-sqs-dla-płatności-i-emaili) |
+| `NF/REL/04`, `NF/REL/06`, `M/01`, `M/04`                   | [`M/06`: Izolacja siecią wewnętrzną VPC](#m06-izolacja-siecią-wewnętrzną-vpc)         |
+| `NF/REL/04`, `M/01`, `M/06`                                | [`M/07`: Wzorzec API Gateway](#m07-wzorzec-api-gateway)                               |
+| `PAY/11`, `PAY/12`, `PAY/14`, `PAY/16`, `NF/REL/09`        | [`M/08`: Zewnętrzna bramka płatności](#m08-zewnętrzna-bramka-płatności)               |
+| `NF/REL/01`, `NF/REL/07`, `M/01`                           | [`M/09`: Oddzielne bazy dla mikroserwisów](#m09-oddzielne-bazy-dla-mikroserwisów)     |
+| `NF/REL/01`, `NF/REL/02`, `NF/REL/03`, `NF/REL/07`, `M/04` | [`M/10`: Relacyjne bazy danych ACID na RDS](#m10-relacyjne-bazy-danych-acid-na-rds)   |
+| `ACC/01`, `ACC/02`, `ACC/03`, `NF/REL/04`                  | [`M/11`: Autoryzacja z użyciem JWT](#m11-autoryzacja-z-użyciem-jwt)                   |
+| `NF/PRF/01`, `NF/PRF/02`, `M/11`                           | [`M/12`: Wzorzec sidecar dla autoryzacji](#m12-wzorzec-sidecar-dla-autoryzacji)       |
+| `NF/SYS/01`, `NF/SYS/02`, `NF/SYS/03`                      | [`M/13`: Responsywna aplikacja webowa SPA](#m13-responsywna-aplikacja-webowa-spa)     |
+| `TIC/09`, `TIC/12`, `M/13`                                 | [`M/14`: Kod QR dla biletów](#m14-kod-qr-dla-biletów)                                 |
 
 # Mechanizmy architektoniczne
 
+## `M/01`: Architektura mikroserwisów
+
+TODO @tchojnacki: porównanie z monolitem i modularnym monolitem, https://microservices.io/patterns/monolithic.html, https://microservices.io/patterns/microservices.html
+
+## `M/02`: Load balancing usług
+
+TODO @mlodybercik:
+
+## `M/03`: Healthchecki dla serwisów
+
+TODO @jakubzehner: https://microservices.io/patterns/observability/health-check-api.html
+
+## `M/04`: Wdrożenie w chmurze AWS
+
+TODO @mlodybercik: porównanie z on-premise i najlepiej innymi chmurami
+
+## `M/05`: Kolejki SQS dla płatności i emaili
+
+TODO @mlodybercik: dlaczego SQS, a nie SNS
+
+## `M/06`: Izolacja siecią wewnętrzną VPC
+
+TODO @mlodybercik
+
+## `M/07`: Wzorzec API Gateway
+
+TODO @piterek130: https://microservices.io/patterns/apigateway.html
+
+## `M/08`: Zewnętrzna bramka płatności
+
+TODO @piterek130: porównanie z przetwarzaniem wewnętrznym
+
+## `M/09`: Oddzielne bazy dla mikroserwisów
+
+TODO @jakubzehner: porównanie z jedną bazą: https://microservices.io/patterns/data/database-per-service.html, https://microservices.io/patterns/data/shared-database.html
+
+## `M/10`: Relacyjne bazy danych ACID na RDS
+
+TODO @jakubzehner: porównanie z NoSQL
+
 <!--
-[List the architectural mechanisms and describe the current state of each one. Initially, each mechanism may be only name and a brief description. They will evolve until the mechanism is a collaboration or pattern that can be directly applied to some aspect of the design.]
-
-Rozpisać dokładniej taktyki z poprzedniego punktu.
--->
-
-TODO @everyone
-
-<!--
-## Mechanizm 1
-
-[Describe the purpose, attributes, and function of the architectural mechanism.]
--->
-
-<!--
-TODO: Przepisać na mechanizm "Wykorzystanie relacyjnych baz danych (ACID)"
-
 Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
 
 W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
 -->
+
+## `M/11`: Autoryzacja z użyciem JWT
+
+TODO @tchojnacki: porównanie z sesjami + JWKs + access token + refresh token + revocation, https://microservices.io/patterns/security/access-token.html
+
+## `M/12`: Wzorzec sidecar dla autoryzacji
+
+TODO @tchojnacki: https://microservices.io/patterns/deployment/sidecar.html
+
+## `M/13`: Responsywna aplikacja webowa SPA
+
+TODO @piterek130
+
+## `M/14`: Kod QR dla biletów
+
+TODO @jakubzehner
 
 # Widoki architektoniczne
 
@@ -233,7 +302,7 @@ Przypisanie nazw częściom systemu opisuje poniższa tabela:
 
 ## Konto
 
-W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** odpowiedzialny za pomocniczy komponent _Account Sidecar_, którego celem jest skrócenie czasu oczekiwania _API Gateway_ na pozyskanie informacji autoryzacyjnych. W widoku rozmieszczenia, element ten stanowi [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers) dla _API Gateway_, jednakże logicznie związany jest bezpośrednio z serwisem _Account Service_ i odpowiedzialność za niego ponosi zespół odpowiedzialny za ten serwis.
+W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** odpowiedzialny za pomocniczy komponent _Account Sidecar_, który został dogłębniej opisany w [`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji). W widoku rozmieszczenia, element ten stanowi [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers) dla _API Gateway_, jednakże logicznie związany jest bezpośrednio z serwisem _Account Service_ i odpowiedzialność za niego ponosi zespół odpowiedzialny za ten serwis.
 
 ![Diagram komponentów Jobberknoll](./images/component-diagram-jobberknoll.drawio.svg)
 
@@ -261,7 +330,7 @@ TODO @tchojnacki + @mlodybercik: zmienić języki programowania
 
 ## Opis węzłów
 
-TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ 
+TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ
 
 <table>
   <tr>
@@ -371,9 +440,7 @@ TODO @mlodybercik: opis zmian
 
 ## Projekt bazy danych
 
-Zgodnie z mechanizmem `M...`, wszystkie bazy danych w systemie będą relacyjne.
-
-<!-- TODO: uzupełnić numer mechanizmu powyżej, jeżeli ktoś wybierze inny paradygmat baz, zmienić opis na "wszystkie oprócz XYZ" -->
+Zgodnie z mechanizmem [`M/10`](#m10-relacyjne-bazy-danych-acid-na-rds), wszystkie bazy danych w systemie będą relacyjne.
 
 Zdecydowano się na wykorzystanie silnika **PostgreSQL** do wszystkich relacyjnych baz systemu, ze względu na jego popularność, znajomość w zespole, wsparcie na AWS RDS oraz licencję open-source. Wykorzystano najnowszą stabilną wersję **17.2**, która zapewnia najnowsze funkcje i poprawki bezpieczeństwa. PostgreSQL nie oferuje wersji LTS, natomiast każda wersja jest wspierana przez co najmniej 5 lat[^postgres-version].
 
@@ -755,27 +822,29 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ### API
 
-| **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                      | **Opis**                                  |
-| ----------- | ---------- | ----------------------- | ---------------------------------- | ----------------------------------------- |
-| `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`              | Rejestracja nowego konta pasażera.        |
-| `guest`     | `POST`     | `/ext/v1/login`         | `ACC/02`, `NF/REL/04`, `NF/REL/05` | Logowanie do konta (dowolnego typu).      |
-| `member`    | `POST`     | `/ext/v1/refresh`       | —                                  | Odświeżenie tokenu dostępu.               |
-| `member`    | `POST`     | `/ext/v1/revoke`        | —                                  | Zakończenie wszystkich sesji użytkownika. |
-| `member`    | `GET`      | `/ext/v1/self`          | `ACC/04`                           | Pobranie informacji swoim koncie.         |
-| `member`    | `PUT`      | `/ext/v1/self/name`     | `ACC/05`                           | Zmiana imienia i nazwiska swojego konta.  |
-| `member`    | `PUT`      | `/ext/v1/self/password` | `ACC/06`                           | Zmiana hasła swojego konta.               |
-| `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                           | Zmiana numeru telefonu swojego konta.     |
-| `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`              | Dezaktywacja swojego konta.               |
-| `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                 | Utworzenie nowego cudzego konta.          |
-| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                           | Pobranie listy cudzych kont.              |
-| `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                           | Pobranie informacji o cudzym koncie.      |
-| `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`              | Dezaktywacja cudzego konta.               |
+| **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                            | **Opis**                                  |
+| ----------- | ---------- | ----------------------- | ---------------------------------------- | ----------------------------------------- |
+| `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`                    | Rejestracja nowego konta pasażera.        |
+| `guest`     | `POST`     | `/ext/v1/login`         | `ACC/02`, `NF/REL/04`, `NF/REL/05`       | Logowanie do konta (dowolnego typu).      |
+| `member`    | `POST`     | `/ext/v1/refresh`       | [`M/11`](#m11-autoryzacja-z-użyciem-jwt) | Odświeżenie tokenu dostępu.               |
+| `member`    | `POST`     | `/ext/v1/revoke`        | [`M/11`](#m11-autoryzacja-z-użyciem-jwt) | Zakończenie wszystkich sesji użytkownika. |
+| `member`    | `GET`      | `/ext/v1/self`          | `ACC/04`                                 | Pobranie informacji swoim koncie.         |
+| `member`    | `PUT`      | `/ext/v1/self/name`     | `ACC/05`                                 | Zmiana imienia i nazwiska swojego konta.  |
+| `member`    | `PUT`      | `/ext/v1/self/password` | `ACC/06`                                 | Zmiana hasła swojego konta.               |
+| `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                                 | Zmiana numeru telefonu swojego konta.     |
+| `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`                    | Dezaktywacja swojego konta.               |
+| `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                       | Utworzenie nowego cudzego konta.          |
+| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                                 | Pobranie listy cudzych kont.              |
+| `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                                 | Pobranie informacji o cudzym koncie.      |
+| `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`                    | Dezaktywacja cudzego konta.               |
 
-| **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                      |
-| ---------- | ---------------------- | ------------- | ------------- | ----------------------------- |
-| `GET`      | `/int/v1/accounts/:id` | jobberknoll   | inferius      | Pobranie informacji o koncie. |
-| `GET`      | `/int/v1/jwks`         | jobberknoll   | feather       | Pobranie kluczy publicznych.  |
-| `POST`     | `/int/v1/validate`     | feather       | phoenix       | Walidacja tokenu dostępu.     |
+| **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`       | jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/accounts/:id` | jobberknoll   | inferius      | Pobranie informacji o koncie.                                                  |
+| `GET`      | `/int/v1/jwks`         | jobberknoll   | feather       | Pobranie kluczy publicznych ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).  |
+| `GET`      | `/int/v1/health`       | feather       | —             | Sprawdzenie stanu sidecar ([`M/03`](#m03-healthchecki-dla-serwisów)).          |
+| `POST`     | `/int/v1/validate`     | feather       | phoenix       | Walidacja tokenu dostępu ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).     |
 
 ## Bilet
 
