@@ -65,6 +65,14 @@ TODO @everyone
 [Describe the purpose, attributes, and function of the architectural mechanism.]
 -->
 
+<!--
+TODO: Przepisać na mechanizm "Wykorzystanie relacyjnych baz danych (ACID)"
+
+Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
+
+W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
+-->
+
 # Widoki architektoniczne
 
 W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpowiednikami z modelu C4:
@@ -335,11 +343,26 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ## Projekt bazy danych
 
+Zgodnie z mechanizmem `M...`, wszystkie bazy danych w systemie będą relacyjne.
+
+<!-- TODO: uzupełnić numer mechanizmu powyżej, jeżeli ktoś wybierze inny paradygmat baz, zmienić opis na "wszystkie oprócz XYZ" -->
+
+Zdecydowano się na wykorzystanie silnika **PostgreSQL** do wszystkich relacyjnych baz systemu, ze względu na jego popularność, znajomość w zespole, wsparcie na AWS RDS oraz licencję open-source. Wykorzystano najnowszą stabilną wersję **17.2**, która zapewnia najnowsze funkcje i poprawki bezpieczeństwa. PostgreSQL nie oferuje wersji LTS, natomiast każda wersja jest wspierana przez co najmniej 5 lat[^postgres-version].
+
+W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację modeli ogólnego przeznaczenia **`db.t4g.*`**, polecaną przez AWS jako dobry domyślny wybór. Oferowane w zakresie generacji klasy różnią się głównie liczbą vCPU oraz dostępną pamięcią RAM[^rds-instance-types]:
+
+| **Model**            | **vCPU** | **Pamięć (GiB)** |
+| -------------------- | -------- | ---------------- |
+| **`db.t4g.micro`**   | 2        | 1                |
+| **`db.t4g.small`**   | 2        | 2                |
+| **`db.t4g.medium`**  | 2        | 4                |
+| **`db.t4g.large`**   | 2        | 8                |
+| **`db.t4g.xlarge`**  | 4        | 16               |
+| **`db.t4g.2xlarge`** | 8        | 32               |
+
+Jako model składowania dla wszystkich RDS wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez amazon typem generalnego przeznaczenia.
+
 ### Konto
-
-Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
-
-W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
 
 Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, bez żadnych dodatkowych klas. Klasa `Account` zawiera dane wspólne dla wszystkich typów kont, natomiast klasy `Admin`, `Driver`, `Inspector` i `Passenger` dziedziczą po niej, przy czym jedynie `Passenger` dodaje dodatkowe informacje w formie pola `phoneNumber`. Jednocześnie, najczęściej zapytania będą dotyczyły wszystkich kont, a nie jedynie jednego typu. W związku z tym, zdecydowano się na zamodelowanie kont **w postaci jednej tabeli** z dodatkową kolumną określającą typ konta (_table-per-hierarchy_). Alternatywami dla tego podejścia są _table-per-type_ (tabela dla każdej klasy dziedziczącej, łączona z tabelą dla klasy bazowej) oraz _table-per-concrete-class_ (tabela dla każdej klasy dziedziczącej, z powielonymi danymi z klasy bazowej). Podejścia te przeznaczone są jednak raczej dla sytuacji, w których klasy nie mają wielu danych wspólnych oraz gdy zapytania dotyczą konkretnych klas dziedziczących[^ef-inheritance]. Jako wartość rozróżniającą zastosowano kolumnę `account_type` z wartościami `A` (_admin_), `D` (_driver_), `I` (_inspector_) i `P` (_passenger_). Kolumna `phoneNumber` musi być pusta dla kont innych niż `Passenger`.
 
@@ -386,9 +409,7 @@ Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, be
   </tr>
 </table>
 
-Zdecydowano się na silnik **PostgreSQL**, ze względu na jego popularność, znajomość w zespole, wsparcie na AWS RDS oraz licencję open-source. Wykorzystano najnowszą stabilną wersję **17.2**, która zapewnia najnowsze funkcje i poprawki bezpieczeństwa. PostgreSQL nie oferuje wersji LTS, natomiast każda wersja jest wspierana przez co najmniej 5 lat[^postgres-version].
-
-Jako klasę instancji wybrano **`db.t4g.medium`**. Jest to najnowsza generacja typów i poszczególne modele różnią się praktycznie jedynie liczbą vCPU oraz pamięcią RAM. Wersja `medium` jest przeznaczona dla systemów o średnim obciążeniu i oferuje 2 vCPU oraz 4 GiB RAM. Jako typ składowania wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez amazon typem generalnego przeznaczenia. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+Z uwagi na średnie obciążenie serwisu, jako klasę instancji wybrano **`db.t4g.medium`**. Wersja `medium` oferuje 2 vCPU oraz 4 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 255 + 255 + 60 + 1 + 8 + 16 = 599 bajtów. Oprócz tego, stosowane są dwa indeksy dodatkowe, o estymacjach 4 + 4 / 8 = 5 bajtów oraz 255 + 4 = 259 bajtów. Sumarycznie, rząd tabeli wynosi 599 + 5 + 259 = 863 bajty, czyli w zaokrągleniu w górę **1 KB na użytkownika**. Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia], górna granica wynosi **2 mln unikalnych użytkowników** (2 GB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (1.2 GB). Ponieważ minimalny rozmiar bazy danych na RDS wynoszący **20 GB** i tak przerasta potrzeby systemu, został on wybrany jako początkowy rozmiar bazy z pomniejszeniem przyrostu do **1 GB rocznie**, biorąc pod uwagę to, że każda aproksymacja zawyżała wynik oraz istnieje nadwyżka miejsca początkowego.
 
@@ -778,5 +799,6 @@ TODO @mlodybercik
 [^acid-base]: [AWS - ACID vs BASE Databases](https://aws.amazon.com/compare/the-difference-between-acid-and-base-database)
 [^ef-inheritance]: [EF Core - Inheritance](https://learn.microsoft.com/en-us/ef/core/modeling/inheritance)
 [^postgres-version]: [PostgreSQL - Versioning Policy](https://www.postgresql.org/support/versioning)
+[^rds-instance-types]: [AWS - Amazon RDS Instance Types](https://aws.amazon.com/rds/instance-types/)
 [^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
