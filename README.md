@@ -51,6 +51,6 @@
 
 ## Repository structure
 
-- `/documentation` - contains all documentation related to the project
-  - `/course` - documentation required by the course curriculum (in Polish)
-- `/implementation` - contains subfolders with the implementation of different microservices
+- [`/documentation`](./documentation/) - contains all documentation related to the project
+  - [`/course`](./documentation/course/) - documentation required by the course curriculum (in Polish)
+- [`/implementation`](./implementation/) - contains subfolders with the implementation of different microservices
