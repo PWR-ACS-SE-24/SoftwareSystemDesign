@@ -207,7 +207,7 @@ Przypisanie nazw częściom systemu opisuje poniższa tabela:
 
 ## Konto
 
-W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** odpowiedzialny za pomocniczy komponent *Account Sidecar*, którego celem jest skrócenie czasu oczekiwania *API Gateway* na pozyskanie informacji autoryzacyjnych. W widoku rozmieszczenia, element ten stanowi [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers) dla *API Gateway*, jednakże logicznie związany jest bezpośrednio z serwisem *Account Service* i odpowiedzialność za niego ponosi zespół odpowiedzialny za ten serwis.
+W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** odpowiedzialny za pomocniczy komponent _Account Sidecar_, którego celem jest skrócenie czasu oczekiwania _API Gateway_ na pozyskanie informacji autoryzacyjnych. W widoku rozmieszczenia, element ten stanowi [sidecar container](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers) dla _API Gateway_, jednakże logicznie związany jest bezpośrednio z serwisem _Account Service_ i odpowiedzialność za niego ponosi zespół odpowiedzialny za ten serwis.
 
 ![Diagram komponentów Jobberknoll](./images/component-diagram-jobberknoll.drawio.svg)
 
@@ -341,7 +341,7 @@ Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model
 
 W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
 
-Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, bez żadnych dodatkowych klas. Klasa `Account` zawiera dane wspólne dla wszystkich typów kont, natomiast klasy `Admin`, `Driver`, `Inspector` i `Passenger` dziedziczą po niej, przy czym jedynie `Passenger` dodaje dodatkowe informacje w formie pola `phoneNumber`. Jednocześnie, najczęściej zapytania będą dotyczyły wszystkich kont, a nie jedynie jednego typu. W związku z tym, zdecydowano się na zamodelowanie kont **w postaci jednej tabeli** z dodatkową kolumną określającą typ konta (*table-per-hierarchy*). Alternatywami dla tego podejścia są *table-per-type* (tabela dla każdej klasy dziedziczącej, łączona z tabelą dla klasy bazowej) oraz *table-per-concrete-class* (tabela dla każdej klasy dziedziczącej, z powielonymi danymi z klasy bazowej). Podejścia te przeznaczone są jednak raczej dla sytuacji, w których klasy nie mają wielu danych wspólnych oraz gdy zapytania dotyczą konkretnych klas dziedziczących[^ef-inheritance]. Jako wartość rozróżniającą zastosowano kolumnę `account_type` z wartościami `A` (*admin*), `D` (*driver*), `I` (*inspector*) i `P` (*passenger*). Kolumna `phoneNumber` musi być pusta dla kont innych niż `Passenger`.
+Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, bez żadnych dodatkowych klas. Klasa `Account` zawiera dane wspólne dla wszystkich typów kont, natomiast klasy `Admin`, `Driver`, `Inspector` i `Passenger` dziedziczą po niej, przy czym jedynie `Passenger` dodaje dodatkowe informacje w formie pola `phoneNumber`. Jednocześnie, najczęściej zapytania będą dotyczyły wszystkich kont, a nie jedynie jednego typu. W związku z tym, zdecydowano się na zamodelowanie kont **w postaci jednej tabeli** z dodatkową kolumną określającą typ konta (_table-per-hierarchy_). Alternatywami dla tego podejścia są _table-per-type_ (tabela dla każdej klasy dziedziczącej, łączona z tabelą dla klasy bazowej) oraz _table-per-concrete-class_ (tabela dla każdej klasy dziedziczącej, z powielonymi danymi z klasy bazowej). Podejścia te przeznaczone są jednak raczej dla sytuacji, w których klasy nie mają wielu danych wspólnych oraz gdy zapytania dotyczą konkretnych klas dziedziczących[^ef-inheritance]. Jako wartość rozróżniającą zastosowano kolumnę `account_type` z wartościami `A` (_admin_), `D` (_driver_), `I` (_inspector_) i `P` (_passenger_). Kolumna `phoneNumber` musi być pusta dla kont innych niż `Passenger`.
 
 ![Diagram bazodanowy Jobberknoll](./images/database-diagram-jobberknoll.drawio.svg)
 
@@ -390,9 +390,9 @@ Zdecydowano się na silnik **PostgreSQL**, ze względu na jego popularność, zn
 
 Jako klasę instancji wybrano **`db.t4g.medium`**. Jest to najnowsza generacja typów i poszczególne modele różnią się praktycznie jedynie liczbą vCPU oraz pamięcią RAM. Wersja `medium` jest przeznaczona dla systemów o średnim obciążeniu i oferuje 2 vCPU oraz 4 GiB RAM. Jako typ składowania wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez amazon typem generalnego przeznaczenia. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
-Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 255 + 255 + 60 + 1 + 8 + 16 = 599 bajtów. Oprócz tego, stosowane są dwa indeksy dodatkowe, o estymacjach 4 + 4 / 8 = 5 bajtów oraz 255 + 4 = 259 bajtów. Sumarycznie, rząd tabeli wynosi 599 + 5 + 259 = 863 bajty, czyli w zaokrągleniu w górę **1 KB na użytkownika**. Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia], górna granica wynosi **2 mln unikalnych użytkowników** (2 GB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (1.2 GB). Ponieważ minimalny rozmiar bazy danych na RDS wynosi **20 GB** i tak przerasta potrzeby systemu, został on wybrany jako początkowy rozmiar bazy z pomniejszeniem przyrostu do **1 GB rocznie**, biorąc pod uwagę to, że każda aproksymacja zawyżała wynik oraz istnieje nadwyżka miejsca początkowego.
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 255 + 255 + 60 + 1 + 8 + 16 = 599 bajtów. Oprócz tego, stosowane są dwa indeksy dodatkowe, o estymacjach 4 + 4 / 8 = 5 bajtów oraz 255 + 4 = 259 bajtów. Sumarycznie, rząd tabeli wynosi 599 + 5 + 259 = 863 bajty, czyli w zaokrągleniu w górę **1 KB na użytkownika**. Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia], górna granica wynosi **2 mln unikalnych użytkowników** (2 GB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (1.2 GB). Ponieważ minimalny rozmiar bazy danych na RDS wynoszący **20 GB** i tak przerasta potrzeby systemu, został on wybrany jako początkowy rozmiar bazy z pomniejszeniem przyrostu do **1 GB rocznie**, biorąc pod uwagę to, że każda aproksymacja zawyżała wynik oraz istnieje nadwyżka miejsca początkowego.
 
-Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalnie wykorzystywany, że błędy w przechowywanych danych powinny być proste do zauważenia. Dodatkowo, dane dotyczące kont są wrażliwe i podlegają regulacjom. W związku z tym, zdecydowano się na czas retencji backupów wynoszący **7 dni**, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje danych zbyt długo.
+Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalnie wykorzystywany, że błędy w przechowywanych danych powinny być proste do zauważenia. Dodatkowo, dane dotyczące kont są wrażliwe i podlegają regulacjom. W związku z tym, zdecydowano się na czas retencji kopii zapasowych wynoszący **7 dni**, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje danych zbyt długo.
 
 <table>
   <tr>
@@ -702,7 +702,29 @@ TODO @everyone
 
 ## Konto
 
-TODO @tchojnacki: Dodać diagram pakietów, opis architektury i endpointy.
+TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
+
+### API
+
+| **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                      | **Opis**                                 |
+| ----------- | ---------- | ----------------------- | ---------------------------------- | ---------------------------------------- |
+| `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`              | Rejestracja nowego konta pasażera.       |
+| `guest`     | `POST`     | `/ext/v1/login`         | `ACC/02`, `NF/REL/04`, `NF/REL/05` | Logowanie do konta (dowolnego typu).     |
+| `member`    | `POST`     | `/ext/v1/refresh`       | —                                  | Odświeżenie tokenu dostępu.              |
+| `member`    | `GET`      | `/ext/v1/self`          | `ACC/04`                           | Pobranie informacji swoim koncie.        |
+| `member`    | `PUT`      | `/ext/v1/self/name`     | `ACC/05`                           | Zmiana imienia i nazwiska swojego konta. |
+| `member`    | `PUT`      | `/ext/v1/self/password` | `ACC/06`                           | Zmiana hasła swojego konta.              |
+| `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                           | Zmiana numeru telefonu swojego konta.    |
+| `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`              | Dezaktywacja swojego konta.              |
+| `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                 | Utworzenie nowego cudzego konta.         |
+| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                           | Pobranie listy cudzych kont.             |
+| `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                           | Pobranie informacji o cudzym koncie.     |
+| `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`              | Dezaktywacja cudzego konta.              |
+
+| **Metoda** | **Endpoint**           | **Konsument** | **Opis**                      |
+| ---------- | ---------------------- | ------------- | ----------------------------- |
+| `GET`      | `/int/v1/accounts/:id` | inferius      | Pobranie informacji o koncie. |
+| `GET`      | `/int/v1/keys`         | feather       | Pobranie kluczy publicznych.  |
 
 ## Bilet
 
