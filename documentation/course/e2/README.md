@@ -360,7 +360,7 @@ W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację mod
 | **`db.t4g.xlarge`**  | 4        | 16               |
 | **`db.t4g.2xlarge`** | 8        | 32               |
 
-Jako model składowania dla wszystkich RDS wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez amazon typem generalnego przeznaczenia.
+Jako model składowania dla wszystkich RDS wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez AWS typem generalnego przeznaczenia.
 
 ### Konto
 
