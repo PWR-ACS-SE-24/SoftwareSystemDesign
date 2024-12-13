@@ -84,43 +84,481 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
 
 ## `M/01`: Architektura mikroserwisów
 
-TODO @tchojnacki: porównanie z monolitem i modularnym monolitem, https://microservices.io/patterns/monolithic.html, https://microservices.io/patterns/microservices.html
+TODO @tchojnacki: porównanie z monolitem i modularnym monolitem
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:** [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html), [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html)
 
 ## `M/02`: Load balancing usług
 
-TODO @mlodybercik:
+TODO @mlodybercik
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
 
 ## `M/03`: Healthchecki dla serwisów
 
-TODO @jakubzehner: https://microservices.io/patterns/observability/health-check-api.html
+TODO @jakubzehner
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:** [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
 TODO @mlodybercik: porównanie z on-premise i najlepiej innymi chmurami
 
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
+
 ## `M/05`: Kolejki SQS dla płatności i emaili
 
 TODO @mlodybercik: dlaczego SQS, a nie SNS
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
 
 ## `M/06`: Izolacja siecią wewnętrzną VPC
 
 TODO @mlodybercik
 
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
+
 ## `M/07`: Wzorzec API Gateway
 
-TODO @piterek130: https://microservices.io/patterns/apigateway.html
+TODO @piterek130
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:** [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
 
 ## `M/08`: Zewnętrzna bramka płatności
 
 TODO @piterek130: porównanie z przetwarzaniem wewnętrznym
 
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
+
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
-TODO @jakubzehner: porównanie z jedną bazą: https://microservices.io/patterns/data/database-per-service.html, https://microservices.io/patterns/data/shared-database.html
+TODO @jakubzehner
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:** [microservices.io - Database per Service](https://microservices.io/patterns/data/database-per-service.html), [microservices.io - Shared Database](https://microservices.io/patterns/data/shared-database.html)
 
 ## `M/10`: Relacyjne bazy danych ACID na RDS
 
 TODO @jakubzehner: porównanie z NoSQL
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
 
 <!--
 Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
@@ -128,21 +566,199 @@ Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model
 W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
 -->
 
+**Źródła:**
+
 ## `M/11`: Autoryzacja z użyciem JWT
 
-TODO @tchojnacki: porównanie z sesjami + JWKs + access token + refresh token + revocation, https://microservices.io/patterns/security/access-token.html
+TODO @tchojnacki: porównanie z sesjami + JWKs + access token + refresh token + revocation
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:** [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html)
 
 ## `M/12`: Wzorzec sidecar dla autoryzacji
 
-TODO @tchojnacki: https://microservices.io/patterns/deployment/sidecar.html
+TODO @tchojnacki
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:** [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html)
 
 ## `M/13`: Responsywna aplikacja webowa SPA
 
 TODO @piterek130
 
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
+
 ## `M/14`: Kod QR dla biletów
 
 TODO @jakubzehner
+
+**Problem:**
+
+**Rozwiązania:**
+
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 1</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
+    <td>
+      <ul>
+        <li>Zaleta 1</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wada 1</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Decyzja:**
+
+**Opis:**
+
+**Źródła:**
 
 # Widoki architektoniczne
 
