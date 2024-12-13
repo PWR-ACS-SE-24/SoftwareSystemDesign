@@ -706,25 +706,26 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ### API
 
-| **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                      | **Opis**                                 |
-| ----------- | ---------- | ----------------------- | ---------------------------------- | ---------------------------------------- |
-| `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`              | Rejestracja nowego konta pasażera.       |
-| `guest`     | `POST`     | `/ext/v1/login`         | `ACC/02`, `NF/REL/04`, `NF/REL/05` | Logowanie do konta (dowolnego typu).     |
-| `member`    | `POST`     | `/ext/v1/refresh`       | —                                  | Odświeżenie tokenu dostępu.              |
-| `member`    | `GET`      | `/ext/v1/self`          | `ACC/04`                           | Pobranie informacji swoim koncie.        |
-| `member`    | `PUT`      | `/ext/v1/self/name`     | `ACC/05`                           | Zmiana imienia i nazwiska swojego konta. |
-| `member`    | `PUT`      | `/ext/v1/self/password` | `ACC/06`                           | Zmiana hasła swojego konta.              |
-| `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                           | Zmiana numeru telefonu swojego konta.    |
-| `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`              | Dezaktywacja swojego konta.              |
-| `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                 | Utworzenie nowego cudzego konta.         |
-| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                           | Pobranie listy cudzych kont.             |
-| `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                           | Pobranie informacji o cudzym koncie.     |
-| `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`              | Dezaktywacja cudzego konta.              |
+| **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                      | **Opis**                                  |
+| ----------- | ---------- | ----------------------- | ---------------------------------- | ----------------------------------------- |
+| `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`              | Rejestracja nowego konta pasażera.        |
+| `guest`     | `POST`     | `/ext/v1/login`         | `ACC/02`, `NF/REL/04`, `NF/REL/05` | Logowanie do konta (dowolnego typu).      |
+| `member`    | `POST`     | `/ext/v1/refresh`       | —                                  | Odświeżenie tokenu dostępu.               |
+| `member`    | `POST`     | `/ext/v1/revoke`        | —                                  | Zakończenie wszystkich sesji użytkownika. |
+| `member`    | `GET`      | `/ext/v1/self`          | `ACC/04`                           | Pobranie informacji swoim koncie.         |
+| `member`    | `PUT`      | `/ext/v1/self/name`     | `ACC/05`                           | Zmiana imienia i nazwiska swojego konta.  |
+| `member`    | `PUT`      | `/ext/v1/self/password` | `ACC/06`                           | Zmiana hasła swojego konta.               |
+| `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                           | Zmiana numeru telefonu swojego konta.     |
+| `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`              | Dezaktywacja swojego konta.               |
+| `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                 | Utworzenie nowego cudzego konta.          |
+| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                           | Pobranie listy cudzych kont.              |
+| `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                           | Pobranie informacji o cudzym koncie.      |
+| `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`              | Dezaktywacja cudzego konta.               |
 
 | **Metoda** | **Endpoint**           | **Konsument** | **Opis**                      |
 | ---------- | ---------------------- | ------------- | ----------------------------- |
 | `GET`      | `/int/v1/accounts/:id` | inferius      | Pobranie informacji o koncie. |
-| `GET`      | `/int/v1/keys`         | feather       | Pobranie kluczy publicznych.  |
+| `GET`      | `/int/v1/jwks`         | feather       | Pobranie kluczy publicznych.  |
 
 ## Bilet
 
