@@ -16,6 +16,8 @@ Skład zespołu:
 </ul>
 </div>
 
+TODO @everyone: zmienić czcionkę diagramów na JetBrains Mono
+
 # Cel
 
 Dokument przedstawia kluczowe decyzje projektowe oraz ich uzasadnienie w kontekście systemu informatycznego wspomagającego miejską komunikację publiczną. Jego celem jest szczegółowe opisanie architektury technicznej, w tym komponentów systemu, ich funkcji oraz interakcji, które umożliwiają realizację założeń określonych w [specyfikacji wymagań](../e1/README.md).
@@ -118,21 +120,37 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
 
 ## Diagram kontekstowy
 
-TODO @everyone
+![Diagram kontekstowy](./images/system-context-diagram.drawio.svg)
 
 ## Scenariusze interakcji
 
-TODO @everyone: brainstorming listy scenariuszy, po czym można się podzielić pracą
+### Zalogowanie do systemu
+
+TODO @tchojnacki
+
+### Sprawdzenie rozkładu jazdy
+
+TODO @mlodybercik
+
+### Kupno biletu
+
+TODO @jakubzehner + @piterek130
+
+### Kontrola biletowa
+
+TODO @jakubzehner + @piterek130: + wystawienie mandatu
+
+### Zgłoszenie awarii
+
+TODO @tchojnacki
 
 ## Interfejsy integracyjne
 
-<!-- Dla każdego "zewnętrznego" elementu z diagramu kontekstu. -->
-
-TODO @everyone: prawodpodobnie będzie to jedynie bramka płatności, może wypełni @piterek130 jako specjalista od płatności?
+TODO @piterek130: uzupełnić tabelę
 
 <table>
   <tr>
-    <th colspan="3">Interfejs 1</th>
+    <th colspan="3">System ↔ Payment Gateway</th>
   </tr>
   <tr>
     <th>Opis</th>
@@ -202,14 +220,14 @@ Powszechne w wielkich systemach jest zastosowanie abstrakcyjnych nazw dla poszcz
 
 Przypisanie nazw częściom systemu opisuje poniższa tabela:
 
-| **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor**           | **Posiadane encje**                                                                                         |
-| ------------------------------------------------------------------------ | ----------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| ![#0088ff](https://placehold.co/16x16/0088ff/0088ff.png) **Jobberknoll** | Konto (_account_)       | **Tomasz Chojnacki** (260365)    | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                      |
-| ![#008800](https://placehold.co/16x16/008800/008800.png) **Clabbert**    | Bilet (_ticket_)        | **Jakub Zehner** (260285)        | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `Validation` |
-| ![#ff8800](https://placehold.co/16x16/ff8800/ff8800.png) **Inferius**    | Płatność (_payment_)    | **Piotr Kot** (259560)           | `CreditCardInfo`, `Fine`, `FineReason`, `Wallet`                                                            |
-| ![#ff00ff](https://placehold.co/16x16/ff00ff/ff00ff.png) **Leprechaun**  | Logistyka (_logistics_) | **Przemysław Barcicki** (260324) | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                              |
-| ![#ff0000](https://placehold.co/16x16/ff0000/ff0000.png) **Phoenix**     | API Gateway             | **Piotr Kot** (259560)           | —                                                                                                           |
-| ![#8800ff](https://placehold.co/16x16/8800ff/8800ff.png) **Hogwart**     | Frontend                | —                                | —                                                                                                           |
+| **Nazwa podsystemu**                                                     | **Część systemu**       | **Główny kontrybutor**           | **Posiadane encje**                                                                                                         |
+| ------------------------------------------------------------------------ | ----------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| ![#0088ff](https://placehold.co/16x16/0088ff/0088ff.png) **Jobberknoll** | Konto (_account_)       | **Tomasz Chojnacki** (260365)    | `Account`, `Admin`, `Driver`, `Inspector`, `Passenger`                                                                      |
+| ![#008800](https://placehold.co/16x16/008800/008800.png) **Clabbert**    | Bilet (_ticket_)        | **Jakub Zehner** (260285)        | `LongTermOffer`, `SingleFareOffer`, `Ticket`, `TicketKind`, `TimeLimitedOffer`, `TicketOffer`, `TicketStatus`, `Validation` |
+| ![#ff8800](https://placehold.co/16x16/ff8800/ff8800.png) **Inferius**    | Płatność (_payment_)    | **Piotr Kot** (259560)           | `CreditCardInfo`, `Fine`, `FineReason`, `FineStatus`, `Wallet`                                                              |
+| ![#ff00ff](https://placehold.co/16x16/ff00ff/ff00ff.png) **Leprechaun**  | Logistyka (_logistics_) | **Przemysław Barcicki** (260324) | `Accident`, `Line`, `Route`, `Stop`, `Vehicle`                                                                              |
+| ![#ff0000](https://placehold.co/16x16/ff0000/ff0000.png) **Phoenix**     | API Gateway             | **Piotr Kot** (259560)           | —                                                                                                                           |
+| ![#8800ff](https://placehold.co/16x16/8800ff/8800ff.png) **Hogwart**     | Frontend                | —                                | —                                                                                                                           |
 
 ![Diagram komponentów](./images/component-diagram-main.drawio.svg)
 
@@ -237,11 +255,13 @@ W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** o
 
 Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia `1` (pojedyncza instancja) oraz `*` (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego, stereotypem [`<<manifest>>`](https://www.uml-diagrams.org/deployment-diagrams.html#manifestation).
 
+TODO @tchojnacki + @mlodybercik: zmienić języki programowania
+
 ![Diagram rozmieszczenia](./images/deployment-diagram.drawio.svg)
 
 ## Opis węzłów
 
-TODO @everyone: Trzeba zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ. Będą to w sumie tylko pody, ponieważ na przeglądarkę i bramkę płatności nie mamy wpływu, a bazy danych są opisane w osobnych sekcjach. Może @mlodybercik jako nadworny DevOps?
+TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ 
 
 <table>
   <tr>
@@ -321,6 +341,8 @@ TODO @everyone: Trzeba zmienić layout poniższej tabelki, tak żeby pokazywał 
 
 # Widok informacyjny
 
+Słownik pojęć dla jest w [dokumencie z wymaganiami](../e1/README.md#słownik-pojęć).
+
 ## Model informacyjny
 
 ### Konto
@@ -331,13 +353,19 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ### Bilet
 
+TODO @jakubzehner: opis zmian
+
 ![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
 ### Płatność
 
+TODO @piterek130: opis zmian
+
 ![Diagram klas Inferius](./images/class-diagram-inferius.drawio.svg)
 
 ### Logistyka
+
+TODO @mlodybercik: opis zmian
 
 ![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
@@ -743,10 +771,11 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                           | Pobranie informacji o cudzym koncie.      |
 | `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`              | Dezaktywacja cudzego konta.               |
 
-| **Metoda** | **Endpoint**           | **Konsument** | **Opis**                      |
-| ---------- | ---------------------- | ------------- | ----------------------------- |
-| `GET`      | `/int/v1/accounts/:id` | inferius      | Pobranie informacji o koncie. |
-| `GET`      | `/int/v1/jwks`         | feather       | Pobranie kluczy publicznych.  |
+| **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                      |
+| ---------- | ---------------------- | ------------- | ------------- | ----------------------------- |
+| `GET`      | `/int/v1/accounts/:id` | jobberknoll   | inferius      | Pobranie informacji o koncie. |
+| `GET`      | `/int/v1/jwks`         | jobberknoll   | feather       | Pobranie kluczy publicznych.  |
+| `POST`     | `/int/v1/validate`     | feather       | phoenix       | Walidacja tokenu dostępu.     |
 
 ## Bilet
 
