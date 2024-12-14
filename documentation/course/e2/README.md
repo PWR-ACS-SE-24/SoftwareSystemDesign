@@ -59,7 +59,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
   2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
   3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
   4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
-- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie).
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników.
 
 # Decyzje i ich uzasadnienie
 
@@ -132,11 +132,15 @@ TODO @tchojnacki: porównanie z monolitem i modularnym monolitem
 
 ## `M/02`: Load balancing usług
 
-TODO @mlodybercik
+<!-- Klasa niezawodności systemu powinna wynosić co najmniej 99,9%.
+System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
+System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
+System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników. -->
 
 **Problem:**
+System powinien charakteryzować się wysoką dostępnością i niezawodnością. W związku z tym, konieczne jest zastosowanie pewnego podejścia, które to zagwarantuje. Rozwiązanie to powinno pozwalać na minimalizowanie czasu przestoju systemu w przypadku awarii lub niedostępności któregokolwiek z serwisów. Musi ono również umożliwiać obsługę dużej liczby użytkowników jednocześnie bez utraty wydajności.
 
-**Rozwiązania:**
+**Rozwiązania:** W celu zwiększenia niezawodności, dostępności i wydajności systemu, rozważono trzy podejścia do zarządzania obciążeniem serwisów:
 
 <table>
   <tr>
@@ -145,38 +149,67 @@ TODO @mlodybercik
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Jedno urządzenie na wszystkie usługi</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
+        <li>Brak konieczności zmian w kodzie aplikacji</li>
+        <li>Brak konieczności zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak skalowalności</li>
+        <li>Brak niezawodności</li>
+        <li>Wydajność zależna od mocy obliczeniowej jednej maszyny</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Jedno urządzenie na każdą usługę</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Minimalna niezawodność</li>
+        <li>Minimalna dostępność</li>
+        <li>Wydajność jednej usługi nie wpływa na inne</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Potrzeba tylu maszyn ile usług</li>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th><i>Load balancing</i> na wielu maszynach</th>
+    <td>
+      <ul>
+        <li>Wysoka niezawodność</li>
+        <li>Wysoka skalowalność</li>
+        <li>Wysoka wydajność</li>
+        <li>Możliwość minimalizowania kosztów</li>
+        <li>Brak minimalnej i maksymalnej liczby maszyn</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
+        <li>Wymaga duzych zmian w kodzie aplikacji</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie _Load balancingu_.
 
-**Opis:**
+**Opis:** Skalowanie horyzontalne polega na zwiększaniu liczby instancji serwisów, zamiast zwiększania mocy obliczeniowej pojedynczej maszyny. Pozwoli to na zwiększenie niezawodności systemu, a także umożliwi obsługę dużej liczby użytkowników jednocześnie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu. Skalowanie horyzontalne w odpowiednich warunkach pozwoli również na minimalizowanie kosztów, ponieważ pozwoli na chwilowe zwiększenie wydajności systemu bez konieczności inwestowania w droższe maszyny. Dodatkowym atutem jest możliwość zastosowania różnych narzędzi do zarządzania obciążeniem takich jak _Load balancer_ czy _Auto Scaling_. Wadą tego rozwiązania jest konieczność zmian w kodzie aplikacji, aby umożliwić jej działanie w środowisku bezstanowym i rozproszonym.
 
 **Źródła:**
+
+- [Wikipedia - High availability](https://en.wikipedia.org/wiki/High_availability)
+- [Wikipedia - Load Balancing](<https://en.wikipedia.org/wiki/Load_balancing_(computing)>)
+- [Wikipedia - Scalability](https://en.wikipedia.org/wiki/Scalability)
 
 ## `M/03`: Healthchecki dla serwisów
 
@@ -228,11 +261,9 @@ TODO @jakubzehner
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
-TODO @mlodybercik: porównanie z on-premise i najlepiej innymi chmurami
+**Problem:** Przy projektowaniu systemu bardzo ważnym aspektem jest wybór odpowiedniej infrastruktury wdrożeniowej. Zmiana infrastruktury w późniejszym etapie rozwoju systemu może być bardzo kosztowna i czasochłonna. W związku z tym, konieczne jest dokonanie odpowiedniego wyboru już na etapie projektowania systemu. Wraz z rozważaniami dotyczącymi wyboru infrastruktury, należy wziąć pod uwagę takie aspekty jak niezawodność, skalowalność, bezpieczeństwo, koszty oraz dostępność usług.
 
-**Problem:**
-
-**Rozwiązania:**
+**Rozwiązania:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. W przypadku infrastruktury _on-premise_ serwery są umieszczone wewnątrz firmy, co pozwala na pełną kontrolę nad danymi, jednakże wymaga to dużych nakładów finansowych na zakup sprzętu, jego utrzymanie oraz zatrudnienie odpowiednich specjalistów. W przypadku infrastruktury chmurowej, serwery są umieszczone w chmurze, co pozwala na bardzo ziarnisty dobór usług i rozwiązań ale wymaga zaufania do dostawcy usług, rozwiązania są ograniczone do tego co proponuje dostawca i mogą być droższe w przypadku dużych obciążeń.
 
 <table>
   <tr>
@@ -241,46 +272,125 @@ TODO @mlodybercik: porównanie z on-premise i najlepiej innymi chmurami
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th><i>on-premise</i></th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Pełna kontrola nad danymi</li>
+        <li>Brak zależności od dostawcy usług</li>
+        <li>Niski koszt przy wysokim obciążeniu</li>
+        <li>Niskie opóźnienia</li>
+        <li>Brak ukrytych kosztów</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Wysoki koszt początkowy</li>
+        <li>Wysoki koszt utrzymania</li>
+        <li>Brak możliwości skalowania w dół</li>
+        <li>Brak możliwości szybkiej modernizacji</li>
+        <li>Płacenie za utrzymanie całej infrastruktury nawet gdy korzystamy z jej części</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Chmura</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Brak konieczności inwestowania w sprzęt</li>
+        <li>Możliwość szybkiego skalowania</li>
+        <li>Wysoka niezawodność</li>
+        <li>Bezpieczeństwo danych</li>
+        <li>Wysoka dostępność usług</li>
+        <li>Możliwość szybkiej modernizacji</li>
+        <li>Możliwość dostosowania infrastruktury do indywidualnych potrzeb</li>
+        <li>Płacisz tylko za to co używasz</li>
+        <li>Duży wybór dostawców usług chmurowych</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak pełnej kontroli nad danymi</li>
+        <li>Zależność od dostawcy usług</li>
+        <li>Stosunkowo wysoki koszt przy wysokim obciążeniu</li>
+        <li>Stosunkowo wysokie opóźnienia</li>
+        <li>Ukryte koszta</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Amazon Web Services</th>
+    <td>
+      <ul>
+        <li>Renoma i dopracowany ekosystem</li>
+        <li>Bardzo duża ilość punktów dostępowych</li>
+        <li>Duża ilość usług</li>
+        <li>Największa ilość centrów danych</li>
+        <!-- musze podać jakiś dealbreaker mimo tego że to nie jest prawda; gcp jest lekko tanszy -->
+        <li>Najniższa cena</li> 
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Brak rozwiązań hybrydowych</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Google Cloud Platform</th>
+    <td>
+      <ul>
+        <li>Dużo rozwiązań związanych z uczeniem maszynowym</li>
+        <li>Bardzo dobre narzędzia do analizy danych</li>
+        <li>100% energii z odnawialnych źródeł</li>
+        <li>Doskonałe wsparcie dla Kubernetes</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Limitowana ilość usług typu enterprise</li>
+      </ul>
+    </td>
+  </tr>
+    <tr>
+    <th>Microsoft Azure</th>
+    <td>
+      <ul>
+        <li>Interoperacyjność z innymi produktami Microsoftu</li>
+        <li>Wsparcie dla hybrydowego podejścia z <i>on-premise</i></li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Najmłodsza z trójki platform</li>
+        <li>Najmniejsza ilość usług</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-**Opis:**
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie infrastruktury chmurowej. W związku z dużą ilością usług, dużą ilością centrów danych oraz najniższą ceną, zdecydowano się na skorzystanie z usług Amazon Web Services.
+
+**Opis:** Amazon Web Services to największa platforma chmurowa na świecie. Oferuje ona bardzo szeroki zakres usług, które pozwalają na dostosowanie infrastruktury do indywidualnych potrzeb. AWS posiada największą ilość centrów danych na świecie, co pozwala na zminimalizowanie opóźnień w dostępie do danych. Dodatkowo, AWS oferuje najniższe ceny spośród konkurencji, co pozwala na minimalizację kosztów.
 
 **Źródła:**
+
+- [AWS - _on-premise_ vs cloud](https://aws.amazon.com/compare/the-difference-between-saas-and-on-premises/)
+- [Coursera - AWS vs GCP vs Azure](https://www.coursera.org/articles/aws-vs-azure-vs-google-cloud)
+- [Digitial Ocean - AWS vs GCP vs Azure](https://www.digitalocean.com/resources/articles/comparing-aws-azure-gcp)
 
 ## `M/05`: Kolejki SQS dla płatności i emaili
 
-TODO @mlodybercik: dlaczego SQS, a nie SNS
+**Problem:** W systemie, w którym przewiduje się dużą liczbę operacji związanych z płatnościami i wysyłaniem emaili, konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zapewnienie niezawodności i wydajności tych operacji. W związku z tym, konieczne jest rozważenie różnych rozwiązań, które pozwolą na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie.
 
-**Problem:**
-
-**Rozwiązania:**
+**Rozwiązania:** Istnieją dwa podejścia do zarządzania krytycznymi operacjami w systemie. Pierwsze z nich to _Remote Procedure Call_ (RPC), które polega na bezpośrednim wywołaniu operacji w innym serwisie. Drugie to kolejka, która polega na umieszczeniu operacji w kolejce, z której zostaną one pobrane i wykonane w odpowiednim czasie przez pierwszy wolny serwis. W zależności od potrzeb systemu, należy wybrać odpowiednie podejście.
 
 <table>
   <tr>
@@ -289,44 +399,52 @@ TODO @mlodybercik: dlaczego SQS, a nie SNS
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>RPC</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
+        <li>Synchroniczność</li>
+        <li>Synchroniczna odpowiedź</li>
+        <li>Brak konieczności zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak niezawodności</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Kolejka</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Wysoka niezawodność</li>
+        <li>Asynchroniczność</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Przekazanie odpowiedzi musi być zaimplementowane osobno</li>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Dla krytycznych operacji związanych z płatnościami i wysyłaniem emaili, zdecydowano się na zastosowanie kolejki. Pozwoli to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie.
 
-**Opis:**
+**Opis:** Kolejka to mechanizm, który pozwala na umieszczenie operacji w kolejce, z której zostaną one pobrane. Priorytetyzowane jest wykonanie operacji nad wydajnością wykonywania tej opracji. Pozwala to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu i sprawi, że konkretne operacje na pewno zostaną wykonane.
 
 **Źródła:**
+
+- [microservices.io - Remote Procedure Invocation](https://microservices.io/patterns/communication-style/rpi.html)
+- [microservices.io - Messaging](https://microservices.io/patterns/communication-style/messaging.html)
 
 ## `M/06`: Izolacja siecią wewnętrzną VPC
 
 TODO @mlodybercik
 
-**Problem:**
+**Problem:** System powinien być zabezpieczony przed dostępem osób trzecich. W związku z tym, konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zminimalizowanie ryzyka nieautoryzowanego dostępu do systemu. Rozwiązanie to powinno pozwalać na izolację poszczególnych serwisów, a także na kontrolę dostępu do nich.
 
 **Rozwiązania:**
 
@@ -337,7 +455,22 @@ TODO @mlodybercik
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Security through obscurity</th>
+    <td>
+      <ul>
+        <li>Minimum bezpieczeństwa</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Bardzo krytykowane podejście</li>
+        <li>Brak gwarancji bezpieczeństwa</li>
+        <li>Brak kontroli dostępu</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Rozwiązanie 2</th>
     <td>
       <ul>
         <li>Zaleta 1</li>
@@ -349,7 +482,7 @@ TODO @mlodybercik
       </ul>
     </td>
   </tr>
-  <tr>
+    <tr>
     <th>Rozwiązanie 2</th>
     <td>
       <ul>
@@ -369,6 +502,8 @@ TODO @mlodybercik
 **Opis:**
 
 **Źródła:**
+
+- [Security through obscurity](https://pl.wikipedia.org/wiki/Security_through_obscurity)
 
 ## `M/07`: Wzorzec API Gateway
 
@@ -1026,7 +1161,7 @@ TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, 
 
 # Widok informacyjny
 
-Słownik pojęć dla jest w [dokumencie z wymaganiami](../e1/README.md#słownik-pojęć).
+Słownik pojęć znajduję się w [dokumencie z wymaganiami](../e1/README.md#słownik-pojęć).
 
 ## Model informacyjny
 
@@ -1050,7 +1185,7 @@ TODO @piterek130: opis zmian
 
 ### Logistyka
 
-TODO @mlodybercik: opis zmian
+W celu zwiększenia wygody użytkowników, dodano atrybut `ordered` do relacji między `Stop` a `Line`, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
 
 ![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
@@ -1352,7 +1487,88 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
 
 ### Logistyka
 
-TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `StopLineMapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
+
+![Diagram bazodanowy Leprechaun](./images/database-diagram-leprechaun.drawio.svg)
+
+<table>
+  <tr>
+    <th colspan="3">Indeksy</th>
+  </tr>
+  <tr>
+    <th>Kolumna</th>
+    <th>Typ</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <td><code>stop.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+    <tr>
+    <td><code>accident.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>route.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>line.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>vehicle.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+    <tr>
+    <td><code>stop_line_mapping.stop_id && stop_line_mapping.line_id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks złożony tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <th colspan="3">Ograniczenia</th>
+  </tr>
+  <tr>
+    <td colspan="3"><code>accident.time <= CURRENT_TIMESTAMP</code>¹</td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>accident.description <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>stop.name <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>stop.name UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>route.start_time => CURRENT_TIMESTAMP</code>¹</td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>(route.end_time => CURRENT_TIMESTAMP) AND (route.start_time < route.end_time)</code>¹</td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>vehicle.side_number <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>vehicle.side_number UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>line.name <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>line.name UNIQUE</code></td>
+  </tr>
+    <tr>
+    <td colspan="3"><code>(stop_line_mapping.stop_id, stop_line_mapping.line_id, stop_line_mapping.order) UNIQUE</code></td>
+  </tr>
+</table>
+
+¹ - ograniczenia te będą w postaci `TRIGGER`ów, a nie `CHECK`ów aby uniknąć problemów z przywracaniem kopii zapasowej.
 
 <table>
   <tr>
@@ -1366,17 +1582,17 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
   <tr>
     <th>Identyfikator</th>
     <td><code>identifier</code></td>
-    <td>np. <code>unikalny-identyfikator-rds</code></td>
+    <td><code>rds-leprechaun</code></td>
   </tr>
   <tr>
     <th>Silnik i wersja</th>
     <td><code>engine</code>, <code>engine_version</code></td>
-    <td>np. PostgreSQL 14.14-R1</td>
+    <td>PostgreSQL 17.2</td>
   </tr>
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td>np. <code>db.t3.micro</code></td>
+    <td><code>db.t4g.micro</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1384,17 +1600,17 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
   <tr>
     <th>Nazwa bazy</th>
     <td><code>db_name</code></td>
-    <td>np. <code>moja_baza</code></td>
+    <td><code>leprechaun</code></td>
   </tr>
   <tr>
     <th>Użytkownik</th>
     <td><code>username</code></td>
-    <td>np. <code>moj_uzytkownik</code></td>
+    <td><code>postgres</code></td>
   </tr>
   <tr>
     <th>Port</th>
     <td><code>port</code></td>
-    <td>np. <code>5432</code></td>
+    <td><code>5432</code></td>
   </tr>
   <tr>
     <th colspan="3">Składowanie</th>
@@ -1402,29 +1618,35 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td>np. <code>gp2</code></td>
+    <td><code>gp2</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
     <td><code>storage_encrypted</code></td>
-    <td>TAK/NIE</td>
+    <td>NIE</td>
   </tr>
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>np. 20</td>
+    <td>20</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>np. 5</td>
+    <td>0.1</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>np. 7</td>
+    <td>7</td>
   </tr>
 </table>
+
+Zważając na to, że dane w bazie są danymi które są publiczne i nie są wrażliwe, zdecydowano się na brak szyfrowania danych oraz ustawienie retencji kopii zapasowych na 7 dni. Ze względu na małą ilość danych i brak skomplikowanych operacji na bazie danych, zdecydowano się na klasę instancji **`db.t4g.small`**.
+
+Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
+
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 8 + 8 + 4 + 4 czyli 28 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 4 bajtów, otrzymujemy 32 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 105MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 100MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
 
 # Widok wytwarzania
 
@@ -1516,3 +1738,5 @@ TODO @mlodybercik
 [^rds-instance-types]: [AWS - Amazon RDS Instance Types](https://aws.amazon.com/rds/instance-types/)
 [^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
+[^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
+[^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
