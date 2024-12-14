@@ -446,34 +446,34 @@ Reguły zostały podzielone według encji, których dotyczą oraz są uporządko
 
 ### Skasowanie (`Validation`)
 
-- `REG/20/01` - Może istnieć wiele skasowań.
-- `REG/20/02` - Skasowanie musi mieć unikalny identyfikator.
-- `REG/20/03` - Skasowanie musi zawierać czas skasowania.
-- `REG/20/04` - Czas skasowania nie może być w przyszłości.
-- `REG/20/05` - Czas skasowania jest domyślnie równy czasowi utworzenia skasowania.
-- `REG/20/06` - Skasowanie musi być wykonane na dokładnie jednej trasie.
-- `REG/20/07` - Skasowanie musi kasować dokładnie jeden bilet.
+- `REG/21/01` - Może istnieć wiele skasowań.
+- `REG/21/02` - Skasowanie musi mieć unikalny identyfikator.
+- `REG/21/03` - Skasowanie musi zawierać czas skasowania.
+- `REG/21/04` - Czas skasowania nie może być w przyszłości.
+- `REG/21/05` - Czas skasowania jest domyślnie równy czasowi utworzenia skasowania.
+- `REG/21/06` - Skasowanie musi być wykonane na dokładnie jednej trasie.
+- `REG/21/07` - Skasowanie musi kasować dokładnie jeden bilet.
 
 ### Pojazd (`Vehicle`)
 
-- `REG/21/01` - Może istnieć wiele pojazdów.
-- `REG/21/02` - Pojazd musi mieć unikalny identyfikator.
-- `REG/21/03` - Pojazd musi zawierać numer boczny.
-- `REG/21/04` - Numer boczny musi być unikalny.
-- `REG/21/05` - Numer boczny nie może być pusty.
-- `REG/21/06` - Numer boczny nie może przekraczać 16 znaków.
-- `REG/21/07` - Pojazd może jeździć na wielu trasach.
-- `REG/21/08` - Pojazd musi zawierać status aktywności.
-- `REG/21/09` - Status aktywności jest domyślnie aktywny.
+- `REG/22/01` - Może istnieć wiele pojazdów.
+- `REG/22/02` - Pojazd musi mieć unikalny identyfikator.
+- `REG/22/03` - Pojazd musi zawierać numer boczny.
+- `REG/22/04` - Numer boczny musi być unikalny.
+- `REG/22/05` - Numer boczny nie może być pusty.
+- `REG/22/06` - Numer boczny nie może przekraczać 16 znaków.
+- `REG/22/07` - Pojazd może jeździć na wielu trasach.
+- `REG/22/08` - Pojazd musi zawierać status aktywności.
+- `REG/22/09` - Status aktywności jest domyślnie aktywny.
 
 ### Portfel (`Wallet`)
 
-- `REG/22/01` - Może istnieć wiele portfeli.
-- `REG/22/02` - Portfel musi mieć unikalny identyfikator.
-- `REG/22/03` - Portfel musi zawierać saldo w PLN.
-- `REG/22/04` - Saldo w PLN nie może być mniejsze od zera.
-- `REG/22/05` - Portfel musi być zarządzany przez dokładnie jednego pasażera.
-- `REG/22/06` - Portfel może zawierać wiele danych kart kredytowych.
+- `REG/23/01` - Może istnieć wiele portfeli.
+- `REG/23/02` - Portfel musi mieć unikalny identyfikator.
+- `REG/23/03` - Portfel musi zawierać saldo w PLN.
+- `REG/23/04` - Saldo w PLN nie może być mniejsze od zera.
+- `REG/23/05` - Portfel musi być zarządzany przez dokładnie jednego pasażera.
+- `REG/23/06` - Portfel może zawierać wiele danych kart kredytowych.
 
 ## Prototypy interfejsu
 
