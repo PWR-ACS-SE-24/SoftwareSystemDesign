@@ -1032,7 +1032,7 @@ Słownik pojęć dla jest w [dokumencie z wymaganiami](../e1/README.md#słownik-
 
 ### Konto
 
-Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które przechowuje datę ostatniej modyfikacji konta. Będzie ono wykorzystywane do realizacji wymagań dotyczących bezpieczeństwa, tj. aby zapewnić, że po zmianie danych logowania, bądź jawnym żądaniu zakończenia wszystkich sesji użytkownika, odświeżenie tokenu dostępowego będzie wymagało ponownego zalogowania.
+Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które przechowuje czas ostatniej modyfikacji konta. Będzie ono wykorzystywane do realizacji wymagań dotyczących bezpieczeństwa, tj. aby zapewnić, że po zmianie danych logowania, bądź jawnym żądaniu zakończenia wszystkich sesji użytkownika, odświeżenie tokenu dostępowego będzie wymagało ponownego zalogowania.
 
 ![Diagram klas Jobberknoll](./images/class-diagram-jobberknoll.drawio.svg)
 
