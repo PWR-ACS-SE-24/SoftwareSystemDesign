@@ -407,6 +407,8 @@ Reguły zostały podzielone według encji, których dotyczą oraz są uporządko
 - `REG/16/07` - Bilet musi wykorzystywać dokładnie jedną ofertę biletu.
 - `REG/16/08` - Bilet musi być zakupiony przez dokładnie jednego pasażera.
 - `REG/16/09` - Bilet może być skasowany dokładnie jednym skasowaniem.
+- `REG/16/10` - Bilet musi zawierać status.
+- `REG/16/11` - Status biletu jest domyślnie w trakcie realizacji.
 
 ### Typ biletu (`TicketKind`)
 
@@ -436,6 +438,11 @@ Reguły zostały podzielone według encji, których dotyczą oraz są uporządko
 - `REG/19/12` - Oferta biletu może być wykorzystana w wielu biletach.
 - `REG/19/13` - Oferta biletu musi mieć status aktywności.
 - `REG/19/14` - Status aktywności jest domyślnie aktywny.
+
+### Status biletu (`TicketStatus`)
+- `REG/20/01` - Istnieją trzy statusy biletu: zakupiony, w trakcie realizacji, anulowany.
+- `REG/20/02` - Status biletu zmienia się na zakupiony po pomyślnym opłaceniu.
+- `REG/20/03` - Status biletu zmienia się na anulowany po braku opłacenia w określonym czasie.
 
 ### Skasowanie (`Validation`)
 
