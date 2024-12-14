@@ -84,9 +84,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
 
 ## `M/01`: Architektura mikroserwisów
 
-TODO @tchojnacki: porównanie z monolitem i modularnym monolitem
-
-**Problem:**
+**Problem:** Różne części systemu mają różne wymagania co do czasu odpowiedzi (`NF/PRF/01`), będą też miały różne obciążenia (częściej sprawdzamy rozkład niż kupujemy bilet, częściej kupujemy bilet niż zmieniamy ustawienia konta). Ponadto wymagana jest wysoka niezawodność (`NF/REL/01`), a także możliwość obsługi wielu użytkowników jednocześnie (`NF/PRF/02`). Różne części systemu będą też budowane przez różne zespoły, które mogą mieć swoje wymagania co do technologii, narzędzi i procesów.
 
 **Rozwiązania:**
 
@@ -97,38 +95,67 @@ TODO @tchojnacki: porównanie z monolitem i modularnym monolitem
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Monolit</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Łatwość wdrożenia</li>
+        <li>Jedna wspólna baza kodu</li>
+        <li>Wydajność komunikacji między modułami</li>
+        <li>Serwisy mogą być stanowe</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Niska skalowalność poszczególnych modułów</li>
+        <li>Trudności w rozbudowie i utrzymaniu</li>
+        <li>Pojedynczy punkt awarii</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Architektura modułowa, heksagonalna, czysta</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Łatwość wdrożenia</li>
+        <li>Modułowość, możliwość podziału pracy</li>
+        <li>Wydajność komunikacji między modułami</li>
+        <li>Serwisy mogą być stanowe</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Niska skalowalność poszczególnych modułów</li>
+        <li>Pojedynczy punkt awarii</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Mikroserwisy</th>
+    <td>
+      <ul>
+        <li>Modułowość, możliwość podziału pracy</li>
+        <li>Łatwość skalowania poszczególnych modułów</li>
+        <li>Awaria modułu nie wyłącza całego systemu</li>
+        <li>Możliwość wyboru różnych technologii dla różnych modułów</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Potrzeba bezstanowości serwisów</li>
+        <li>Opóźnienia w komunikacji między serwisami</li>
+        <li>Trudniejsze wdrożenie</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Z uwagi na wymienione wymagania, jako architekturę systemu wybrano **mikroserwisy**. 
 
-**Opis:**
+**Opis:** Architektura mikroserwisów pozwoli to na łatwe skalowanie poszczególnych modułów, a także na podział pracy między zespołami. Każdy zespół może skupić się na swojej części dziedziny problemu. Może podejmować decyzje o wykorzystywanych w środku technologiach, co jest korzystne, gdy różne cześci systemu mają różne potrzeby. Istotne z perspektywy zespołu jest utrzymanie spójnych interfejsów dla innych serwisów, mogą one dowolnie edytować wnętrze serwisu tak długo, jak nie zmienia to jego publicznego API. Lokalność awarii pozwoli na utrzymanie wyższej niezawodności systemu niż w przypadku monolitu. Możliwe będzie też skalowanie poszczególnych modułów niezależnie, przenosząc siłę obliczeniową tam, gdzie jest ona najbardziej potrzebna. Wadą takiego rozwiązania jest konieczność bezstanowości serwisów oraz opóźnienia w komunikacji między nimi, jako że różne serwisy mogą być uruchamiane na różnych maszynach.
 
-**Źródła:** [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html), [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html)
+Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architektoniczne.
+
+**Źródła:** [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html), [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html), Wykład 4: Style architektoniczne
 
 ## `M/02`: Load balancing usług
 
@@ -1427,6 +1454,10 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
 </table>
 
 # Widok wytwarzania
+
+Zespoły realizujące poszczególne serwisy miały dowolność dotyczącą wyboru języka programowania o ile spełniał on dwa wymagania:
+- dostępność AWS SDK (C++, .NET, Go, JS/TS, Java/Kotlin, PHP, Python, Ruby, Rust, Swift),
+- znajomość języka przez co najmniej jedną osobę spoza serwisu (na cele code review).
 
 ## Frontend
 
