@@ -597,9 +597,7 @@ W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - 
 
 ## `M/11`: Autoryzacja z użyciem JWT
 
-TODO @tchojnacki: porównanie z sesjami + JWKs + access token + refresh token + revocation
-
-**Problem:**
+**Problem:** Użytkownicy muszą mieć dostęp do różnych części systemu w zależności od swojej roli. Istotne jest też, aby użytkownicy widzieli tylko swoje dane poufne. Wymagana jest również możliwość unieważnienia sesji użytkownika, np. w przypadku kradzieży tokena lub zmiany uprawnień. Autoryzacja musi być wydajna, aby nie wpływała na czas odpowiedzi systemu i musi działać dobrze w architekturze mikroserwisów.
 
 **Rozwiązania:**
 
@@ -610,36 +608,51 @@ TODO @tchojnacki: porównanie z sesjami + JWKs + access token + refresh token + 
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Ciasteczka sesji</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Prostota i niezawodność</li>
+        <li>Możliwość unieważnienia sesji</li>
+        <li>Modyfikacja danych sesji bez konieczności zmiany tokena</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Stanowość systemu, potrzeba synchronizacji</li>
+        <li>Opóźnienia wynikające z dostępu do bazy danych</li>
+        <li>Zużywanie zasobów przez niepotrzebne sesje</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>JWT</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Brak stanu trzymanego na serwerze (skalowalność)</li>
+        <li>Możliwość weryfikacji tokenów bez bazy danych jak i na innych serwerach</li>
+        <li>Możliwość przekazania dodatkowych informacji (np. rola użytkownika)</li>
+        <li>Wbudowany mechanizm czasu ważności tokenów</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Bardziej skomplikowana implementacja</li>
+        <li>Brak możliwości unieważnienia tokenu</li>
+        <li>Możliwość podejrzenia danych w tokenie</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Z uwagi na wymagania systemu, jako mechanizm autoryzacji wybrano **JWT**.
 
-**Opis:**
+**Opis:** JWT będzie lepszym rozwiązaniem z uwagi na lepsze przystosowanie do architektury mikroserwisowej. Nie potrzebują one stanu i mogą być weryfikowane bez dostępu do bazy danych, a nawet na innym serwerze niż wystawione. W przypadku zastosowania sesji, potrzebna byłaby synchronizacja stanu między serwisami. Główną, a w zasadzie jedyną na potrzeby projektowanego systemu wadą JWT jest brak możliwości unieważnienia tokenu, bez zastosowania dodatkowych mechanizmów (np. blacklista tokenów).
+
+Współczesne rozwiązania autoryzacji opierające się na JWT wykorzystują dwa tokeny:
+- `access_token` - token o krótkim czasie ważności, służący do autoryzacji użytkownika przy każdym zapytaniu
+- `refresh_token` - token o długim czasie ważności, służący do odświeżenia `access_token` po jego wygaśnięciu
+
+Oba tokeny są uzyskiwane przez frontend przy zalogowaniu użytkownika. Token dostępu jest przesyłany w nagłówku przy każdym zapytaniu do serwera. Dowolny serwer mający klucz publiczny może zweryfikować token bez odpytywania bazy danych. W przypadku wygaśnięcia `access_token`, frontend może użyć `refresh_token` do uzyskania nowej pary (`access_token`, `refresh_token`) bez konieczności ponownego logowania. Dany token dostępu można wykorzystać przez cały okres ważności i nie można go unieważnić. Z racji na to zaleca się stosowanie krótkiego czasu ważności (5-15 minut) w połączeniu z długim czasem ważności tokenu odświeżającego (np. 7 dni). Tokeny odświeżające można unieważniać, np. poprzez przechowywanie ich czarnej listy w bazie danych. W przypadku systemu zdecydowano się na prostsze rozwiązanie, przechowujące datę ostatniego unieważnienia dla danego konta użytkownika. Przy zmianie hasła lub innych danych związanych z bezpieczeństwem konta, data zostaje zaktualizowana. Dochodzi do tego również przy jawnym wciśnięciu przycisku unieważnienia wszystkich sesji przez użytkownika. Wadą tego rozwiązania jest brak możliwości granularnego unieważnienia tokenów.
 
 **Źródła:** [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html)
 
@@ -688,6 +701,8 @@ TODO @tchojnacki
 **Decyzja:**
 
 **Opis:**
+
+JWKs
 
 **Źródła:** [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html)
 
