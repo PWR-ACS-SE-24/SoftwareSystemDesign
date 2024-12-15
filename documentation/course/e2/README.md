@@ -161,9 +161,9 @@ Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architek
 ## `M/02`: Load balancing usług
 
 **Problem:**
-System powinien charakteryzować się wysoką dostępnością i niezawodnością. W związku z tym, konieczne jest zastosowanie pewnego podejścia, które to zagwarantuje. Rozwiązanie to powinno pozwalać na minimalizowanie czasu przestoju systemu w przypadku awarii lub niedostępności któregokolwiek z serwisów. Musi ono również umożliwiać obsługę dużej liczby użytkowników jednocześnie bez utraty wydajności.
+Ze względu na wymogi `NF/REL/01`, `NF/REL/07`, `NF/PRF/01` i `NF/PRF/02` system powinien charakteryzować się wysoką dostępnością i niezawodnością. W związku z tym, konieczne jest zastosowanie pewnego podejścia, które to zagwarantuje. Rozwiązanie to powinno pozwalać na minimalizowanie czasu przestoju systemu w przypadku awarii lub niedostępności któregokolwiek z serwisów. Musi ono również umożliwiać obsługę dużej liczby użytkowników jednocześnie bez utraty wydajności.
 
-**Rozwiązania:** W celu zwiększenia niezawodności, dostępności i wydajności systemu, rozważono trzy podejścia do zarządzania obciążeniem serwisów:
+**Rozwiązania:**
 
 <table>
   <tr>
@@ -224,7 +224,7 @@ System powinien charakteryzować się wysoką dostępnością i niezawodnością
   </tr>
 </table>
 
-**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie _Load balancingu_.
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **Load balancing'u**.
 
 **Opis:** Skalowanie horyzontalne polega na zwiększaniu liczby instancji serwisów, zamiast zwiększania mocy obliczeniowej pojedynczej maszyny. Pozwoli to na zwiększenie niezawodności systemu, a także umożliwi obsługę dużej liczby użytkowników jednocześnie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu. Skalowanie horyzontalne w odpowiednich warunkach pozwoli również na minimalizowanie kosztów, ponieważ pozwoli na chwilowe zwiększenie wydajności systemu bez konieczności inwestowania w droższe maszyny. Dodatkowym atutem jest możliwość zastosowania różnych narzędzi do zarządzania obciążeniem takich jak _Load balancer_ czy _Auto Scaling_. Wadą tego rozwiązania jest konieczność zmian w kodzie aplikacji, aby umożliwić jej działanie w środowisku bezstanowym i rozproszonym.
 
@@ -286,7 +286,7 @@ TODO @jakubzehner
 
 **Problem:** Przy projektowaniu systemu bardzo ważnym aspektem jest wybór odpowiedniej infrastruktury wdrożeniowej. Zmiana infrastruktury w późniejszym etapie rozwoju systemu może być bardzo kosztowna i czasochłonna. W związku z tym, konieczne jest dokonanie odpowiedniego wyboru już na etapie projektowania systemu. Wraz z rozważaniami dotyczącymi wyboru infrastruktury, należy wziąć pod uwagę takie aspekty jak niezawodność, skalowalność, bezpieczeństwo, koszty oraz dostępność usług.
 
-**Rozwiązania:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. W przypadku infrastruktury _on-premise_ serwery są umieszczone wewnątrz firmy, co pozwala na pełną kontrolę nad danymi, jednakże wymaga to dużych nakładów finansowych na zakup sprzętu, jego utrzymanie oraz zatrudnienie odpowiednich specjalistów. W przypadku infrastruktury chmurowej, serwery są umieszczone w chmurze, co pozwala na bardzo ziarnisty dobór usług i rozwiązań ale wymaga zaufania do dostawcy usług, rozwiązania są ograniczone do tego co proponuje dostawca i mogą być droższe w przypadku dużych obciążeń.
+**Rozwiązania:**
 
 <table>
   <tr>
@@ -399,9 +399,9 @@ TODO @jakubzehner
   </tr>
 </table>
 
-**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie infrastruktury chmurowej. W związku z dużą ilością usług, dużą ilością centrów danych oraz najniższą ceną, zdecydowano się na skorzystanie z usług Amazon Web Services.
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **infrastruktury chmurowej**. W związku z dużą ilością usług, dużą ilością centrów danych oraz najniższą ceną, zdecydowano się na skorzystanie z usług **Amazon Web Services**.
 
-**Opis:** Amazon Web Services to największa platforma chmurowa na świecie. Oferuje ona bardzo szeroki zakres usług, które pozwalają na dostosowanie infrastruktury do indywidualnych potrzeb. AWS posiada największą ilość centrów danych na świecie, co pozwala na zminimalizowanie opóźnień w dostępie do danych. Dodatkowo, AWS oferuje najniższe ceny spośród konkurencji, co pozwala na minimalizację kosztów.
+**Opis:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. Oba podejścia mają swoje zalety i wady zależne od kontekstu użycia. Infrastruktura chmurowa to podejście, które polega na korzystaniu z istniejącej infrastruktury dostawcy usług chmurowych. Jednym z najpopularniejszych dostawców tego typu usług jest Amazon Web Services (AWS), oferujący szeroki wachlarz narzędzi wspierających tworzenie, wdrażanie oraz zarządzanie aplikacjami internetowymi.
 
 **Źródła:**
 
@@ -411,9 +411,9 @@ TODO @jakubzehner
 
 ## `M/05`: Kolejki SQS dla płatności i emaili
 
-**Problem:** W systemie, w którym przewiduje się dużą liczbę operacji związanych z płatnościami i wysyłaniem emaili, konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zapewnienie niezawodności i wydajności tych operacji. W związku z tym, konieczne jest rozważenie różnych rozwiązań, które pozwolą na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie.
+**Problem:** Ze względu na wymóg `NF/REL/09` należy w dokładny sposób rozważyć operacje związane z płatnościami i wysyłaniem emaili. Konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zapewnienie niezawodności i wydajności tych operacji. W związku z tym, konieczne jest przeanalizowanie różnych rozwiązań, które pozwolą na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie.
 
-**Rozwiązania:** Istnieją dwa podejścia do zarządzania krytycznymi operacjami w systemie. Pierwsze z nich to _Remote Procedure Call_ (RPC), które polega na bezpośrednim wywołaniu operacji w innym serwisie. Drugie to kolejka, która polega na umieszczeniu operacji w kolejce, z której zostaną one pobrane i wykonane w odpowiednim czasie przez pierwszy wolny serwis. W zależności od potrzeb systemu, należy wybrać odpowiednie podejście.
+**Rozwiązania:**
 
 <table>
   <tr>
@@ -454,9 +454,11 @@ TODO @jakubzehner
   </tr>
 </table>
 
-**Decyzja:** Dla krytycznych operacji związanych z płatnościami i wysyłaniem emaili, zdecydowano się na zastosowanie kolejki. Pozwoli to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie.
+**Decyzja:** Dla krytycznych operacji związanych z płatnościami i wysyłaniem emaili, zdecydowano się na zastosowanie **kolejki**.
 
-**Opis:** Kolejka to mechanizm, który pozwala na umieszczenie operacji w kolejce, z której zostaną one pobrane. Priorytetyzowane jest wykonanie operacji nad wydajnością wykonywania tej opracji. Pozwala to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu i sprawi, że konkretne operacje na pewno zostaną wykonane.
+**Opis:** Kolejka to mechanizm, który pozwala na umieszczenie operacji w kolejce, z której zostaną one pobrane. Priorytetyzowane jest wykonanie operacji nad wydajnością wykonywania tej opracji. Pozwala to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie. W przypadku awarii jednej z instancji serwisów, inne będą w stanie przejąć jej obowiązki, co pozwoli na minimalizację czasu przestoju systemu i sprawi, że konkretne operacje na pewno zostaną wykonane.
+
+Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiązania jest _Simple Queue Service_ (SQS). Pozwala ona na utworzenie wielu różnego typu kolejek, które prioritetyzują prędkość wykonania operacji nad wydajnością lub odwrotnie. Pozwala to na dostosowanie kolejki do indywidualnych potrzeb systemu.
 
 **Źródła:**
 
@@ -467,7 +469,7 @@ TODO @jakubzehner
 
 **Problem:** System powinien być zabezpieczony przed dostępem osób trzecich. W związku z tym, konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zminimalizowanie ryzyka nieautoryzowanego dostępu do systemu. Rozwiązanie to powinno pozwalać na izolację poszczególnych serwisów, a także na kontrolę dostępu do nich.
 
-**Rozwiązania:** Istnieje wiele podejść do zabezpieczenia systemu przed dostępem osób trzecich. Jednym z nich jest _Security through obscurity_, które polega na ukrywaniu informacji o systemie, co ma zapobiec atakom. Kolejne to umieszczenie każdej maszyny na adresie publicznym, co pozwala na prostą implementację, ale może wymagać autentykacji przy komunikacji między usługami. Ze względu na `M/04` dostępne jest rozwiązanie _Virtual Private Cloud_, które pozwala na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, ale jest trudne w implementacji.
+**Rozwiązania:**
 
 <table>
   <tr>
@@ -499,7 +501,7 @@ TODO @jakubzehner
     </td>
     <td>
       <ul>
-        <li>Komunikacja między usługami możę wymagać autentykacji</li>
+        <li>Komunikacja między usługami może wymagać autentykacji</li>
         <li>Niska wydajność</li>
       </ul>
     </td>
@@ -523,9 +525,9 @@ TODO @jakubzehner
   </tr>
 </table>
 
-**Decyzja:** W związku z wymaganiami `NF/REL/04` i `NF/REL/06`, zdecydowano się na zastosowanie _Virtual Private Cloud_. Pozwoli to na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, a także na kontrolę dostępu do poszczególnych serwisów.
+**Decyzja:** W związku z wymaganiami `NF/REL/04` i `NF/REL/06`, zdecydowano się na zastosowanie **Virtual Private Cloud**. Pozwoli to na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, a także na kontrolę dostępu do poszczególnych serwisów.
 
-**Opis:** AWS VPC to usługa, która pozwala na utworzenie wirtualnej sieci prywatnej w chmurze AWS. Pozwala to na izolację poszczególnych serwisów, a także na kontrolę dostępu do nich. Pozwala na zdefiniowanie reguł dostępu, które pozwolą na zminimalizowanie ryzyka nieautoryzowanego dostępu do systemu. Ponad to pozwala na podzielenie infrastruktury na mniejsze segmenty, co pozwala na zwiększenie bezpieczeństwa systemu.
+**Opis:** AWS VPC to usługa, która pozwala na utworzenie wirtualnej sieci prywatnej w chmurze AWS. Pozwala na zdefiniowanie reguł dostępu, które pozwolą na zniwelowanie ryzyka nieautoryzowanego dostępu do systemu. Konfiguracja pozwala na wydzielenie poszczególnych serwisów w osobne prywatne podsieci, co pozwala na zwiększenie bezpieczeństwa systemu.
 
 **Źródła:**
 
@@ -1167,8 +1169,6 @@ W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** o
 ## Diagram rozmieszczenia
 
 Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia `1` (pojedyncza instancja) oraz `*` (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego, stereotypem [`<<manifest>>`](https://www.uml-diagrams.org/deployment-diagrams.html#manifestation).
-
-TODO @tchojnacki + @mlodybercik: zmienić języki programowania
 
 ![Diagram rozmieszczenia](./images/deployment-diagram.drawio.svg)
 
