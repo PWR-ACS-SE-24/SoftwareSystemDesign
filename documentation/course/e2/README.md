@@ -59,7 +59,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
   2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
   3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
   4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
-- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników.
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z poprzednimi [wyliczeniami](../e1/README.md#wydajność)).
 
 # Decyzje i ich uzasadnienie
 
@@ -236,6 +236,8 @@ _Auto Scaling_ to narzędzie, które pozwala na automatyczne skalowanie liczby i
 
 - [Wikipedia - High availability](https://en.wikipedia.org/wiki/High_availability)
 - [Wikipedia - Load Balancing](<https://en.wikipedia.org/wiki/Load_balancing_(computing)>)
+- [AWS - Load Balancing](https://aws.amazon.com/what-is/load-balancing/)
+- [Understanding High Availability and Scalability](https://newsletter.simpleaws.dev/p/understanding-aws-high-availability-scalability)
 - [Wikipedia - Scalability](https://en.wikipedia.org/wiki/Scalability)
 
 ## `M/03`: Healthchecki dla serwisów
@@ -357,9 +359,9 @@ TODO @jakubzehner
     <td>
       <ul>
         <li>Renoma i dopracowany ekosystem</li>
-        <li>Bardzo duża ilość punktów dostępowych</li>
-        <li>Duża ilość usług</li>
-        <li>Największa ilość centrów danych</li>
+        <li>Bardzo duża liczba punktów dostępowych</li>
+        <li>Duża liczba usług</li>
+        <li>Największa liczba centrów danych</li>
         <!-- musze podać jakiś dealbreaker mimo tego że to nie jest prawda; gcp jest lekko tanszy -->
         <li>Najniższa cena</li> 
       </ul>
@@ -382,7 +384,7 @@ TODO @jakubzehner
     </td>
     <td>
       <ul>
-        <li>Limitowana ilość usług typu enterprise</li>
+        <li>Limitowana liczba usług typu enterprise</li>
       </ul>
     </td>
   </tr>
@@ -397,17 +399,17 @@ TODO @jakubzehner
     <td>
       <ul>
         <li>Najmłodsza z trójki platform</li>
-        <li>Najmniejsza ilość usług</li>
+        <li>Najmniejsza liczba usług</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **infrastruktury chmurowej**, a zważając na dużą ilość usług, dużą ilość centrów danych oraz najniższą cenę, zdecydowano się na skorzystanie z usług chmurowych **Amazon Web Services**.
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **infrastruktury chmurowej**, a zważając na dużą liczbę usług, dużą liczbę centrów danych oraz najniższą cenę, zdecydowano się na skorzystanie z usług chmurowych **Amazon Web Services**.
 
 **Opis:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. Oba podejścia mają swoje zalety i wady zależne od kontekstu użycia. Infrastruktura chmurowa to podejście, które polega na korzystaniu z istniejącej infrastruktury dostawcy usług chmurowych. Zamiast sprzętu trzymanego w pewnej lokalizacji zarządzanej przez firmę, korzysta się ze sprzętu i oprgramowania dzierżawionego od dostawcy usług chmurowych. W zależności od typu dostawcy usług, może on dostarczać różnych funkcjonalności na różnych warstwach abstrakcji. Ograniczając się do najpopularniejszych modeli może to być infrastruktura jako usługa (IaaS), platforma jako usługa (PaaS) lub oprogramowanie jako usługa (SaaS). Porzucając funkcjonalności z pewnych warstw tej piramidy jesteśmy w stanie ograniczyć koszta. Jest to bardzo dobre rozwiązanie dla firm, które nie wiedzą jakie będą ich potrzeby w przyszłości, ponieważ pozwala na elastyczne dostosowanie infrastruktury do indywidualnych potrzeb.
 
-Jednym z najpopularniejszych dostawców tego typu usług jest Amazon Web Services (AWS), oferujący szeroki wachlarz narzędzi wspierających tworzenie, wdrażanie oraz zarządzanie aplikacjami internetowymi. AWS powstało w 2006 roku udostępniając swoją pierwszą i najpopularniejszą usługę Elastic Compute Cloud (EC2). Od tego czasu zdobyło dużą popularność i renomę na rynku. Amazon Web Services posiada bardzo dużą ilość usług, które pozwalają na bardzo dokładne dostosowanie infrastruktury do indywidualnych potrzeb. Posiada również bardzo dużą ilość centrów danych, co pozwala na minimalizowanie odległości między klientami a centrami danych co skutkuje mniejszymi opóźnieniami i większym zadowoleniem klientów. Przez swoją popularność i dużą ilość użytkowników, Amazon Web Services jest w stanie oferować swoje usługi w bardzo atrakcyjnych cenach.
+Jednym z najpopularniejszych dostawców tego typu usług jest Amazon Web Services (AWS), oferujący szeroki wachlarz narzędzi wspierających tworzenie, wdrażanie oraz zarządzanie aplikacjami internetowymi. AWS powstało w 2006 roku udostępniając swoją pierwszą i najpopularniejszą usługę Elastic Compute Cloud (EC2). Od tego czasu zdobyło dużą popularność i renomę na rynku. Amazon Web Services posiada bardzo dużą liczbę usług, które pozwalają na bardzo dokładne dostosowanie infrastruktury do indywidualnych potrzeb. Posiada również bardzo dużą liczbę centrów danych, co pozwala na minimalizowanie odległości między klientami a centrami danych co skutkuje mniejszymi opóźnieniami i większym zadowoleniem klientów. Przez swoją popularność i dużą liczbę użytkowników, Amazon Web Services jest w stanie oferować swoje usługi w bardzo atrakcyjnych cenach.
 
 **Źródła:**
 
@@ -1198,7 +1200,7 @@ Zgodnie z mechanizmem [`M/04`: Wdrożenie w chmurze AWS](#m04-wdrożenie-w-chmur
 | **`c8g.48xlarge`**   | 192      | 384              |
 
 > [!NOTE]
-> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu pod pewnymi ograniczeniami zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu na koncie studenckim AWS zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
 
 <table>
   <tr>
@@ -1305,7 +1307,7 @@ W przedstawionych poniżej diagramach bazodanowych zastosowano następującą no
 - liczności powiązań oznaczone poprzez notację [crow's foot](https://vertabelo.com/blog/crow-s-foot-notation/).
 
 > [!NOTE]
-> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu pod pewnymi ograniczeniami zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia. Ze względu na dostępne dla nas zasoby.
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu na koncie studenckim AWS zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
 
 ### Konto
 
