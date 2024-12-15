@@ -152,7 +152,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
 
 **Decyzja:** Z uwagi na wymienione wymagania, jako architekturę systemu wybrano **mikroserwisy**.
 
-**Opis:** Architektura mikroserwisów pozwoli to na łatwe skalowanie poszczególnych modułów, a także na podział pracy między zespołami. Każdy zespół może skupić się na swojej części dziedziny problemu. Może podejmować decyzje o wykorzystywanych w środku technologiach, co jest korzystne, gdy różne cześci systemu mają różne potrzeby. Istotne z perspektywy zespołu jest utrzymanie spójnych interfejsów dla innych serwisów, mogą one dowolnie edytować wnętrze serwisu tak długo, jak nie zmienia to jego publicznego API. Lokalność awarii pozwoli na utrzymanie wyższej niezawodności systemu niż w przypadku monolitu. Możliwe będzie też skalowanie poszczególnych modułów niezależnie, przenosząc siłę obliczeniową tam, gdzie jest ona najbardziej potrzebna. Wadą takiego rozwiązania jest konieczność bezstanowości serwisów oraz opóźnienia w komunikacji między nimi, jako że różne serwisy mogą być uruchamiane na różnych maszynach.
+**Opis:** Architektura mikroserwisów pozwoli na łatwe skalowanie poszczególnych modułów, a także na podział pracy między zespołami. Każdy zespół może skupić się na swojej części dziedziny problemu. Może podejmować decyzje o wykorzystywanych w środku technologiach, co jest korzystne, gdy różne cześci systemu mają różne potrzeby. Istotne z perspektywy zespołu jest utrzymanie spójnych interfejsów dla innych serwisów, mogą one dowolnie edytować wnętrze serwisu tak długo, jak nie zmienia to jego publicznego API. Lokalność awarii pozwoli na utrzymanie wyższej niezawodności systemu niż w przypadku monolitu. Możliwe będzie też skalowanie poszczególnych modułów niezależnie, przenosząc siłę obliczeniową tam, gdzie jest ona najbardziej potrzebna. Wadą takiego rozwiązania jest konieczność bezstanowości serwisów oraz opóźnienia w komunikacji między nimi, jako że różne serwisy mogą być uruchamiane na różnych maszynach.
 
 Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architektoniczne.
 
@@ -1198,7 +1198,7 @@ Zgodnie z mechanizmem [`M/04`: Wdrożenie w chmurze AWS](#m04-wdrożenie-w-chmur
 | **`c8g.48xlarge`**   | 192      | 384              |
 
 > [!NOTE]
-> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu pod pewnymi ograniczeniami zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia. Ze względu na dostępne dla nas zasoby.
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu pod pewnymi ograniczeniami zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
 
 <table>
   <tr>
@@ -1623,10 +1623,20 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
-    <tr>
-    <td><code>stop_line_mapping.stop_id && stop_line_mapping.line_id</code></td>
+  <tr>
+    <td><code>stop_line_mapping.id</code></td>
     <td>b-tree (unikalny)</td>
-    <td>Indeks złożony tworzony automatycznie przez bazę danych.</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>stop_line_mapping.stop_id</code></td>
+    <td>b-tree</td>
+    <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
+  </tr>
+  <tr>
+    <td><code>stop_line_mapping.line_id</code></td>
+    <td>b-tree</td>
+    <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
   </tr>
   <tr>
     <th colspan="3">Ograniczenia</th>
@@ -1661,7 +1671,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <td colspan="3"><code>line.name UNIQUE</code></td>
   </tr>
-    <tr>
+  <tr>
     <td colspan="3"><code>(stop_line_mapping.stop_id, stop_line_mapping.line_id, stop_line_mapping.order) UNIQUE</code></td>
   </tr>
 </table>
@@ -1690,7 +1700,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td><code>db.t4g.small</code></td>
+    <td><code>db.m7g.large</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1716,7 +1726,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td><code>gp2</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
