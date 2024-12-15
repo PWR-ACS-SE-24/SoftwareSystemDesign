@@ -1437,7 +1437,7 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
 
 ### Bilet
 
-Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch enumeratorów. Cztery spośród tych klas tworzą hierarchię dziedziczenia oferty biletowej. Abstrakcyjna klasa `TicketOffer`  zawiera wspólne elementy dla każdego z typów oferty biletowej, natomiast klasy `TimeLimitedOffer`, `SingleFareOffer` oraz `LongTermOffer` reprezentują dostępne rodzaje oferty biletowej i za wyjątkiem `SingleFareOffer` wprowadzają nowe dane. Oddzielny sposób reprezentacji klientowi informacji o różnych ofertach oraz wymagane w implementacji mechanizmy unikalne dla danego rodzaju oferty spowodowały, że zdecydowano się na zamodelowanie bazy danych w postaci podejścia _table-per-type_, czyli tabeli dla każdej z klas dziedziczących, łączonych z tabelą dla abstrakcyjnej klasy bazowej. Dodatkowo zdecydowana się na reprezentację enumeratorów w postaci tekstu, konkretniej `varchar(32)`, ze względu na większą czytelność danych kolumny w tabeli i braku ewentualnych problemów podczas dodania kolejnej wartości enumeratora na miejscu innym niż ostatnim. Podejście te jednak poświęca odrobinę wydajności, względem drugiego najpopularniejszego rozwiązania, czyli zastosowania liczby porządkowej odpowiadającej wartości enumeratora.
+Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch enumeratorów. Cztery spośród tych klas tworzą hierarchię dziedziczenia oferty biletowej. Abstrakcyjna klasa `TicketOffer` zawiera wspólne elementy dla każdego z typów oferty biletowej, natomiast klasy `TimeLimitedOffer`, `SingleFareOffer` oraz `LongTermOffer` reprezentują dostępne rodzaje oferty biletowej i za wyjątkiem `SingleFareOffer` wprowadzają nowe dane. Oddzielny sposób reprezentacji klientowi informacji o różnych ofertach oraz wymagane w implementacji mechanizmy unikalne dla danego rodzaju oferty spowodowały, że zdecydowano się na zamodelowanie bazy danych w postaci podejścia _table-per-type_, czyli tabeli dla każdej z klas dziedziczących, łączonych z tabelą dla abstrakcyjnej klasy bazowej. Dodatkowo zdecydowana się na reprezentację enumeratorów w postaci tekstu, konkretniej `varchar(32)`, ze względu na większą czytelność danych kolumny w tabeli i braku ewentualnych problemów podczas dodania kolejnej wartości enumeratora na miejscu innym niż ostatnim. Podejście te jednak poświęca odrobinę wydajności, względem drugiego najpopularniejszego rozwiązania, czyli zastosowania liczby porządkowej odpowiadającej wartości enumeratora.
 
 ![Diagram bazodanowy Clabbert](./images/database-diagram-clabbert.drawio.svg)
 
@@ -1514,7 +1514,16 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
     <th colspan="3">Ograniczenia</th>
   </tr>
   <tr>
+    <td colspan="3"><code>time_limited_offer.ticket_offer_id UNIQUE</code></td>
+  </tr>
+  <tr>
     <td colspan="3"><code>time_limited_offer.duration > 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>single_fare_offer.ticket_offer_id UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>long_term_offer.ticket_offer_id UNIQUE</code></td>
   </tr>
   <tr>
     <td colspan="3"><code>long_term_offer.interval_in_days > 0</code></td>
@@ -1532,6 +1541,9 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
     <td colspan="3"><code>ticket.purchase_time <= NOW()</code></td>
   </tr>
   <tr>
+    <td colspan="3"><code>validation.ticket_id UNIQUE</code></td>
+  </tr>
+  <tr>
     <td colspan="3"><code>validation.time <= NOW()</code></td>
   </tr>
 </table>
@@ -1539,6 +1551,7 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
 Ze względu na duże obciążenie bazy danych w podsystemie `clabbert`, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
+
 - `time_limited_offer`: 16 + 16 + 16 = 48 bajtów,
 - `single_fare_offer`: 16 + 16 = 32 bajty,
 - `long_term_offer`: 16 + 16 + 4 = 36 bajtów,
@@ -1547,6 +1560,7 @@ Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę 
 - `validation`: 16 + 16 + 16 + 8 = 56 bajtów.
 
 Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wiersz:
+
 - `time_limited_offer`: 28 + 28 = 56 bajtów,
 - `single_fare_offer`: 28 + 28 = 56 bajtów,
 - `long_term_offer`: 28 + 28 = 56 bajtów,
@@ -1917,6 +1931,21 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 ## Bilet
 
 TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
+
+### API
+
+| **Rola**    | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                                                                                                |
+| ----------- | ---------- | ------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `guest`     | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych.                                                                             |
+| `guest`     | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletowej.                                                                                |
+| `passenger` | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.                                                                                     |
+| `passenger` | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                                                                                                           |
+| `passenger` | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.                                                                                          |
+| `passenger` | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Walidacja biletu.                                                                                                       |
+| `inspector` | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Inspekcja biletu.                                                                                                       |
+| `admin`     | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletowej.                                                                                      |
+| `admin`     | `PUT`      | `/ext/v1/offers/:id`           | TODO          | Aktualizacja oferty biletowej, jeśli nie została zakupiona przez żadnego pasażera.                                      |
+| `admin`     | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Usunięcie oferty biletowej, jeśli nie została zakupiona przez żadnego pasażera, w przeciwnym razie jego zdezaktywowanie |
 
 ## Płatność
 
