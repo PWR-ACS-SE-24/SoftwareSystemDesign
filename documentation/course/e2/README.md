@@ -1200,7 +1200,11 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
 
 ### Bilet
 
-TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+TODO: opis
+
+![Diagram bazodanowy Clabbert](./images/database-diagram-clabbert.drawio.svg)
+
+TODO: tabelka
 
 <table>
   <tr>

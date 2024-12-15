@@ -436,8 +436,8 @@ Reguły zostały podzielone według encji, których dotyczą oraz są uporządko
 - `REG/19/10` - Oferta biletu musi zawierać cenę w PLN.
 - `REG/19/11` - Cena w PLN musi być większa od zera.
 - `REG/19/12` - Oferta biletu może być wykorzystana w wielu biletach.
-- `REG/19/13` - Oferta biletu musi mieć status aktywności.
-- `REG/19/14` - Status aktywności jest domyślnie aktywny.
+- `REG/19/13` - Oferta biletu musi mieć status.
+- `REG/19/14` - Status jest domyślnie aktywny.
 
 ### Status biletu (`TicketStatus`)
 - `REG/20/01` - Istnieją trzy statusy biletu: zakupiony, w trakcie realizacji, anulowany.
