@@ -1038,7 +1038,8 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ### Bilet
 
-W porównaniu do modelu opisanego w specyfikacji wymagań, dodano enumerator TicketStatus oraz odpowiadające mu pole status w klasie Ticket. Enumerator ten przechowuje informacje o statusie biletu, co stało się konieczne ze względu na asynchroniczny charakter komunikacji z serwisem odpowiedzialnym za płatności. W pierwotnym założeniu status ten nie był potrzebny, ponieważ bilet był generowany natychmiast po pobraniu środków z portfela, a proces doładowania portfela funkcjonował jako oddzielna operacja. Jednak decyzja o przejściu na architekturę mikroserwisową zmieniła ten kontekst. Z punktu widzenia serwisu zarządzającego biletami, serwis płatności działa jako "czarna skrzynka", a asynchroniczna komunikacja wymagała wprowadzenia mechanizmu do reprezentacji statusu biletu.
+W porównaniu do modelu opisanego w specyfikacji wymagań, dodano enumerator `TicketStatus` oraz odpowiadające mu pole status w klasie `Ticket`. Enumerator ten przechowuje informacje o statusie biletu, co stało się konieczne ze względu na asynchroniczny charakter komunikacji z serwisem odpowiedzialnym za płatności. W pierwotnym założeniu status ten nie był potrzebny, ponieważ bilet był generowany natychmiast po pobraniu środków z portfela, a proces doładowania portfela funkcjonował jako oddzielna operacja. Jednak decyzja o przejściu na architekturę mikroserwisową zmieniła ten kontekst. Z punktu widzenia serwisu zarządzającego biletami, serwis płatności działa jako "czarna skrzynka", a asynchroniczna komunikacja wymagała wprowadzenia mechanizmu do reprezentacji statusu biletu.
+Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z klasy `Ticket`, które po tej zmianie było zbędne i redundantne, UUID jest unikalny i wystarczający do identyfikacji biletu.
 
 ![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
