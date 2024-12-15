@@ -59,7 +59,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
   2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
   3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
   4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
-- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie).
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z poprzednimi [wyliczeniami](../e1/README.md#wydajność)).
 
 # Decyzje i ich uzasadnienie
 
@@ -150,9 +150,9 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
   </tr>
 </table>
 
-**Decyzja:** Z uwagi na wymienione wymagania, jako architekturę systemu wybrano **mikroserwisy**. 
+**Decyzja:** Z uwagi na wymienione wymagania, jako architekturę systemu wybrano **mikroserwisy**.
 
-**Opis:** Architektura mikroserwisów pozwoli to na łatwe skalowanie poszczególnych modułów, a także na podział pracy między zespołami. Każdy zespół może skupić się na swojej części dziedziny problemu. Może podejmować decyzje o wykorzystywanych w środku technologiach, co jest korzystne, gdy różne cześci systemu mają różne potrzeby. Istotne z perspektywy zespołu jest utrzymanie spójnych interfejsów dla innych serwisów, mogą one dowolnie edytować wnętrze serwisu tak długo, jak nie zmienia to jego publicznego API. Lokalność awarii pozwoli na utrzymanie wyższej niezawodności systemu niż w przypadku monolitu. Możliwe będzie też skalowanie poszczególnych modułów niezależnie, przenosząc siłę obliczeniową tam, gdzie jest ona najbardziej potrzebna. Wadą takiego rozwiązania jest konieczność bezstanowości serwisów oraz opóźnienia w komunikacji między nimi, jako że różne serwisy mogą być uruchamiane na różnych maszynach.
+**Opis:** Architektura mikroserwisów pozwoli na łatwe skalowanie poszczególnych modułów, a także na podział pracy między zespołami. Każdy zespół może skupić się na swojej części dziedziny problemu. Może podejmować decyzje o wykorzystywanych w środku technologiach, co jest korzystne, gdy różne cześci systemu mają różne potrzeby. Istotne z perspektywy zespołu jest utrzymanie spójnych interfejsów dla innych serwisów, mogą one dowolnie edytować wnętrze serwisu tak długo, jak nie zmienia to jego publicznego API. Lokalność awarii pozwoli na utrzymanie wyższej niezawodności systemu niż w przypadku monolitu. Możliwe będzie też skalowanie poszczególnych modułów niezależnie, przenosząc siłę obliczeniową tam, gdzie jest ona najbardziej potrzebna. Wadą takiego rozwiązania jest konieczność bezstanowości serwisów oraz opóźnienia w komunikacji między nimi, jako że różne serwisy mogą być uruchamiane na różnych maszynach.
 
 Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architektoniczne.
 
@@ -160,9 +160,8 @@ Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architek
 
 ## `M/02`: Load balancing usług
 
-TODO @mlodybercik
-
 **Problem:**
+Ze względu na wymogi `NF/REL/01`, `NF/REL/07`, `NF/PRF/01` i `NF/PRF/02` system powinien charakteryzować się wysoką dostępnością i niezawodnością. W związku z tym, konieczne jest zastosowanie pewnego podejścia, które to zagwarantuje. Rozwiązanie to powinno pozwalać na minimalizowanie czasu przestoju systemu w przypadku awarii lub niedostępności któregokolwiek z serwisów. Musi ono również umożliwiać obsługę dużej liczby użytkowników jednocześnie bez utraty wydajności.
 
 **Rozwiązania:**
 
@@ -173,38 +172,73 @@ TODO @mlodybercik
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Jedno urządzenie na wszystkie usługi</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
+        <li>Brak konieczności zmian w kodzie aplikacji</li>
+        <li>Brak konieczności zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak skalowalności</li>
+        <li>Brak niezawodności</li>
+        <li>Wydajność zależna od mocy obliczeniowej jednej maszyny</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Jedno urządzenie na każdą usługę</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Minimalna niezawodność</li>
+        <li>Minimalna dostępność</li>
+        <li>Wydajność jednej usługi nie wpływa na inne</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Potrzeba tylu maszyn ile usług</li>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th><i>Load balancing</i> na wielu maszynach</th>
+    <td>
+      <ul>
+        <li>Wysoka niezawodność</li>
+        <li>Wysoka skalowalność</li>
+        <li>Wysoka wydajność</li>
+        <li>Możliwość minimalizowania kosztów</li>
+        <li>Brak minimalnej i maksymalnej liczby maszyn</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
+        <li>Wymaga dużych zmian w kodzie aplikacji</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **Load balancing**.
 
-**Opis:**
+**Opis:** Skalowanie horyzontalne polega na zwiększaniu liczby instancji serwisów, zamiast zwiększania mocy obliczeniowej pojedynczej maszyny. Pozwoli to na zwiększenie niezawodności systemu, a także umożliwi obsługę dużej liczby użytkowników jednocześnie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu. Skalowanie horyzontalne w odpowiednich warunkach pozwoli również na minimalizowanie kosztów, ponieważ pozwoli na chwilowe zwiększenie wydajności systemu bez konieczności inwestowania w droższe maszyny. Dodatkowym atutem jest możliwość zastosowania różnych narzędzi do zarządzania obciążeniem takich jak _load balancer_ czy _auto acaling_.
+
+_Load balancer_ to oprogramowanie (kiedyś urządzenie) odpowiedzialne za równomierne rozłożenie obciążenia na dostępne serwery. Jest ono odpowiedzialne za przekierowywanie ruchu do serwerów, które są w stanie obsłużyć kolejne otrzymane zapytanie. Istnieje wiele różnych algorytmów, które pozwalają na wybór odpowiedniego serwera, takich jak _round robin_ (algorytm karuzelowy), _least connections_ (najmniejsza liczba połączeń) czy _IP nash_ (decyzja na podstawie funkcji skrótu), które pozwalają rozłożyć obciążenie w sposób optymalny.
+
+_Auto Scaling_ to narzędzie, które pozwala na automatyczne skalowanie liczby instancji serwisów w zależności od obciążenia. Pozwala to na minimalizowanie kosztów, ponieważ pozwala na zwiększenie wydajności systemu w momencie, gdy jest to konieczne, a także na zmniejszenie jej w momencie, gdy nie jest ona potrzebna.
 
 **Źródła:**
+
+- [Wikipedia - High availability](https://en.wikipedia.org/wiki/High_availability)
+- [Wikipedia - Load Balancing](<https://en.wikipedia.org/wiki/Load_balancing_(computing)>)
+- [AWS - Load Balancing](https://aws.amazon.com/what-is/load-balancing/)
+- [Understanding High Availability and Scalability](https://newsletter.simpleaws.dev/p/understanding-aws-high-availability-scalability)
+- [Wikipedia - Scalability](https://en.wikipedia.org/wiki/Scalability)
 
 ## `M/03`: Healthchecki dla serwisów
 
@@ -256,9 +290,7 @@ TODO @jakubzehner
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
-TODO @mlodybercik: porównanie z on-premise i najlepiej innymi chmurami
-
-**Problem:**
+**Problem:** Przy projektowaniu systemu bardzo ważnym aspektem jest wybór odpowiedniej infrastruktury wdrożeniowej. Zmiana infrastruktury w późniejszym etapie rozwoju systemu może być bardzo kosztowna i czasochłonna. W związku z tym, konieczne jest dokonanie odpowiedniego wyboru już na etapie projektowania systemu. Wraz z rozważaniami dotyczącymi wyboru infrastruktury, należy wziąć pod uwagę takie aspekty jak niezawodność, skalowalność, bezpieczeństwo, koszty oraz dostępność usług.
 
 **Rozwiązania:**
 
@@ -269,44 +301,124 @@ TODO @mlodybercik: porównanie z on-premise i najlepiej innymi chmurami
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th><i>on-premise</i></th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Pełna kontrola nad danymi</li>
+        <li>Brak zależności od dostawcy usług</li>
+        <li>Niski koszt przy wysokim obciążeniu</li>
+        <li>Niskie opóźnienia</li>
+        <li>Brak ukrytych kosztów</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Wysoki koszt początkowy</li>
+        <li>Wysoki koszt utrzymania</li>
+        <li>Brak możliwości skalowania w dół</li>
+        <li>Brak możliwości szybkiej modernizacji</li>
+        <li>Płacenie za utrzymanie całej infrastruktury nawet gdy korzystamy z jej części</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Chmura</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Brak konieczności inwestowania w sprzęt</li>
+        <li>Możliwość szybkiego skalowania</li>
+        <li>Wysoka niezawodność</li>
+        <li>Bezpieczeństwo danych</li>
+        <li>Wysoka dostępność usług</li>
+        <li>Możliwość szybkiej modernizacji</li>
+        <li>Możliwość dostosowania infrastruktury do indywidualnych potrzeb</li>
+        <li>Płacisz tylko za to co używasz</li>
+        <li>Duży wybór dostawców usług chmurowych</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak pełnej kontroli nad danymi</li>
+        <li>Zależność od dostawcy usług</li>
+        <li>Stosunkowo wysoki koszt przy wysokim obciążeniu</li>
+        <li>Stosunkowo wysokie opóźnienia</li>
+        <li>Ukryte koszta</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Amazon Web Services</th>
+    <td>
+      <ul>
+        <li>Renoma i dopracowany ekosystem</li>
+        <li>Bardzo duża liczba punktów dostępowych</li>
+        <li>Duża liczba usług</li>
+        <li>Największa liczba centrów danych</li>
+        <li>Najniższa cena</li> 
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Brak rozwiązań hybrydowych</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Google Cloud Platform</th>
+    <td>
+      <ul>
+        <li>Dużo rozwiązań związanych z uczeniem maszynowym</li>
+        <li>Bardzo dobre narzędzia do analizy danych</li>
+        <li>100% energii z odnawialnych źródeł</li>
+        <li>Doskonałe wsparcie dla Kubernetes</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Limitowana liczba usług typu enterprise</li>
+      </ul>
+    </td>
+  </tr>
+    <tr>
+    <th>Microsoft Azure</th>
+    <td>
+      <ul>
+        <li>Interoperacyjność z innymi produktami Microsoftu</li>
+        <li>Wsparcie dla hybrydowego podejścia z <i>on-premise</i></li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Najmłodsza z trójki platform</li>
+        <li>Najmniejsza liczba usług</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-**Opis:**
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **infrastruktury chmurowej**, a zważając na dużą liczbę usług, dużą liczbę centrów danych oraz najniższą cenę, zdecydowano się na skorzystanie z usług chmurowych **Amazon Web Services**.
+
+**Opis:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. Oba podejścia mają swoje zalety i wady zależne od kontekstu użycia. Infrastruktura chmurowa to podejście, które polega na korzystaniu z istniejącej infrastruktury dostawcy usług chmurowych. Zamiast sprzętu trzymanego w pewnej lokalizacji zarządzanej przez firmę, korzysta się ze sprzętu i oprogramowania dzierżawionego od dostawcy usług chmurowych. W zależności od typu dostawcy usług, może on dostarczać różnych funkcjonalności na różnych warstwach abstrakcji. Ograniczając się do najpopularniejszych modeli może to być infrastruktura jako usługa (IaaS), platforma jako usługa (PaaS) lub oprogramowanie jako usługa (SaaS). Porzucając funkcjonalności z pewnych warstw tej piramidy jesteśmy w stanie ograniczyć koszta. Jest to bardzo dobre rozwiązanie dla firm, które nie wiedzą jakie będą ich potrzeby w przyszłości, ponieważ pozwala na elastyczne dostosowanie infrastruktury do indywidualnych potrzeb.
+
+Jednym z najpopularniejszych dostawców tego typu usług jest Amazon Web Services (AWS), oferujący szeroki wachlarz narzędzi wspierających tworzenie, wdrażanie oraz zarządzanie aplikacjami internetowymi. AWS powstało w 2006 roku udostępniając swoją pierwszą i najpopularniejszą usługę Elastic Compute Cloud (EC2). Od tego czasu zdobyło dużą popularność i renomę na rynku. Amazon Web Services posiada bardzo dużą liczbę usług, które pozwalają na bardzo dokładne dostosowanie infrastruktury do indywidualnych potrzeb. Posiada również bardzo dużą liczbę centrów danych, co pozwala na minimalizowanie odległości między klientami a centrami danych co skutkuje mniejszymi opóźnieniami i większym zadowoleniem klientów. Przez swoją popularność i dużą liczbę użytkowników, Amazon Web Services jest w stanie oferować swoje usługi w bardzo atrakcyjnych cenach.
 
 **Źródła:**
+
+- [AWS - _on-premise_ vs cloud](https://aws.amazon.com/compare/the-difference-between-saas-and-on-premises/)
+- [Coursera - AWS vs GCP vs Azure](https://www.coursera.org/articles/aws-vs-azure-vs-google-cloud)
+- [Digitial Ocean - AWS vs GCP vs Azure](https://www.digitalocean.com/resources/articles/comparing-aws-azure-gcp)
 
 ## `M/05`: Kolejki SQS dla płatności i emaili
 
-TODO @mlodybercik: dlaczego SQS, a nie SNS
-
-**Problem:**
+**Problem:** Ze względu na wymóg `NF/REL/09` należy w dokładny sposób rozważyć operacje związane z płatnościami i wysyłaniem emaili. Konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zapewnienie niezawodności i wydajności tych operacji. W związku z tym, konieczne jest przeanalizowanie różnych rozwiązań, które pozwolą na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie.
 
 **Rozwiązania:**
 
@@ -317,44 +429,52 @@ TODO @mlodybercik: dlaczego SQS, a nie SNS
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>RPC</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
+        <li>Synchroniczność</li>
+        <li>Synchroniczna odpowiedź</li>
+        <li>Brak konieczności zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak niezawodności</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Kolejka</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Wysoka niezawodność</li>
+        <li>Asynchroniczność</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Przekazanie odpowiedzi musi być zaimplementowane osobno</li>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Dla krytycznych operacji związanych z płatnościami i wysyłaniem emaili, zdecydowano się na zastosowanie **kolejki**.
 
-**Opis:**
+**Opis:** Kolejka to mechanizm, który pozwala na umieszczenie operacji w kolejce, z której zostaną one pobrane. Priorytetyzowane jest wykonanie operacji nad wydajnością wykonywania tej opracji. Pozwala to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie. W przypadku awarii jednej z instancji serwisów, operacja w kolejce nie zniknie, co sprawi, że inne instancje będą w stanie przejąć jej obowiązki. Pozwoli to na minimalizację czasu przestoju systemu i sprawi, że konkretne operacje na pewno zostaną wykonane.
+
+Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiązania jest _Simple Queue Service_ (SQS). Pozwala ona na utworzenie wielu różnego typu kolejek, które prioritetyzują prędkość wykonania operacji nad wydajnością lub odwrotnie. Wykorzystanie do tego AWS sprawia, że developerzy nie muszą martwić się o skalowanie, dostępność czy bezpieczeństwo danych, ponieważ jest to zapewnione przez dostawcę usług.
 
 **Źródła:**
+
+- [microservices.io - Remote Procedure Invocation](https://microservices.io/patterns/communication-style/rpi.html)
+- [microservices.io - Messaging](https://microservices.io/patterns/communication-style/messaging.html)
 
 ## `M/06`: Izolacja siecią wewnętrzną VPC
 
-TODO @mlodybercik
-
-**Problem:**
+**Problem:** System powinien być zabezpieczony przed dostępem osób trzecich. W związku z tym, konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zminimalizowanie ryzyka nieautoryzowanego dostępu do systemu. Rozwiązanie to powinno pozwalać na izolację poszczególnych serwisów, a także na kontrolę dostępu do nich.
 
 **Rozwiązania:**
 
@@ -365,38 +485,61 @@ TODO @mlodybercik
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Security through obscurity</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Minimum bezpieczeństwa</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Bardzo krytykowane podejście</li>
+        <li>Brak gwarancji bezpieczeństwa</li>
+        <li>Brak kontroli dostępu</li>
       </ul>
     </td>
   </tr>
-  <tr>
-    <th>Rozwiązanie 2</th>
+    <tr>
+    <th>Każda maszyna na adresie publicznym</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Komunikacja między usługami może wymagać autoryzacji</li>
+        <li>Niska wydajność</li>
+      </ul>
+    </td>
+  </tr>
+    </tr>
+    <tr>
+    <th><i>Virtual Private Cloud</i></th>
+    <td>
+      <ul>
+        <li>Wysoka niezawodność</li>
+        <li>Bezpieczeństwo gwarantowane przez dostawcę usług</li>
+        <li>Kontrola dostępu</li>
+        <li>Ziarnistość konfiguracji</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Trudne w implementacji</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W związku z wymaganiami `NF/REL/04` i `NF/REL/06`, zdecydowano się na zastosowanie **Virtual Private Cloud**. Pozwoli to na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, a także na kontrolę dostępu do poszczególnych serwisów.
 
-**Opis:**
+**Opis:** Amazon Virtual Private Cloud (AWS VPC) to usługa chmurowa oferowana przez Amazon Web Services, która umożliwia tworzenie izolowanych sieci wirtualnych w obrębie chmury AWS. Dzięki VPC użytkownicy mogą definiować własne środowisko sieciowe, w tym wybierać zakresy adresów IP, konfigurować podsieci, definiować tabele routingu oraz stosować mechanizmy kontroli dostępu, takie jak listy kontroli dostępu (ACL) czy grupy zabezpieczeń (Security Groups). AWS VPC zapewnia pełną kontrolę nad przepływem ruchu sieciowego oraz umożliwia integrację z innymi usługami AWS, takimi jak EC2, RDS czy Lambda. Dodatkowo można łączyć VPC z lokalnymi centrami danych za pomocą VPN lub AWS Direct Connect, co pozwala na stworzenie hybrydowego środowiska chmurowego. Usługa VPC jest kluczowym elementem dla budowy skalowalnych, bezpiecznych i wysokowydajnych aplikacji w chmurze.
 
 **Źródła:**
+
+- [Security through obscurity](https://pl.wikipedia.org/wiki/Security_through_obscurity)
+- [AWS - VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
 
 ## `M/07`: Wzorzec API Gateway
 
@@ -650,6 +793,7 @@ W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - 
 **Opis:** JWT będzie lepszym rozwiązaniem z uwagi na lepsze przystosowanie do architektury mikroserwisowej. Nie potrzebują one stanu i mogą być weryfikowane bez dostępu do bazy danych, a nawet na innym serwerze niż wystawione. W przypadku zastosowania sesji, potrzebna byłaby synchronizacja stanu między serwisami. Główną, a w zasadzie jedyną na potrzeby projektowanego systemu wadą JWT jest brak możliwości unieważnienia tokenu, bez zastosowania dodatkowych mechanizmów (np. blacklista tokenów).
 
 Współczesne rozwiązania autoryzacji opierające się na JWT wykorzystują dwa tokeny:
+
 - `access_token` - token o krótkim czasie ważności, służący do autoryzacji użytkownika przy każdym zapytaniu
 - `refresh_token` - token o długim czasie ważności, służący do odświeżenia `access_token` po jego wygaśnięciu
 
@@ -1033,13 +1177,31 @@ W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** o
 
 Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia `1` (pojedyncza instancja) oraz `*` (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego, stereotypem [`<<manifest>>`](https://www.uml-diagrams.org/deployment-diagrams.html#manifestation).
 
-TODO @tchojnacki + @mlodybercik: zmienić języki programowania
+TODO @tchojnacki: We usuń swoje TODO ale zostaw moje, bo zapomnę
 
 ![Diagram rozmieszczenia](./images/deployment-diagram.drawio.svg)
 
 ## Opis węzłów
 
-TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ
+Zgodnie z mechanizmem [`M/04`: Wdrożenie w chmurze AWS](#m04-wdrożenie-w-chmurze-aws) system zostanie wdrożony na architekturze chmurowej AWS. Ze względu na mechanizm [`M/02`: Load balancing usług](#m02-load-balancing-usług) zdecydowano się na stworzenie infrastruktury w oparciu o **Elastic Compute Cloud**. EC2 to usługa chmurowa, która pozwala na uruchamianie maszyn wirtualnych w chmurze AWS. Amazon dostarcza wiele rodzajów instancji EC2, które różnią się pod względem mocy obliczeniowej, pamięci, prędkości dysku, a także ceny[^instance-types]. Każda klasa gwarantuje pewną znaną minimalną powtarzalną wydajność. W związku z tym, zdecydowano się na wykorzystanie rodziny instancji `c8g` która wykorzystuje najnowszą generację procesorów ARM `AWS Graviton4`. Użycie przez AWS własnych procesorów gwarantuje wydajność i najlepszy stosunek wydajności do kosztów. W związku z różnym zapotrzebowaniem na moc obliczeniową, istnieją różne typy instancji w ramach rodziny `c8g`:
+
+| **Model**            | **vCPU** | **Pamięć (GiB)** |
+| -------------------- | -------- | ---------------- |
+| **`c8g.medium`**     | 1        | 2                |
+| **`c8g.large`**      | 2        | 4                |
+| **`c8g.xlarge`**     | 4        | 8                |
+| **`c8g.2xlarge`**    | 8        | 16               |
+| **`c8g.4xlarge`**    | 16       | 32               |
+| **`c8g.8xlarge`**    | 32       | 64               |
+| **`c8g.12xlarge`**   | 48       | 96               |
+| **`c8g.16xlarge`**   | 64       | 128              |
+| **`c8g.24xlarge`**   | 96       | 192              |
+| **`c8g.metal-24xl`** | 96       | 192              |
+| **`c8g.metal-48xl`** | 192      | 384              |
+| **`c8g.48xlarge`**   | 192      | 384              |
+
+> [!NOTE]
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu na koncie studenckim AWS zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
 
 <table>
   <tr>
@@ -1050,14 +1212,6 @@ TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, 
     <th>Hostname</th>
   </tr>
   <tr>
-    <th>Węzeł wirtualny?</th>
-    <td>Tak/nie</td>
-  </tr>
-  <tr>
-    <th>Centrum danych?</th>
-    <td>Nie/PDC/BDC</td>
-  </tr>
-  <tr>
     <th>OS</th>
     <td>System operacyjny wraz z wersją</td>
   </tr>
@@ -1066,60 +1220,33 @@ TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, 
     <td></td>
   </tr>
   <tr>
+    <th>Adres publiczny</th>
+    <td>Tak/Nie</td>
+  </tr>
+  <tr>
     <th colspan="2">Konfiguracja sprzętowa</th>
   </tr>
   <tr>
-    <th>Dostawca</th>
-    <td>Nazwa sprzętu producenta</td>
+    <th>Nazwa konfiguracji</th>
+    <td><code>c4g.medium</code></td>
   </tr>
   <tr>
-    <th>Procesor</th>
-    <td>Liczba i rodzaj procesorów</td>
-  </tr>
-  <tr>
-    <th>RAM</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>HDD</th>
-    <td>Wielkość i liczba dysków</td>
+    <th>Typ dysku twardego</th>
+    <td>np. <code>GP3</code>; <code>magnetic</code></td>
   </tr>
   <tr>  
-    <th>RAID i HDD netto</th>
-    <td>Rodzaj konfiguracji RAID i wielkość netto HDD.</td>
+    <th>Wielkość dysku</th>
+    <td>8GB</td>
   </tr>
-  <tr>
-    <th>RAID?</th>
-    <td>Brak/Do jakiej macierzy podłączony</td>
-  </tr>
-  <tr>
-    <th>NIC bonding</th>
-    <td>Nie/Tak</td>
-  </tr>
-  <tr>
-    <th colspan="2">Konfiguracja oprogramowania</th>
-  </tr>
-  <tr>
-    <th>Użytkownicy i grupy użytkowników</th>
-    <td>Lista użytkowników do założenia na OSie.</td>
-  </tr>
-  <tr>
-    <th>Poziom pracy systemu, czy jest wymagane środowisko graficzne</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Dodatkowe pakiety z dystrybucji systemu</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Dodatkowe pakiety spoza dystrybucji systemu</th>
-    <td>...</td>
+  <tr>  
+    <th>Szyfrowanie dysku</th>
+    <td>Tak/Nie</td>
   </tr>
 </table>
 
 # Widok informacyjny
 
-Słownik pojęć dla jest w [dokumencie z wymaganiami](../e1/README.md#słownik-pojęć).
+Słownik pojęć znajduje się w [dokumencie z wymaganiami](../e1/README.md#słownik-pojęć).
 
 ## Model informacyjny
 
@@ -1148,7 +1275,7 @@ TODO @piterek130: opis zmian
 
 ### Logistyka
 
-TODO @mlodybercik: opis zmian
+W celu zwiększenia wygody użytkowników, dodano atrybut `ordered` do relacji między `Stop` a `Line`, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
 
 ![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
@@ -1158,25 +1285,30 @@ Zgodnie z mechanizmem [`M/10`](#m10-relacyjne-bazy-danych-acid-na-rds), wszystki
 
 Zdecydowano się na wykorzystanie silnika **PostgreSQL** do wszystkich relacyjnych baz systemu, ze względu na jego popularność, znajomość w zespole, wsparcie na AWS RDS oraz licencję open-source. Wykorzystano najnowszą stabilną wersję **17.2**, która zapewnia najnowsze funkcje i poprawki bezpieczeństwa. PostgreSQL nie oferuje wersji LTS, natomiast każda wersja jest wspierana przez co najmniej 5 lat[^postgres-version].
 
-W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację modeli ogólnego przeznaczenia **`db.t4g.*`**, polecaną przez AWS jako dobry domyślny wybór. Oferowane w zakresie generacji klasy różnią się głównie liczbą vCPU oraz dostępną pamięcią RAM[^rds-instance-types]:
+W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację modeli ogólnego przeznaczenia **`db.m7g.*`**, polecaną przez AWS jako dobry domyślny wybór. Oferowane w zakresie generacji klasy różnią się głównie liczbą vCPU oraz dostępną pamięcią RAM[^rds-instance-types]:
 
-| **Model**            | **vCPU** | **Pamięć (GiB)** |
-| -------------------- | -------- | ---------------- |
-| **`db.t4g.micro`**   | 2        | 1                |
-| **`db.t4g.small`**   | 2        | 2                |
-| **`db.t4g.medium`**  | 2        | 4                |
-| **`db.t4g.large`**   | 2        | 8                |
-| **`db.t4g.xlarge`**  | 4        | 16               |
-| **`db.t4g.2xlarge`** | 8        | 32               |
+| **Model**             | **vCPU** | **Pamięć (GiB)** |
+| --------------------- | -------- | ---------------- |
+| **`db.m7g.large`**    | 2        | 8                |
+| **`db.m7g.xlarge`**   | 4        | 16               |
+| **`db.m7g.2xlarge`**  | 8        | 32               |
+| **`db.m7g.4xlarge`**  | 16       | 64               |
+| **`db.m7g.8xlarge`**  | 32       | 128              |
+| **`db.m7g.12xlarge`** | 48       | 192              |
+| **`db.m7g.16xlarge`** | 64       | 256              |
 
 Jako model składowania dla wszystkich RDS wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez AWS typem generalnego przeznaczenia.
 
 W przedstawionych poniżej diagramach bazodanowych zastosowano następującą notację:
+
 - `PK` w lewej kolumnie - klucz główny,
 - `FK` w lewej kolumnie - klucz obcy,
 - `*` w lewej kolumnie - pole wymagane (brak gwiazdki oznacza pole opcjonalne),
-- podkreślenie nazwy kolumny - pole unikalne,
+- podkreślenie nazwy kolumny - unikalna wartość,
 - liczności powiązań oznaczone poprzez notację [crow's foot](https://vertabelo.com/blog/crow-s-foot-notation/).
+
+> [!NOTE]
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu na koncie studenckim AWS zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
 
 ### Konto
 
@@ -1225,7 +1357,7 @@ Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, be
   </tr>
 </table>
 
-Z uwagi na średnie obciążenie serwisu, jako klasę instancji wybrano **`db.t4g.medium`**. Wersja `medium` oferuje 2 vCPU oraz 4 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+Z uwagi na średnie obciążenie serwisu, jako klasę instancji wybrano **`db.m7g.large`**. Wersja `large` oferuje 2 vCPU oraz 8 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to: 16 + 255 + 255 + 60 + 1 + 8 + 16 = 611 bajtów. Oprócz tego, stosowane są dwa indeksy dodatkowe, o estymacjach 4 + 4 / 8 = 5 bajtów oraz 255 + 4 = 259 bajtów. Sumarycznie, rząd tabeli wynosi 611 + 5 + 259 = 875 bajtów, czyli w zaokrągleniu w górę **1 KB na użytkownika**. Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia], górna granica wynosi **2 mln unikalnych użytkowników** (2 GB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (1.2 GB). Ponieważ minimalny rozmiar bazy danych na RDS wynoszący **20 GB** i tak przerasta potrzeby systemu, został on wybrany jako początkowy rozmiar bazy z pomniejszeniem przyrostu do **1 GB rocznie**, biorąc pod uwagę to, że każda aproksymacja zawyżała wynik oraz istnieje nadwyżka miejsca początkowego.
 
@@ -1253,7 +1385,7 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td><code>db.t4g.medium</code></td>
+    <td><code>db.m7g.large</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1574,7 +1706,92 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
 
 ### Logistyka
 
-TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
+
+![Diagram bazodanowy Leprechaun](./images/database-diagram-leprechaun.drawio.svg)
+
+<table>
+  <tr>
+    <th colspan="3">Indeksy</th>
+  </tr>
+  <tr>
+    <th>Kolumna</th>
+    <th>Typ</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <td><code>stop.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+    <tr>
+    <td><code>accident.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>route.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>line.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>vehicle.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>stop_line_mapping.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>stop_line_mapping.stop_id</code></td>
+    <td>b-tree</td>
+    <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
+  </tr>
+  <tr>
+    <td><code>stop_line_mapping.line_id</code></td>
+    <td>b-tree</td>
+    <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
+  </tr>
+  <tr>
+    <th colspan="3">Ograniczenia</th>
+  </tr>
+  <tr>
+    <td colspan="3"><code>accident.time <= CURRENT_TIMESTAMP</code>¹</td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>accident.description <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>stop.name <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>route.start_time => CURRENT_TIMESTAMP</code>¹</td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>(route.end_time => CURRENT_TIMESTAMP) AND (route.start_time < route.end_time)</code>¹</td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>vehicle.side_number <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>vehicle.side_number UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>line.name <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>(stop_line_mapping.stop_id, stop_line_mapping.line_id, stop_line_mapping.order) UNIQUE</code></td>
+  </tr>
+</table>
+
+¹ - ograniczenia te będą w postaci `TRIGGER`ów, a nie `CHECK`ów aby uniknąć problemów z przywracaniem kopii zapasowej.
 
 <table>
   <tr>
@@ -1588,17 +1805,17 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
   <tr>
     <th>Identyfikator</th>
     <td><code>identifier</code></td>
-    <td>np. <code>unikalny-identyfikator-rds</code></td>
+    <td><code>rds-leprechaun</code></td>
   </tr>
   <tr>
     <th>Silnik i wersja</th>
     <td><code>engine</code>, <code>engine_version</code></td>
-    <td>np. PostgreSQL 14.14-R1</td>
+    <td>PostgreSQL 17.2</td>
   </tr>
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td>np. <code>db.t3.micro</code></td>
+    <td><code>db.m7g.large</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1606,17 +1823,17 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
   <tr>
     <th>Nazwa bazy</th>
     <td><code>db_name</code></td>
-    <td>np. <code>moja_baza</code></td>
+    <td><code>leprechaun</code></td>
   </tr>
   <tr>
     <th>Użytkownik</th>
     <td><code>username</code></td>
-    <td>np. <code>moj_uzytkownik</code></td>
+    <td><code>postgres</code></td>
   </tr>
   <tr>
     <th>Port</th>
     <td><code>port</code></td>
-    <td>np. <code>5432</code></td>
+    <td><code>5432</code></td>
   </tr>
   <tr>
     <th colspan="3">Składowanie</th>
@@ -1624,33 +1841,40 @@ TODO @mlodybercik: Dodać diagram bazodanowy do Leprechaun, dodać uzasadnienia 
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td>np. <code>gp2</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
     <td><code>storage_encrypted</code></td>
-    <td>TAK/NIE</td>
+    <td>NIE</td>
   </tr>
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>np. 20</td>
+    <td>20</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>np. 5</td>
+    <td>0.175</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>np. 7</td>
+    <td>7</td>
   </tr>
 </table>
+
+Zważając na to, że dane w bazie są danymi które są publiczne i nie są wrażliwe, zdecydowano się na brak szyfrowania danych oraz ustawienie retencji kopii zapasowych na 7 dni. Ze względu na małą ilość danych i brak skomplikowanych operacji na bazie danych, zdecydowano się na klasę instancji **`db.m7g.large`**.
+
+Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
+
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 4 + 4 czyli 40 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 8 bajtów, otrzymujemy 48 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 160MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 100MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
 
 # Widok wytwarzania
 
 Zespoły realizujące poszczególne serwisy miały dowolność dotyczącą wyboru języka programowania o ile spełniał on dwa wymagania:
+
 - dostępność AWS SDK (C++, .NET, Go, JS/TS, Java/Kotlin, PHP, Python, Ruby, Rust, Swift),
 - znajomość języka przez co najmniej jedną osobę spoza serwisu (na cele code review).
 
@@ -1743,3 +1967,6 @@ TODO @mlodybercik
 [^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
 [^nf-prf-2]: Zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie.
+[^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
+[^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
+[^instance-types]: [Typy instancji AWS](https://aws.amazon.com/ec2/instance-types/)
