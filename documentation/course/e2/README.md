@@ -144,6 +144,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
         <li>Potrzeba bezstanowości serwisów</li>
         <li>Opóźnienia w komunikacji między serwisami</li>
         <li>Trudniejsze wdrożenie</li>
+        <li>Brak wspólnej bazy kodu</li>
       </ul>
     </td>
   </tr>
