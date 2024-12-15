@@ -652,15 +652,15 @@ Współczesne rozwiązania autoryzacji opierające się na JWT wykorzystują dwa
 - `access_token` - token o krótkim czasie ważności, służący do autoryzacji użytkownika przy każdym zapytaniu
 - `refresh_token` - token o długim czasie ważności, służący do odświeżenia `access_token` po jego wygaśnięciu
 
-Oba tokeny są uzyskiwane przez frontend przy zalogowaniu użytkownika. Token dostępu jest przesyłany w nagłówku przy każdym zapytaniu do serwera. Dowolny serwer mający klucz publiczny może zweryfikować token bez odpytywania bazy danych. W przypadku wygaśnięcia `access_token`, frontend może użyć `refresh_token` do uzyskania nowej pary (`access_token`, `refresh_token`) bez konieczności ponownego logowania. Dany token dostępu można wykorzystać przez cały okres ważności i nie można go unieważnić. Z racji na to zaleca się stosowanie krótkiego czasu ważności (5-15 minut) w połączeniu z długim czasem ważności tokenu odświeżającego (np. 7 dni). Tokeny odświeżające można unieważniać, np. poprzez przechowywanie ich czarnej listy w bazie danych. W przypadku systemu zdecydowano się na prostsze rozwiązanie, przechowujące datę ostatniego unieważnienia dla danego konta użytkownika. Przy zmianie hasła lub innych danych związanych z bezpieczeństwem konta, data zostaje zaktualizowana. Dochodzi do tego również przy jawnym wciśnięciu przycisku unieważnienia wszystkich sesji przez użytkownika. Wadą tego rozwiązania jest brak możliwości granularnego unieważnienia tokenów.
+Oba tokeny są uzyskiwane przez frontend przy zalogowaniu użytkownika. Token dostępu jest przesyłany w nagłówku przy każdym zapytaniu do serwera. Dowolny serwer mający klucz publiczny może zweryfikować token bez odpytywania bazy danych. W przypadku wygaśnięcia `access_token`, frontend może użyć `refresh_token` do uzyskania nowej pary (`access_token`, `refresh_token`) bez konieczności ponownego logowania. Dany token dostępu można wykorzystać przez cały okres ważności i nie można go unieważnić. Z racji na to zaleca się stosowanie krótkiego czasu ważności (5-15 minut) w połączeniu z długim czasem ważności tokenu odświeżającego (np. 7 dni). Tokeny odświeżające można unieważniać, np. poprzez przechowywanie ich czarnej listy w bazie danych. W przypadku systemu zdecydowano się na prostsze rozwiązanie, przechowujące datę ostatniego unieważnienia dla danego konta użytkownika. Przy zmianie hasła lub innych danych związanych z bezpieczeństwem konta, data zostaje zaktualizowana. Dochodzi do tego również przy jawnym wciśnięciu przycisku unieważnienia wszystkich sesji przez użytkownika. Wadą tego rozwiązania jest brak możliwości granularnego unieważnienia tokenów, przykładowo częste będzie wylogowywanie użytkownika z innych urządzeń, co jest jednak akceptowalne w kontekście systemu, ponieważ w zamyśle użytkownik będzie posługiwał się w większości przypadków pojedynczym smartfonem.
 
-**Źródła:** [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html)
+Często uwierzytelnianie i autoryzacja są delegowane do zewnętrznego dostawcy, np. Auth0, AWS Cognito, Firebase Auth. Pozwala to na uniknięcie implementacji, w której łatwo popełnić błąd związany z bezpieczeństwem. Jednakże ogranicza kontrolę naszego systemu nad danymi i procesem oraz bywa często kosztowne. Wiele przypadków użycia jest ściśle związanych z mechanizmami autoryzacji i może wymagać własnej logiki wybiegającej poza możliwości dostawcy. Ponadto, z uwagi na RODO, nałożone są ograniczenia dotyczące lokalizacji składowania danych. Podobnie, poprzednie modele uwzględniały przechowywanie danych lokalnie. Z uwagi na powyższe ograniczenia, zdecydowano się na własną implementację autoryzacji, jednakże jedynie z wykorzystaniem popularnych i sprawdzonych bibliotek do kluczowych operacji. (*Wybór ten wynika też z potrzeb kursu, gdzie wykorzystanie zewnętrznego dostawcy zbytnio uprościłoby fazę implementacji.*)
+
+**Źródła:** [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html), [jwt.io - JSON Web Tokens](https://jwt.io), [Auth0 - What Are Refresh Tokens](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)
 
 ## `M/12`: Wzorzec sidecar dla autoryzacji
 
-TODO @tchojnacki
-
-**Problem:**
+**Problem:** Odpytywanie serwisu kont przez API Gateway przy każdym zapytaniu obciąża ten serwis i spowalnia odpowiedź systemu. Jednocześnie wymagana jest autoryzacja użytkowników przy każdym zabezpieczonym zapytaniu. Przeniesienie odpowiedzialności za autoryzację do API Gateway narusza zasadę SRP (single responsibility principle) oraz dodatkowo obciąża i zwiększa złożoność tego komponentu.
 
 **Rozwiązania:**
 
@@ -671,40 +671,69 @@ TODO @tchojnacki
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Komunikacja API Gateway → Account Service przy każdym zapytaniu</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Zachowanie SRP</li>
+        <li>Brak dociążenia API Gateway</li>
+        <li>Brak potrzeby dzielenia kluczy publicznych</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Duże opóźnienie na zapytaniu</li>
+        <li>Dociążenie Account Service</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Dodanie do API Gateway odpowiedzialności za sprawdzanie tokenów</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Minimalne opóźnienie na zapytaniu</li>
+        <li>Brak dociążenia Account Service</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Złamanie SRP</li>
+        <li>Duże opóźnienie przy pobieraniu kluczy publicznych</li>
+        <li>Dociążenie API Gateway</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>Utworzenie komponentu autoryzacji jako sidecar przy API Gateway</th>
+    <td>
+      <ul>
+        <li>Zachowanie SRP</li>
+        <li>Małe opóźnienie na zapytaniu</li>
+        <li>Brak dociążenia API Gateway</li>
+        <li>Brak dociążenia Account Service</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Duże opóźnienie przy pobieraniu kluczy publicznych</li>
+        <li>Potrzeba budowy i utrzymania dodatkowego komponentu</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Z uwagi na wymagania systemu, jako wybrano **wzorzec sidecar dla autoryzacji**.
 
-**Opis:**
+**Opis:** Przy analizie zalet i wad zaproponowanych rozwiązań od razu odrzucono wariant sprawdzania tokenów w API Gateway z uwagi na znaczną przewagę dwóch pozostałych rozwiązań. Przy wyborze między delegacją każdego zapytania do Account Service a implementacją dodatkowego komponentu jako sidecar container zdecydowano się na to drugie rozwiązanie, ponieważ wady pierwszego okazały się zbyt duże. Główną wadą wybranego rozwiązania jest potrzeba pobierania kluczy publicznych z głównego serwera autoryzacji, co jednak można załagodzić poprzez caching i rate limiting. Odpowiedzialność za nowy komponent przejmie zespół zajmujący się kontami.
 
-JWKs
+Wzorzec sidecar (_bocznik_, _przyczepa_) stosowany jest głównie w architekturze mikrousług i jest to osobny proces lub kontener, uruchamiany jednak fizycznie blisko innego modułu, z którym współpracuje, aby ograniczyć opóźnienia w komunikacji. W przypadku proponowanej architektury, sidecar będzie uruchomiony jako drugi kontener, w tym samym podzie co API Gateway. Pozwoli to na usunięcie opóźnienia, które powstałoby przy każdorazowym odpytywaniu Account Service (komunikacja z drugim kontenerem na tej samej maszynie jest szybsza niż komunikacja przez sieć). Jednocześnie, w przeciwieństwie do dodania odpowiedzialności za autoryzację do API Gateway, zachowany zostaje podział komponentów według ich odpowiedzialności jak i podział kompetencji zespołów.
 
-**Źródła:** [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html)
+Zgodnie z mechanizmem [`M/11`](#m11-autoryzacja-z-użyciem-jwt), token JWT może walidować każda usługa, która ma dostęp do klucza publicznego z pary kluczy, którą podpisano token. W związku z tym, odpowiedzialność może przejąć sidecar, tak długo, jak będzie miał dostęp do kluczy publicznych z głównego serwera autoryzacji. Jako, że z powodów bezpieczeństwa klucze do podpisu JWT powinny być rotowane, jak i z powodu możliwości zastosowania różnych kluczy dla różnych instancji serwerów, powstaje potrzeba dzielenia się kluczami publicznymi. Popularnym mechanizmem rozwiązującym ten problem jest zastosowanie JWKS (JSON Web Key Sets), które jest standardem specyfikującym endpoint wystawiany przez serwer autoryzacji, z którego można pobrać listę wszystkich ważnych kluczy publicznych. Do ładunku JWT dodana jest informacja o ID klucza, którym podpisano token (`kid`), co pozwala na wybór odpowiedniego klucza do weryfikacji (musi to być oczywiście klucz wystawiony przez serwer autoryzacji). W związku z tym, zapytanie do głównego serwera autoryzacji odbywa się jednie przy pierwszym zapytaniu po uruchomieniu sidecar, a następnie klucze są cachowane lokalnie. W przypadku napotkania nieznanego `kid`, sidecar ponownie odpytuje serwer autoryzacji, z zastosowaniem rate limitingu, aby uniknąć ataków typu DoS powodowanych przez umyślne podawanie niepoprawnych `kid` przez klientów.
+
+Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawiane wspólnie na diagramach sekwencji dotyczących realizacji przypadków użycia. W miejscu każdego zapytania z API Gateway do Account Service na diagramach można mentalnie wstawić poniższą sekwencję zdarzeń:
+
+![Diagram sekwencji M/12](./images/sequence-diagram-mechanism-12.drawio.svg)
+
+**Źródła:** [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html), [Auth0 - JSON Web Key Sets](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets), Wykład 4: Style architektoniczne
 
 ## `M/13`: Responsywna aplikacja webowa SPA
 
@@ -1114,6 +1143,8 @@ W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację mod
 | **`db.t4g.2xlarge`** | 8        | 32               |
 
 Jako model składowania dla wszystkich RDS wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez AWS typem generalnego przeznaczenia.
+
+TODO @everyone: legenda do diagramów bazodanowych
 
 ### Konto
 
