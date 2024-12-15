@@ -1304,7 +1304,7 @@ W przedstawionych poniżej diagramach bazodanowych zastosowano następującą no
 - `PK` w lewej kolumnie - klucz główny,
 - `FK` w lewej kolumnie - klucz obcy,
 - `*` w lewej kolumnie - pole wymagane (brak gwiazdki oznacza pole opcjonalne),
-- podkreślenie nazwy kolumny - unikalna wartość,
+- podkreślenie nazwy - unikalna wartość,
 - liczności powiązań oznaczone poprzez notację [crow's foot](https://vertabelo.com/blog/crow-s-foot-notation/).
 
 > [!NOTE]
@@ -1536,7 +1536,7 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
   </tr>
 </table>
 
-TODO: wybór
+Ze względu na duże obciążenie bazy danych w podsystemie `clabbert`, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
 - `time_limited_offer`: 16 + 16 + 16 = 48 bajtów,
@@ -1554,7 +1554,9 @@ Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wi
 - `ticket`: 28 + 28 = 56 bajtów,
 - `validation`: 28 + 28 = 56 bajtów.
 
-Liczba wierszów w tabelach związanych z ofertami biletowymi będzie niewielka, estymując około 1000 ofert w ciągu roku, co daje łączny rozmiar na poziomie poniżej 1MB. Natomiast liczba wierszów w tabelach `ticket` i `validation` jest zależna od liczby nabywanych biletów przez pasażerów, zakładając że połowa pasażerów musi kupić bilet na przejazd, to przy 500 tysiącach pasażerów korzystających dziennie z komunikacji miejskiej [^nf-prf-2] w tabelach tych znajdzie się około 250 tysięcy rekordów każdego dnia, czyli około 91 milionów każdego roku. Co oznacza łączny roczny przyrost danych na poziomie około 24GB.
+Liczba wierszów w tabelach związanych z ofertami biletowymi będzie niewielka, estymując około 1000 ofert w ciągu roku, co daje łączny rozmiar na poziomie **poniżej 1MB**. Natomiast liczba wierszów w tabelach `ticket` i `validation` jest zależna od liczby nabywanych biletów przez pasażerów, zakładając że połowa pasażerów musi kupić bilet na przejazd, to przy **500 tysiącach pasażerów korzystających dziennie** z komunikacji miejskiej [^nf-prf-2] w tabelach tych znajdzie się około **250 tysięcy rekordów każdego dnia**, czyli około **91 milionów każdego roku**. Co oznacza łączny roczny przyrost danych na poziomie około **24GB**. Ze względu na duże ilości danych, zdecydowano się na początkowy rozmiar bazy danych na RDS wynoszący **64 GB**.
+
+Z uwagi na dużą ilość danych, zdecydowano się na czas retencji kopii zapasowych wynoszący **7 dni**, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje dużych ilości danych zbyt długo.
 
 <table>
   <tr>
@@ -1578,7 +1580,7 @@ Liczba wierszów w tabelach związanych z ofertami biletowymi będzie niewielka,
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td><code>TODO</code></td>
+    <td><code>db.m7g.4xlarge</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1614,7 +1616,7 @@ Liczba wierszów w tabelach związanych z ofertami biletowymi będzie niewielka,
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>TODO</td>
+    <td>64</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
