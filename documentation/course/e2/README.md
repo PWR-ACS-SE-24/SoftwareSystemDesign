@@ -1301,6 +1301,7 @@ W przedstawionych poniżej diagramach bazodanowych zastosowano następującą no
 - `PK` w lewej kolumnie - klucz główny,
 - `FK` w lewej kolumnie - klucz obcy,
 - `*` w lewej kolumnie - pole wymagane (brak gwiazdki oznacza pole opcjonalne),
+- podkreślenie nazwy - unikalna wartość,
 - liczności powiązań oznaczone poprzez notację [crow's foot](https://vertabelo.com/blog/crow-s-foot-notation/).
 
 > [!NOTE]
