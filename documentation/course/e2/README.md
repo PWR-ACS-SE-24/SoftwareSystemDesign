@@ -218,7 +218,7 @@ Ze względu na wymogi `NF/REL/01`, `NF/REL/07`, `NF/PRF/01` i `NF/PRF/02` system
     <td>
       <ul>
         <li>Wymaga zastosowania dodatkowych narzędzi</li>
-        <li>Wymaga duzych zmian w kodzie aplikacji</li>
+        <li>Wymaga dużych zmian w kodzie aplikacji</li>
       </ul>
     </td>
   </tr>
@@ -226,7 +226,11 @@ Ze względu na wymogi `NF/REL/01`, `NF/REL/07`, `NF/PRF/01` i `NF/PRF/02` system
 
 **Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **Load balancing'u**.
 
-**Opis:** Skalowanie horyzontalne polega na zwiększaniu liczby instancji serwisów, zamiast zwiększania mocy obliczeniowej pojedynczej maszyny. Pozwoli to na zwiększenie niezawodności systemu, a także umożliwi obsługę dużej liczby użytkowników jednocześnie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu. Skalowanie horyzontalne w odpowiednich warunkach pozwoli również na minimalizowanie kosztów, ponieważ pozwoli na chwilowe zwiększenie wydajności systemu bez konieczności inwestowania w droższe maszyny. Dodatkowym atutem jest możliwość zastosowania różnych narzędzi do zarządzania obciążeniem takich jak _Load balancer_ czy _Auto Scaling_. Wadą tego rozwiązania jest konieczność zmian w kodzie aplikacji, aby umożliwić jej działanie w środowisku bezstanowym i rozproszonym.
+**Opis:** Skalowanie horyzontalne polega na zwiększaniu liczby instancji serwisów, zamiast zwiększania mocy obliczeniowej pojedynczej maszyny. Pozwoli to na zwiększenie niezawodności systemu, a także umożliwi obsługę dużej liczby użytkowników jednocześnie. W przypadku awarii jednego z serwisów, inne instancje będą w stanie przejąć jego obowiązki, co pozwoli na minimalizację czasu przestoju systemu. Skalowanie horyzontalne w odpowiednich warunkach pozwoli również na minimalizowanie kosztów, ponieważ pozwoli na chwilowe zwiększenie wydajności systemu bez konieczności inwestowania w droższe maszyny. Dodatkowym atutem jest możliwość zastosowania różnych narzędzi do zarządzania obciążeniem takich jak _Load balancer_ czy _Auto Scaling_.
+
+_Load balancer_ to oprogramowanie (kiedyś urządzenie) odpowiedzialne za równomierne rozłożenie obciążenia na dostępne serwery. Jest ono odpowiedzialne za przekierowywanie ruchu do serwerów, które są w stanie obsłużyć kolejne otrzymane zapytanie. Istnieje wiele różnych algorytmów, które pozwalają na wybór odpowiedniego serwera, takich jak _Round Robin_ (algorytm karuzelowy), _Least Connections_ (najmniejsza liczba połączeń) czy _IP Hash_ (decyzja na podstawie funkcji skrótu), które pozwalają rozłożyć obciążenie w sposób optymalny.
+
+_Auto Scaling_ to narzędzie, które pozwala na automatyczne skalowanie liczby instancji serwisów w zależności od obciążenia. Pozwala to na minimalizowanie kosztów, ponieważ pozwala na zwiększenie wydajności systemu w momencie, gdy jest to konieczne, a także na zmniejszenie jej w momencie, gdy nie jest ona potrzebna.
 
 **Źródła:**
 
@@ -399,9 +403,11 @@ TODO @jakubzehner
   </tr>
 </table>
 
-**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **infrastruktury chmurowej**. W związku z dużą ilością usług, dużą ilością centrów danych oraz najniższą ceną, zdecydowano się na skorzystanie z usług **Amazon Web Services**.
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **infrastruktury chmurowej**, a zważając na dużą ilość usług, dużą ilość centrów danych oraz najniższą cenę, zdecydowano się na skorzystanie z usług chmurowych **Amazon Web Services**.
 
-**Opis:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. Oba podejścia mają swoje zalety i wady zależne od kontekstu użycia. Infrastruktura chmurowa to podejście, które polega na korzystaniu z istniejącej infrastruktury dostawcy usług chmurowych. Jednym z najpopularniejszych dostawców tego typu usług jest Amazon Web Services (AWS), oferujący szeroki wachlarz narzędzi wspierających tworzenie, wdrażanie oraz zarządzanie aplikacjami internetowymi.
+**Opis:** W praktyce przy pracach wdrożeniowych stosuje się dwa podejścia. Infrastruktura _on-premise_ oraz chmurowa. Oba podejścia mają swoje zalety i wady zależne od kontekstu użycia. Infrastruktura chmurowa to podejście, które polega na korzystaniu z istniejącej infrastruktury dostawcy usług chmurowych. Zamiast sprzętu trzymanego w pewnej lokalizacji zarządzanej przez firmę, korzysta się ze sprzętu i oprgramowania dzierżawionego od dostawcy usług chmurowych. W zależności od typu dostawcy usług, może on dostarczać różnych funkcjonalności na różnych warstwach abstrakcji. Ograniczając się do najpopularniejszych modeli może to być infrastruktura jako usługa (IaaS), platforma jako usługa (PaaS) lub oprogramowanie jako usługa (SaaS). Porzucając funkcjonalności z pewnych warstw tej piramidy jesteśmy w stanie ograniczyć koszta. Jest to bardzo dobre rozwiązanie dla firm, które nie wiedzą jakie będą ich potrzeby w przyszłości, ponieważ pozwala na elastyczne dostosowanie infrastruktury do indywidualnych potrzeb.
+
+Jednym z najpopularniejszych dostawców tego typu usług jest Amazon Web Services (AWS), oferujący szeroki wachlarz narzędzi wspierających tworzenie, wdrażanie oraz zarządzanie aplikacjami internetowymi. AWS powstało w 2006 roku udostępniając swoją pierwszą i najpopularniejszą usługę Elastic Compute Cloud (EC2). Od tego czasu zdobyło dużą popularność i renomę na rynku. Amazon Web Services posiada bardzo dużą ilość usług, które pozwalają na bardzo dokładne dostosowanie infrastruktury do indywidualnych potrzeb. Posiada również bardzo dużą ilość centrów danych, co pozwala na minimalizowanie odległości między klientami a centrami danych co skutkuje mniejszymi opóźnieniami i większym zadowoleniem klientów. Przez swoją popularność i dużą ilość użytkowników, Amazon Web Services jest w stanie oferować swoje usługi w bardzo atrakcyjnych cenach.
 
 **Źródła:**
 
@@ -456,9 +462,9 @@ TODO @jakubzehner
 
 **Decyzja:** Dla krytycznych operacji związanych z płatnościami i wysyłaniem emaili, zdecydowano się na zastosowanie **kolejki**.
 
-**Opis:** Kolejka to mechanizm, który pozwala na umieszczenie operacji w kolejce, z której zostaną one pobrane. Priorytetyzowane jest wykonanie operacji nad wydajnością wykonywania tej opracji. Pozwala to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie. W przypadku awarii jednej z instancji serwisów, inne będą w stanie przejąć jej obowiązki, co pozwoli na minimalizację czasu przestoju systemu i sprawi, że konkretne operacje na pewno zostaną wykonane.
+**Opis:** Kolejka to mechanizm, który pozwala na umieszczenie operacji w kolejce, z której zostaną one pobrane. Priorytetyzowane jest wykonanie operacji nad wydajnością wykonywania tej opracji. Pozwala to na zminimalizowanie ryzyka utraty danych oraz zapewnienie ich dostarczenia w odpowiednim czasie. W przypadku awarii jednej z instancji serwisów, operacja w kolejce nie zniknie, co sprawi, że inne instancje będą w stanie przejąć jej obowiązki. Pozwoli to na minimalizację czasu przestoju systemu i sprawi, że konkretne operacje na pewno zostaną wykonane.
 
-Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiązania jest _Simple Queue Service_ (SQS). Pozwala ona na utworzenie wielu różnego typu kolejek, które prioritetyzują prędkość wykonania operacji nad wydajnością lub odwrotnie. Pozwala to na dostosowanie kolejki do indywidualnych potrzeb systemu.
+Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiązania jest _Simple Queue Service_ (SQS). Pozwala ona na utworzenie wielu różnego typu kolejek, które prioritetyzują prędkość wykonania operacji nad wydajnością lub odwrotnie. Wykorzystanie do tego AWS sprawia, że developerzy nie muszą martwić się o skalowanie, dostępność czy bezpieczeństwo danych, ponieważ jest to zapewnione przez dostawcę usług.
 
 **Źródła:**
 
@@ -527,7 +533,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 
 **Decyzja:** W związku z wymaganiami `NF/REL/04` i `NF/REL/06`, zdecydowano się na zastosowanie **Virtual Private Cloud**. Pozwoli to na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, a także na kontrolę dostępu do poszczególnych serwisów.
 
-**Opis:** AWS VPC to usługa, która pozwala na utworzenie wirtualnej sieci prywatnej w chmurze AWS. Pozwala na zdefiniowanie reguł dostępu, które pozwolą na zniwelowanie ryzyka nieautoryzowanego dostępu do systemu. Konfiguracja pozwala na wydzielenie poszczególnych serwisów w osobne prywatne podsieci, co pozwala na zwiększenie bezpieczeństwa systemu.
+**Opis:** Amazon Virtual Private Cloud (AWS VPC) to usługa chmurowa oferowana przez Amazon Web Services, która umożliwia tworzenie izolowanych sieci wirtualnych w obrębie chmury AWS. Dzięki VPC użytkownicy mogą definiować własne środowisko sieciowe, w tym wybierać zakresy adresów IP, konfigurować podsieci, definiować tabele routingu oraz stosować mechanizmy kontroli dostępu, takie jak listy kontroli dostępu (ACL) czy grupy zabezpieczeń (Security Groups). AWS VPC zapewnia pełną kontrolę nad przepływem ruchu sieciowego oraz umożliwia integrację z innymi usługami AWS, takimi jak EC2, RDS czy Lambda. Dodatkowo można łączyć VPC z lokalnymi centrami danych za pomocą VPN lub AWS Direct Connect, co pozwala na stworzenie hybrydowego środowiska chmurowego. Usługa VPC jest kluczowym elementem dla budowy skalowalnych, bezpiecznych i wysokowydajnych aplikacji w chmurze.
 
 **Źródła:**
 
