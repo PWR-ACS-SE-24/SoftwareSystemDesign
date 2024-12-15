@@ -132,11 +132,6 @@ TODO @tchojnacki: porównanie z monolitem i modularnym monolitem
 
 ## `M/02`: Load balancing usług
 
-<!-- Klasa niezawodności systemu powinna wynosić co najmniej 99,9%.
-System musi być zabezpieczony przed utratą zasilania oraz połączenia internetowego.
-System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
-System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników. -->
-
 **Problem:**
 System powinien charakteryzować się wysoką dostępnością i niezawodnością. W związku z tym, konieczne jest zastosowanie pewnego podejścia, które to zagwarantuje. Rozwiązanie to powinno pozwalać na minimalizowanie czasu przestoju systemu w przypadku awarii lub niedostępności któregokolwiek z serwisów. Musi ono również umożliwiać obsługę dużej liczby użytkowników jednocześnie bez utraty wydajności.
 
@@ -442,11 +437,9 @@ TODO @jakubzehner
 
 ## `M/06`: Izolacja siecią wewnętrzną VPC
 
-TODO @mlodybercik
-
 **Problem:** System powinien być zabezpieczony przed dostępem osób trzecich. W związku z tym, konieczne jest zastosowanie odpowiedniego podejścia, które pozwoli na zminimalizowanie ryzyka nieautoryzowanego dostępu do systemu. Rozwiązanie to powinno pozwalać na izolację poszczególnych serwisów, a także na kontrolę dostępu do nich.
 
-**Rozwiązania:**
+**Rozwiązania:** Istnieje wiele podejść do zabezpieczenia systemu przed dostępem osób trzecich. Jednym z nich jest _Security through obscurity_, które polega na ukrywaniu informacji o systemie, co ma zapobiec atakom. Kolejne to umieszczenie każdej maszyny na adresie publicznym, co pozwala na prostą implementację, ale może wymagać autentykacji przy komunikacji między usługami. Ze względu na `M/04` dostępne jest rozwiązanie _Virtual Private Cloud_, które pozwala na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, ale jest trudne w implementacji.
 
 <table>
   <tr>
@@ -469,41 +462,47 @@ TODO @mlodybercik
       </ul>
     </td>
   </tr>
-  <tr>
-    <th>Rozwiązanie 2</th>
+    <tr>
+    <th>Każda maszyna na adresie publicznym</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Komunikacja między usługami możę wymagać autentykacji</li>
+        <li>Niska wydajność</li>
       </ul>
     </td>
   </tr>
+    </tr>
     <tr>
-    <th>Rozwiązanie 2</th>
+    <th><i>Virtual Private Cloud</i></th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Wysoka niezawodność</li>
+        <li>Bezpieczeństwo gwarantowane przez dostawcę usług</li>
+        <li>Kontrola dostępu</li>
+        <li>Ziarnistość konfiguracji</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Trudne w implementacji</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W związku z wymaganiami `NF/REL/04` i `NF/REL/06`, zdecydowano się na zastosowanie _Virtual Private Cloud_. Pozwoli to na wysoką niezawodność i bezpieczeństwo gwarantowane przez dostawcę usług, a także na kontrolę dostępu do poszczególnych serwisów.
 
-**Opis:**
+**Opis:** AWS VPC to usługa, która pozwala na utworzenie wirtualnej sieci prywatnej w chmurze AWS. Pozwala to na izolację poszczególnych serwisów, a także na kontrolę dostępu do nich. Pozwala na zdefiniowanie reguł dostępu, które pozwolą na zminimalizowanie ryzyka nieautoryzowanego dostępu do systemu. Ponad to pozwala na podzielenie infrastruktury na mniejsze segmenty, co pozwala na zwiększenie bezpieczeństwa systemu.
 
 **Źródła:**
 
 - [Security through obscurity](https://pl.wikipedia.org/wiki/Security_through_obscurity)
+- [AWS - VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
 
 ## `M/07`: Wzorzec API Gateway
 
@@ -1081,7 +1080,25 @@ TODO @tchojnacki + @mlodybercik: zmienić języki programowania
 
 ## Opis węzłów
 
-TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, na co mamy wpływ
+Zgodnie z mechanizmem [`M/04`: Wdrożenie w chmurze AWS](#m04-wdrożenie-w-chmurze-aws) system zostanie wdrożony na architekturze chmurowej AWS. Ze względu na mechanizm [`M/02`: Load balancing usług](#m02-load-balancing-usług) zdecydowano się na stworzenie infrastruktury w oparciu o **Elastic Compute Cloud**. EC2 to usługa chmurowa, która pozwala na uruchamianie maszyn wirtualnych w chmurze AWS. Amazon dostarcza wiele rodzajów instancji EC2, które różnią się pod względem mocy obliczeniowej, pamięci, prędkości dysku, a także ceny[^instance-types]. Każda klasa gwarantuje pewną znaną minimalną powtarzalną wydajność. W związku z tym, zdecydowano się na wykorzystanie rodziny instancji `c8g` która wykorzystuje najnowszą generację procesorów ARM `AWS Graviton4`. Użycie przez AWS własnych procesorów gwarantuje wydajność i najlepszy stosunek wydajności do kosztów. W związku z różnym zapotrzebowaniem na moc obliczeniową, istnieją różne typy instancji w ramach rodziny `c8g`:
+
+| **Model**            | **vCPU** | **Pamięć (GiB)** |
+| -------------------- | -------- | ---------------- |
+| **`c8g.medium`**     | 1        | 2                |
+| **`c8g.large`**      | 2        | 4                |
+| **`c8g.xlarge`**     | 4        | 8                |
+| **`c8g.2xlarge`**    | 8        | 16               |
+| **`c8g.4xlarge`**    | 16       | 32               |
+| **`c8g.8xlarge`**    | 32       | 64               |
+| **`c8g.12xlarge`**   | 48       | 96               |
+| **`c8g.16xlarge`**   | 64       | 128              |
+| **`c8g.24xlarge`**   | 96       | 192              |
+| **`c8g.metal-24xl`** | 96       | 192              |
+| **`c8g.metal-48xl`** | 192      | 384              |
+| **`c8g.48xlarge`**   | 192      | 384              |
+
+> [!NOTE]
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu pod pewnymi ograniczeniami zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia. Ze względu na dostępne dla nas zasoby.
 
 <table>
   <tr>
@@ -1092,14 +1109,6 @@ TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, 
     <th>Hostname</th>
   </tr>
   <tr>
-    <th>Węzeł wirtualny?</th>
-    <td>Tak/nie</td>
-  </tr>
-  <tr>
-    <th>Centrum danych?</th>
-    <td>Nie/PDC/BDC</td>
-  </tr>
-  <tr>
     <th>OS</th>
     <td>System operacyjny wraz z wersją</td>
   </tr>
@@ -1108,54 +1117,28 @@ TODO @mlodybercik: zmienić layout poniższej tabelki, tak żeby pokazywał to, 
     <td></td>
   </tr>
   <tr>
+    <th>Adres publiczny</th>
+    <td>Tak/Nie</td>
+  </tr>
+  <tr>
     <th colspan="2">Konfiguracja sprzętowa</th>
   </tr>
   <tr>
-    <th>Dostawca</th>
-    <td>Nazwa sprzętu producenta</td>
+    <th>Nazwa konfiguracji</th>
+    <td><code>c4g.medium</code></td>
   </tr>
+  <!-- nie będziemy bawić się w żadne >kilka wolumenów< bo to nie ma sensu -->
   <tr>
-    <th>Procesor</th>
-    <td>Liczba i rodzaj procesorów</td>
-  </tr>
-  <tr>
-    <th>RAM</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>HDD</th>
-    <td>Wielkość i liczba dysków</td>
+    <th>Typ dysku twardego</th>
+    <td>np. <code>GP3</code>; <code>magnetic</code></td>
   </tr>
   <tr>  
-    <th>RAID i HDD netto</th>
-    <td>Rodzaj konfiguracji RAID i wielkość netto HDD.</td>
+    <th>Wielkość dysku</th>
+    <td>8GB</td>
   </tr>
-  <tr>
-    <th>RAID?</th>
-    <td>Brak/Do jakiej macierzy podłączony</td>
-  </tr>
-  <tr>
-    <th>NIC bonding</th>
-    <td>Nie/Tak</td>
-  </tr>
-  <tr>
-    <th colspan="2">Konfiguracja oprogramowania</th>
-  </tr>
-  <tr>
-    <th>Użytkownicy i grupy użytkowników</th>
-    <td>Lista użytkowników do założenia na OSie.</td>
-  </tr>
-  <tr>
-    <th>Poziom pracy systemu, czy jest wymagane środowisko graficzne</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Dodatkowe pakiety z dystrybucji systemu</th>
-    <td>...</td>
-  </tr>
-  <tr>
-    <th>Dodatkowe pakiety spoza dystrybucji systemu</th>
-    <td>...</td>
+  <tr>  
+    <th>Szyfrowanie dysku</th>
+    <td>Tak/Nie</td>
   </tr>
 </table>
 
@@ -1195,18 +1178,22 @@ Zgodnie z mechanizmem [`M/10`](#m10-relacyjne-bazy-danych-acid-na-rds), wszystki
 
 Zdecydowano się na wykorzystanie silnika **PostgreSQL** do wszystkich relacyjnych baz systemu, ze względu na jego popularność, znajomość w zespole, wsparcie na AWS RDS oraz licencję open-source. Wykorzystano najnowszą stabilną wersję **17.2**, która zapewnia najnowsze funkcje i poprawki bezpieczeństwa. PostgreSQL nie oferuje wersji LTS, natomiast każda wersja jest wspierana przez co najmniej 5 lat[^postgres-version].
 
-W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację modeli ogólnego przeznaczenia **`db.t4g.*`**, polecaną przez AWS jako dobry domyślny wybór. Oferowane w zakresie generacji klasy różnią się głównie liczbą vCPU oraz dostępną pamięcią RAM[^rds-instance-types]:
+W przypadku klas instancji AWS RDS, wybrano najnowszą dostępną generację modeli ogólnego przeznaczenia **`db.m7g.*`**, polecaną przez AWS jako dobry domyślny wybór. Oferowane w zakresie generacji klasy różnią się głównie liczbą vCPU oraz dostępną pamięcią RAM[^rds-instance-types]:
 
-| **Model**            | **vCPU** | **Pamięć (GiB)** |
-| -------------------- | -------- | ---------------- |
-| **`db.t4g.micro`**   | 2        | 1                |
-| **`db.t4g.small`**   | 2        | 2                |
-| **`db.t4g.medium`**  | 2        | 4                |
-| **`db.t4g.large`**   | 2        | 8                |
-| **`db.t4g.xlarge`**  | 4        | 16               |
-| **`db.t4g.2xlarge`** | 8        | 32               |
+| **Model**             | **vCPU** | **Pamięć (GiB)** |
+| --------------------- | -------- | ---------------- |
+| **`db.m7g.large`**    | 2        | 8                |
+| **`db.m7g.xlarge`**   | 4        | 16               |
+| **`db.m7g.2xlarge`**  | 8        | 32               |
+| **`db.m7g.4xlarge`**  | 16       | 64               |
+| **`db.m7g.8xlarge`**  | 32       | 128              |
+| **`db.m7g.12xlarge`** | 48       | 192              |
+| **`db.m7g.16xlarge`** | 64       | 256              |
 
 Jako model składowania dla wszystkich RDS wybrano **`gp3`**, który jest najnowszym i rekomendowanym przez AWS typem generalnego przeznaczenia.
+
+> [!NOTE]
+> Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu pod pewnymi ograniczeniami zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia. Ze względu na dostępne dla nas zasoby.
 
 ### Konto
 
@@ -1255,7 +1242,7 @@ Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, be
   </tr>
 </table>
 
-Z uwagi na średnie obciążenie serwisu, jako klasę instancji wybrano **`db.t4g.medium`**. Wersja `medium` oferuje 2 vCPU oraz 4 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+Z uwagi na średnie obciążenie serwisu, jako klasę instancji wybrano **`db.m7g.large`**. Wersja `large` oferuje 2 vCPU oraz 8 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 255 + 255 + 60 + 1 + 8 + 16 = 599 bajtów. Oprócz tego, stosowane są dwa indeksy dodatkowe, o estymacjach 4 + 4 / 8 = 5 bajtów oraz 255 + 4 = 259 bajtów. Sumarycznie, rząd tabeli wynosi 599 + 5 + 259 = 863 bajty, czyli w zaokrągleniu w górę **1 KB na użytkownika**. Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia], górna granica wynosi **2 mln unikalnych użytkowników** (2 GB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (1.2 GB). Ponieważ minimalny rozmiar bazy danych na RDS wynoszący **20 GB** i tak przerasta potrzeby systemu, został on wybrany jako początkowy rozmiar bazy z pomniejszeniem przyrostu do **1 GB rocznie**, biorąc pod uwagę to, że każda aproksymacja zawyżała wynik oraz istnieje nadwyżka miejsca początkowego.
 
@@ -1283,7 +1270,7 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td><code>db.t4g.medium</code></td>
+    <td><code>db.m7g.large</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1592,7 +1579,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td><code>db.t4g.micro</code></td>
+    <td><code>db.t4g.small</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1633,7 +1620,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>0.1</td>
+    <td>0.175</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
@@ -1642,11 +1629,11 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   </tr>
 </table>
 
-Zważając na to, że dane w bazie są danymi które są publiczne i nie są wrażliwe, zdecydowano się na brak szyfrowania danych oraz ustawienie retencji kopii zapasowych na 7 dni. Ze względu na małą ilość danych i brak skomplikowanych operacji na bazie danych, zdecydowano się na klasę instancji **`db.t4g.small`**.
+Zważając na to, że dane w bazie są danymi które są publiczne i nie są wrażliwe, zdecydowano się na brak szyfrowania danych oraz ustawienie retencji kopii zapasowych na 7 dni. Ze względu na małą ilość danych i brak skomplikowanych operacji na bazie danych, zdecydowano się na klasę instancji **`db.m7g.large`**.
 
 Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
 
-Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 4 + 8 + 8 + 4 + 4 czyli 28 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 4 bajtów, otrzymujemy 32 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 105MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 100MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 4 + 4 czyli 40 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 8 bajtów, otrzymujemy 48 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 160MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 100MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
 
 # Widok wytwarzania
 
@@ -1740,3 +1727,4 @@ TODO @mlodybercik
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
 [^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
 [^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
+[^instance-types]: [Typy instancji AWS](https://aws.amazon.com/ec2/instance-types/)
