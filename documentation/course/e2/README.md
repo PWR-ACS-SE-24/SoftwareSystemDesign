@@ -372,9 +372,10 @@ TODO @mlodybercik
 
 ## `M/07`: Wzorzec API Gateway
 
-TODO @piterek130
-
-**Problem:**
+**Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
+- złożoną obsługą adresów wielu serwisów,
+- Brakiem centralizacji zarządzania autoryzacją, autentykacją i kontrolą przepływu ruchu,
+- Niezbędnym dostosowaniem odpowiedzi do różnych klientów
 
 **Rozwiązania:**
 
@@ -385,44 +386,52 @@ TODO @piterek130
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Wzorzec API Gateway</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Centralizacja autoryzacji i autentykacji</li>
+        <li>Większe bezpieczeństwo aplikacji</li>
+        <li>Ułatwiony routing żądań</li>
+        <li>Wysoka elastyczność</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Dodatkowa warstwa do wdrożenia i utrzymania.</li>
+        <li>Minimalnie wydłużony czas względem bezpośredniego zapytania klient-mikroserwis</li>
+        <li>Dodatkowy pojedynczy punkt awarii (Single Point of Failure)</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Bez API Gateway</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Prostsza implementacja w początkowej fazie projektu</li>
+        <li>Brak dodatkowej warstwy pośredniej</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Wysoka złożoność dla frontendu</li>
+        <li>Problemy z zabezpieczeniami</li>
+        <li>Klient musi znać adresy każdego serwisu</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Zdecydowano się na zastosowanie API Gateway jako centralnego punktu wejściowego do systemu. API Gateway pełni funkcję pośrednika między klientami a mikroserwisami backendowymi, który przetwarza i kieruje żądania do odpowiednich usług. Rozwiązanie to zwiększa wydajność i bezpieczeństwo systemu, eliminując potrzebę bezpośredniej komunikacji klientów z wieloma mikroserwisami.
 
-**Opis:**
+**Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
-**Źródła:** [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
+**Źródła:** 
+- [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
+- [Wzorzec bramy interfejsu API a bezpośrednia komunikacja między mikrousługami](https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/architect-microservice-container-applications/direct-client-to-microservice-communication-versus-the-api-gateway-pattern)
 
 ## `M/08`: Zewnętrzna bramka płatności
 
-TODO @piterek130: porównanie z przetwarzaniem wewnętrznym
-
-**Problem:**
+**Problem:** System musi obsługiwać płatności związane z zakupem biletów i opłacaniem mandatów. Wymaga to integracji z bramką płatności, która będzie niezawodna, bezpieczna i szybka. Istnieją dwa podejścia: zewnętrzna bramka płatności oraz wewnętrzna, samodzielnie rozwijana bramka.
 
 **Rozwiązania:**
 
@@ -433,38 +442,49 @@ TODO @piterek130: porównanie z przetwarzaniem wewnętrznym
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Zewnętrzna bramka płatności</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Szybkie wdrożenie dzięki gotowym API</li>
+        <li>Wysoki poziom bezpieczeństwa</li>
+        <li>Wsparcie dla wielu metod płatności</li>
+        <li>Zminimalizowanie ryzyka błędów po stronie systemu</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Koszty transakcyjne</li>
+        <li>Ograniczona kontrola nad procesem płatności</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Wewnętrzna bramka płatności</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Pełna kontrola nad procesem płatności</li>
+        <li>Brak kosztów transakcyjnych</li>
+        <li>Możliwość dostosowania do specyficznych wymagań systemu</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Wysokie koszty wdrożenia i utrzymania</li>
+        <li>Odpowiedzialność za bezpieczeństwo i zgodność z przepisami</li>
+        <li>Wysokie ryzyko związane z zarządzaniem danymi wrażliwymi klientów</li>
+        <li>Wymaga większej siły roboczej niż rozwiązanie gotowe do użycia</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Zdecydowano się na zewnętrzną bramkę płatności z uwagi na jej gotowość do wdrożenia, bezpieczeństwo oraz minimalizację ryzyka operacyjnego. Wybór ten pozwala uniknąć wysokich kosztów związanych z certyfikacją PCI-DSS i ciągłym utrzymaniem bramki płatniczej.
 
-**Opis:**
+**Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że system nie przechowuje danych kart kredytowych ani innych wrażliwych informacji, a cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
 **Źródła:**
+- [What is a payment gateway?](https://gocardless.com/guides/posts/how-to-create-a-payment-gateway/)
+- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises) 
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
@@ -666,9 +686,7 @@ TODO @tchojnacki
 
 ## `M/13`: Responsywna aplikacja webowa SPA
 
-TODO @piterek130
-
-**Problem:**
+**Problem:** System musi zapewnić użytkownikom funkcjonalność zakupu biletów, zarządzania kontami i przeglądania informacji w sposób szybki, intuicyjny i dostępny na różnych urządzeniach.
 
 **Rozwiązania:**
 
@@ -679,38 +697,50 @@ TODO @piterek130
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Single Page Application (SPA)</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Wysoka wydajność</li>
+        <li>Płynne doświadczenie użytkownika</li>
+        <li>Kompatybilność międzyplatformowa</li>
+        <li>Zmniejszone obciążenie serwera</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Początkowy czas ładowania</li>
+        <li>Problemy z SEO
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Server-Side Rendering (SSR)</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Krótszy czas ładowania</li>
+        <li>wsparcie dla SEO</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Nieefektywne buforowanie</li>
+        <li>Większe obciążenie serwera</li>
+        <li>Wolniejsze przejścia między stronami</li>
+        <li>Wzrost wydatków</li>
+        <li>Problemy z kompatybilnością</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Zdecydowano się na Single Page Application (SPA). Rozwiązanie to pozwala na budowę aplikacji o wysokiej wydajności, z płynnym doświadczeniem użytkownika i optymalnym obciążeniem serwera. SPA jest idealne w kontekście aplikacji działających w architekturze mikroserwisów, ponieważ umożliwia dynamiczną komunikację z backendem
 
-**Opis:**
+**Opis:** Single Page Application (SPA) to nowoczesne podejście do tworzenia aplikacji webowych, gdzie cała aplikacja ładowana jest jednorazowo, a kolejne interakcje użytkownika powodują dynamiczne aktualizacje treści bez przeładowywania strony.
 
 **Źródła:**
+- [The Pros and Cons of Single-Page Applications](https://medium.com/@VAISHAK_CP/the-pros-and-cons-of-single-page-applications-spas-06d8a662a149)
+- [What is server-side rendering](https://solutionshub.epam.com/blog/post/what-is-server-side-rendering)
+- [What is the Difference Between SPAs and SSR](https://hygraph.com/blog/difference-spa-ssg-ssr#which-approach-is-better)
 
 ## `M/14`: Kod QR dla biletów
 
@@ -831,19 +861,17 @@ TODO @tchojnacki
 
 ## Interfejsy integracyjne
 
-TODO @piterek130: uzupełnić tabelę
-
 <table>
   <tr>
     <th colspan="3">System ↔ Payment Gateway</th>
   </tr>
   <tr>
     <th>Opis</th>
-    <td colspan="2">Opcjonalny słowny opis interfejsu jeśli jest coś do dodania w stosunku do danych poniżej. W przypadku braku opisu należy wiersz należy usunąć.</td>
+    <td colspan="2">Integracja systemu "JakPrzyjadę" z bramką płatności Tpay umożliwia pasażerom dokonywanie płatności online za usługi oferowane przez system takie jak zakup biletu oraz opłacenie mandatu.</td>
   </tr>
   <tr>
     <th>Status</th>
-    <td colspan="2">Planowany/Istniejący/Modyfikowany/Zabroniony/Wycofany</td>
+    <td colspan="2">Planowany</td>
   </tr>
   <tr>
     <td></td>
@@ -852,50 +880,50 @@ TODO @piterek130: uzupełnić tabelę
   </tr>
   <tr>
     <th>Nazwa aplikacji</th>
-    <td>Aplikacja źródłowa (aplikacja, która inicjuje integrację na poziomie logicznym, czyli w większości przypadków aplikacja będąca przy końcu strzałki bez grotu)</td>
-    <td>Aplikacja docelowa (aplikacja przy końcu strzałki z grotem)</td>
+    <td>JakPrzyjade</td>
+    <td>Tpay</td>
   </tr>
   <tr>
     <th>Technika integracji</th>
-    <td>FTP/SSH/JDBC/ODBC/Oracle DBLink/SAP JCo/SAP RFC/ SOAP/HTTP / SOAP/HTTPS /Własny/...</td>
-    <td>FTP/SSH/JDBC/ODBC/Oracle DBLink/SAP JCo/SAP RFC/ SOAP/HTTP / SOAP/HTTPS /Własny/...</td>
+    <td>REST API / HTTPS</td>
+    <td>REST API / HTTPS</td>
   </tr>
   <tr>
     <th>Mechanizm autentykacji</th>
-    <td>Brak - niezalecane/HTTP Basic/WS-Security/Kerberos/Oracle Username and Password/...</td>
-    <td>Brak - niezalecane/HTTP Basic/WS-Security/Kerberos/Oracle Username and Password/...</td>
+    <td>OAuth 2.0</td>
+    <td>OAuth 2.0</td>
   </tr>
   <tr>
     <th>Kontrakt danych</th>
-    <td colspan="2">Lista wymienianych obiektów biznesowych (np. Partner Handlowy, Konto Umowy itp.)</td>
+    <td colspan="2">OAuth 2.0 Access Token, kwota, dane pasażera, opis transakcji, status transakcji</td>
   </tr>
   <tr>
     <th>Czy interfejs manipuluje na danych wrażliwych (RODO)?</th>
-    <td colspan="2">Tak/Nie + jakie dane objęte RODO</td>
+    <td colspan="2">Tak, przetwarzane są dane osobowe płatników, takie jak adres e-mail, imię i nazwisko oraz dane karty kredytowej</td>
   </tr>
   <tr>
     <th>Wykorzystywane oprogramowanie pośredniczące (middleware)</th>
-    <td colspan="2">Brak/SAP PI/ESB/ODS/ESB i ODS/...</td>
+    <td colspan="2">Brak</td>
   </tr>
   <tr>
     <th>Strona inicjująca</th>
-    <td colspan="2">Aplikacja inicjująca połączenie na poziomie technicznym</td>
+    <td colspan="2">JakPrzyjade</td>
   </tr>
   <tr>
     <th>Model komunikacji</th>
-    <td colspan="2">Synchroniczny na żądanie użytkownika/Asynchroniczny sterowany harmonogramem/Asynchroniczny wyzwalany zdarzeniem/...</td>
+    <td colspan="2">Synchroniczny na żądanie użytkownika (tworzenie transakcji), asynchroniczny wyzwalany zdarzeniem (powiadomienie o statusie płatności).</td>
   </tr>
   <tr>
     <th>Wydajność</th>
-    <td colspan="2">Jak często jest wywoływany interfejs, należy przedstawić największe wymaganie wydajnościowe w jednostce czasu dla której wymaganie musi być spełnione, np. 1000 / godz. Im krótsza jednostka czasu tym wymaganie ściślejsze.</td>
+    <td colspan="2">Szacowana liczba wywołań: 16 000 / godz</td>
   </tr>
   <tr>
     <th>Wolumetria</th>
-    <td colspan="2">Szacowana liczba wywołań w jednostce czasu znacząco dłuższej niż w określeniu wydajności. Potrzebne do oszacowania np. przestrzeni dyskowej niezbędnej do obsługi interfejsu.</td>
+    <td colspan="2">Szacowana liczba wywołań 400 000 dziennie</td>
   </tr>
   <tr>
     <th>Wymagana dostępność</th>
-    <td colspan="2">Np. 99,9%</td>
+    <td colspan="2">99,9%</td>
   </tr>
 </table>
 
