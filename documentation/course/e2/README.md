@@ -1113,7 +1113,7 @@ TODO @jakubzehner + @piterek130: + wystawienie mandatu
 
 ### Zgłoszenie awarii
 
-TODO @tchojnacki
+![Scenariusz interakcji - Zgłoszenie awarii](./images/sequence-diagram-scenario-report-accident.drawio.svg)
 
 ## Interfejsy integracyjne
 
