@@ -16,8 +16,6 @@ Skład zespołu:
 </ul>
 </div>
 
-TODO @everyone: zmienić czcionkę diagramów na JetBrains Mono
-
 # Cel
 
 Dokument przedstawia kluczowe decyzje projektowe oraz ich uzasadnienie w kontekście systemu informatycznego wspomagającego miejską komunikację publiczną. Jego celem jest szczegółowe opisanie architektury technicznej, w tym komponentów systemu, ich funkcji oraz interakcji, które umożliwiają realizację założeń określonych w [specyfikacji wymagań](../e1/README.md).
