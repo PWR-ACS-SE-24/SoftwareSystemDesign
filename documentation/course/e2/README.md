@@ -374,8 +374,8 @@ TODO @mlodybercik
 
 **Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
 - złożoną obsługą adresów wielu serwisów,
-- Brakiem centralizacji zarządzania autoryzacją, autentykacją i kontrolą przepływu ruchu,
-- Niezbędnym dostosowaniem odpowiedzi do różnych klientów
+- brakiem centralizacji zarządzania autoryzacją, autentykacją i kontrolą przepływu ruchu,
+- niezbędnym dostosowaniem odpowiedzi do różnych klientów.
 
 **Rozwiązania:**
 
@@ -389,7 +389,7 @@ TODO @mlodybercik
     <th>Wzorzec API Gateway</th>
     <td>
       <ul>
-        <li>Centralizacja autoryzacji i autentykacji</li>
+        <li>Centralizacja autoryzacji i uwierzytelniania</li>
         <li>Większe bezpieczeństwo aplikacji</li>
         <li>Ułatwiony routing żądań</li>
         <li>Wysoka elastyczność</li>
@@ -397,8 +397,7 @@ TODO @mlodybercik
     </td>
     <td>
       <ul>
-        <li>Dodatkowa warstwa do wdrożenia i utrzymania.</li>
-        <li>Minimalnie wydłużony czas względem bezpośredniego zapytania klient-mikroserwis</li>
+        <li>Dodatkowa warstwa do wdrożenia i utrzymania</li>
         <li>Dodatkowy pojedynczy punkt awarii (Single Point of Failure)</li>
       </ul>
     </td>
@@ -421,13 +420,14 @@ TODO @mlodybercik
   </tr>
 </table>
 
-**Decyzja:** Zdecydowano się na zastosowanie API Gateway jako centralnego punktu wejściowego do systemu. API Gateway pełni funkcję pośrednika między klientami a mikroserwisami backendowymi, który przetwarza i kieruje żądania do odpowiednich usług. Rozwiązanie to zwiększa wydajność i bezpieczeństwo systemu, eliminując potrzebę bezpośredniej komunikacji klientów z wieloma mikroserwisami.
+**Decyzja:** Zdecydowano się na zastosowanie API Gateway jako centralnego punktu wejściowego do systemu. API Gateway pełni funkcję pośrednika między klientami a mikroserwisami backendowymi, który przetwarza i kieruje żądania do odpowiednich usług. Rozwiązanie to zwiększa bezpieczeństwo systemu, eliminując potrzebę bezpośredniej komunikacji klientów z wieloma mikroserwisami. API Gateway umożliwia także buforowanie odpowiedzi, ograniczanie liczby żądań i optymalizowanie komunikacji między klientami, a mikroserwisami co pozwala na uzyskanie lepszej wydajności systemu.
 
 **Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
 **Źródła:** 
 - [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
 - [Wzorzec bramy interfejsu API a bezpośrednia komunikacja między mikrousługami](https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/architect-microservice-container-applications/direct-client-to-microservice-communication-versus-the-api-gateway-pattern)
+- [Advantages and disadvantages of using API gateway](https://www.designgurus.io/course-play/grokking-system-design-fundamentals/doc/advantages-and-disadvantages-of-using-api-gateway)
 
 ## `M/08`: Zewnętrzna bramka płatności
 
@@ -480,7 +480,7 @@ TODO @mlodybercik
 
 **Decyzja:** Zdecydowano się na zewnętrzną bramkę płatności z uwagi na jej gotowość do wdrożenia, bezpieczeństwo oraz minimalizację ryzyka operacyjnego. Wybór ten pozwala uniknąć wysokich kosztów związanych z certyfikacją PCI-DSS i ciągłym utrzymaniem bramki płatniczej.
 
-**Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że system nie przechowuje danych kart kredytowych ani innych wrażliwych informacji, a cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
+**Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
 **Źródła:**
 - [What is a payment gateway?](https://gocardless.com/guides/posts/how-to-create-a-payment-gateway/)
@@ -708,8 +708,7 @@ TODO @tchojnacki
     </td>
     <td>
       <ul>
-        <li>Początkowy czas ładowania</li>
-        <li>Problemy z SEO
+        <li>Kwestie bezpieczeństwa</li>
       </ul>
     </td>
   </tr>
@@ -718,7 +717,7 @@ TODO @tchojnacki
     <td>
       <ul>
         <li>Krótszy czas ładowania</li>
-        <li>wsparcie dla SEO</li>
+        <li>Wsparcie dla SEO</li>
       </ul>
     </td>
     <td>
@@ -915,17 +914,19 @@ TODO @tchojnacki
   </tr>
   <tr>
     <th>Wydajność</th>
-    <td colspan="2">Szacowana liczba wywołań: 16 000 / godz</td>
+    <td colspan="2">Szacowana liczba wywołań: 28 000 / godz</td>
   </tr>
   <tr>
     <th>Wolumetria</th>
-    <td colspan="2">Szacowana liczba wywołań 400 000 dziennie</td>
+    <td colspan="2">Szacowany miesięczny przepływ danych: 40,8 GB</td>
   </tr>
   <tr>
     <th>Wymagana dostępność</th>
     <td colspan="2">99,9%</td>
   </tr>
 </table>
+
+Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około pół miliona osób, zakładamy że 80% osób korzysta z aplikacji. Daje to około 400 000 osób korzystających z aplikacji dziennie. Zakładając, że 70% z nich skorzysta z aplikacji 2 razy w celu kupienia dodatkowo biletu powrotnego. Daje to 400 000 + 280 000 = 680 000 wywołań dziennie oraz średnio 28 000 wywołań na godzinę. Zatem miesięcznie mamy 30 * 680 000 = 20 400 000 wywołań. Zakładamy, że przy jednej transakcji następuje przepływ 2 KB danych, co daje miesięcznie około 40 800 000 kB = 40,8 GB danych.
 
 # Widok funkcjonalny
 
