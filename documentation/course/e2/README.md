@@ -549,9 +549,10 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 
 ## `M/07`: Wzorzec API Gateway
 
-TODO @piterek130
-
-**Problem:**
+**Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
+- złożoną obsługą adresów wielu serwisów,
+- brakiem centralizacji zarządzania autoryzacją, uwierzytelnianiem i kontrolą przepływu ruchu,
+- niezbędnym dostosowaniem odpowiedzi do różnych klientów.
 
 **Rozwiązania:**
 
@@ -562,46 +563,52 @@ TODO @piterek130
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Wzorzec API Gateway</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Centralizacja autoryzacji i uwierzytelniania</li>
+        <li>Większe bezpieczeństwo aplikacji</li>
+        <li>Ułatwiony routing żądań</li>
+        <li>Wysoka elastyczność</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Dodatkowa warstwa do wdrożenia i utrzymania</li>
+        <li>Dodatkowy pojedynczy punkt awarii (<i>single point of failure</i>)</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Bez API Gateway</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Prostsza implementacja w początkowej fazie projektu</li>
+        <li>Brak dodatkowej warstwy pośredniej</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Wysoka złożoność dla frontendu</li>
+        <li>Problemy z zabezpieczeniami</li>
+        <li>Klient musi znać adresy każdego serwisu</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Zdecydowano się na zastosowanie **API Gateway** jako centralnego punktu wejściowego do systemu. **API Gateway** pełni funkcję pośrednika między klientami a mikroserwisami backendowymi, który przetwarza i kieruje żądania do odpowiednich usług. Rozwiązanie to zwiększa bezpieczeństwo systemu, eliminując potrzebę bezpośredniej komunikacji klientów z wieloma mikroserwisami. **API Gateway** umożliwia także buforowanie odpowiedzi, ograniczanie liczby żądań i optymalizowanie komunikacji między klientami, a mikroserwisami co pozwala na uzyskanie lepszej wydajności systemu.
 
-**Opis:**
+**Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
 **Źródła:**
-
 - [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
+- [Wzorzec bramy interfejsu API a bezpośrednia komunikacja między mikrousługami](https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/architect-microservice-container-applications/direct-client-to-microservice-communication-versus-the-api-gateway-pattern)
+- [Advantages and disadvantages of using API gateway](https://www.designgurus.io/course-play/grokking-system-design-fundamentals/doc/advantages-and-disadvantages-of-using-api-gateway)
 
 ## `M/08`: Zewnętrzna bramka płatności
 
-TODO @piterek130: porównanie z przetwarzaniem wewnętrznym
-
-**Problem:**
+**Problem:** System musi obsługiwać płatności związane z zakupem biletów i opłacaniem mandatów. Wymaga to integracji z bramką płatności, która będzie niezawodna, bezpieczna i szybka. Istnieją dwa podejścia: zewnętrzna bramka płatności oraz wewnętrzna, samodzielnie rozwijana bramka.
 
 **Rozwiązania:**
 
@@ -612,38 +619,49 @@ TODO @piterek130: porównanie z przetwarzaniem wewnętrznym
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Zewnętrzna bramka płatności</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Szybkie wdrożenie dzięki gotowym API</li>
+        <li>Wysoki poziom bezpieczeństwa</li>
+        <li>Wsparcie dla wielu metod płatności</li>
+        <li>Zminimalizowanie ryzyka błędów po stronie systemu</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Koszty transakcyjne</li>
+        <li>Ograniczona kontrola nad procesem płatności</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Wewnętrzna bramka płatności</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Pełna kontrola nad procesem płatności</li>
+        <li>Brak kosztów transakcyjnych</li>
+        <li>Możliwość dostosowania do specyficznych wymagań systemu</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Wysokie koszty wdrożenia i utrzymania</li>
+        <li>Odpowiedzialność za bezpieczeństwo i zgodność z przepisami</li>
+        <li>Wysokie ryzyko związane z zarządzaniem danymi wrażliwymi klientów</li>
+        <li>Wymaga większej siły roboczej niż rozwiązanie gotowe do użycia</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Zdecydowano się na **zewnętrzną bramkę płatności** z uwagi na jej gotowość do wdrożenia, bezpieczeństwo oraz minimalizację ryzyka operacyjnego. Wybór ten pozwala uniknąć wysokich kosztów związanych z certyfikacją PCI-DSS i ciągłym utrzymaniem bramki płatniczej.
 
-**Opis:**
+**Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
 **Źródła:**
+- [What is a payment gateway?](https://gocardless.com/guides/posts/how-to-create-a-payment-gateway/)
+- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises) 
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
@@ -922,9 +940,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 
 ## `M/13`: Responsywna aplikacja webowa SPA
 
-TODO @piterek130
-
-**Problem:**
+**Problem:** System musi zapewnić użytkownikom funkcjonalność zakupu biletów, zarządzania kontami i przeglądania informacji w sposób szybki, intuicyjny i dostępny na różnych urządzeniach.
 
 **Rozwiązania:**
 
@@ -935,38 +951,48 @@ TODO @piterek130
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Single Page Application (SPA)</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Płynne doświadczenie użytkownika</li>
+        <li>Kompatybilność międzyplatformowa</li>
+        <li>Zmniejszone obciążenie serwera</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak wsparcia przy wyłączonym w przeglądarce JavaScript</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Server-Side Rendering (SSR)</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Krótszy czas ładowania</li>
+        <li>Wsparcie dla SEO</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Nieefektywne buforowanie</li>
+        <li>Większe obciążenie serwera</li>
+        <li>Wolniejsze przejścia między stronami</li>
+        <li>Wzrost wydatków</li>
+        <li>Problemy z kompatybilnością</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Zdecydowano się na **Single Page Application (SPA)**. Rozwiązanie to pozwala na budowę aplikacji o wysokiej wydajności, z płynnym doświadczeniem użytkownika i optymalnym obciążeniem serwera. SPA jest idealne w kontekście aplikacji działających w architekturze mikroserwisów, ponieważ umożliwia dynamiczną komunikację z backendem.
 
-**Opis:**
+**Opis:** Single Page Application (SPA) to nowoczesne podejście do tworzenia aplikacji webowych, gdzie cała aplikacja ładowana jest jednorazowo, a kolejne interakcje użytkownika powodują dynamiczne aktualizacje treści bez przeładowywania strony.
 
 **Źródła:**
+- [The Pros and Cons of Single-Page Applications](https://medium.com/@VAISHAK_CP/the-pros-and-cons-of-single-page-applications-spas-06d8a662a149)
+- [What is server-side rendering](https://solutionshub.epam.com/blog/post/what-is-server-side-rendering)
+- [What is the Difference Between SPAs and SSR](https://hygraph.com/blog/difference-spa-ssg-ssr#which-approach-is-better)
 
 ## `M/14`: Kod QR dla biletów
 
@@ -1087,19 +1113,17 @@ TODO @tchojnacki
 
 ## Interfejsy integracyjne
 
-TODO @piterek130: uzupełnić tabelę
-
 <table>
   <tr>
     <th colspan="3">System ↔ Payment Gateway</th>
   </tr>
   <tr>
     <th>Opis</th>
-    <td colspan="2">Opcjonalny słowny opis interfejsu jeśli jest coś do dodania w stosunku do danych poniżej. W przypadku braku opisu należy wiersz należy usunąć.</td>
+    <td colspan="2">Integracja systemu "JakPrzyjadę" z bramką płatności Tpay umożliwia pasażerom dokonywanie płatności online za usługi oferowane przez system takie jak zakup biletu oraz opłacenie mandatu.</td>
   </tr>
   <tr>
     <th>Status</th>
-    <td colspan="2">Planowany/Istniejący/Modyfikowany/Zabroniony/Wycofany</td>
+    <td colspan="2">Planowany</td>
   </tr>
   <tr>
     <td></td>
@@ -1108,52 +1132,54 @@ TODO @piterek130: uzupełnić tabelę
   </tr>
   <tr>
     <th>Nazwa aplikacji</th>
-    <td>Aplikacja źródłowa (aplikacja, która inicjuje integrację na poziomie logicznym, czyli w większości przypadków aplikacja będąca przy końcu strzałki bez grotu)</td>
-    <td>Aplikacja docelowa (aplikacja przy końcu strzałki z grotem)</td>
+    <td>JakPrzyjade</td>
+    <td>Tpay</td>
   </tr>
   <tr>
     <th>Technika integracji</th>
-    <td>FTP/SSH/JDBC/ODBC/Oracle DBLink/SAP JCo/SAP RFC/ SOAP/HTTP / SOAP/HTTPS /Własny/...</td>
-    <td>FTP/SSH/JDBC/ODBC/Oracle DBLink/SAP JCo/SAP RFC/ SOAP/HTTP / SOAP/HTTPS /Własny/...</td>
+    <td>REST API / HTTPS</td>
+    <td>REST API / HTTPS</td>
   </tr>
   <tr>
     <th>Mechanizm autentykacji</th>
-    <td>Brak - niezalecane/HTTP Basic/WS-Security/Kerberos/Oracle Username and Password/...</td>
-    <td>Brak - niezalecane/HTTP Basic/WS-Security/Kerberos/Oracle Username and Password/...</td>
+    <td>OAuth 2.0</td>
+    <td>OAuth 2.0</td>
   </tr>
   <tr>
     <th>Kontrakt danych</th>
-    <td colspan="2">Lista wymienianych obiektów biznesowych (np. Partner Handlowy, Konto Umowy itp.)</td>
+    <td colspan="2">Dane pasażera, kwota, opis transakcji, status transakcji</td>
   </tr>
   <tr>
     <th>Czy interfejs manipuluje na danych wrażliwych (RODO)?</th>
-    <td colspan="2">Tak/Nie + jakie dane objęte RODO</td>
+    <td colspan="2">Tak, przetwarzane są dane osobowe płatników, takie jak adres e-mail, imię i nazwisko oraz dane karty kredytowej</td>
   </tr>
   <tr>
     <th>Wykorzystywane oprogramowanie pośredniczące (middleware)</th>
-    <td colspan="2">Brak/SAP PI/ESB/ODS/ESB i ODS/...</td>
+    <td colspan="2">Brak</td>
   </tr>
   <tr>
     <th>Strona inicjująca</th>
-    <td colspan="2">Aplikacja inicjująca połączenie na poziomie technicznym</td>
+    <td colspan="2">JakPrzyjade</td>
   </tr>
   <tr>
     <th>Model komunikacji</th>
-    <td colspan="2">Synchroniczny na żądanie użytkownika/Asynchroniczny sterowany harmonogramem/Asynchroniczny wyzwalany zdarzeniem/...</td>
+    <td colspan="2">Synchroniczny na żądanie użytkownika (tworzenie transakcji), asynchroniczny wyzwalany zdarzeniem (powiadomienie o statusie płatności).</td>
   </tr>
   <tr>
     <th>Wydajność</th>
-    <td colspan="2">Jak często jest wywoływany interfejs, należy przedstawić największe wymaganie wydajnościowe w jednostce czasu dla której wymaganie musi być spełnione, np. 1000 / godz. Im krótsza jednostka czasu tym wymaganie ściślejsze.</td>
+    <td colspan="2">Szacowana liczba wywołań: 10 500 / godz</td>
   </tr>
   <tr>
     <th>Wolumetria</th>
-    <td colspan="2">Szacowana liczba wywołań w jednostce czasu znacząco dłuższej niż w określeniu wydajności. Potrzebne do oszacowania np. przestrzeni dyskowej niezbędnej do obsługi interfejsu.</td>
+    <td colspan="2">Szacowany miesięczny przepływ danych: 15 GB</td>
   </tr>
   <tr>
     <th>Wymagana dostępność</th>
-    <td colspan="2">Np. 99,9%</td>
+    <td colspan="2">99,9%</td>
   </tr>
 </table>
+
+Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 * 500 MB = 15 GB danych.
 
 # Widok funkcjonalny
 
@@ -1281,7 +1307,8 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ### Bilet
 
-TODO @jakubzehner: opis zmian
+W porównaniu do modelu opisanego w specyfikacji wymagań, dodano typ wyliczeniowy `TicketStatus` oraz odpowiadające mu pole status w klasie `Ticket`. Ten typ wyliczeniowy przechowuje informacje o statusie biletu, co stało się konieczne ze względu na asynchroniczny charakter komunikacji z serwisem odpowiedzialnym za płatności. W pierwotnym założeniu status ten nie był potrzebny, ponieważ bilet był generowany natychmiast po pobraniu środków z portfela, a proces doładowania portfela funkcjonował jako oddzielna operacja. Jednak decyzja o przejściu na architekturę mikroserwisową zmieniła ten kontekst. Z punktu widzenia serwisu zarządzającego biletami, serwis płatności działa jako "czarna skrzynka", a asynchroniczna komunikacja wymagała wprowadzenia mechanizmu do reprezentacji statusu biletu.
+Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z klasy `Ticket`, które po tej zmianie było zbędne i redundantne, UUID jest unikalny i wystarczający do identyfikacji biletu.
 
 ![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
@@ -1455,7 +1482,112 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
 
 ### Bilet
 
-TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+Model informacyjny podsystemu Clabbert składa się z sześciu klas i dwóch typów wyliczeniowych. Cztery spośród tych klas tworzą hierarchię dziedziczenia oferty biletowej. Abstrakcyjna klasa `TicketOffer` zawiera wspólne elementy dla każdego z typów oferty biletowej, natomiast klasy `TimeLimitedOffer`, `SingleFareOffer` oraz `LongTermOffer` reprezentują dostępne rodzaje oferty biletowej i za wyjątkiem `SingleFareOffer` wprowadzają nowe dane. Oddzielny sposób reprezentacji klientowi informacji o różnych ofertach oraz wymagane w implementacji mechanizmy unikalne dla danego rodzaju oferty spowodowały, że zdecydowano się na zamodelowanie bazy danych w postaci podejścia _table-per-type_, czyli tabeli dla każdej z klas dziedziczących, łączonych z tabelą dla abstrakcyjnej klasy bazowej. Dodatkowo zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, (gdyż rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach) ze względu na większą czytelność danych kolumny w tabeli i braku ewentualnych problemów podczas dodania kolejnych literałów wyliczeniowych na miejscu innym niż ostatnim. Podejście te jednak poświęca odrobinę wydajności, względem drugiego najpopularniejszego rozwiązania, czyli zastosowania liczby porządkowej odpowiadającej poszczególnym literałom wyliczeniowym.
+
+![Diagram bazodanowy Clabbert](./images/database-diagram-clabbert.drawio.svg)
+
+<table>
+  <tr>
+    <th colspan="3">Indeksy</th>
+  </tr>
+  <tr>
+    <th>Kolumna</th>
+    <th>Typ</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <td><code>time_limited_offer.ticket_offer_id</code</td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>single_fare_offer.ticket_offer_id</code</td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>long_term_offer.ticket_offer_id</code</td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>ticket_offer.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>ticket.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>ticket.passenger_id</code></td>
+    <td>b-tree</td>
+    <td>Indeks wspierający wyszukiwanie biletów pasażera.</td>
+  </tr>
+  <tr>
+    <td><code>validation.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>validation.ticket_id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+    
+  <tr>
+    <th colspan="3">Ograniczenia</th>
+  </tr>
+  <tr>
+    <td colspan="3"><code>time_limited_offer.duration > INTERVAL '0'</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>long_term_offer.interval_in_days > 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.display_name_en <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.display_name_pl <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.price_pln > 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.purchase_time <= NOW()</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>validation.ticket_id UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>validation.time <= NOW()</code></td>
+  </tr>
+</table>
+
+Ze względu na duże obciążenie bazy danych w podsystemie `clabbert`, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
+
+- `time_limited_offer`: 16 + 16 + 16 = 48 bajtów,
+- `single_fare_offer`: 16 + 16 = 32 bajty,
+- `long_term_offer`: 16 + 16 + 4 = 36 bajtów,
+- `ticket_offer`: 16 + 255 + 255 + 32 + 3 + 1 = 562 bajty,
+- `ticket`: 16 + 16 + 16 + 8 + 32 = 88 bajtów,
+- `validation`: 16 + 16 + 16 + 8 = 56 bajtów.
+
+Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wiersz:
+
+- `time_limited_offer`: 28 bajtów,
+- `single_fare_offer`: 28 bajtów,
+- `long_term_offer`: 28 bajtów,
+- `ticket_offer`: 28 bajtów,
+- `ticket`: 28 + 28 = 56 bajtów,
+- `validation`: 28 + 28 = 56 bajtów.
+
+Liczba wierszów w tabelach związanych z ofertami biletowymi będzie niewielka, estymując około 1000 ofert w ciągu roku, co daje łączny rozmiar na poziomie **poniżej 1MB**. Natomiast liczba wierszów w tabelach `ticket` i `validation` jest zależna od liczby nabywanych biletów przez pasażerów, zakładając że połowa pasażerów musi kupić bilet na przejazd, to przy **500 tysiącach pasażerów korzystających dziennie** z komunikacji miejskiej [^nf-prf-2] w tabelach tych znajdzie się około **250 tysięcy rekordów każdego dnia**, czyli około **91 milionów każdego roku**. Co oznacza łączny roczny przyrost danych na poziomie około **24GB**. Ze względu na duże ilości danych, zdecydowano się na początkowy rozmiar bazy danych na RDS wynoszący **64 GB**.
+
+Z uwagi na dużą ilość danych, zdecydowano się na czas retencji kopii zapasowych wynoszący **7 dni**, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje dużych ilości danych zbyt długo.
 
 <table>
   <tr>
@@ -1469,17 +1601,17 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
   <tr>
     <th>Identyfikator</th>
     <td><code>identifier</code></td>
-    <td>np. <code>unikalny-identyfikator-rds</code></td>
+    <td><code>rds-clabbert</code></td>
   </tr>
   <tr>
     <th>Silnik i wersja</th>
     <td><code>engine</code>, <code>engine_version</code></td>
-    <td>np. PostgreSQL 14.14-R1</td>
+    <td>PostgreSQL 17.2</td>
   </tr>
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td>np. <code>db.t3.micro</code></td>
+    <td><code>db.m7g.4xlarge</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1487,17 +1619,17 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
   <tr>
     <th>Nazwa bazy</th>
     <td><code>db_name</code></td>
-    <td>np. <code>moja_baza</code></td>
+    <td><code>clabbert</code></td>
   </tr>
   <tr>
     <th>Użytkownik</th>
     <td><code>username</code></td>
-    <td>np. <code>moj_uzytkownik</code></td>
+    <td><code>postgres</code></td>
   </tr>
   <tr>
     <th>Port</th>
     <td><code>port</code></td>
-    <td>np. <code>5432</code></td>
+    <td><code>5432</code></td>
   </tr>
   <tr>
     <th colspan="3">Składowanie</th>
@@ -1505,33 +1637,35 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td>np. <code>gp2</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
     <td><code>storage_encrypted</code></td>
-    <td>TAK/NIE</td>
+    <td>TAK</td>
   </tr>
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>np. 20</td>
+    <td>64</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>np. 5</td>
+    <td>24</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>np. 7</td>
+    <td>7</td>
   </tr>
 </table>
 
 ### Płatność
 
 TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+
+![Diagram bazodanowy Inferius](./images/database-diagram-inferius.drawio.svg)
 
 <table>
   <tr>
@@ -1789,6 +1923,8 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ### API
 
+#### API publiczne
+
 | **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                            | **Opis**                                  |
 | ----------- | ---------- | ----------------------- | ---------------------------------------- | ----------------------------------------- |
 | `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`                    | Rejestracja nowego konta pasażera.        |
@@ -1805,6 +1941,8 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                                 | Pobranie informacji o cudzym koncie.      |
 | `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`                    | Dezaktywacja cudzego konta.               |
 
+#### API wewnętrzne
+
 | **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`       | jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
@@ -1816,6 +1954,28 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 ## Bilet
 
 TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
+
+### API
+
+#### API publiczne
+
+| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                    |
+| -------------------- | ---------- | ------------------------------ | ------------- | ------------------------------------------- |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych. |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.       |
+| `passenger`          | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.         |
+| `passenger`          | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                               |
+| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.              |
+| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Skasowanie biletu.                          |
+| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Sprawdzenie ważności biletu.                |
+| `admin`              | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.             |
+| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu               |
+
+#### API wewnętrzne
+
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health` | clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 
 ## Płatność
 
@@ -1867,6 +2027,7 @@ TODO @mlodybercik
 [^rds-instance-types]: [AWS - Amazon RDS Instance Types](https://aws.amazon.com/rds/instance-types/)
 [^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
+[^nf-prf-2]: [Zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie.](https://www.wroclaw.pl/komunikacja/komunikacja-miejska-we-wroclawiu-i-aglomeracji-200-mln-pasazerow)
 [^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
 [^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
 [^instance-types]: [Typy instancji AWS](https://aws.amazon.com/ec2/instance-types/)
