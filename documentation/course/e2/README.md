@@ -550,6 +550,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 ## `M/07`: Wzorzec API Gateway
 
 **Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
+
 - złożoną obsługą adresów wielu serwisów,
 - brakiem centralizacji zarządzania autoryzacją, uwierzytelnianiem i kontrolą przepływu ruchu,
 - niezbędnym dostosowaniem odpowiedzi do różnych klientów.
@@ -602,6 +603,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 **Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
 **Źródła:**
+
 - [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
 - [Wzorzec bramy interfejsu API a bezpośrednia komunikacja między mikrousługami](https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/architect-microservice-container-applications/direct-client-to-microservice-communication-versus-the-api-gateway-pattern)
 - [Advantages and disadvantages of using API gateway](https://www.designgurus.io/course-play/grokking-system-design-fundamentals/doc/advantages-and-disadvantages-of-using-api-gateway)
@@ -660,8 +662,9 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 **Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
 **Źródła:**
+
 - [What is a payment gateway?](https://gocardless.com/guides/posts/how-to-create-a-payment-gateway/)
-- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises) 
+- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises)
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
@@ -990,6 +993,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 **Opis:** Single Page Application (SPA) to nowoczesne podejście do tworzenia aplikacji webowych, gdzie cała aplikacja ładowana jest jednorazowo, a kolejne interakcje użytkownika powodują dynamiczne aktualizacje treści bez przeładowywania strony.
 
 **Źródła:**
+
 - [The Pros and Cons of Single-Page Applications](https://medium.com/@VAISHAK_CP/the-pros-and-cons-of-single-page-applications-spas-06d8a662a149)
 - [What is server-side rendering](https://solutionshub.epam.com/blog/post/what-is-server-side-rendering)
 - [What is the Difference Between SPAs and SSR](https://hygraph.com/blog/difference-spa-ssg-ssr#which-approach-is-better)
@@ -1179,7 +1183,7 @@ TODO @tchojnacki
   </tr>
 </table>
 
-Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 * 500 MB = 15 GB danych.
+Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 \* 500 MB = 15 GB danych.
 
 # Widok funkcjonalny
 
