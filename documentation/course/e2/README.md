@@ -1495,7 +1495,7 @@ Model informacyjny podsystemu Clabbert składa się z sześciu klas i dwóch typ
     <th colspan="3">Ograniczenia</th>
   </tr>
   <tr>
-    <td colspan="3"><code>time_limited_offer.duration > 0</code></td>
+    <td colspan="3"><code>time_limited_offer.duration > INTERVAL '0'</code></td>
   </tr>
   <tr>
     <td colspan="3"><code>long_term_offer.interval_in_days > 0</code></td>
@@ -1912,18 +1912,17 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 #### API publiczne
 
-| **Rola**    | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                      |
-| ----------- | ---------- | ------------------------------ | ------------- | --------------------------------------------- |
-| `passenger` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych.   |
-| `passenger` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.         |
-| `passenger` | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.           |
-| `passenger` | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                                 |
-| `passenger` | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.                |
-| `passenger` | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Walidacja biletu.                             |
-| `inspector` | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Inspekcja biletu.                             |
-| `admin`     | `GET`      | `/ext/v1/offers/inactive`      | TODO          | Pobranie listy nieaktywnych ofert biletowych. |
-| `admin`     | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.               |
-| `admin`     | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu                 |
+| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                    |
+| -------------------- | ---------- | ------------------------------ | ------------- | ------------------------------------------- |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych. |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.       |
+| `passenger`          | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.         |
+| `passenger`          | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                               |
+| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.              |
+| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Skasowanie biletu.                          |
+| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Sprawdzenie ważności biletu.                |
+| `admin`              | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.             |
+| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu               |
 
 #### API wewnętrzne
 
