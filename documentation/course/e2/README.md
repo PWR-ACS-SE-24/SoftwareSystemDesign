@@ -156,7 +156,11 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
 
 Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architektoniczne.
 
-**Źródła:** [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html), [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html), Wykład 4: Style architektoniczne
+**Źródła:**
+
+- [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html)
+- [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html)
+- Wykład 4: Style architektoniczne
 
 ## `M/02`: Load balancing usług
 
@@ -286,7 +290,9 @@ TODO @jakubzehner
 
 **Opis:**
 
-**Źródła:** [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
+**Źródła:**
+
+- [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
@@ -587,7 +593,9 @@ TODO @piterek130
 
 **Opis:**
 
-**Źródła:** [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
+**Źródła:**
+
+- [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
 
 ## `M/08`: Zewnętrzna bramka płatności
 
@@ -683,7 +691,10 @@ TODO @jakubzehner
 
 **Opis:**
 
-**Źródła:** [microservices.io - Database per Service](https://microservices.io/patterns/data/database-per-service.html), [microservices.io - Shared Database](https://microservices.io/patterns/data/shared-database.html)
+**Źródła:**
+
+- [microservices.io - Database per Service](https://microservices.io/patterns/data/database-per-service.html)
+- [microservices.io - Shared Database](https://microservices.io/patterns/data/shared-database.html)
 
 ## `M/10`: Relacyjne bazy danych ACID na RDS
 
@@ -804,7 +815,11 @@ Często uwierzytelnianie i autoryzacja są delegowane do zewnętrznego dostawcy,
 > [!NOTE]
 > Wybór ten wynika też w dużym stopniu z potrzeb kursu, gdzie wykorzystanie zewnętrznego dostawcy zbytnio uprościłoby fazę implementacji. W rzeczywistym systemie należałoby dokładniej rozważyć możliwość wdrożenia rozwiązania zewnętrznego z uwagi na duże konsekwencje przy popełnieniu błędu w implementacji.
 
-**Źródła:** [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html), [jwt.io - JSON Web Tokens](https://jwt.io), [Auth0 - What Are Refresh Tokens](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)
+**Źródła:**
+
+- [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html)
+- [jwt.io - JSON Web Tokens](https://jwt.io)
+- [Auth0 - What Are Refresh Tokens](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)
 
 ## `M/12`: Wzorzec sidecar dla autoryzacji
 
@@ -899,7 +914,11 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 
 ![Diagram sekwencji M/12](./images/sequence-diagram-mechanism-12.drawio.svg)
 
-**Źródła:** [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html), [Auth0 - JSON Web Key Sets](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets), Wykład 4: Style architektoniczne
+**Źródła:**
+
+- [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html)
+- [Auth0 - JSON Web Key Sets](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets)
+- Wykład 4: Style architektoniczne
 
 ## `M/13`: Responsywna aplikacja webowa SPA
 
@@ -1048,7 +1067,7 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
 
 ### Zalogowanie do systemu
 
-TODO @tchojnacki
+![Scenariusz interakcji - Zalogowanie do systemu](./images/sequence-diagram-scenario-login.drawio.svg)
 
 ### Sprawdzenie rozkładu jazdy
 
