@@ -1307,6 +1307,8 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
 
 TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
+![Diagram bazodanowy Jobberknoll](./images/database-diagram-inferius.drawio.svg)
+
 <table>
   <tr>
     <th>Atrybut</th>
