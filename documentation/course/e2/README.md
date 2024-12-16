@@ -1262,7 +1262,7 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ### Bilet
 
-W porównaniu do modelu opisanego w specyfikacji wymagań, dodano enumerator `TicketStatus` oraz odpowiadające mu pole status w klasie `Ticket`. Enumerator ten przechowuje informacje o statusie biletu, co stało się konieczne ze względu na asynchroniczny charakter komunikacji z serwisem odpowiedzialnym za płatności. W pierwotnym założeniu status ten nie był potrzebny, ponieważ bilet był generowany natychmiast po pobraniu środków z portfela, a proces doładowania portfela funkcjonował jako oddzielna operacja. Jednak decyzja o przejściu na architekturę mikroserwisową zmieniła ten kontekst. Z punktu widzenia serwisu zarządzającego biletami, serwis płatności działa jako "czarna skrzynka", a asynchroniczna komunikacja wymagała wprowadzenia mechanizmu do reprezentacji statusu biletu.
+W porównaniu do modelu opisanego w specyfikacji wymagań, dodano typ wyliczeniowy `TicketStatus` oraz odpowiadające mu pole status w klasie `Ticket`. Ten typ wyliczeniowy przechowuje informacje o statusie biletu, co stało się konieczne ze względu na asynchroniczny charakter komunikacji z serwisem odpowiedzialnym za płatności. W pierwotnym założeniu status ten nie był potrzebny, ponieważ bilet był generowany natychmiast po pobraniu środków z portfela, a proces doładowania portfela funkcjonował jako oddzielna operacja. Jednak decyzja o przejściu na architekturę mikroserwisową zmieniła ten kontekst. Z punktu widzenia serwisu zarządzającego biletami, serwis płatności działa jako "czarna skrzynka", a asynchroniczna komunikacja wymagała wprowadzenia mechanizmu do reprezentacji statusu biletu.
 Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z klasy `Ticket`, które po tej zmianie było zbędne i redundantne, UUID jest unikalny i wystarczający do identyfikacji biletu.
 
 ![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
@@ -1437,7 +1437,7 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
 
 ### Bilet
 
-Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch enumeratorów. Cztery spośród tych klas tworzą hierarchię dziedziczenia oferty biletowej. Abstrakcyjna klasa `TicketOffer` zawiera wspólne elementy dla każdego z typów oferty biletowej, natomiast klasy `TimeLimitedOffer`, `SingleFareOffer` oraz `LongTermOffer` reprezentują dostępne rodzaje oferty biletowej i za wyjątkiem `SingleFareOffer` wprowadzają nowe dane. Oddzielny sposób reprezentacji klientowi informacji o różnych ofertach oraz wymagane w implementacji mechanizmy unikalne dla danego rodzaju oferty spowodowały, że zdecydowano się na zamodelowanie bazy danych w postaci podejścia _table-per-type_, czyli tabeli dla każdej z klas dziedziczących, łączonych z tabelą dla abstrakcyjnej klasy bazowej. Dodatkowo zdecydowana się na reprezentację enumeratorów w postaci tekstu, konkretniej `varchar(32)`, ze względu na większą czytelność danych kolumny w tabeli i braku ewentualnych problemów podczas dodania kolejnej wartości enumeratora na miejscu innym niż ostatnim. Podejście te jednak poświęca odrobinę wydajności, względem drugiego najpopularniejszego rozwiązania, czyli zastosowania liczby porządkowej odpowiadającej wartości enumeratora.
+Model informacyjny podsystemu Clabbert składa się z sześciu klas i dwóch typów wyliczeniowych. Cztery spośród tych klas tworzą hierarchię dziedziczenia oferty biletowej. Abstrakcyjna klasa `TicketOffer` zawiera wspólne elementy dla każdego z typów oferty biletowej, natomiast klasy `TimeLimitedOffer`, `SingleFareOffer` oraz `LongTermOffer` reprezentują dostępne rodzaje oferty biletowej i za wyjątkiem `SingleFareOffer` wprowadzają nowe dane. Oddzielny sposób reprezentacji klientowi informacji o różnych ofertach oraz wymagane w implementacji mechanizmy unikalne dla danego rodzaju oferty spowodowały, że zdecydowano się na zamodelowanie bazy danych w postaci podejścia _table-per-type_, czyli tabeli dla każdej z klas dziedziczących, łączonych z tabelą dla abstrakcyjnej klasy bazowej. Dodatkowo zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, (gdyż rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach) ze względu na większą czytelność danych kolumny w tabeli i braku ewentualnych problemów podczas dodania kolejnych literałów wyliczeniowych na miejscu innym niż ostatnim. Podejście te jednak poświęca odrobinę wydajności, względem drugiego najpopularniejszego rozwiązania, czyli zastosowania liczby porządkowej odpowiadającej poszczególnym literałom wyliczeniowym.
 
 ![Diagram bazodanowy Clabbert](./images/database-diagram-clabbert.drawio.svg)
 
@@ -1451,27 +1451,12 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
     <th>Opis</th>
   </tr>
   <tr>
-    <td><code>time_limited_offer.id</code></td>
-    <td>b-tree (unikalny)</td>
-    <td>Indeks tworzony automatycznie przez bazę danych.</td>
-  </tr>
-  <tr>
     <td><code>time_limited_offer.ticket_offer_id</code</td>
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
   <tr>
-    <td><code>single_fare_offer.id</code></td>
-    <td>b-tree (unikalny)</td>
-    <td>Indeks tworzony automatycznie przez bazę danych.</td>
-  </tr>
-  <tr>
     <td><code>single_fare_offer.ticket_offer_id</code</td>
-    <td>b-tree (unikalny)</td>
-    <td>Indeks tworzony automatycznie przez bazę danych.</td>
-  </tr>
-  <tr>
-    <td><code>long_term_offer.id</code></td>
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
@@ -1485,10 +1470,6 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
-  <tr>
-    <td><code>ticket_offer.is_active</code></td>
-    <td>bitmap</td>
-    <td>Indeks wspierający wyszukiwanie aktywnych ofert.</td>
   <tr>
     <td><code>ticket.id</code></td>
     <td>b-tree (unikalny)</td>
@@ -1514,16 +1495,7 @@ Model informacyjny podsystemu `clabbert` składa się z sześciu klas i dwóch e
     <th colspan="3">Ograniczenia</th>
   </tr>
   <tr>
-    <td colspan="3"><code>time_limited_offer.ticket_offer_id UNIQUE</code></td>
-  </tr>
-  <tr>
     <td colspan="3"><code>time_limited_offer.duration > 0</code></td>
-  </tr>
-  <tr>
-    <td colspan="3"><code>single_fare_offer.ticket_offer_id UNIQUE</code></td>
-  </tr>
-  <tr>
-    <td colspan="3"><code>long_term_offer.ticket_offer_id UNIQUE</code></td>
   </tr>
   <tr>
     <td colspan="3"><code>long_term_offer.interval_in_days > 0</code></td>
@@ -1561,10 +1533,10 @@ Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę 
 
 Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wiersz:
 
-- `time_limited_offer`: 28 + 28 = 56 bajtów,
-- `single_fare_offer`: 28 + 28 = 56 bajtów,
-- `long_term_offer`: 28 + 28 = 56 bajtów,
-- `ticket_offer`: 28 + 1 = 29 bajtów,
+- `time_limited_offer`: 28 bajtów,
+- `single_fare_offer`: 28 bajtów,
+- `long_term_offer`: 28 bajtów,
+- `ticket_offer`: 28 bajtów,
 - `ticket`: 28 + 28 = 56 bajtów,
 - `validation`: 28 + 28 = 56 bajtów.
 
@@ -1904,6 +1876,8 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ### API
 
+#### API publiczne
+
 | **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                            | **Opis**                                  |
 | ----------- | ---------- | ----------------------- | ---------------------------------------- | ----------------------------------------- |
 | `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`                    | Rejestracja nowego konta pasażera.        |
@@ -1920,6 +1894,8 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                                 | Pobranie informacji o cudzym koncie.      |
 | `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`                    | Dezaktywacja cudzego konta.               |
 
+#### API wewnętrzne
+
 | **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`       | jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
@@ -1934,18 +1910,26 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 ### API
 
-| **Rola**    | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                                                                                                |
-| ----------- | ---------- | ------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `guest`     | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych.                                                                             |
-| `guest`     | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletowej.                                                                                |
-| `passenger` | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.                                                                                     |
-| `passenger` | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                                                                                                           |
-| `passenger` | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.                                                                                          |
-| `passenger` | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Walidacja biletu.                                                                                                       |
-| `inspector` | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Inspekcja biletu.                                                                                                       |
-| `admin`     | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletowej.                                                                                      |
-| `admin`     | `PUT`      | `/ext/v1/offers/:id`           | TODO          | Aktualizacja oferty biletowej, jeśli nie została zakupiona przez żadnego pasażera.                                      |
-| `admin`     | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Usunięcie oferty biletowej, jeśli nie została zakupiona przez żadnego pasażera, w przeciwnym razie jego zdezaktywowanie |
+#### API publiczne
+
+| **Rola**    | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                      |
+| ----------- | ---------- | ------------------------------ | ------------- | --------------------------------------------- |
+| `passenger` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych.   |
+| `passenger` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.         |
+| `passenger` | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.           |
+| `passenger` | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                                 |
+| `passenger` | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.                |
+| `passenger` | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Walidacja biletu.                             |
+| `inspector` | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Inspekcja biletu.                             |
+| `admin`     | `GET`      | `/ext/v1/offers/inactive`      | TODO          | Pobranie listy nieaktywnych ofert biletowych. |
+| `admin`     | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.               |
+| `admin`     | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu                 |
+
+#### API wewnętrzne
+
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health` | clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 
 ## Płatność
 
@@ -1997,7 +1981,7 @@ TODO @mlodybercik
 [^rds-instance-types]: [AWS - Amazon RDS Instance Types](https://aws.amazon.com/rds/instance-types/)
 [^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
-[^nf-prf-2]: Zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie.
+[^nf-prf-2]: [Zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie.](https://www.wroclaw.pl/komunikacja/komunikacja-miejska-we-wroclawiu-i-aglomeracji-200-mln-pasazerow)
 [^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
 [^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
 [^instance-types]: [Typy instancji AWS](https://aws.amazon.com/ec2/instance-types/)
