@@ -544,6 +544,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 ## `M/07`: Wzorzec API Gateway
 
 **Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
+
 - złożoną obsługą adresów wielu serwisów,
 - brakiem centralizacji zarządzania autoryzacją, uwierzytelnianiem i kontrolą przepływu ruchu,
 - niezbędnym dostosowaniem odpowiedzi do różnych klientów.
@@ -595,7 +596,8 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 
 **Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
-**Źródła:** 
+**Źródła:**
+
 - [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
 - [Wzorzec bramy interfejsu API a bezpośrednia komunikacja między mikrousługami](https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/architect-microservice-container-applications/direct-client-to-microservice-communication-versus-the-api-gateway-pattern)
 - [Advantages and disadvantages of using API gateway](https://www.designgurus.io/course-play/grokking-system-design-fundamentals/doc/advantages-and-disadvantages-of-using-api-gateway)
@@ -654,8 +656,9 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 **Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
 **Źródła:**
+
 - [What is a payment gateway?](https://gocardless.com/guides/posts/how-to-create-a-payment-gateway/)
-- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises) 
+- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises)
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
@@ -973,6 +976,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 **Opis:** Single Page Application (SPA) to nowoczesne podejście do tworzenia aplikacji webowych, gdzie cała aplikacja ładowana jest jednorazowo, a kolejne interakcje użytkownika powodują dynamiczne aktualizacje treści bez przeładowywania strony.
 
 **Źródła:**
+
 - [The Pros and Cons of Single-Page Applications](https://medium.com/@VAISHAK_CP/the-pros-and-cons-of-single-page-applications-spas-06d8a662a149)
 - [What is server-side rendering](https://solutionshub.epam.com/blog/post/what-is-server-side-rendering)
 - [What is the Difference Between SPAs and SSR](https://hygraph.com/blog/difference-spa-ssg-ssr#which-approach-is-better)
@@ -1162,7 +1166,7 @@ TODO @tchojnacki
   </tr>
 </table>
 
-Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 * 500 MB = 15 GB danych.
+Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 \* 500 MB = 15 GB danych.
 
 # Widok funkcjonalny
 
@@ -1724,7 +1728,7 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
 
 ### Logistyka
 
-Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
+Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii. Dodatkowo w celu uniknięcia problemów związanych z integralnością bazy danych przy usuwaniu wierszy dodano atrybut `is_active` do encji `Stop` oraz `Route`, działający analogicznie do tego samego atrybutu w tabelach `Line` oraz `Vehicle`. Wartość będzie zmieniana na `false` zamiast usuwania, a zapytania o istniejące obiekty będą od razu filtrowane używając tego atrybutu. Takie podejście pozwoli na zachowanie historii danych oraz uniknięcie problemów związanych z referencjami do nieistniejących już obiektów.
 
 ![Diagram bazodanowy Leprechaun](./images/database-diagram-leprechaun.drawio.svg)
 
@@ -1763,6 +1767,11 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
   <tr>
+    <td><code>vehicle.side_number</code></td>
+    <td>b-tree</td>
+    <td>Zwiększenie prędkości operacji <code>SELECT</code>.</td>
+  </tr>
+  <tr>
     <td><code>stop_line_mapping.id</code></td>
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
@@ -1773,7 +1782,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
     <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
   </tr>
   <tr>
-    <td><code>stop_line_mapping.line_id</code></td>
+    <td><code>stop_line_mapping.stop_id</code></td>
     <td>b-tree</td>
     <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
   </tr>
@@ -1874,7 +1883,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>0.175</td>
+    <td>0.35</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
@@ -1887,7 +1896,7 @@ Zważając na to, że dane w bazie są danymi które są publiczne i nie są wra
 
 Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
 
-Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 4 + 4 czyli 40 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 8 bajtów, otrzymujemy 48 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 160MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 100MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 16 + 16 + 1 czyli 65 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 28 bajtów, otrzymujemy 93 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 320MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 250MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
 
 # Widok wytwarzania
 
@@ -1966,7 +1975,43 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Logistyka
 
-TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
+TODO @mlodybercik: Dodać diagram pakietów, opis architektury.
+
+### API
+
+#### API publiczne
+
+| **Rola**                                    | **Metoda** | **Endpoint**              | **Wymagania**                          | **Opis**                                     |
+| ------------------------------------------- | ---------- | ------------------------- | -------------------------------------- | -------------------------------------------- |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines`           | `LOG/01`, `LOG/02`                     | Pobranie listy aktywnych linii.              |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id`       | `LOG/01`, `LOG/02`                     | Pobranie informacji o linii.                 |
+| `admin`                                     | `POST`     | `/ext/v1/lines`           | `LOG/03`                               | Utworzenie nowej linii.                      |
+| `admin`                                     | `PATCH`    | `/ext/v1/lines/:id`       | `LOG/04`                               | Edytowanie linii.                            |
+| `admin`                                     | `DELETE`   | `/ext/v1/lines/:id`       | `LOG/05`                               | Dezaktywacja linii.                          |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id/stops` | `LOG/06`, `LOG/07`                     | Pobranie listy przystanków konkretnej linii. |
+| `admin`                                     | `POST`     | `/ext/v1/stops/`          | `LOG/08`                               | Utworzenie nowego przystanku.                |
+| `admin`                                     | `PATCH`    | `/ext/v1/stops/:id`       | `LOG/09`                               | Edytowanie przystanku.                       |
+| `admin`                                     | `DELETE`   | `/ext/v1/stops/:id`       | `LOG/10`                               | Dezaktywacja przystanku.                     |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes`          | `LOG/11`, `LOG/12`                     | Pobranie rozkładu jazdy.                     |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/:id`      | `LOG/11`, `LOG/12`                     | Pobranie informacji o kursie.                |
+| `admin`                                     | `POST`     | `/ext/v1/routes`          | `LOG/13`,                              | Utworzenie nowego kursu.                     |
+| `admin`                                     | `PATCH`    | `/ext/v1/routes/:id`      | `LOG/14`                               | Edytowanie kursu.                            |
+| `admin`                                     | `DELETE`   | `/ext/v1/routes/:id`      | `LOG/15`                               | Deaktywacja kursu.                           |
+| `admin`                                     | `GET`      | `/ext/v1/vehicles`        | `LOG/16`                               | Pobranie listy pojazdów.                     |
+| `admin`                                     | `POST`     | `/ext/v1/vehicles`        | `LOG/17`                               | Utworzenie nowego pojazdu.                   |
+| `admin`                                     | `PATCH`    | `/ext/v1/vehicles/:id`    | `LOG/18`                               | Edytowanie pojazdu.                          |
+| `admin`                                     | `DELETE`   | `/ext/v1/vehicles/:id`    | `LOG/19`                               | Deaktywacja pojazdu.                         |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents`       | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie listy awarii.                       |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents/:id`   | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie informacji o awarii.                |
+| `driver`, `inspector`                       | `POST`     | `/ext/v1/accidents`       | `LOG/22`, `LOG/25`                     | Zgłoszenie nowej awarii.                     |
+| `driver`, `inspector`                       | `PATCH`    | `/ext/v1/accidents/:id`   | `LOG/23`, `LOG/26`                     | Edytowanie awarii.                           |
+
+#### API wewnętrzne
+
+| **Metoda** | **Endpoint**                    | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ------------------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`                | leprechaun    | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/routes/by-vehicle/:id` | leprechaun    | `clabbert`    | Pobranie `id` trasy na której znajduje się pojazd.                             |
 
 # Realizacja przypadków użycia
 
