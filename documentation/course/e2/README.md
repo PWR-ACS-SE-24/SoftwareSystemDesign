@@ -1290,7 +1290,8 @@ Względem modelu ze specyfikacji wymagań, dodano pole `lastModified`, które pr
 
 ### Bilet
 
-TODO @jakubzehner: opis zmian
+W porównaniu do modelu opisanego w specyfikacji wymagań, dodano typ wyliczeniowy `TicketStatus` oraz odpowiadające mu pole status w klasie `Ticket`. Ten typ wyliczeniowy przechowuje informacje o statusie biletu, co stało się konieczne ze względu na asynchroniczny charakter komunikacji z serwisem odpowiedzialnym za płatności. W pierwotnym założeniu status ten nie był potrzebny, ponieważ bilet był generowany natychmiast po pobraniu środków z portfela, a proces doładowania portfela funkcjonował jako oddzielna operacja. Jednak decyzja o przejściu na architekturę mikroserwisową zmieniła ten kontekst. Z punktu widzenia serwisu zarządzającego biletami, serwis płatności działa jako "czarna skrzynka", a asynchroniczna komunikacja wymagała wprowadzenia mechanizmu do reprezentacji statusu biletu.
+Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z klasy `Ticket`, które po tej zmianie było zbędne i redundantne, UUID jest unikalny i wystarczający do identyfikacji biletu.
 
 ![Diagram klas Clabbert](./images/class-diagram-clabbert.drawio.svg)
 
@@ -1464,7 +1465,112 @@ Model danych serwisu jest na tyle prosty, a jednocześnie serwis tak uniwersalni
 
 ### Bilet
 
-TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+Model informacyjny podsystemu Clabbert składa się z sześciu klas i dwóch typów wyliczeniowych. Cztery spośród tych klas tworzą hierarchię dziedziczenia oferty biletowej. Abstrakcyjna klasa `TicketOffer` zawiera wspólne elementy dla każdego z typów oferty biletowej, natomiast klasy `TimeLimitedOffer`, `SingleFareOffer` oraz `LongTermOffer` reprezentują dostępne rodzaje oferty biletowej i za wyjątkiem `SingleFareOffer` wprowadzają nowe dane. Oddzielny sposób reprezentacji klientowi informacji o różnych ofertach oraz wymagane w implementacji mechanizmy unikalne dla danego rodzaju oferty spowodowały, że zdecydowano się na zamodelowanie bazy danych w postaci podejścia _table-per-type_, czyli tabeli dla każdej z klas dziedziczących, łączonych z tabelą dla abstrakcyjnej klasy bazowej. Dodatkowo zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, (gdyż rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach) ze względu na większą czytelność danych kolumny w tabeli i braku ewentualnych problemów podczas dodania kolejnych literałów wyliczeniowych na miejscu innym niż ostatnim. Podejście te jednak poświęca odrobinę wydajności, względem drugiego najpopularniejszego rozwiązania, czyli zastosowania liczby porządkowej odpowiadającej poszczególnym literałom wyliczeniowym.
+
+![Diagram bazodanowy Clabbert](./images/database-diagram-clabbert.drawio.svg)
+
+<table>
+  <tr>
+    <th colspan="3">Indeksy</th>
+  </tr>
+  <tr>
+    <th>Kolumna</th>
+    <th>Typ</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <td><code>time_limited_offer.ticket_offer_id</code</td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>single_fare_offer.ticket_offer_id</code</td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>long_term_offer.ticket_offer_id</code</td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>ticket_offer.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>ticket.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>ticket.passenger_id</code></td>
+    <td>b-tree</td>
+    <td>Indeks wspierający wyszukiwanie biletów pasażera.</td>
+  </tr>
+  <tr>
+    <td><code>validation.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>validation.ticket_id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+    
+  <tr>
+    <th colspan="3">Ograniczenia</th>
+  </tr>
+  <tr>
+    <td colspan="3"><code>time_limited_offer.duration > INTERVAL '0'</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>long_term_offer.interval_in_days > 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.display_name_en <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.display_name_pl <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.price_pln > 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>ticket.purchase_time <= NOW()</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>validation.ticket_id UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>validation.time <= NOW()</code></td>
+  </tr>
+</table>
+
+Ze względu na duże obciążenie bazy danych w podsystemie `clabbert`, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
+
+- `time_limited_offer`: 16 + 16 + 16 = 48 bajtów,
+- `single_fare_offer`: 16 + 16 = 32 bajty,
+- `long_term_offer`: 16 + 16 + 4 = 36 bajtów,
+- `ticket_offer`: 16 + 255 + 255 + 32 + 3 + 1 = 562 bajty,
+- `ticket`: 16 + 16 + 16 + 8 + 32 = 88 bajtów,
+- `validation`: 16 + 16 + 16 + 8 = 56 bajtów.
+
+Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wiersz:
+
+- `time_limited_offer`: 28 bajtów,
+- `single_fare_offer`: 28 bajtów,
+- `long_term_offer`: 28 bajtów,
+- `ticket_offer`: 28 bajtów,
+- `ticket`: 28 + 28 = 56 bajtów,
+- `validation`: 28 + 28 = 56 bajtów.
+
+Liczba wierszów w tabelach związanych z ofertami biletowymi będzie niewielka, estymując około 1000 ofert w ciągu roku, co daje łączny rozmiar na poziomie **poniżej 1MB**. Natomiast liczba wierszów w tabelach `ticket` i `validation` jest zależna od liczby nabywanych biletów przez pasażerów, zakładając że połowa pasażerów musi kupić bilet na przejazd, to przy **500 tysiącach pasażerów korzystających dziennie** z komunikacji miejskiej [^nf-prf-2] w tabelach tych znajdzie się około **250 tysięcy rekordów każdego dnia**, czyli około **91 milionów każdego roku**. Co oznacza łączny roczny przyrost danych na poziomie około **24GB**. Ze względu na duże ilości danych, zdecydowano się na początkowy rozmiar bazy danych na RDS wynoszący **64 GB**.
+
+Z uwagi na dużą ilość danych, zdecydowano się na czas retencji kopii zapasowych wynoszący **7 dni**, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje dużych ilości danych zbyt długo.
 
 <table>
   <tr>
@@ -1478,17 +1584,17 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
   <tr>
     <th>Identyfikator</th>
     <td><code>identifier</code></td>
-    <td>np. <code>unikalny-identyfikator-rds</code></td>
+    <td><code>rds-clabbert</code></td>
   </tr>
   <tr>
     <th>Silnik i wersja</th>
     <td><code>engine</code>, <code>engine_version</code></td>
-    <td>np. PostgreSQL 14.14-R1</td>
+    <td>PostgreSQL 17.2</td>
   </tr>
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td>np. <code>db.t3.micro</code></td>
+    <td><code>db.m7g.4xlarge</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1496,17 +1602,17 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
   <tr>
     <th>Nazwa bazy</th>
     <td><code>db_name</code></td>
-    <td>np. <code>moja_baza</code></td>
+    <td><code>clabbert</code></td>
   </tr>
   <tr>
     <th>Użytkownik</th>
     <td><code>username</code></td>
-    <td>np. <code>moj_uzytkownik</code></td>
+    <td><code>postgres</code></td>
   </tr>
   <tr>
     <th>Port</th>
     <td><code>port</code></td>
-    <td>np. <code>5432</code></td>
+    <td><code>5432</code></td>
   </tr>
   <tr>
     <th colspan="3">Składowanie</th>
@@ -1514,27 +1620,27 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td>np. <code>gp2</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
     <td><code>storage_encrypted</code></td>
-    <td>TAK/NIE</td>
+    <td>TAK</td>
   </tr>
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>np. 20</td>
+    <td>64</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>np. 5</td>
+    <td>24</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>np. 7</td>
+    <td>7</td>
   </tr>
 </table>
 
@@ -1800,6 +1906,8 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ### API
 
+#### API publiczne
+
 | **Rola**    | **Metoda** | **Endpoint**            | **Wymagania**                            | **Opis**                                  |
 | ----------- | ---------- | ----------------------- | ---------------------------------------- | ----------------------------------------- |
 | `guest`     | `POST`     | `/ext/v1/register`      | `ACC/01`, `NF/REL/05`                    | Rejestracja nowego konta pasażera.        |
@@ -1816,6 +1924,8 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                                 | Pobranie informacji o cudzym koncie.      |
 | `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`                    | Dezaktywacja cudzego konta.               |
 
+#### API wewnętrzne
+
 | **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`       | jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
@@ -1827,6 +1937,28 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 ## Bilet
 
 TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
+
+### API
+
+#### API publiczne
+
+| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                    |
+| -------------------- | ---------- | ------------------------------ | ------------- | ------------------------------------------- |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych. |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.       |
+| `passenger`          | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.         |
+| `passenger`          | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                               |
+| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.              |
+| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Skasowanie biletu.                          |
+| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Sprawdzenie ważności biletu.                |
+| `admin`              | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.             |
+| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu               |
+
+#### API wewnętrzne
+
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health` | clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 
 ## Płatność
 
@@ -1878,6 +2010,7 @@ TODO @mlodybercik
 [^rds-instance-types]: [AWS - Amazon RDS Instance Types](https://aws.amazon.com/rds/instance-types/)
 [^ludnosc-wroclawia]: [Gazeta Wrocławska - Ilu jest wrocławian?](https://gazetawroclawska.pl/ilu-jest-wroclawian-oficjalne-statystki-sa-nizsze-o-kilkaset-tysiecy/ar/c1-14815154)
 [^turysci-wroclawia]: [wroclaw.pl - Turystyka Wrocławia w 2023 roku](https://www.wroclaw.pl/dla-mieszkanca/turystyka-w-2023-r-wroclaw-odwiedzilo-znacznie-wiecej-turystow-niz-w-roku-2022)
+[^nf-prf-2]: [Zgodnie z danymi MPK Wrocław, dziennie korzysta z komunikacji miejskiej pół miliona pasażerów, co przy średnim szacowanym czasie korzystania z aplikacji wynoszącym 3 minuty daje średnio około 1000 użytkowników aplikacji w danym momencie.](https://www.wroclaw.pl/komunikacja/komunikacja-miejska-we-wroclawiu-i-aglomeracji-200-mln-pasazerow)
 [^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
 [^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
 [^instance-types]: [Typy instancji AWS](https://aws.amazon.com/ec2/instance-types/)
