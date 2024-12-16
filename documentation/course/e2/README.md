@@ -374,7 +374,7 @@ TODO @mlodybercik
 
 **Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
 - złożoną obsługą adresów wielu serwisów,
-- brakiem centralizacji zarządzania autoryzacją, autentykacją i kontrolą przepływu ruchu,
+- brakiem centralizacji zarządzania autoryzacją, uwierzytelnianiem i kontrolą przepływu ruchu,
 - niezbędnym dostosowaniem odpowiedzi do różnych klientów.
 
 **Rozwiązania:**
@@ -398,7 +398,7 @@ TODO @mlodybercik
     <td>
       <ul>
         <li>Dodatkowa warstwa do wdrożenia i utrzymania</li>
-        <li>Dodatkowy pojedynczy punkt awarii (Single Point of Failure)</li>
+        <li>Dodatkowy pojedynczy punkt awarii (<i>single point of failure</i>)</li>
       </ul>
     </td>
   </tr>
@@ -420,7 +420,7 @@ TODO @mlodybercik
   </tr>
 </table>
 
-**Decyzja:** Zdecydowano się na zastosowanie API Gateway jako centralnego punktu wejściowego do systemu. API Gateway pełni funkcję pośrednika między klientami a mikroserwisami backendowymi, który przetwarza i kieruje żądania do odpowiednich usług. Rozwiązanie to zwiększa bezpieczeństwo systemu, eliminując potrzebę bezpośredniej komunikacji klientów z wieloma mikroserwisami. API Gateway umożliwia także buforowanie odpowiedzi, ograniczanie liczby żądań i optymalizowanie komunikacji między klientami, a mikroserwisami co pozwala na uzyskanie lepszej wydajności systemu.
+**Decyzja:** Zdecydowano się na zastosowanie **API Gateway** jako centralnego punktu wejściowego do systemu. **API Gateway** pełni funkcję pośrednika między klientami a mikroserwisami backendowymi, który przetwarza i kieruje żądania do odpowiednich usług. Rozwiązanie to zwiększa bezpieczeństwo systemu, eliminując potrzebę bezpośredniej komunikacji klientów z wieloma mikroserwisami. **API Gateway** umożliwia także buforowanie odpowiedzi, ograniczanie liczby żądań i optymalizowanie komunikacji między klientami, a mikroserwisami co pozwala na uzyskanie lepszej wydajności systemu.
 
 **Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
@@ -478,7 +478,7 @@ TODO @mlodybercik
   </tr>
 </table>
 
-**Decyzja:** Zdecydowano się na zewnętrzną bramkę płatności z uwagi na jej gotowość do wdrożenia, bezpieczeństwo oraz minimalizację ryzyka operacyjnego. Wybór ten pozwala uniknąć wysokich kosztów związanych z certyfikacją PCI-DSS i ciągłym utrzymaniem bramki płatniczej.
+**Decyzja:** Zdecydowano się na **zewnętrzną bramkę płatności** z uwagi na jej gotowość do wdrożenia, bezpieczeństwo oraz minimalizację ryzyka operacyjnego. Wybór ten pozwala uniknąć wysokich kosztów związanych z certyfikacją PCI-DSS i ciągłym utrzymaniem bramki płatniczej.
 
 **Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
@@ -700,7 +700,6 @@ TODO @tchojnacki
     <th>Single Page Application (SPA)</th>
     <td>
       <ul>
-        <li>Wysoka wydajność</li>
         <li>Płynne doświadczenie użytkownika</li>
         <li>Kompatybilność międzyplatformowa</li>
         <li>Zmniejszone obciążenie serwera</li>
@@ -708,7 +707,7 @@ TODO @tchojnacki
     </td>
     <td>
       <ul>
-        <li>Kwestie bezpieczeństwa</li>
+        <li>Brak wsparcia przy wyłączonym w przeglądarce JavaScript</li>
       </ul>
     </td>
   </tr>
@@ -732,7 +731,7 @@ TODO @tchojnacki
   </tr>
 </table>
 
-**Decyzja:** Zdecydowano się na Single Page Application (SPA). Rozwiązanie to pozwala na budowę aplikacji o wysokiej wydajności, z płynnym doświadczeniem użytkownika i optymalnym obciążeniem serwera. SPA jest idealne w kontekście aplikacji działających w architekturze mikroserwisów, ponieważ umożliwia dynamiczną komunikację z backendem
+**Decyzja:** Zdecydowano się na **Single Page Application (SPA)**. Rozwiązanie to pozwala na budowę aplikacji o wysokiej wydajności, z płynnym doświadczeniem użytkownika i optymalnym obciążeniem serwera. SPA jest idealne w kontekście aplikacji działających w architekturze mikroserwisów, ponieważ umożliwia dynamiczną komunikację z backendem.
 
 **Opis:** Single Page Application (SPA) to nowoczesne podejście do tworzenia aplikacji webowych, gdzie cała aplikacja ładowana jest jednorazowo, a kolejne interakcje użytkownika powodują dynamiczne aktualizacje treści bez przeładowywania strony.
 
@@ -894,7 +893,7 @@ TODO @tchojnacki
   </tr>
   <tr>
     <th>Kontrakt danych</th>
-    <td colspan="2">OAuth 2.0 Access Token, kwota, dane pasażera, opis transakcji, status transakcji</td>
+    <td colspan="2">Dane pasażera, kwota, opis transakcji, status transakcji</td>
   </tr>
   <tr>
     <th>Czy interfejs manipuluje na danych wrażliwych (RODO)?</th>
@@ -914,11 +913,11 @@ TODO @tchojnacki
   </tr>
   <tr>
     <th>Wydajność</th>
-    <td colspan="2">Szacowana liczba wywołań: 28 000 / godz</td>
+    <td colspan="2">Szacowana liczba wywołań: 10 500 / godz</td>
   </tr>
   <tr>
     <th>Wolumetria</th>
-    <td colspan="2">Szacowany miesięczny przepływ danych: 40,8 GB</td>
+    <td colspan="2">Szacowany miesięczny przepływ danych: 15 GB</td>
   </tr>
   <tr>
     <th>Wymagana dostępność</th>
@@ -926,7 +925,7 @@ TODO @tchojnacki
   </tr>
 </table>
 
-Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około pół miliona osób, zakładamy że 80% osób korzysta z aplikacji. Daje to około 400 000 osób korzystających z aplikacji dziennie. Zakładając, że 70% z nich skorzysta z aplikacji 2 razy w celu kupienia dodatkowo biletu powrotnego. Daje to 400 000 + 280 000 = 680 000 wywołań dziennie oraz średnio 28 000 wywołań na godzinę. Zatem miesięcznie mamy 30 * 680 000 = 20 400 000 wywołań. Zakładamy, że przy jednej transakcji następuje przepływ 2 KB danych, co daje miesięcznie około 40 800 000 kB = 40,8 GB danych.
+Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 * 500 MB = 15 GB danych.
 
 # Widok funkcjonalny
 
@@ -1307,7 +1306,7 @@ TODO @jakubzehner: Dodać diagram bazodanowy do Clobbert, dodać uzasadnienia dl
 
 TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
 
-![Diagram bazodanowy Jobberknoll](./images/database-diagram-inferius.drawio.svg)
+![Diagram bazodanowy Inferius](./images/database-diagram-inferius.drawio.svg)
 
 <table>
   <tr>
