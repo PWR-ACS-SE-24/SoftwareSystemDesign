@@ -1665,6 +1665,11 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
   <tr>
+    <td><code>wallet.passenger_id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks wspierający wyszukiwanie portfeli pasażerów.</td>
+  </tr>
+  <tr>
     <td><code>credit_card_info.id</code></td>
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
@@ -1683,11 +1688,6 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
     <td><code>fine.inspector_id</code></td>
     <td>b-tree</td>
     <td>Indeks wspierający wyszukiwanie mandatów według inspektora.</td>
-  </tr>
-  <tr>
-    <td><code>wallet.passenger_id</code></td>
-    <td>b-tree</td>
-    <td>Indeks wspierający wyszukiwanie portfeli pasażerów.</td>
   </tr>
   <tr>
     <td><code>credit_card_info.wallet_id</code></td>
@@ -1717,7 +1717,7 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
   </tr>
 </table>
 
-Z uwagi na średnie obciążenie bazy danych w podsystemie `inferius`, jako klasę instancji wybrano `db.m7g.large`. Wersja `large` oferuje 2 vCPU oraz 8 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+Z uwagi na średnie obciążenie bazy danych w podsystemie Inferius, jako klasę instancji wybrano `db.m7g.large`. Wersja `large` oferuje 2 vCPU oraz 8 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
 
@@ -1731,9 +1731,9 @@ Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wi
 - `credit_card_info`: 24 + 24 = 48 bajtów,
 - `fine`: 24 + 24 + 24 = 72 bajty.
 
-Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln * 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln * 610 = 1.22 GB, a rocznie 1.2 mln * 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 * 455 = 20 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że większość aproksymacji wykonanych tutaj zawyżają wynik, zdecydowano się na początkowy rozmiar bazy danych na RDS wynoszący **20** GB.
+Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln * 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln * 610 = 1.22 GB, a rocznie 1.2 mln * 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 * 455 = 20 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
 
-Zdecydowano się na czas retencji kopii zapasowych wynoszący 7 dni, co powinno dać wystarczająco dużo czasu na zauważenie i naprawienie błędów, a jednocześnie nie przechowuje danych zbyt długo.
+Zdecydowano się na czas retencji kopii zapasowych wynoszący 35 dni, ze względu na przetrzymywanie finansowych oraz transakcyjnych danych.
 
 <table>
   <tr>
@@ -1803,7 +1803,7 @@ Zdecydowano się na czas retencji kopii zapasowych wynoszący 7 dni, co powinno 
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>7</td>
+    <td>35</td>
   </tr>
 </table>
 
