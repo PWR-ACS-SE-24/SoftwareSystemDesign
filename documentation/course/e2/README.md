@@ -1084,7 +1084,7 @@ TODO @tchojnacki
 
 ### Sprawdzenie rozkładu jazdy
 
-TODO @mlodybercik
+![Scenariusz interakcji - Sprawdzenie rozkładu jazdy](./images/sequence-diagram-scenario-check-timetable.drawio.svg)
 
 ### Kupno biletu
 
