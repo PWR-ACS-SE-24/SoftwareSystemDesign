@@ -156,7 +156,11 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
 
 Wybór architektury mikroserwisów wpłynie znacząco na dalsze decyzje architektoniczne.
 
-**Źródła:** [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html), [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html), Wykład 4: Style architektoniczne
+**Źródła:**
+
+- [microservices.io - Microservices Architecture](https://microservices.io/patterns/microservices.html)
+- [microservices.io - Monolithic Architecture](https://microservices.io/patterns/monolithic.html)
+- Wykład 4: Style architektoniczne
 
 ## `M/02`: Load balancing usług
 
@@ -286,7 +290,9 @@ TODO @jakubzehner
 
 **Opis:**
 
-**Źródła:** [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
+**Źródła:**
+
+- [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
@@ -544,6 +550,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 ## `M/07`: Wzorzec API Gateway
 
 **Problem:** W systemie opartym na architekturze mikroserwisów, komunikacja między klientami a serwisami backendowymi staje się złożona. Bezpośrednie wywoływanie każdego mikroserwisu przez klienta prowadzi do trudności związanych z:
+
 - złożoną obsługą adresów wielu serwisów,
 - brakiem centralizacji zarządzania autoryzacją, uwierzytelnianiem i kontrolą przepływu ruchu,
 - niezbędnym dostosowaniem odpowiedzi do różnych klientów.
@@ -595,7 +602,8 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 
 **Opis:** API Gateway pełni rolę jednego punktu wejścia do systemu, umożliwiając przekierowywanie ruchu do odpowiednich mikroserwisów, dopasowanie odpowiedzi do rodzaju klienta i implementację autoryzacji z użyciem JWT. Dzięki API Gateway ruch do mikroserwisów jest izolowany, a klienci korzystają z jednego spójnego interfejsu.
 
-**Źródła:** 
+**Źródła:**
+
 - [microservices.io - API Gateway](https://microservices.io/patterns/apigateway.html)
 - [Wzorzec bramy interfejsu API a bezpośrednia komunikacja między mikrousługami](https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/architect-microservice-container-applications/direct-client-to-microservice-communication-versus-the-api-gateway-pattern)
 - [Advantages and disadvantages of using API gateway](https://www.designgurus.io/course-play/grokking-system-design-fundamentals/doc/advantages-and-disadvantages-of-using-api-gateway)
@@ -654,8 +662,9 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 **Opis:** Zewnętrzna bramka płatności działa jako pośrednik między systemem a bankiem lub innym operatorem płatności. Proces obejmuje przekazanie danych płatniczych przez API w sposób bezpieczny i zgodny z regulacjami PCI-DSS. W praktyce oznacza to, że cały ciężar zgodności z przepisami prawnymi przenoszony jest na dostawcę usługi płatniczej.
 
 **Źródła:**
+
 - [What is a payment gateway?](https://gocardless.com/guides/posts/how-to-create-a-payment-gateway/)
-- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises) 
+- [Advantages and Disadvantages of Gateway Payment](https://www.revolv3.com/resources/pros-and-cons-of-gateway-payment-processing-for-enterprises)
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
@@ -703,7 +712,10 @@ TODO @jakubzehner
 
 **Opis:**
 
-**Źródła:** [microservices.io - Database per Service](https://microservices.io/patterns/data/database-per-service.html), [microservices.io - Shared Database](https://microservices.io/patterns/data/shared-database.html)
+**Źródła:**
+
+- [microservices.io - Database per Service](https://microservices.io/patterns/data/database-per-service.html)
+- [microservices.io - Shared Database](https://microservices.io/patterns/data/shared-database.html)
 
 ## `M/10`: Relacyjne bazy danych ACID na RDS
 
@@ -824,7 +836,11 @@ Często uwierzytelnianie i autoryzacja są delegowane do zewnętrznego dostawcy,
 > [!NOTE]
 > Wybór ten wynika też w dużym stopniu z potrzeb kursu, gdzie wykorzystanie zewnętrznego dostawcy zbytnio uprościłoby fazę implementacji. W rzeczywistym systemie należałoby dokładniej rozważyć możliwość wdrożenia rozwiązania zewnętrznego z uwagi na duże konsekwencje przy popełnieniu błędu w implementacji.
 
-**Źródła:** [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html), [jwt.io - JSON Web Tokens](https://jwt.io), [Auth0 - What Are Refresh Tokens](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)
+**Źródła:**
+
+- [microservices.io - Access Token](https://microservices.io/patterns/security/access-token.html)
+- [jwt.io - JSON Web Tokens](https://jwt.io)
+- [Auth0 - What Are Refresh Tokens](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)
 
 ## `M/12`: Wzorzec sidecar dla autoryzacji
 
@@ -919,7 +935,11 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 
 ![Diagram sekwencji M/12](./images/sequence-diagram-mechanism-12.drawio.svg)
 
-**Źródła:** [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html), [Auth0 - JSON Web Key Sets](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets), Wykład 4: Style architektoniczne
+**Źródła:**
+
+- [microservices.io - Sidecar](https://microservices.io/patterns/deployment/sidecar.html)
+- [Auth0 - JSON Web Key Sets](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets)
+- Wykład 4: Style architektoniczne
 
 ## `M/13`: Responsywna aplikacja webowa SPA
 
@@ -973,6 +993,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 **Opis:** Single Page Application (SPA) to nowoczesne podejście do tworzenia aplikacji webowych, gdzie cała aplikacja ładowana jest jednorazowo, a kolejne interakcje użytkownika powodują dynamiczne aktualizacje treści bez przeładowywania strony.
 
 **Źródła:**
+
 - [The Pros and Cons of Single-Page Applications](https://medium.com/@VAISHAK_CP/the-pros-and-cons-of-single-page-applications-spas-06d8a662a149)
 - [What is server-side rendering](https://solutionshub.epam.com/blog/post/what-is-server-side-rendering)
 - [What is the Difference Between SPAs and SSR](https://hygraph.com/blog/difference-spa-ssg-ssr#which-approach-is-better)
@@ -1076,7 +1097,7 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
 
 ### Zalogowanie do systemu
 
-TODO @tchojnacki
+![Scenariusz interakcji - Zalogowanie do systemu](./images/sequence-diagram-scenario-login.drawio.svg)
 
 ### Sprawdzenie rozkładu jazdy
 
@@ -1092,7 +1113,7 @@ TODO @jakubzehner + @piterek130: + wystawienie mandatu
 
 ### Zgłoszenie awarii
 
-TODO @tchojnacki
+![Scenariusz interakcji - Zgłoszenie awarii](./images/sequence-diagram-scenario-report-accident.drawio.svg)
 
 ## Interfejsy integracyjne
 
@@ -1162,7 +1183,7 @@ TODO @tchojnacki
   </tr>
 </table>
 
-Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 * 500 MB = 15 GB danych.
+Jeśli dziennie z komunikacji miejskiej we Wrocławiu korzysta około 500 000 pasażerów [^nf-prf-2] i zakładamy, że 50% z nich korzysta z aplikacji i kupuje w niej bilety, to daje to około 250 000 wywołań dziennie oraz średnio 10 500 wywołań na godzinę. Zakładając, że przy jednej transakcji następuje przepływ 2 KB danych, to daje około 500 MB danych dziennie. Zatem miesięcznie jest to 30 \* 500 MB = 15 GB danych.
 
 # Widok funkcjonalny
 
@@ -1379,6 +1400,9 @@ Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, be
   </tr>
   <tr>
     <td colspan="3"><code>account.email <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>account.email UNIQUE</code></td>
   </tr>
   <tr>
     <td colspan="3"><code>account.phone_number IS NULL OR account.account_type = 'P'</code></td>
@@ -2005,9 +2029,11 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                                 | Zmiana numeru telefonu swojego konta.     |
 | `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`                    | Dezaktywacja swojego konta.               |
 | `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                       | Utworzenie nowego cudzego konta.          |
-| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                                 | Pobranie listy cudzych kont.              |
+| `admin`     | `GET`      | `/ext/v1/accounts`¹     | `ACC/13`                                 | Pobranie listy cudzych kont.              |
 | `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                                 | Pobranie informacji o cudzym koncie.      |
 | `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`                    | Dezaktywacja cudzego konta.               |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
