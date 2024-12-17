@@ -1123,7 +1123,7 @@ TODO @jakubzehner + @piterek130: + wystawienie mandatu
   </tr>
   <tr>
     <th>Opis</th>
-    <td colspan="2">Integracja systemu "JakPrzyjadę" z bramką płatności Tpay umożliwia pasażerom dokonywanie płatności online za usługi oferowane przez system takie jak zakup biletu oraz opłacenie mandatu.</td>
+    <td colspan="2">Integracja systemu "JakPrzyjade" z bramką płatności Tpay umożliwia pasażerom dokonywanie płatności online za usługi oferowane przez system takie jak zakup biletu oraz opłacenie mandatu.</td>
   </tr>
   <tr>
     <th>Status</th>
@@ -2082,7 +2082,9 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Logistyka
 
-TODO @mlodybercik: Dodać diagram pakietów, opis architektury.
+![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
+
+Część systemu obsługująca logistykę JakPrzyjade, zarządzająca trasami, przystankami, pojazdami, awariami oraz rozkładami jazdy podzielona została na trzy pakiety realizujące inne zadania w działaniu aplikacji obsługującej REST API. Każde z nich jest odpowiedzialne za integralną część działania tego podsystemu i są to pakiety odpowiedzialne za komunikację (`controllers`) odpowiadające na zapytania do systemu, za logikę biznesową (`services`), oraz za dostęp do bazy danych oraz mapowanie danych przychodzących na obiekty bazodanowe oraz odwrotnie (`data`). Jednym z dodatkowych wydzielonych pakietów jest pakiet organizujący funkcje pomocnicze (`helpers`) gotowe do ponownego użycia w innych częściach systemu.
 
 ### API
 
