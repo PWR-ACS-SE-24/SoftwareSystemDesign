@@ -1670,9 +1670,94 @@ Z uwagi na dużą ilość danych, zdecydowano się na czas retencji kopii zapaso
 
 ### Płatność
 
-TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla decyzji i uzupełnić tabelę.
+Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typów wyliczeniowych, które odpowiadają za obsługę płatności oraz zarządzanie mandatami. Klasa `Wallet` przechowuje informacje o stanie środków pasażerów, `CreditCardInfo` odpowiada za przechowywanie danych kart kredytowych powiązanych z portfelem pasażera, a `Fine` przechowuje informacje o nałożonych mandatach. W tym przypadku podobnie jak w podsystemie Clabbert zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, ponieważ tak jak w poprzednim przykładzie rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach. 
 
 ![Diagram bazodanowy Inferius](./images/database-diagram-inferius.drawio.svg)
+
+<table>
+  <tr>
+    <th colspan="3">Indeksy</th>
+  </tr>
+  <tr>
+    <th>Kolumna</th>
+    <th>Typ</th>
+    <th>Opis</th>
+  </tr>
+  <tr>
+    <td><code>wallet.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>wallet.passenger_id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks wspierający wyszukiwanie portfeli pasażerów.</td>
+  </tr>
+  <tr>
+    <td><code>credit_card_info.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>fine.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
+    <td><code>fine.passenger_id</code></td>
+    <td>b-tree</td>
+    <td>Indeks wspierający wyszukiwanie mandatów pasażera.</td>
+  </tr>
+  <tr>
+    <td><code>fine.inspector_id</code></td>
+    <td>b-tree</td>
+    <td>Indeks wspierający wyszukiwanie mandatów według inspektora.</td>
+  </tr>
+  <tr>
+    <td><code>credit_card_info.wallet_id</code></td>
+    <td>b-tree</td>
+    <td>Indeks wspierający wyszukiwanie kart kredytowych według portfela.</td>
+  </tr>
+  <tr>
+    <th colspan="3">Ograniczenia</th>
+  </tr>
+  <tr>
+    <td colspan="3"><code>wallet.balance_pln >= 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>wallet.passenger_id UNIQUE</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>credit_card_info.holder_name <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>fine.recipient <> ''</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>fine.amount_pln > 0</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>fine.time <= NOW()</code></td>
+  </tr>
+</table>
+
+Z uwagi na średnie obciążenie bazy danych w podsystemie Inferius, jako klasę instancji wybrano `db.m7g.large`. Wersja `large` oferuje 2 vCPU oraz 8 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
+
+- `wallet`: 16 + 16 + 8 = 40 bajtów,
+- `credit_card_info`: 16 + 16 + 255 + 16 + 255 + 4 = 562 bajty,
+- `fine`: 16 + 16 + 16 + 255 + 8 + 8 + 32 + 32 = 383 bajty.
+
+Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wiersz:
+
+- `wallet`: 24 + 24 = 48 bajtów,
+- `credit_card_info`: 24 + 24 = 48 bajtów,
+- `fine`: 24 + 24 + 24 = 72 bajty.
+
+Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln * 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln * 610 = 1.22 GB, a rocznie 1.2 mln * 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 * 455 = 20 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
+
+Zdecydowano się na czas retencji kopii zapasowych wynoszący 35 dni, ze względu na przetrzymywanie finansowych oraz transakcyjnych danych.
 
 <table>
   <tr>
@@ -1686,17 +1771,17 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
   <tr>
     <th>Identyfikator</th>
     <td><code>identifier</code></td>
-    <td>np. <code>unikalny-identyfikator-rds</code></td>
+    <td><code>rds-inferius</code></td>
   </tr>
   <tr>
     <th>Silnik i wersja</th>
     <td><code>engine</code>, <code>engine_version</code></td>
-    <td>np. PostgreSQL 14.14-R1</td>
+    <td>PostgreSQL 17.2</td>
   </tr>
   <tr>
     <th>Klasa instancji</th>
     <td><code>instance_class</code></td>
-    <td>np. <code>db.t3.micro</code></td>
+    <td><code>db.m7g.large</code></td>
   </tr>
   <tr>
     <th colspan="3">Połączenie</th>
@@ -1704,17 +1789,17 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
   <tr>
     <th>Nazwa bazy</th>
     <td><code>db_name</code></td>
-    <td>np. <code>moja_baza</code></td>
+    <td><code>inferius</code></td>
   </tr>
   <tr>
     <th>Użytkownik</th>
     <td><code>username</code></td>
-    <td>np. <code>moj_uzytkownik</code></td>
+    <td><code>postgres</code></td>
   </tr>
   <tr>
     <th>Port</th>
     <td><code>port</code></td>
-    <td>np. <code>5432</code></td>
+    <td><code>5432</code></td>
   </tr>
   <tr>
     <th colspan="3">Składowanie</th>
@@ -1722,27 +1807,27 @@ TODO @piterek130: Dodać diagram bazodanowy do Inferius, dodać uzasadnienia dla
   <tr>
     <th>Typ składowania</th>
     <td><code>storage_type</code></td>
-    <td>np. <code>gp2</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>
     <th>Szyfrowanie bazy</th>
     <td><code>storage_encrypted</code></td>
-    <td>TAK/NIE</td>
+    <td>TAK</td>
   </tr>
   <tr>
     <th>Początkowa pojemność (GB)</th>
     <td><code>allocated_storage</code></td>
-    <td>np. 20</td>
+    <td>20</td>
   </tr>
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>np. 5</td>
+    <td>2</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
     <td><code>backup_retention_period</code></td>
-    <td>np. 7</td>
+    <td>35</td>
   </tr>
 </table>
 
@@ -2040,3 +2125,4 @@ TODO @mlodybercik
 [^linie-dziennie]: [Gazeta Wrocławska - Ile przejazdów dziennie?](https://gazetawroclawska.pl/czy-we-wroclawiu-warto-postawic-na-komunikacje-prawie-8-tys-odwolanych-kursow-mpk/ar/c1-18493337)
 [^dane-poczatkowe]: [Publicznie dostępne dane MPK](https://opendata.cui.wroclaw.pl/dataset/rozkladjazdytransportupublicznegoplik_data)
 [^instance-types]: [Typy instancji AWS](https://aws.amazon.com/ec2/instance-types/)
+[^roczne-mandaty]: [Gazeta Wrocławska - Ile mandatów rocznie?](https://gazetawroclawska.pl/gapowicze-w-mpk-wroclaw-kontrolerzy-zlapali-ponad-40-tysiecy-osob-podrozujacych-na-gape-w-autobusach-i-tramwajach/ar/c1-18283203)
