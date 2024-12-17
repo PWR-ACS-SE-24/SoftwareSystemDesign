@@ -1646,7 +1646,7 @@ Z uwagi na dużą ilość danych, zdecydowano się na czas retencji kopii zapaso
 
 ### Płatność
 
-Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typów wyliczeniowych, które odpowiadają za obsługę płatności oraz zarządzanie mandatami. Klasa `Wallet` przechowuje informacje o stanie środków pasażerów, `CreditCardInfo` odpowiada za przechowywanie danych kart kredytowych powiązanych z portfelem pasażera, a `Fine` przechowuje informacje o nałożonych mandatach. W tym przypadku podobnie jak w podsystemie Clabbert zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, ponieważ tak jak w poprzednim przykładzie rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach.
+Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typów wyliczeniowych, które odpowiadają za obsługę płatności oraz zarządzanie mandatami. Klasa `Wallet` przechowuje informacje o stanie środków pasażerów, `CreditCardInfo` odpowiada za przechowywanie danych kart kredytowych powiązanych z portfelem pasażera, a `Fine` przechowuje informacje o nałożonych mandatach. W tym przypadku podobnie jak w podsystemie Clabbert zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, ponieważ tak jak w poprzednim przykładzie rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach. 
 
 ![Diagram bazodanowy Inferius](./images/database-diagram-inferius.drawio.svg)
 
