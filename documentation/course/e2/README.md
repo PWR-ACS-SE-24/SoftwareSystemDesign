@@ -1402,6 +1402,9 @@ Model informacyjny podsystemu składa się z jednej hierarchii dziedziczenia, be
     <td colspan="3"><code>account.email <> ''</code></td>
   </tr>
   <tr>
+    <td colspan="3"><code>account.email UNIQUE</code></td>
+  </tr>
+  <tr>
     <td colspan="3"><code>account.phone_number IS NULL OR account.account_type = 'P'</code></td>
   </tr>
 </table>
@@ -1941,9 +1944,11 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | `passenger` | `PUT`      | `/ext/v1/self/phone`    | `ACC/16`                                 | Zmiana numeru telefonu swojego konta.     |
 | `member`    | `DELETE`   | `/ext/v1/self`          | `ACC/10`, `NF/REL/08`                    | Dezaktywacja swojego konta.               |
 | `admin`     | `POST`     | `/ext/v1/accounts`      | `ACC/11`, `ACC/12`                       | Utworzenie nowego cudzego konta.          |
-| `admin`     | `GET`      | `/ext/v1/accounts`      | `ACC/13`                                 | Pobranie listy cudzych kont.              |
+| `admin`     | `GET`      | `/ext/v1/accounts`¹     | `ACC/13`                                 | Pobranie listy cudzych kont.              |
 | `admin`     | `GET`      | `/ext/v1/accounts/:id`  | `ACC/14`                                 | Pobranie informacji o cudzym koncie.      |
 | `admin`     | `DELETE`   | `/ext/v1/accounts/:id`  | `ACC/15`, `NF/REL/08`                    | Dezaktywacja cudzego konta.               |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
