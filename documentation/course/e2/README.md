@@ -1981,30 +1981,32 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury.
 
 #### API publiczne
 
-| **Rola**                                    | **Metoda** | **Endpoint**              | **Wymagania**                          | **Opis**                                     |
-| ------------------------------------------- | ---------- | ------------------------- | -------------------------------------- | -------------------------------------------- |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines`           | `LOG/01`, `LOG/02`                     | Pobranie listy aktywnych linii.              |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id`       | `LOG/01`, `LOG/02`                     | Pobranie informacji o linii.                 |
-| `admin`                                     | `POST`     | `/ext/v1/lines`           | `LOG/03`                               | Utworzenie nowej linii.                      |
-| `admin`                                     | `PATCH`    | `/ext/v1/lines/:id`       | `LOG/04`                               | Edytowanie linii.                            |
-| `admin`                                     | `DELETE`   | `/ext/v1/lines/:id`       | `LOG/05`                               | Dezaktywacja linii.                          |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id/stops` | `LOG/06`, `LOG/07`                     | Pobranie listy przystanków konkretnej linii. |
-| `admin`                                     | `POST`     | `/ext/v1/stops/`          | `LOG/08`                               | Utworzenie nowego przystanku.                |
-| `admin`                                     | `PATCH`    | `/ext/v1/stops/:id`       | `LOG/09`                               | Edytowanie przystanku.                       |
-| `admin`                                     | `DELETE`   | `/ext/v1/stops/:id`       | `LOG/10`                               | Dezaktywacja przystanku.                     |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes`          | `LOG/11`, `LOG/12`                     | Pobranie rozkładu jazdy.                     |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/:id`      | `LOG/11`, `LOG/12`                     | Pobranie informacji o kursie.                |
-| `admin`                                     | `POST`     | `/ext/v1/routes`          | `LOG/13`,                              | Utworzenie nowego kursu.                     |
-| `admin`                                     | `PATCH`    | `/ext/v1/routes/:id`      | `LOG/14`                               | Edytowanie kursu.                            |
-| `admin`                                     | `DELETE`   | `/ext/v1/routes/:id`      | `LOG/15`                               | Deaktywacja kursu.                           |
-| `admin`                                     | `GET`      | `/ext/v1/vehicles`        | `LOG/16`                               | Pobranie listy pojazdów.                     |
-| `admin`                                     | `POST`     | `/ext/v1/vehicles`        | `LOG/17`                               | Utworzenie nowego pojazdu.                   |
-| `admin`                                     | `PATCH`    | `/ext/v1/vehicles/:id`    | `LOG/18`                               | Edytowanie pojazdu.                          |
-| `admin`                                     | `DELETE`   | `/ext/v1/vehicles/:id`    | `LOG/19`                               | Deaktywacja pojazdu.                         |
-| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents`       | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie listy awarii.                       |
-| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents/:id`   | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie informacji o awarii.                |
-| `driver`, `inspector`                       | `POST`     | `/ext/v1/accidents`       | `LOG/22`, `LOG/25`                     | Zgłoszenie nowej awarii.                     |
-| `driver`, `inspector`                       | `PATCH`    | `/ext/v1/accidents/:id`   | `LOG/23`, `LOG/26`                     | Edytowanie awarii.                           |
+| **Rola**                                    | **Metoda** | **Endpoint**              | **Wymagania**                          | **Opis**                                       |
+| ------------------------------------------- | ---------- | ------------------------- | -------------------------------------- | ---------------------------------------------- |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines`           | `LOG/01`, `LOG/02`                     | Pobranie listy aktywnych linii.                |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id`       | `LOG/01`, `LOG/02`                     | Pobranie informacji o linii.                   |
+| `admin`                                     | `POST`     | `/ext/v1/lines`           | `LOG/03`                               | Utworzenie nowej linii.                        |
+| `admin`                                     | `PATCH`    | `/ext/v1/lines/:id`       | `LOG/04`                               | Edytowanie linii.                              |
+| `admin`                                     | `DELETE`   | `/ext/v1/lines/:id`       | `LOG/05`                               | Dezaktywacja linii.                            |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id/stops` | `LOG/06`, `LOG/07`                     | Pobranie listy przystanków konkretnej linii.   |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/stops/:id/lines` | `LOG/06`, `LOG/07`                     | Pobranie listy linii obsługujących przystanek. |
+| `admin`                                     | `POST`     | `/ext/v1/stops/`          | `LOG/08`                               | Utworzenie nowego przystanku.                  |
+| `admin`                                     | `PATCH`    | `/ext/v1/stops/:id`       | `LOG/09`                               | Edytowanie przystanku.                         |
+| `admin`                                     | `DELETE`   | `/ext/v1/stops/:id`       | `LOG/10`                               | Dezaktywacja przystanku.                       |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes`          | `LOG/11`, `LOG/12`                     | Pobranie rozkładu jazdy.                       |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/line/:id` | `LOG/11`, `LOG/12`                     | Pobranie rozkładu jazdy dla linii.             |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/:id`      | `LOG/11`, `LOG/12`                     | Pobranie informacji o kursie.                  |
+| `admin`                                     | `POST`     | `/ext/v1/routes`          | `LOG/13`,                              | Utworzenie nowego kursu.                       |
+| `admin`                                     | `PATCH`    | `/ext/v1/routes/:id`      | `LOG/14`                               | Edytowanie kursu.                              |
+| `admin`                                     | `DELETE`   | `/ext/v1/routes/:id`      | `LOG/15`                               | Deaktywacja kursu.                             |
+| `admin`                                     | `GET`      | `/ext/v1/vehicles`        | `LOG/16`                               | Pobranie listy pojazdów.                       |
+| `admin`                                     | `POST`     | `/ext/v1/vehicles`        | `LOG/17`                               | Utworzenie nowego pojazdu.                     |
+| `admin`                                     | `PATCH`    | `/ext/v1/vehicles/:id`    | `LOG/18`                               | Edytowanie pojazdu.                            |
+| `admin`                                     | `DELETE`   | `/ext/v1/vehicles/:id`    | `LOG/19`                               | Deaktywacja pojazdu.                           |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents`       | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie listy awarii.                         |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents/:id`   | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie informacji o awarii.                  |
+| `driver`, `inspector`                       | `POST`     | `/ext/v1/accidents`       | `LOG/22`, `LOG/25`                     | Zgłoszenie nowej awarii.                       |
+| `driver`, `inspector`                       | `PATCH`    | `/ext/v1/accidents/:id`   | `LOG/23`, `LOG/26`                     | Edytowanie awarii.                             |
 
 #### API wewnętrzne
 
