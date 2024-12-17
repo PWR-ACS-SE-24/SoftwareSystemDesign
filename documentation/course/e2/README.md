@@ -1109,7 +1109,7 @@ TODO @mlodybercik
 
 ### Kontrola biletowa
 
-TODO @jakubzehner + @piterek130: + wystawienie mandatu
+![Scenariusz interakcji - Kontrola biletowa](./images/sequence-diagram-scenario-ticket-inspection.drawio.svg)
 
 ### Zgłoszenie awarii
 
