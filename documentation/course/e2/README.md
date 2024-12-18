@@ -1067,9 +1067,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 
 ## `M/14`: Kod QR dla biletów
 
-TODO @jakubzehner
-
-**Problem:**
+**Problem:** System musi zapewnić możliwość wygodnego i przystępnego zarówno dla pasażera jak i kontrolera biletów sposobu weryfikacji ważności biletu.
 
 **Rozwiązania:**
 
@@ -1080,38 +1078,47 @@ TODO @jakubzehner
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Kod QR</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Szybka i zautomatyzowana kontrola</li>
+        <li>Uniwersalność</li>
+        <li>Łatwość obsługi dla kontrolerów</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Zależność od sprzętu</li>
+        <li>Trudniejsza implementacja</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Kod w postaci tekstowej</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Brak wymogu dodatkowego sprzętu</li>
+        <li>Prosta implementacja</li>
+        <li>Odporność na problemy techniczne</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Czasochłonność wprowadzania kodu</li>
+        <li>Większe ryzyko błędu</li>
+        <li>Trudniej przekazać dużą ilość informacji</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W celu zapewnienia szybkiej i zautomatyzowanej kontroli biletów, zdecydowano się na **kod QR**.
 
-**Opis:**
+**Opis:** Kod QR to bardzo wygodny wybór do prezentacji biletu podczas kontroli. Dzięki swojej prostocie i szybkości odczytu, kod QR stanowi idealne rozwiązanie w systemach biletowych. Główną zaletą wykorzystania kodu QR jest szybka i bezbłędna kontrola, a także komfort dla pasażera i kontrolera. Kod QR jest uniwersalny i nie wymaga specjalistycznego sprzętu, co sprawia, że jest łatwo dostępny i wygodny w użyciu.
 
 **Źródła:**
+
+- [pl.wikipedia.org - kod QR](https://pl.wikipedia.org/wiki/Kod_QR)
 
 # Widoki architektoniczne
 
