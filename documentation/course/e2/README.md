@@ -677,9 +677,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
-TODO @jakubzehner
-
-**Problem:**
+**Problem:** W architekturze mikroserwisów ([`M/01`](#m01-architektura-mikroserwisów)) konieczne jest podjęcie decyzji dotyczącej sposobu przechowywania danych, tak aby zapewnić niezawodność, skalowalność, wydajność i bezpieczeństwo systemu.
 
 **Rozwiązania:**
 
@@ -690,36 +688,47 @@ TODO @jakubzehner
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Wspólna baza danych dla mikroserwisów</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Prostsze zarządzanie danymi</li>
+        <li>Łatwe współdzielenie danych</li>
+        <li>Mniejsza złożoność systemu</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Słabe oddzielenie odpowiedzialności</li>
+        <li>Trudniejsze skalowanie</li>
+        <li>Ryzyko wystąpienia wąskiego gardła</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Oddzielne bazy dla mikroserwisów</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Silne oddzielenie odpowiedzialności</li>
+        <li>Łatwiejsze skalowanie</li>
+        <li>Lepsza niezawodność</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Złożona infrastruktura</li>
+        <li>Trudniejszy dostęp do danych między serwisami</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Ze względu na wymagania dotyczące niezawodności, skalowalności i bezpieczeństwa systemu, zdecydowano się na zastosowanie **oddzielnych baz danych dla mikroserwisów**.
 
-**Opis:**
+**Opis:** W architekturze mikroserwisów zastosowanie oddzielnych baz danych oznacza, że każdy mikroserwis posiada swoją własną bazę danych, którą zarządza i do której ma wyłączny dostęp. Podejście to zapewnia silne oddzielenie odpowiedzialności pomiędzy serwisami, ponieważ każdy z nich jest autonomiczny w kwestii przechowywania danych i nie zależy bezpośrednio od innych mikroserwisów. Dzięki temu możliwa jest niezależna ewolucja każdego z serwisów – zmiany w schemacie bazy jednego serwisu nie wpływają na inne.
+
+Oddzielne bazy danych zwiększają również bezpieczeństwo systemu, ponieważ serwisy mają dostęp wyłącznie do swoich danych, co ogranicza ryzyko nieautoryzowanego dostępu do wrażliwych informacji. Architektura taka ułatwia skalowanie systemu, ponieważ zarówno mikroserwisy, jak i ich bazy danych można skalować indywidualnie, w zależności od potrzeb. Dodatkowo, podejście to pozwala na elastyczność w wyborze technologii – każdy serwis może korzystać z innego typu bazy danych (np. relacyjnej, dokumentowej czy grafowej), dopasowanego do specyficznych wymagań.
+
+Jednak rozwiązanie to wiąże się z pewnymi wyzwaniami. Zarządzanie wieloma bazami danych wymaga bardziej złożonej infrastruktury, co może generować wyższe koszty utrzymania, szczególnie w początkowej fazie projektu. Ponadto z powodu zastosowania tego rozwiązania komunikacja między serwisami jest często konieczna, gdy dane przechowywane w różnych bazach muszą być używane w jednym procesie, co zwiększa złożoność implementacji.
 
 **Źródła:**
 
