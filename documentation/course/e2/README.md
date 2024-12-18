@@ -260,7 +260,8 @@ _Auto Scaling_ to narzędzie, które pozwala na automatyczne skalowanie liczby i
       <ul>
         <li>Proste w implementacji</li>
         <li>Uniwersalne rozwiązanie niezależne od technologii</li>
-        <li>Niski narzut na system</li> 
+        <li>Niski narzut na system</li>
+        <li>Powszechnie wspierany standard</li> 
       </ul>
     </td>
     <td>
