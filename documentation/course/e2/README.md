@@ -244,9 +244,7 @@ _Auto Scaling_ to narzędzie, które pozwala na automatyczne skalowanie liczby i
 
 ## `M/03`: Healthchecki dla serwisów
 
-TODO @jakubzehner
-
-**Problem:**
+**Problem:** Zgodnie z wymaganiem `NF/REL/01` system powinien charakteryzować się wysoką niezawodnością. W związku z tym, konieczne jest zastosowanie mechanizmu, który pozwoli na monitorowanie stanu serwisów i szybkie reagowanie w przypadku ich awarii. Rozwiązanie to powinno pozwalać na szybkie wykrycie problemów, co pozwoli na ich szybkie rozwiązanie i minimalizację czasu przestoju systemu.
 
 **Rozwiązania:**
 
@@ -257,40 +255,53 @@ TODO @jakubzehner
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Health Check API</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
+        <li>Uniwersalne rozwiązanie niezależne od technologii</li>
+        <li>Niski narzut na system</li> 
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Ograniczone możliwości wykrywania złożonych problemów</li>
+        <li>Serwis może być uznany za zdrowy, mimo że pomiędzy sprawdzeniami stanu wystąpiły problemy</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Application-Level Observability</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Daje pełny obraz działania aplikacji</li>
+        <li>Można konfigurować progi ostrzegawcze dla różnych wskaźników</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Duża złożoność konfiguracji</li>
+        <li>Wysoki narzut na system</li>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **Health Check API**.
 
-**Opis:**
+**Opis:** Health Check API to jeden z najprostszych i najczęściej używanych mechanizmów do monitorowania stanu aplikacji w środowiskach produkcyjnych. Jego głównym celem jest umożliwienie szybkiego i zautomatyzowanego sprawdzania, czy aplikacja działa poprawnie oraz czy jej kluczowe komponenty są dostępne i funkcjonują zgodnie z oczekiwaniami. Jest to szczególnie istotne w środowiskach opartych na mikrousługach, gdzie każda usługa może mieć swoje zależności, takie jak bazy danych, systemy cache, kolejki zadań czy zewnętrzne API.
+
+Health Check API pozwala monitorować aplikację w sposób aktywny, co oznacza, że systemy zewnętrzne, takie jak load balancery czy narzędzia do monitoringu, wysyłają żądania do specjalnego endpointu w aplikacji, aby uzyskać odpowiedź wskazującą na jej stan. W najprostszej formie endpoint ten zwraca kod statusu HTTP 200, co oznacza, że aplikacja działa poprawnie, lub 503, co sygnalizuje problem. W bardziej zaawansowanych scenariuszach Health Check API może dostarczać szczegółowe dane o stanie różnych komponentów aplikacji, takich jak status połączenia z bazą danych czy dostępność usług zewnętrznych.
+
+Kluczowym aspektem Health Check API jest jego rola w zautomatyzowanych środowiskach wdrożeniowych, takich jak Kubernetes. Tutaj jest wykorzystywany do liveness i readiness probes, które decydują o tym, czy kontener powinien być zrestartowany lub czy aplikacja jest gotowa do przyjmowania ruchu. Działa to na zasadzie ciągłego monitorowania stanu aplikacji i jej komponentów, co pozwala na szybką reakcję w przypadku problemów, np. przekierowanie ruchu do zdrowych instancji lub automatyczny restart wadliwej usługi.
 
 **Źródła:**
 
 - [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
+- [kubernetes.io - Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+- [logz.io - Application Observability in 2024](https://logz.io/learn/application-observability-guide/#application-observable)
+- [fastly.com - What is application observability?](https://www.fastly.com/learning/what-is-application-observability)
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
