@@ -737,9 +737,7 @@ Jednak rozwiązanie to wiąże się z pewnymi wyzwaniami. Zarządzanie wieloma b
 
 ## `M/10`: Relacyjne bazy danych ACID na RDS
 
-TODO @jakubzehner: porównanie z NoSQL
-
-**Problem:**
+**Problem:** Aby zapewnić integralność i bezpieczeństwo danych, konieczny jest wybór odpowiedniego systemu zarządzania bazą danych. W związku z tym, konieczne jest wybór baz danych pomiędzy relacyjnymi bazami danych ACID (SQL) a bazami danych BASE (NoSQL).
 
 **Rozwiązania:**
 
@@ -750,44 +748,95 @@ TODO @jakubzehner: porównanie z NoSQL
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Bazy danych ACID</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Zapewnia synchronizację danych</li>
+        <li>Niezawodność</li>
+        <li>Bezpieczeństwo operacji</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Skaluje się pionowo</li>
+        <li>Wydajność spada przy przetwarzaniu dużych wolumenów danych</li>
+        <li>Przetwarzanie transakcji wymaga blokowania określonych rekordów</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Bazy danych BASE</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Skaluje się poziomo</li>
+        <li>Pozwala na równoczesne aktualizowanie tych samych rekordów</li>
+        <li>Wysoka wydajność przy dużych zbiorach danych</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak synchronizacji danych na poziomie bazy</li>
+        <li>Brak gwarancji spójności natychmiastowej</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Baza danych na maszynie AWS EC2</th>
+    <td>
+      <ul>
+        <li>Pełna kontrola</li>
+        <li>Elastyczność technologiczna</li>
+        <li>Bez limitów usługi</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Konieczność zarządzania serwerem</li>
+        <li>Brak automatyzacji</li>
+        <li>Większe ryzyko błędów</li>
+        <li>Trudności w skalowaniu</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>AWS RDS</th>
+    <td>
+      <ul>
+        <li>Łatwość zarządzania</li>
+        <li>Wysoka dostępność</li>
+        <li>Automatyczne skalowanie</li>
+        <li>Bezpieczeństwo</li>
+        <li>Szybkie wdrożenie</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Mniejsza kontrola</li>
+        <li>Limitacje usługi</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-**Opis:**
+**Decyzja:** Ze względu na wymagania dotyczące integralności, niezawodności i bezpieczeństwa danych, zdecydowano się na zastosowanie **relacyjnych baz danych ACID** na **Amazon Relational Database Service (RDS)**.
 
-<!--
-Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
+**Opis:** Zastosowanie baz danych zgodnych z modelem ACID (Atomicity, Consistency, Isolation, Durability) na platformie AWS RDS (Relational Database Service) jest rozwiązaniem przeznaczonym dla systemów wymagających spójności i niezawodności danych w krytycznych operacjach. Bazy ACID, takie jak MySQL, PostgreSQL, Oracle czy SQL Server, zapewniają gwarancję, że każda transakcja zostanie przetworzona w sposób kompletny i spójny, nawet w przypadku awarii.
 
-W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
--->
+Wybierając RDS jako platformę dla baz ACID, zyskuje się zautomatyzowane zarządzanie infrastrukturą, obejmujące tworzenie kopii zapasowych, aktualizacje systemu i konfigurację replikacji. AWS RDS obsługuje także funkcję Multi-AZ (Multi-Availability Zone), która zapewnia wysoką dostępność i odporność na awarie. W przypadku awarii instancji głównej, RDS automatycznie przełącza ruch na zapasowy węzeł w innej strefie dostępności, minimalizując przestoje. Dodatkowo, usługa pozwala na łatwe skalowanie zarówno w pionie (zwiększenie zasobów instancji), jak i poziomie (dodanie replik odczytu), co sprawia, że baza danych może być dostosowana do zmieniających się potrzeb aplikacji.
+
+AWS RDS eliminuje konieczność ręcznego zarządzania serwerem, pozwalając skupić się na projektowaniu bazy danych i optymalizacji zapytań. Dzięki natywnemu wsparciu dla ACID, zapewnia gwarancje transakcyjne i spójność danych, co czyni je odpowiednim wyborem dla aplikacji wymagających niezawodności oraz bezpieczeństwa. Rozwiązanie to łączy stabilność i wydajność baz transakcyjnych z wygodą korzystania z usług zarządzanych w chmurze, jednocześnie redukując ryzyko błędów administracyjnych oraz koszty związane z utrzymaniem infrastruktury.
 
 **Źródła:**
+
+- [aws.amazon.com - What’s the Difference Between an ACID and a BASE Database?](https://aws.amazon.com/compare/the-difference-between-acid-and-base-database/)
 
 ## `M/11`: Autoryzacja z użyciem JWT
 
