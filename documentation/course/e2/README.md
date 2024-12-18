@@ -1324,7 +1324,7 @@ TODO @piterek130: opis zmian
 
 ### Logistyka
 
-W celu zwiększenia wygody użytkowników, dodano atrybut `ordered` do relacji między `Stop` a `Line`, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
+W celu zwiększenia wygody użytkowników, dodano atrybut `ordered` do relacji między `Stop` a `Line`, który przechowuje informację o kolejności przystanków na danej linii.
 
 ![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
@@ -1833,7 +1833,7 @@ Zdecydowano się na czas retencji kopii zapasowych wynoszący 35 dni, ze względ
 
 ### Logistyka
 
-Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii. Dodatkowo w celu uniknięcia problemów związanych z integralnością bazy danych przy usuwaniu wierszy dodano atrybut `is_active` do encji `Stop` oraz `Route`, działający analogicznie do tego samego atrybutu w tabelach `Line` oraz `Vehicle`. Wartość będzie zmieniana na `false` zamiast usuwania, a zapytania o istniejące obiekty będą od razu filtrowane używając tego atrybutu. Takie podejście pozwoli na zachowanie historii danych oraz uniknięcie problemów związanych z referencjami do nieistniejących już obiektów.
+Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdej pary przystanek - linia. Dodatkowo w celu uniknięcia problemów związanych z integralnością bazy danych przy usuwaniu wierszy dodano atrybut `is_active` do encji `Stop` oraz `Route`, działający analogicznie do tego samego atrybutu w tabelach `Line` oraz `Vehicle`. Wartość będzie zmieniana na `false` zamiast usuwania, a zapytania o istniejące obiekty będą od razu filtrowane używając tego atrybutu. Takie podejście pozwoli na zachowanie historii danych oraz uniknięcie problemów związanych z referencjami do nieistniejących już obiektów.
 
 ![Diagram bazodanowy Leprechaun](./images/database-diagram-leprechaun.drawio.svg)
 
@@ -1988,7 +1988,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>0.35</td>
+    <td>0</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
@@ -2001,7 +2001,7 @@ Zważając na to, że dane w bazie są danymi które są publiczne i nie są wra
 
 Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
 
-Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 16 + 16 + 1 czyli 65 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 28 bajtów, otrzymujemy 93 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 320MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 250MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 16 + 16 + 1 czyli 65 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 28 bajtów, otrzymujemy 93 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 320MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 250MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca. Ze względu na bardzo mały przyrost danych w ciągu roku, zdecydowano na nie korzystanie z automatycznego przyrostu pojemności. Przy szacowanym przyroście danych wynoszącym około 450MB rocznie podstawowe 20GB powinno wystarczyć na około 40 lat.
 
 # Widok wytwarzania
 
@@ -2084,38 +2084,38 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 ![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
 
-Część systemu obsługująca logistykę JakPrzyjade, zarządzająca trasami, przystankami, pojazdami, awariami oraz rozkładami jazdy podzielona została na trzy pakiety realizujące inne zadania w działaniu aplikacji obsługującej REST API. Każde z nich jest odpowiedzialne za integralną część działania tego podsystemu i są to pakiety odpowiedzialne za komunikację (`controllers`) odpowiadające na zapytania do systemu, za logikę biznesową (`services`), oraz za dostęp do bazy danych oraz mapowanie danych przychodzących na obiekty bazodanowe oraz odwrotnie (`data`). Jednym z dodatkowych wydzielonych pakietów jest pakiet organizujący funkcje pomocnicze (`helpers`) gotowe do ponownego użycia w innych częściach systemu.
+Część systemu obsługująca logistykę JakPrzyjade, zarządzająca trasami, przystankami, pojazdami, awariami oraz rozkładami jazdy podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Każda z tych części odpowiada za zarządzanie jednym z elementów systemu. Każda z nich składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`).
 
 ### API
 
 #### API publiczne
 
-| **Rola**                                    | **Metoda** | **Endpoint**              | **Wymagania**                          | **Opis**                                       |
-| ------------------------------------------- | ---------- | ------------------------- | -------------------------------------- | ---------------------------------------------- |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines`           | `LOG/01`, `LOG/02`                     | Pobranie listy aktywnych linii.                |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id`       | `LOG/01`, `LOG/02`                     | Pobranie informacji o linii.                   |
-| `admin`                                     | `POST`     | `/ext/v1/lines`           | `LOG/03`                               | Utworzenie nowej linii.                        |
-| `admin`                                     | `PATCH`    | `/ext/v1/lines/:id`       | `LOG/04`                               | Edytowanie linii.                              |
-| `admin`                                     | `DELETE`   | `/ext/v1/lines/:id`       | `LOG/05`                               | Dezaktywacja linii.                            |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id/stops` | `LOG/06`, `LOG/07`                     | Pobranie listy przystanków konkretnej linii.   |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/stops/:id/lines` | `LOG/06`, `LOG/07`                     | Pobranie listy linii obsługujących przystanek. |
-| `admin`                                     | `POST`     | `/ext/v1/stops/`          | `LOG/08`                               | Utworzenie nowego przystanku.                  |
-| `admin`                                     | `PATCH`    | `/ext/v1/stops/:id`       | `LOG/09`                               | Edytowanie przystanku.                         |
-| `admin`                                     | `DELETE`   | `/ext/v1/stops/:id`       | `LOG/10`                               | Dezaktywacja przystanku.                       |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes`          | `LOG/11`, `LOG/12`                     | Pobranie rozkładu jazdy.                       |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/line/:id` | `LOG/11`, `LOG/12`                     | Pobranie rozkładu jazdy dla linii.             |
-| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/:id`      | `LOG/11`, `LOG/12`                     | Pobranie informacji o kursie.                  |
-| `admin`                                     | `POST`     | `/ext/v1/routes`          | `LOG/13`,                              | Utworzenie nowego kursu.                       |
-| `admin`                                     | `PATCH`    | `/ext/v1/routes/:id`      | `LOG/14`                               | Edytowanie kursu.                              |
-| `admin`                                     | `DELETE`   | `/ext/v1/routes/:id`      | `LOG/15`                               | Deaktywacja kursu.                             |
-| `admin`                                     | `GET`      | `/ext/v1/vehicles`        | `LOG/16`                               | Pobranie listy pojazdów.                       |
-| `admin`                                     | `POST`     | `/ext/v1/vehicles`        | `LOG/17`                               | Utworzenie nowego pojazdu.                     |
-| `admin`                                     | `PATCH`    | `/ext/v1/vehicles/:id`    | `LOG/18`                               | Edytowanie pojazdu.                            |
-| `admin`                                     | `DELETE`   | `/ext/v1/vehicles/:id`    | `LOG/19`                               | Deaktywacja pojazdu.                           |
-| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents`       | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie listy awarii.                         |
-| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents/:id`   | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie informacji o awarii.                  |
-| `driver`, `inspector`                       | `POST`     | `/ext/v1/accidents`       | `LOG/22`, `LOG/25`                     | Zgłoszenie nowej awarii.                       |
-| `driver`, `inspector`                       | `PATCH`    | `/ext/v1/accidents/:id`   | `LOG/23`, `LOG/26`                     | Edytowanie awarii.                             |
+| **Rola**                                    | **Metoda** | **Endpoint**            | **Wymagania**                          | **Opis**                        |
+| ------------------------------------------- | ---------- | ----------------------- | -------------------------------------- | ------------------------------- |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines`¹        | `LOG/01`, `LOG/02`                     | Pobranie listy aktywnych linii. |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id`     | `LOG/01`, `LOG/02`                     | Pobranie informacji o linii.    |
+| `admin`                                     | `POST`     | `/ext/v1/lines`         | `LOG/03`                               | Utworzenie nowej linii.         |
+| `admin`                                     | `PATCH`    | `/ext/v1/lines/:id`     | `LOG/04`                               | Edytowanie linii.               |
+| `admin`                                     | `DELETE`   | `/ext/v1/lines/:id`     | `LOG/05`                               | Deaktywacja linii.              |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/stops`¹        | `LOG/06`, `LOG/07`                     | Pobranie listy przystanków.     |
+| `admin`                                     | `POST`     | `/ext/v1/stops`         | `LOG/08`                               | Utworzenie nowego przystanku.   |
+| `admin`                                     | `PATCH`    | `/ext/v1/stops/:id`     | `LOG/09`                               | Edytowanie przystanku.          |
+| `admin`                                     | `DELETE`   | `/ext/v1/stops/:id`     | `LOG/10`                               | Deaktywacja przystanku.         |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes`¹       | `LOG/11`, `LOG/12`                     | Pobranie listy kursów.          |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/:id`    | `LOG/11`, `LOG/12`                     | Pobranie informacji o kursie.   |
+| `admin`                                     | `POST`     | `/ext/v1/routes`        | `LOG/13`,                              | Utworzenie nowego kursu.        |
+| `admin`                                     | `PATCH`    | `/ext/v1/routes/:id`    | `LOG/14`                               | Edytowanie kursu.               |
+| `admin`                                     | `DELETE`   | `/ext/v1/routes/:id`    | `LOG/15`                               | Deaktywacja kursu.              |
+| `admin`                                     | `GET`      | `/ext/v1/vehicles`¹     | `LOG/16`                               | Pobranie listy pojazdów.        |
+| `admin`                                     | `POST`     | `/ext/v1/vehicles`      | `LOG/17`                               | Utworzenie nowego pojazdu.      |
+| `admin`                                     | `PATCH`    | `/ext/v1/vehicles/:id`  | `LOG/18`                               | Edytowanie pojazdu.             |
+| `admin`                                     | `DELETE`   | `/ext/v1/vehicles/:id`  | `LOG/19`                               | Deaktywacja pojazdu.            |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents`¹    | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie listy awarii.          |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents/:id` | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie informacji o awarii.   |
+| `driver`, `inspector`                       | `POST`     | `/ext/v1/accidents`     | `LOG/22`, `LOG/25`                     | Zgłoszenie nowej awarii.        |
+| `driver`, `inspector`                       | `PATCH`    | `/ext/v1/accidents/:id` | `LOG/23`, `LOG/26`                     | Edytowanie awarii.              |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
@@ -2150,13 +2150,13 @@ TODO @piterek130
 
 TODO @piterek130
 
-## PU `LOG/??`
+## PU `LOG/01`
 
-TODO @mlodybercik
+![Realizacja przypadku użycia - Wyświetlanie linii](./images/sequence-diagram-leprechaun-get-lines.drawio.svg)
 
-## PU `LOG/??`
+## PU `LOG/19`
 
-TODO @mlodybercik
+![Realizacja przypadku użycia - Usunięcie pojazdu](./images/sequence-diagram-leprechaun-remove-vehicle.drawio.svg)
 
 [^naming-microservices]: [SRCco.de - Naming Applications and Microservices](https://srcco.de/posts/naming-applications-components-microservices.html)
 [^names-cute-descriptive]: [Names should be cute, not descriptive](https://ntietz.com/blog/name-your-projects-cutesy-things)
