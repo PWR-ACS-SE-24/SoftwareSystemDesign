@@ -1570,7 +1570,7 @@ Model informacyjny podsystemu Clabbert składa się z sześciu klas i dwóch typ
   </tr>
 </table>
 
-Ze względu na duże obciążenie bazy danych w podsystemie `clabbert`, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+Ze względu na duże obciążenie bazy danych w podsystemie Clabbert, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
 
@@ -2051,23 +2051,26 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 #### API publiczne
 
-| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                    |
-| -------------------- | ---------- | ------------------------------ | ------------- | ------------------------------------------- |
-| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych. |
-| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.       |
-| `passenger`          | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.         |
-| `passenger`          | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                               |
-| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.              |
-| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Skasowanie biletu.                          |
-| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Sprawdzenie ważności biletu.                |
-| `admin`              | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.             |
-| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu               |
+| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania**                                              | **Opis**                                                                                           |
+| -------------------- | ---------- | ------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | `TIC/10`, `TIC/13`                                         | Pobranie listy dostępnych ofert biletowych.                                                        |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | `TIC/10`, `TIC/13`                                         | Pobranie informacji o ofercie biletu.                                                              |
+| `passenger`          | `GET`      | `/ext/v1/tickets`¹             | `TIC/06`, `TIC/11`                                         | Pobranie listy zakupionych biletów.                                                                |
+| `passenger`          | `POST`     | `/ext/v1/tickets`              | `TIC/01`, `TIC/02`, `TIC/03`, `TIC/04`, `TIC/05`, `TIC/06` | Zakup biletu.                                                                                      |
+| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | `TIC/07`, `TIC/09`, [`M/14`](#m14-kod-qr-dla-biletów)      | Pobranie informacji o bilecie.                                                                     |
+| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | `TIC/08`                                                   | Skasowanie biletu.                                                                                 |
+| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | `TIC/12`, [`M/14`](#m14-kod-qr-dla-biletów)                | Sprawdzenie ważności biletu.                                                                       |
+| `admin`              | `POST`     | `/ext/v1/offers`               | `TIC/14`                                                   | Utworzenie nowej oferty biletu.                                                                    |
+| `admin`              | `PATCH`    | `/ext/v1/offers/:id`           | `TIC/15`                                                   | Dezaktywacja oferty biletu i utworzenie nowej oferty biletu na jej podstawie z nowymi parametrami. |
+| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | `TIC/16`                                                   | Zdezaktywowanie oferty biletu                                                                      |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
 | **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health` | clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/health` | Clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 
 ## Płatność
 
