@@ -2119,10 +2119,10 @@ Część systemu obsługująca logistykę JakPrzyjade, zarządzająca trasami, p
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**                  | **Producent** | **Konsument** | **Opis**                                                                       |
-| ---------- | ----------------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health`              | Leprechaun    | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
-| `GET`      | `/int/v1/vehicles/:id/routes` | Leprechaun    | Clabbert      | Pobranie `id` trasy na której znajduje się pojazd.                             |
+| **Metoda** | **Endpoint**                 | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ---------------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`             | Leprechaun    | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/vehicles/:id/route` | Leprechaun    | Clabbert      | Pobranie `id` trasy na której znajduje się pojazd.                             |
 
 # Realizacja przypadków użycia
 
