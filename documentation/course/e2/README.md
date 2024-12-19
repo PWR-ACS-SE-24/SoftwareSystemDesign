@@ -16,8 +16,6 @@ Skład zespołu:
 </ul>
 </div>
 
-TODO @everyone: zmienić czcionkę diagramów na JetBrains Mono
-
 # Cel
 
 Dokument przedstawia kluczowe decyzje projektowe oraz ich uzasadnienie w kontekście systemu informatycznego wspomagającego miejską komunikację publiczną. Jego celem jest szczegółowe opisanie architektury technicznej, w tym komponentów systemu, ich funkcji oraz interakcji, które umożliwiają realizację założeń określonych w [specyfikacji wymagań](../e1/README.md).
@@ -246,9 +244,7 @@ _Auto Scaling_ to narzędzie, które pozwala na automatyczne skalowanie liczby i
 
 ## `M/03`: Healthchecki dla serwisów
 
-TODO @jakubzehner
-
-**Problem:**
+**Problem:** Zgodnie z wymaganiem `NF/REL/01` system powinien charakteryzować się wysoką niezawodnością. W związku z tym, konieczne jest zastosowanie mechanizmu, który pozwoli na monitorowanie stanu serwisów i szybkie reagowanie w przypadku ich awarii. Rozwiązanie to powinno pozwalać na szybkie wykrycie problemów, co pozwoli na ich szybkie rozwiązanie i minimalizację czasu przestoju systemu.
 
 **Rozwiązania:**
 
@@ -259,40 +255,54 @@ TODO @jakubzehner
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Health Check API</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Proste w implementacji</li>
+        <li>Uniwersalne rozwiązanie niezależne od technologii</li>
+        <li>Niski narzut na system</li>
+        <li>Powszechnie wspierany standard</li> 
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Ograniczone możliwości wykrywania złożonych problemów</li>
+        <li>Serwis może być uznany za zdrowy, mimo że pomiędzy sprawdzeniami stanu wystąpiły problemy</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Application-Level Observability</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Daje pełny obraz działania aplikacji</li>
+        <li>Można konfigurować progi ostrzegawcze dla różnych wskaźników</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Duża złożoność konfiguracji</li>
+        <li>Wysoki narzut na system</li>
+        <li>Wymaga zastosowania dodatkowych narzędzi</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W związku z wymaganiami dotyczącymi niezawodności, dostępności i wydajności systemu, zdecydowano się na zastosowanie **Health Check API**.
 
-**Opis:**
+**Opis:** Health Check API to jeden z najprostszych i najczęściej używanych mechanizmów do monitorowania stanu aplikacji w środowiskach produkcyjnych. Jego głównym celem jest umożliwienie szybkiego i zautomatyzowanego sprawdzania, czy aplikacja działa poprawnie oraz czy jej kluczowe komponenty są dostępne i funkcjonują zgodnie z oczekiwaniami. Jest to szczególnie istotne w środowiskach opartych na mikrousługach, gdzie każda usługa może mieć swoje zależności, takie jak bazy danych, systemy cache, kolejki zadań czy zewnętrzne API.
+
+Health Check API pozwala monitorować aplikację w sposób aktywny, co oznacza, że systemy zewnętrzne, takie jak load balancery czy narzędzia do monitoringu, wysyłają żądania do specjalnego endpointu w aplikacji, aby uzyskać odpowiedź wskazującą na jej stan. W najprostszej formie endpoint ten zwraca kod statusu HTTP 200, co oznacza, że aplikacja działa poprawnie, lub 503, co sygnalizuje problem. W bardziej zaawansowanych scenariuszach Health Check API może dostarczać szczegółowe dane o stanie różnych komponentów aplikacji, takich jak status połączenia z bazą danych czy dostępność usług zewnętrznych.
+
+Kluczowym aspektem Health Check API jest jego rola w zautomatyzowanych środowiskach wdrożeniowych, takich jak Kubernetes. Tutaj jest wykorzystywany do liveness i readiness probes, które decydują o tym, czy kontener powinien być zrestartowany lub czy aplikacja jest gotowa do przyjmowania ruchu. Działa to na zasadzie ciągłego monitorowania stanu aplikacji i jej komponentów, co pozwala na szybką reakcję w przypadku problemów, np. przekierowanie ruchu do zdrowych instancji lub automatyczny restart wadliwej usługi.
 
 **Źródła:**
 
 - [microservices.io - Health Check API](https://microservices.io/patterns/observability/health-check-api.html)
+- [kubernetes.io - Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+- [logz.io - Application Observability in 2024](https://logz.io/learn/application-observability-guide/#application-observable)
+- [fastly.com - What is application observability?](https://www.fastly.com/learning/what-is-application-observability)
 
 ## `M/04`: Wdrożenie w chmurze AWS
 
@@ -668,9 +678,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
 
 ## `M/09`: Oddzielne bazy dla mikroserwisów
 
-TODO @jakubzehner
-
-**Problem:**
+**Problem:** W architekturze mikroserwisów ([`M/01`](#m01-architektura-mikroserwisów)) konieczne jest podjęcie decyzji dotyczącej sposobu przechowywania danych, tak aby zapewnić niezawodność, skalowalność, wydajność i bezpieczeństwo systemu.
 
 **Rozwiązania:**
 
@@ -681,36 +689,48 @@ TODO @jakubzehner
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Wspólna baza danych dla mikroserwisów</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Prostsze zarządzanie danymi</li>
+        <li>Łatwe współdzielenie danych</li>
+        <li>Mniejsza złożoność systemu</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Słabe oddzielenie odpowiedzialności</li>
+        <li>Trudniejsze skalowanie</li>
+        <li>Ryzyko wystąpienia wąskiego gardła</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Oddzielne bazy dla mikroserwisów</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Silne oddzielenie odpowiedzialności</li>
+        <li>Łatwiejsze skalowanie</li>
+        <li>Lepsza niezawodność</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Złożona infrastruktura</li>
+        <li>Trudniejszy dostęp do danych między serwisami</li>
+        <li>Brak możliwości użycia operacji JOIN pomiędzy baza danych</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** Ze względu na wymagania dotyczące niezawodności, skalowalności i bezpieczeństwa systemu, zdecydowano się na zastosowanie **oddzielnych baz danych dla mikroserwisów**.
 
-**Opis:**
+**Opis:** W architekturze mikroserwisów zastosowanie oddzielnych baz danych oznacza, że każdy mikroserwis posiada swoją własną bazę danych, którą zarządza i do której ma wyłączny dostęp. Podejście to zapewnia silne oddzielenie odpowiedzialności pomiędzy serwisami, ponieważ każdy z nich jest autonomiczny w kwestii przechowywania danych i nie zależy bezpośrednio od innych mikroserwisów. Dzięki temu możliwa jest niezależna ewolucja każdego z serwisów – zmiany w schemacie bazy jednego serwisu nie wpływają na inne.
+
+Oddzielne bazy danych zwiększają również bezpieczeństwo systemu, ponieważ serwisy mają dostęp wyłącznie do swoich danych, co ogranicza ryzyko nieautoryzowanego dostępu do wrażliwych informacji. Architektura taka ułatwia skalowanie systemu, ponieważ zarówno mikroserwisy, jak i ich bazy danych można skalować indywidualnie, w zależności od potrzeb. Dodatkowo, podejście to pozwala na elastyczność w wyborze technologii – każdy serwis może korzystać z innego typu bazy danych (np. relacyjnej, dokumentowej czy grafowej), dopasowanego do specyficznych wymagań.
+
+Jednak rozwiązanie to wiąże się z pewnymi wyzwaniami. Zarządzanie wieloma bazami danych wymaga bardziej złożonej infrastruktury, co może generować wyższe koszty utrzymania, szczególnie w początkowej fazie projektu. Ponadto z powodu zastosowania tego rozwiązania komunikacja między serwisami jest często konieczna, gdy dane przechowywane w różnych bazach muszą być używane w jednym procesie, co zwiększa złożoność implementacji.
 
 **Źródła:**
 
@@ -719,9 +739,7 @@ TODO @jakubzehner
 
 ## `M/10`: Relacyjne bazy danych ACID na RDS
 
-TODO @jakubzehner: porównanie z NoSQL
-
-**Problem:**
+**Problem:** Aby zapewnić integralność i bezpieczeństwo danych, konieczny jest wybór odpowiedniego systemu zarządzania bazą danych. W związku z tym, konieczne jest wybór baz danych pomiędzy relacyjnymi bazami danych ACID (SQL) a bazami danych BASE (NoSQL).
 
 **Rozwiązania:**
 
@@ -732,44 +750,98 @@ TODO @jakubzehner: porównanie z NoSQL
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Bazy danych ACID</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Zapewnia synchronizację danych</li>
+        <li>Niezawodność</li>
+        <li>Bezpieczeństwo operacji</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Nie skaluje się dobrze poziomo</li>
+        <li>Wydajność spada przy przetwarzaniu dużych wolumenów danych</li>
+        <li>Przetwarzanie transakcji wymaga blokowania określonych rekordów</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Bazy danych BASE</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Skaluje się poziomo</li>
+        <li>Pozwala na równoczesne aktualizowanie tych samych rekordów</li>
+        <li>Wysoka wydajność przy dużych zbiorach danych</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Brak synchronizacji danych na poziomie bazy</li>
+        <li>Brak gwarancji spójności natychmiastowej</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+<table>
+  <tr>
+    <td></td>
+    <th>Zalety</th>
+    <th>Wady</th>
+  </tr>
+  <tr>
+    <th>Baza danych na maszynie AWS EC2</th>
+    <td>
+      <ul>
+        <li>Pełna kontrola</li>
+        <li>Elastyczność technologiczna</li>
+        <li>Bez limitów usługi</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Konieczność zarządzania serwerem</li>
+        <li>Brak automatyzacji</li>
+        <li>Większe ryzyko błędów</li>
+        <li>Trudności w skalowaniu</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <th>AWS RDS</th>
+    <td>
+      <ul>
+        <li>Łatwość zarządzania</li>
+        <li>Wysoka dostępność</li>
+        <li>Automatyczne skalowanie</li>
+        <li>Bezpieczeństwo</li>
+        <li>Szybkie wdrożenie</li>
+        <li>Automatyczne kopie zapasowe</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Mniejsza kontrola</li>
+        <li>Limitacje usługi</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-**Opis:**
+**Decyzja:** Ze względu na wymagania dotyczące integralności, niezawodności i bezpieczeństwa danych, zdecydowano się na zastosowanie **relacyjnych baz danych ACID** na **Amazon Relational Database Service (RDS)**.
 
-<!--
-Głównymi modelami transakcji w bazach danych są podejścia ACID i BASE. Model ACID znany głównie z baz relacyjnych, skupia się na zapewnieniu spójności, poprzez właściwości atomowości, spójności, izolacji i trwałości. W podejściu BASE, stosowanym w bazach NoSQL, poświęcamy spójność na rzecz dostępności, gdzie spójność danych jest osiągana w pewnym czasie, a nie natychmiast[^acid-base].
+**Opis:** Zastosowanie baz danych zgodnych z modelem ACID (Atomicity, Consistency, Isolation, Durability) na platformie AWS RDS (Relational Database Service) jest rozwiązaniem przeznaczonym dla systemów wymagających spójności i niezawodności danych w krytycznych operacjach. Bazy ACID, takie jak MySQL, PostgreSQL, Oracle czy SQL Server, zapewniają gwarancję, że każda transakcja zostanie przetworzona w sposób kompletny i spójny, nawet w przypadku awarii.
 
-W przypadku danych kont, bardziej pożądane właściwości ma **model ACID** - istotne jest natychmiastowe odzwierciedlenie zmian w bazie danych, np. dla zmiany hasła użytkownika. Istotna jest również spójność danych z regułami biznesowymi w każdym momencie, np. w przypadku unikalności adresu e-mail. W związku z tym, zdecydowano się na zastosowanie bazy relacyjnej **SQL**. Wadą takiego rozwiązania jest niższa skalowalność horyzontalna w porównaniu do baz NoSQL, jednakże nie powinno to stanowić problemu w serwisie odpowiedzialnym za konta użytkowników.
--->
+Wybierając RDS jako platformę dla baz ACID, zyskuje się zautomatyzowane zarządzanie infrastrukturą, obejmujące tworzenie kopii zapasowych, aktualizacje systemu i konfigurację replikacji. AWS RDS obsługuje także funkcję Multi-AZ (Multi-Availability Zone), która zapewnia wysoką dostępność i odporność na awarie. W przypadku awarii instancji głównej, RDS automatycznie przełącza ruch na zapasowy węzeł w innej strefie dostępności, minimalizując przestoje. Dodatkowo, usługa pozwala na łatwe skalowanie zarówno w pionie (zwiększenie zasobów instancji), jak i poziomie (dodanie replik odczytu), co sprawia, że baza danych może być dostosowana do zmieniających się potrzeb aplikacji.
+
+AWS RDS eliminuje konieczność ręcznego zarządzania serwerem, pozwalając skupić się na projektowaniu bazy danych i optymalizacji zapytań. Dzięki natywnemu wsparciu dla ACID, zapewnia gwarancje transakcyjne i spójność danych, co czyni je odpowiednim wyborem dla aplikacji wymagających niezawodności oraz bezpieczeństwa. Rozwiązanie to łączy stabilność i wydajność baz transakcyjnych z wygodą korzystania z usług zarządzanych w chmurze, jednocześnie redukując ryzyko błędów administracyjnych oraz koszty związane z utrzymaniem infrastruktury.
+
+Zdecydowano się zastosować to rozwiązanie dla każdego z mikroserwisów, aby zapewnić spójność, łatwość zarządzania oraz ujednolicenie infrastruktury w całym systemie. Taka decyzja pozwala uniknąć komplikacji związanych z koniecznością obsługi różnych typów baz danych, co mogłoby prowadzić do dodatkowych nakładów pracy na integrację i utrzymanie. Pomimo że jeden z mikroserwisów - Leprechaun - mógłby prawdopodobnie korzystać z bazy NoSQL z większymi korzyściami, wybrano bazę ACID w celu zachowania jednolitego podejścia do zarządzania danymi i zapewnienia wysokiej niezawodności całego systemu. Dzięki temu ograniczono ryzyko związane z różnicami w modelach danych, a także uproszczono proces monitorowania i skalowania infrastruktury w dłuższej perspektywie.
 
 **Źródła:**
+
+- [aws.amazon.com - What’s the Difference Between an ACID and a BASE Database?](https://aws.amazon.com/compare/the-difference-between-acid-and-base-database/)
 
 ## `M/11`: Autoryzacja z użyciem JWT
 
@@ -1000,9 +1072,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 
 ## `M/14`: Kod QR dla biletów
 
-TODO @jakubzehner
-
-**Problem:**
+**Problem:** System musi zapewnić możliwość wygodnego i przystępnego zarówno dla pasażera jak i kontrolera biletów sposobu weryfikacji ważności biletu.
 
 **Rozwiązania:**
 
@@ -1013,38 +1083,47 @@ TODO @jakubzehner
     <th>Wady</th>
   </tr>
   <tr>
-    <th>Rozwiązanie 1</th>
+    <th>Kod QR</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Szybka i zautomatyzowana kontrola</li>
+        <li>Uniwersalność</li>
+        <li>Łatwość obsługi dla kontrolerów</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Zależność od dodatkowego sprzętu - kamery</li>
+        <li>Trudniejsza implementacja</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Rozwiązanie 2</th>
+    <th>Kod w postaci tekstowej</th>
     <td>
       <ul>
-        <li>Zaleta 1</li>
+        <li>Brak wymogu dodatkowego sprzętu</li>
+        <li>Prosta implementacja</li>
+        <li>Odporność na problemy techniczne</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Wada 1</li>
+        <li>Czasochłonność wprowadzania kodu</li>
+        <li>Większe ryzyko błędu</li>
+        <li>Trudniej przekazać dużą ilość informacji</li>
       </ul>
     </td>
   </tr>
 </table>
 
-**Decyzja:**
+**Decyzja:** W celu zapewnienia szybkiej i zautomatyzowanej kontroli biletów, zdecydowano się na **kod QR**.
 
-**Opis:**
+**Opis:** Kod QR to bardzo wygodny wybór do prezentacji biletu podczas kontroli. Dzięki swojej prostocie i szybkości odczytu, kod QR stanowi idealne rozwiązanie w systemach biletowych. Główną zaletą wykorzystania kodu QR jest szybka i bezbłędna kontrola, a także komfort dla pasażera i kontrolera. Kod QR jest uniwersalny i nie wymaga specjalistycznego sprzętu, co sprawia, że jest łatwo dostępny i wygodny w użyciu.
 
 **Źródła:**
+
+- [pl.wikipedia.org - kod QR](https://pl.wikipedia.org/wiki/Kod_QR)
 
 # Widoki architektoniczne
 
@@ -1570,7 +1649,7 @@ Model informacyjny podsystemu Clabbert składa się z sześciu klas i dwóch typ
   </tr>
 </table>
 
-Ze względu na duże obciążenie bazy danych w podsystemie `clabbert`, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
+Ze względu na duże obciążenie bazy danych w podsystemie Clabbert, jako klasę instancji wybrano **`db.m7g.4xlarge`**. Wersja `4xlarge` oferuje 16 vCPU oraz 64 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
 
 Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę maksymalnych rozmiarów wszystkich kolumn z pominięciem dodatkowej pamięci wykorzystywanej przez bazę danych do reprezentacji struktur danych, daje to następujące rozmiary wierszy dla tabel:
 
@@ -2131,23 +2210,26 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 #### API publiczne
 
-| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania** | **Opis**                                    |
-| -------------------- | ---------- | ------------------------------ | ------------- | ------------------------------------------- |
-| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | TODO          | Pobranie listy dostępnych ofert biletowych. |
-| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | TODO          | Pobranie informacji o ofercie biletu.       |
-| `passenger`          | `GET`      | `/ext/v1/tickets`              | TODO          | Pobranie listy zakupionych biletów.         |
-| `passenger`          | `POST`     | `/ext/v1/tickets`              | TODO          | Zakup biletu.                               |
-| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | TODO          | Pobranie informacji o bilecie.              |
-| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | TODO          | Skasowanie biletu.                          |
-| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | TODO          | Sprawdzenie ważności biletu.                |
-| `admin`              | `POST`     | `/ext/v1/offers`               | TODO          | Utworzenie nowej oferty biletu.             |
-| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | TODO          | Zdezaktywowanie oferty biletu               |
+| **Rola**             | **Metoda** | **Endpoint**                   | **Wymagania**                                              | **Opis**                                                                                           |
+| -------------------- | ---------- | ------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers`               | `TIC/10`, `TIC/13`                                         | Pobranie listy dostępnych ofert biletowych.                                                        |
+| `passenger`, `admin` | `GET`      | `/ext/v1/offers/:id`           | `TIC/10`, `TIC/13`                                         | Pobranie informacji o ofercie biletu.                                                              |
+| `passenger`          | `GET`      | `/ext/v1/tickets`¹             | `TIC/06`, `TIC/11`                                         | Pobranie listy zakupionych biletów.                                                                |
+| `passenger`          | `POST`     | `/ext/v1/tickets`              | `TIC/01`, `TIC/02`, `TIC/03`, `TIC/04`, `TIC/05`, `TIC/06` | Zakup biletu.                                                                                      |
+| `passenger`          | `GET`      | `/ext/v1/tickets/:id`          | `TIC/07`, `TIC/09`, [`M/14`](#m14-kod-qr-dla-biletów)      | Pobranie informacji o bilecie.                                                                     |
+| `passenger`          | `POST`     | `/ext/v1/tickets/:id/validate` | `TIC/08`                                                   | Skasowanie biletu.                                                                                 |
+| `inspector`          | `POST`     | `/ext/v1/tickets/:id/inspect`  | `TIC/12`, [`M/14`](#m14-kod-qr-dla-biletów)                | Sprawdzenie ważności biletu.                                                                       |
+| `admin`              | `POST`     | `/ext/v1/offers`               | `TIC/14`                                                   | Utworzenie nowej oferty biletu.                                                                    |
+| `admin`              | `PATCH`    | `/ext/v1/offers/:id`           | `TIC/15`                                                   | Dezaktywacja oferty biletu i utworzenie nowej oferty biletu na jej podstawie z nowymi parametrami. |
+| `admin`              | `DELETE`   | `/ext/v1/offers/:id`           | `TIC/16`                                                   | Zdezaktywowanie oferty biletu                                                                      |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
 | **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health` | clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/health` | Clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 
 ## Płatność
 
