@@ -1003,7 +1003,7 @@ Wzorzec sidecar (_bocznik_, _przyczepa_) stosowany jest głównie w architekturz
 
 Zgodnie z mechanizmem [`M/11`](#m11-autoryzacja-z-użyciem-jwt), token JWT może walidować każda usługa, która ma dostęp do klucza publicznego z pary kluczy, którą podpisano token. W związku z tym, odpowiedzialność może przejąć sidecar, tak długo, jak będzie miał dostęp do kluczy publicznych z głównego serwera autoryzacji. Jako, że z powodów bezpieczeństwa klucze do podpisu JWT powinny być rotowane, jak i z powodu możliwości zastosowania różnych kluczy dla różnych instancji serwerów, powstaje potrzeba dzielenia się kluczami publicznymi. Popularnym mechanizmem rozwiązującym ten problem jest zastosowanie JWKS (JSON Web Key Sets), które jest standardem specyfikującym endpoint wystawiany przez serwer autoryzacji, z którego można pobrać listę wszystkich ważnych kluczy publicznych. Do ładunku JWT dodana jest informacja o ID klucza, którym podpisano token (`kid`), co pozwala na wybór odpowiedniego klucza do weryfikacji (musi to być oczywiście klucz wystawiony przez serwer autoryzacji). W związku z tym, zapytanie do głównego serwera autoryzacji odbywa się jednie przy pierwszym zapytaniu po uruchomieniu sidecar, a następnie klucze są cachowane lokalnie. W przypadku napotkania nieznanego `kid`, sidecar ponownie odpytuje serwer autoryzacji, z zastosowaniem rate limitingu, aby uniknąć ataków typu DoS powodowanych przez umyślne podawanie niepoprawnych `kid` przez klientów.
 
-Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawiane wspólnie na diagramach sekwencji dotyczących realizacji przypadków użycia. W miejscu każdego zapytania z API Gateway do Account Service na diagramach można mentalnie wstawić poniższą sekwencję zdarzeń:
+Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawiane wspólnie na diagramach sekwencji dotyczących realizacji przypadków użycia. W miejscu każdego zapytania z API Gateway do Account Sidecar na diagramach można mentalnie wstawić poniższą sekwencję zdarzeń:
 
 ![Diagram sekwencji M/12](./images/sequence-diagram-mechanism-12.drawio.svg)
 
@@ -1180,7 +1180,7 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
 
 ### Sprawdzenie rozkładu jazdy
 
-TODO @mlodybercik
+![Scenariusz interakcji - Sprawdzenie rozkładu jazdy](./images/sequence-diagram-scenario-check-timetable.drawio.svg)
 
 ### Kupno biletu
 
@@ -1202,7 +1202,7 @@ TODO @mlodybercik
   </tr>
   <tr>
     <th>Opis</th>
-    <td colspan="2">Integracja systemu "JakPrzyjadę" z bramką płatności Tpay umożliwia pasażerom dokonywanie płatności online za usługi oferowane przez system takie jak zakup biletu oraz opłacenie mandatu.</td>
+    <td colspan="2">Integracja systemu "JakPrzyjade" z bramką płatności Tpay umożliwia pasażerom dokonywanie płatności online za usługi oferowane przez system takie jak zakup biletu oraz opłacenie mandatu.</td>
   </tr>
   <tr>
     <th>Status</th>
@@ -1401,7 +1401,7 @@ Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z
 
 ### Logistyka
 
-W celu zwiększenia wygody użytkowników, dodano atrybut `ordered` do relacji między `Stop` a `Line`, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
+W celu zwiększenia wygody użytkowników, dodano atrybut `ordered` do relacji między `Stop` a `Line`, który przechowuje informację o kolejności przystanków na danej linii.
 
 ![Diagram klas Leprechaun](./images/class-diagram-leprechaun.drawio.svg)
 
@@ -1921,7 +1921,7 @@ Zdecydowano się na czas retencji kopii zapasowych wynoszący 35 dni, ze względ
 
 ### Logistyka
 
-Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdego przystanku na danej linii.
+Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` przechowuje informacje o wypadkach, `Line` o liniach, `Route` o trasach, `Stop` o przystankach, a `Vehicle` o pojazdach. Dodatkową encją stworzoną na potrzeby systemu jest `stop_line_mapping` mającą postać tabeli łączącej, pozwalającej na stworzenie relacji wiele do wielu między przystankami a liniami. Ze względu na to, że przystanki na danej linii mają określoną kolejność, dodano atrybut `order` do tej tabeli, który przechowuje informację o kolejności przystanków na danej linii. Wartość ta jest unikalna dla każdej pary przystanek - linia. Dodatkowo w celu uniknięcia problemów związanych z integralnością bazy danych przy usuwaniu wierszy dodano atrybut `is_active` do encji `Stop` oraz `Route`, działający analogicznie do tego samego atrybutu w tabelach `Line` oraz `Vehicle`. Wartość będzie zmieniana na `false` zamiast usuwania, a zapytania o istniejące obiekty będą od razu filtrowane używając tego atrybutu. Takie podejście pozwoli na zachowanie historii danych oraz uniknięcie problemów związanych z referencjami do nieistniejących już obiektów.
 
 ![Diagram bazodanowy Leprechaun](./images/database-diagram-leprechaun.drawio.svg)
 
@@ -1960,6 +1960,11 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
   <tr>
+    <td><code>vehicle.side_number</code></td>
+    <td>b-tree</td>
+    <td>Zwiększenie prędkości operacji <code>SELECT</code>.</td>
+  </tr>
+  <tr>
     <td><code>stop_line_mapping.id</code></td>
     <td>b-tree (unikalny)</td>
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
@@ -1970,7 +1975,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
     <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
   </tr>
   <tr>
-    <td><code>stop_line_mapping.line_id</code></td>
+    <td><code>stop_line_mapping.stop_id</code></td>
     <td>b-tree</td>
     <td>Zwiększenie prędkości operacji <code>JOIN</code>.</td>
   </tr>
@@ -2071,7 +2076,7 @@ Model informacyjny podsystemu składa się z sześciu encji. Klasa `Accident` pr
   <tr>
     <th>Przyrost pojemności (GB/rok)</th>
     <td>—</td>
-    <td>0.175</td>
+    <td>0</td>
   </tr>
   <tr>
     <th>Backup (retencja w dniach)</th>
@@ -2084,7 +2089,7 @@ Zważając na to, że dane w bazie są danymi które są publiczne i nie są wra
 
 Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
 
-Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 4 + 4 czyli 40 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 8 bajtów, otrzymujemy 48 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 160MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 100MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca.
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 16 + 16 + 1 czyli 65 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 28 bajtów, otrzymujemy 93 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 320MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 250MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca. Ze względu na bardzo mały przyrost danych w ciągu roku, zdecydowano na niekorzystanie z automatycznego przyrostu pojemności. Przy szacowanym przyroście danych wynoszącym około 450MB rocznie podstawowe 20GB powinno wystarczyć na około 40 lat.
 
 # Widok wytwarzania
 
@@ -2127,11 +2132,11 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 | **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health`       | jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
-| `GET`      | `/int/v1/accounts/:id` | jobberknoll   | inferius      | Pobranie informacji o koncie.                                                  |
-| `GET`      | `/int/v1/jwks`         | jobberknoll   | feather       | Pobranie kluczy publicznych ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).  |
-| `GET`      | `/int/v1/health`       | feather       | —             | Sprawdzenie stanu sidecar ([`M/03`](#m03-healthchecki-dla-serwisów)).          |
-| `POST`     | `/int/v1/validate`     | feather       | phoenix       | Walidacja tokenu dostępu ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).     |
+| `GET`      | `/int/v1/health`       | Jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/accounts/:id` | Jobberknoll   | Inferius      | Pobranie informacji o koncie.                                                  |
+| `GET`      | `/int/v1/jwks`         | Jobberknoll   | Feather       | Pobranie kluczy publicznych ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).  |
+| `GET`      | `/int/v1/health`       | Feather       | —             | Sprawdzenie stanu sidecar ([`M/03`](#m03-healthchecki-dla-serwisów)).          |
+| `POST`     | `/int/v1/validate`     | Feather       | Phoenix       | Walidacja tokenu dostępu ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).     |
 
 ## Bilet
 
@@ -2197,7 +2202,54 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 
 ## Logistyka
 
-TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
+Do implementacji systemu obsługującej logistykę JakPrzyjade wybrano język programowania **TypeScript** z użyciem frameworka **NestJS**, w środowisku **Node.js**.
+
+Wybór ten podyktowany był głównie brakiem skomplikowanych operacji wykonywanych przez ten wycinek systemu oraz powszechnością języka TypeScript (również w zespole). Rozszerzenie języka JavaScript o statyczne typowanie pozwala na uniknięcie wielu błędów poprzez przerzucenie ich dużej części na etap kompilacji, co jest istotne w przypadku systemu, który ma być zarówno wydajny jak i bezpieczny.
+
+Framework **NestJS** został wybrany ze względu na swoje wsparcie statycznego typowania dzięki TypeScriptowi, modularność, wydajność, łatwość testowania oraz dużą ilość gotowych rozwiązań, które pozwolą na szybkie i efektywne tworzenie systemu dostarczającego funkcjonalność CRUD za pomocą REST API.
+
+![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
+
+Architektura podsystemu podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Takie podejście stosuje się, gdy aplikacja jest podzielona na luźno powiązane ze sobą części, które są odpowiedzialne za różne aspekty systemu. Pozwala to na uniknięcie dużej liczby abstrakcji między warstwami logicznymi, co ułatwia zrozumienie kodu i jego rozwój. Taki wycinek systemu składa się z elementów wymaganych do jego działania, takich jak repozytoria, encje i kontrolery. W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z regułą DRY.
+
+### API
+
+#### API publiczne
+
+| **Rola**                                    | **Metoda** | **Endpoint**            | **Wymagania**                          | **Opis**                        |
+| ------------------------------------------- | ---------- | ----------------------- | -------------------------------------- | ------------------------------- |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines`¹        | `LOG/01`, `LOG/02`                     | Pobranie listy aktywnych linii. |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/lines/:id`     | `LOG/01`, `LOG/02`                     | Pobranie informacji o linii.    |
+| `admin`                                     | `POST`     | `/ext/v1/lines`         | `LOG/03`                               | Utworzenie nowej linii.         |
+| `admin`                                     | `PATCH`    | `/ext/v1/lines/:id`     | `LOG/04`                               | Edytowanie linii.               |
+| `admin`                                     | `DELETE`   | `/ext/v1/lines/:id`     | `LOG/05`                               | Deaktywacja linii.              |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/stops`¹        | `LOG/06`, `LOG/07`                     | Pobranie listy przystanków.     |
+| `admin`                                     | `POST`     | `/ext/v1/stops`         | `LOG/08`                               | Utworzenie nowego przystanku.   |
+| `admin`                                     | `PATCH`    | `/ext/v1/stops/:id`     | `LOG/09`                               | Edytowanie przystanku.          |
+| `admin`                                     | `DELETE`   | `/ext/v1/stops/:id`     | `LOG/10`                               | Deaktywacja przystanku.         |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes`¹       | `LOG/11`, `LOG/12`                     | Pobranie listy kursów.          |
+| `passenger`, `admin`                        | `GET`      | `/ext/v1/routes/:id`    | `LOG/11`, `LOG/12`                     | Pobranie informacji o kursie.   |
+| `admin`                                     | `POST`     | `/ext/v1/routes`        | `LOG/13`,                              | Utworzenie nowego kursu.        |
+| `admin`                                     | `PATCH`    | `/ext/v1/routes/:id`    | `LOG/14`                               | Edytowanie kursu.               |
+| `admin`                                     | `DELETE`   | `/ext/v1/routes/:id`    | `LOG/15`                               | Deaktywacja kursu.              |
+| `admin`                                     | `GET`      | `/ext/v1/vehicles`¹     | `LOG/16`                               | Pobranie listy pojazdów.        |
+| `admin`                                     | `POST`     | `/ext/v1/vehicles`      | `LOG/17`                               | Utworzenie nowego pojazdu.      |
+| `admin`                                     | `PATCH`    | `/ext/v1/vehicles/:id`  | `LOG/18`                               | Edytowanie pojazdu.             |
+| `admin`                                     | `DELETE`   | `/ext/v1/vehicles/:id`  | `LOG/19`                               | Deaktywacja pojazdu.            |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents`¹    | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie listy awarii.          |
+| `passenger`, `driver`, `inspector`, `admin` | `GET`      | `/ext/v1/accidents/:id` | `LOG/20`, `LOG/21`, `LOG/24` `LOG/27`, | Pobranie informacji o awarii.   |
+| `driver`, `inspector`                       | `POST`     | `/ext/v1/accidents`     | `LOG/22`, `LOG/25`                     | Zgłoszenie nowej awarii.        |
+| `driver`, `inspector`                       | `PATCH`    | `/ext/v1/accidents/:id` | `LOG/23`, `LOG/26`                     | Edytowanie awarii.              |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
+
+#### API wewnętrzne
+
+| **Metoda** | **Endpoint**                 | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ---------------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`             | Leprechaun    | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/vehicles/:id/route` | Leprechaun    | Clabbert      | Pobranie `id` trasy na której znajduje się pojazd.                             |
+| `GET`      | `/int/v1/endpoints`          | Leprechaun    | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
 
 # Realizacja przypadków użycia
 
@@ -2225,13 +2277,13 @@ TODO @piterek130
 
 TODO @piterek130
 
-## PU `LOG/??`
+## PU `LOG/01`
 
-TODO @mlodybercik
+![Realizacja przypadku użycia - Wyświetlanie linii](./images/sequence-diagram-leprechaun-get-lines.drawio.svg)
 
-## PU `LOG/??`
+## PU `LOG/19`
 
-TODO @mlodybercik
+![Realizacja przypadku użycia - Usunięcie pojazdu](./images/sequence-diagram-leprechaun-remove-vehicle.drawio.svg)
 
 [^naming-microservices]: [SRCco.de - Naming Applications and Microservices](https://srcco.de/posts/naming-applications-components-microservices.html)
 [^names-cute-descriptive]: [Names should be cute, not descriptive](https://ntietz.com/blog/name-your-projects-cutesy-things)
