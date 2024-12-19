@@ -2098,7 +2098,9 @@ Zespoły realizujące poszczególne serwisy miały dowolność dotyczącą wybor
 
 ## Frontend
 
-TODO @everyone
+TODO @someone but please NOT @tchojnacki
+
+![Diagram pakietów Hogwart](./images/package-diagram-hogwart.drawio.svg)
 
 ## Konto
 
