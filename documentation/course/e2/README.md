@@ -2382,15 +2382,15 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 > Jako _gość_ chcę mieć możliwość zalogowania się do _konta_ (_administratora_, _biletera_, _kierowcy_, _pasażera_).
 
-TODO @tchojnacki
+![Realizacja przypadku użycia - Logowanie](./images/sequence-diagram-jobberknoll-login.drawio.svg)
 
-## PU `ACC/11` & PU `ACC/12`
+## PU `ACC/11`, `ACC/12`
 
 > Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _biletera_.
 
 > Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _kierowcy_.
 
-TODO @tchojnacki
+![Realizacja przypadku użycia - Tworzenie konta](./images/sequence-diagram-jobberknoll-create-account.drawio.svg)
 
 ## PU `TIC/??`
 
