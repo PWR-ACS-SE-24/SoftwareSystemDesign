@@ -2011,7 +2011,34 @@ TODO @everyone
 
 ## Konto
 
-TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
+Do implementacji podsystemu Jobberknoll wybrano język **Typescript** na środowisku uruchomieniowym **Deno** oraz frameworkiem **Hono**.
+
+Przy wyborze języka programowania kierowano się następującymi kryteriami (od najważniejszego):
+
++ **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKs;
++ **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę SDK AWS;
++ **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności systemu, celem jest przesunięcie możliwie dużej liczby błędów na etap kompilacji;
++ **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony poprzednio, który ma na celu zapewnienie sprawnego i bezstronnego code review;
++ **dostępność algebraicznych typów danych** - w samym centrum modelu informacyjnego podsystemu znajduje się typ stanowiący algebraiczny typ danych, a dokładniej rekord z wariantami (ang. _tagged union_ lub _sum type_), w związku z tym istotne jest, aby język wspierał takie konstrukcje natywnie, bez konieczności emulacji za pomocą mechanizmów programowania obiektowego.
+
+Z uwagi na powyższe wymagania, odpowiedni okazał się być język TypeScript, spełniający wszystkie wymagania. W przypadku wykorzystania języka TypeScript lub JavaScript na serwerze, konieczny jest wybór środowiska uruchomieniowego, gdzie dwie najpopularniejsze opcje to Node.js oraz Deno. Silnik Deno został stworzony przez autora Node.js jako próba naprawienia problemów, które pojawiły się przez lata w starszym Node.js. Względem Node.js, Deno:
+
+- wspiera natywnie TypeScript, pozbywając się kroku transpilacji;
+- posiada rozbudowaną bibliotekę standardową, bazującą na standardach webowych;
+- jest bezpieczniejszy (wymaga jasnego zezwolenia na dostęp do zasobów takich jak sieć, system plików czy zmienne środowiskowe);
+- może być skompilowany do pojedynczego pliku wykonywalnego, uruchamialnego bez konieczności instalacji środowiska uruchomieniowego, ułatwiając wdrożenie aplikacji;
+- posiada wbudowane narzędzia do testowania, formatowania kodu, generowania dokumentacji;
+- oferuje pełną kompatybilność z pakietami npm projektowanymi dla Node.js, jednocześnie zapewniając własne repozytorium pakietów.
+
+W związku z tym, wybrano Deno jako środowisko uruchomieniowe.
+
+W kwestii frameworków webowych, w przypadku TypeScript, wybór jest bardzo szeroki. Głównymi wymogami przy wyborze była kompaktowość, szybkość działania, popularność, wsparcie OpenAPI oraz od strony developer experience - wsparcie bloków `async` oraz statyczna typizacja. Wybrano framework Hono, radzący sobie dobrze ze wszystkimi wymaganiami.
+
+![Diagram pakietów Jobberknoll](./images/package-diagram-jobberknoll.drawio.svg)
+
+**Źródła:**
+
+- [Wikipedia - Tagged union](https://en.wikipedia.org/wiki/Tagged_union)
 
 ### API
 
