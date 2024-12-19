@@ -2080,7 +2080,7 @@ Zważając na to, że dane w bazie są danymi które są publiczne i nie są wra
 
 Wszystkie tabele poza `Route` oraz `Accident` będą miały niewielką ilość danych i będą wykorzystywane głównie do odczytu. Rocznie nie otwiera się wiele nowych linii, a przystanki oraz pojazdy zmieniają się rzadko. Tabela `Route` będzie miała najwięcej danych, które będą dodawały się w miarę upływu czasu ze względu na przechowywanie przeszłych i przyszłych przejazdów pojazdu na danej trasie.
 
-Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 16 + 16 + 1 czyli 65 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 28 bajtów, otrzymujemy 93 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 320MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 250MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca. Ze względu na bardzo mały przyrost danych w ciągu roku, zdecydowano na nie korzystanie z automatycznego przyrostu pojemności. Przy szacowanym przyroście danych wynoszącym około 450MB rocznie podstawowe 20GB powinno wystarczyć na około 40 lat.
+Jako górną estymację fizycznego rozmiaru wiersza bazy danych w tabeli `Route` przyjęto sumę maksymalnych rozmiarów wszystkich kolumn, daje to: 16 + 8 + 8 + 16 + 16 + 1 czyli 65 bajtów na jeden wiersz. Doliczając do tego wielkość indeksu na wiersz w postaci 28 bajtów, otrzymujemy 93 bajty na wiersz. Zakładając, że wrocławskie MPK obsługuje 9 tys. kursów dziennie[^linie-dziennie], daje to 3,285,000 kursów rocznie co przekłada się na 320MB danych przyrostu rocznie. Przy wielkości początkowych danych ok. 250MB[^dane-poczatkowe] minimalna wielkość bazy danych na RDS wynosząca 20GB jest zdecydowanie wystarczająca. Ze względu na bardzo mały przyrost danych w ciągu roku, zdecydowano na niekorzystanie z automatycznego przyrostu pojemności. Przy szacowanym przyroście danych wynoszącym około 450MB rocznie podstawowe 20GB powinno wystarczyć na około 40 lat.
 
 # Widok wytwarzania
 
@@ -2166,13 +2166,13 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 Do implementacji systemu obsługującej logistykę JakPrzyjade wybrano język programowania **TypeScript** z użyciem frameworka **NestJS**, w środowisku **Node.js**.
 
-Wybór ten podyktowany był głównie brakiem skomplikowanych operacji wykonywanych przez ten wycinek systemu oraz powszechnością języka TypeScript (również w zespole). Rozszerzenie języka JavaScript o statyczne typowanie pozwala na uniknięcie wielu błędów poprzez przerzucenie ich dużej części na etap kodowania, co jest istotne w przypadku systemu, który ma być zarówno wydajny jak i bezpieczny.
+Wybór ten podyktowany był głównie brakiem skomplikowanych operacji wykonywanych przez ten wycinek systemu oraz powszechnością języka TypeScript (również w zespole). Rozszerzenie języka JavaScript o statyczne typowanie pozwala na uniknięcie wielu błędów poprzez przerzucenie ich dużej części na etap kompilacji, co jest istotne w przypadku systemu, który ma być zarówno wydajny jak i bezpieczny.
 
 Framework **NestJS** został wybrany ze względu na swoje wsparcie statycznego typowania dzięki TypeScriptowi, modularność, wydajność, łatwość testowania oraz dużą ilość gotowych rozwiązań, które pozwolą na szybkie i efektywne tworzenie systemu dostarczającego funkcjonalność CRUD za pomocą REST API.
 
 ![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
 
-Architektura podsystemu podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Takie podejście stosuje się, gdy aplikacja jest podzielona na luźno powiązane ze sobą części, które są odpowiedzialne za różne aspekty systemu. Pozwala to na uniknięcie dużej ilości abstrakcji między warstwami logicznymi, co ułatwia zrozumienie kodu i jego rozwój. Taki wycinek systemu składa się z elementów wymaganych do jego działania, takich jak repozytoria, encje i kontrolery. W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z logiką DRY.
+Architektura podsystemu podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Takie podejście stosuje się, gdy aplikacja jest podzielona na luźno powiązane ze sobą części, które są odpowiedzialne za różne aspekty systemu. Pozwala to na uniknięcie dużej liczby abstrakcji między warstwami logicznymi, co ułatwia zrozumienie kodu i jego rozwój. Taki wycinek systemu składa się z elementów wymaganych do jego działania, takich jak repozytoria, encje i kontrolery. W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z regułą DRY.
 
 ### API
 
@@ -2211,6 +2211,7 @@ Architektura podsystemu podzielona została na pionowe części zgodnie z archit
 | ---------- | ---------------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`             | Leprechaun    | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 | `GET`      | `/int/v1/vehicles/:id/route` | Leprechaun    | Clabbert      | Pobranie `id` trasy na której znajduje się pojazd.                             |
+| `GET`      | `/int/v1/endpoints`          | Leprechaun    | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
 
 # Realizacja przypadków użycia
 
