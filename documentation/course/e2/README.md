@@ -2185,7 +2185,7 @@ Architektura podsystemu Inferius została zaprojektowana zgodnie z podejściem *
 Każdy slice w systemie odpowiada jednej z kluczowych domen:
 - `wallet` - odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
 - `fine` - zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
-- creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
+- `creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
 
 Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
 - `database` - warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
