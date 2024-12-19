@@ -1305,8 +1305,6 @@ W podsystemie odpowiedzialnym za konta pojawia się nowy akronim - **feather** o
 
 Poniżej przedstawiono diagram rozmieszczenia UML, opisujący fizyczne rozmieszczenie komponentów systemu w środowisku produkcyjnym. Z uwagi na powszechne wykorzystanie usług chmurowych, w których trudne jest wskazanie konkretnych węzłów fizycznych (kilka maszyn wirtualnych może być uruchomionych na jednym serwerze fizycznym bez wiedzy klienta usług), zdecydowano się na przedstawienie jedynie węzłów środowisk wykonawczych oraz artefaktów. W przypadku liczności wykorzystano jedynie oznaczenia `1` (pojedyncza instancja) oraz `*` (wiele instancji), pomijając minimalną i maksymalną liczbę instancji węzła wynikającą z aproksymacji obciążenia systemu. Informacje te są dostępne w sekcji [Opis węzłów](#opis-węzłów). Tam gdzie to możliwe, zastosowano odwołania do komponentów z widoku funkcjonalnego, stereotypem [`<<manifest>>`](https://www.uml-diagrams.org/deployment-diagrams.html#manifestation).
 
-TODO @tchojnacki: We usuń swoje TODO ale zostaw moje, bo zapomnę
-
 ![Diagram rozmieszczenia](./images/deployment-diagram.drawio.svg)
 
 ## Opis węzłów
@@ -2104,7 +2102,111 @@ TODO @everyone
 
 ## Konto
 
-TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
+Do implementacji podsystemu Jobberknoll wybrano język **Typescript** na środowisku uruchomieniowym **Deno** z frameworkiem **Hono**.
+
+Przy wyborze języka programowania kierowano się następującymi kryteriami (od najważniejszego):
+
+1. **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKs;
+2. **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę AWS SDK;
+3. **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności podsystemu Jobberknoll, istnieje potrzeba przesunięcia możliwie dużej liczby błędów na etap kompilacji;
+4. **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony powyżej, który ma na celu zapewnienie sprawnego i bezstronnego code review;
+5. **dostępność algebraicznych typów danych** - w samym centrum modelu informacyjnego podsystemu znajduje się typ stanowiący algebraiczny typ danych, a dokładniej rekord z wariantami (ang. _tagged union_ lub _sum type_), w związku z tym istotne jest, aby język wspierał takie konstrukcje natywnie, bez konieczności emulacji za pomocą mechanizmów programowania obiektowego.
+
+Z uwagi na powyższe wymagania, odpowiedni okazał się być język TypeScript, spełniający wszystkie wymagania. W przypadku wykorzystania języka TypeScript lub JavaScript na serwerze, konieczny jest wybór środowiska uruchomieniowego, gdzie dwie najpopularniejsze opcje to Node.js oraz Deno. Silnik Deno został stworzony przez autora Node.js jako próba naprawienia problemów, które pojawiły się przez lata w jego starszym odpowiedniku. Deno:
+
+- **wspiera natywnie TypeScript**, pozbywając się kroku transpilacji;
+- posiada **rozbudowaną bibliotekę standardową**, bazującą na standardach webowych;
+- jest **bezpieczniejszy** (wymaga jasnego zezwolenia na dostęp do zasobów takich jak sieć, system plików czy zmienne środowiskowe);
+- może być **skompilowany do pojedynczego pliku** wykonywalnego, uruchamialnego bez konieczności instalacji środowiska uruchomieniowego, ułatwiając wdrożenie aplikacji;
+- posiada **wbudowane narzędzia** do testowania, formatowania kodu, generowania dokumentacji;
+- oferuje **pełną kompatybilność** z pakietami npm projektowanymi dla Node.js, jednocześnie zapewniając własne repozytorium pakietów.
+
+W związku z tym, wybrano Deno jako środowisko uruchomieniowe.
+
+W kwestii frameworków webowych, w przypadku TypeScript, wybór jest bardzo szeroki. Głównymi wymogami przy wyborze była kompaktowość, szybkość działania, popularność, wsparcie OpenAPI, oparcie na standardach webowych oraz od strony developer experience - wsparcie bloków `async` oraz statyczna typizacja. Wybrano framework Hono, radzący sobie dobrze ze wszystkimi wymaganiami.
+
+Z racji na to, że podsystem Jobberknoll składa się z tylko jednego wycinka wertykalnego - obsługi kont użytkowników oraz operuje na tylko jednej encji, zdecydowano się na niestosowanie podziału według funkcjonalności. Architektura systemu podąża za wzorcem Clean Architecture, będącym szczególnym przypadkiem architektury heksagonalnej. Wzorzec zakłada podział systemu na warstwy od wewnętrznych do zewnętrznych, gdzie dana warstwa może korzystać tylko z warstw znajdujących się bliżej centrum systemu niż ona sama. Typowy podział warstw w Clean Architecture to:
+
+<table>
+  <tr>
+    <th colspan="2">jądro / dziedzina</th>
+  </tr>
+  <tr>
+    <th colspan="2">aplikacja / przypadki użycia / logika biznesowa</th>
+  </tr>
+  <tr>
+    <th>prezentacja (np. REST API)</th> 
+    <th>infrastruktura (np. baza danych, zewnętrzne API)</th>
+  </tr>
+</table>
+
+Główną zaletą takiej architektury jest możliwość łatwej wymiany warstw zewnętrznych, przykładowo, w teorii, zmiana bazy danych powinna być możliwa bez żadnej ingerencji w dziedzinę czy logikę biznesową. Realizacja tego wzorca w podsystemie Jobberknoll, w formie diagramu pakietów, wygląda następująco:
+
+![Diagram pakietów Jobberknoll](./images/package-diagram-jobberknoll.drawio.svg)
+
+Aplikacja składa się z czterech bibliotek połączonych w jedną przestrzeń roboczą:
+
+- `@jobberknoll/core` - warstwa dziedziny, zawierająca anemiczny model informacyjny, definicje błędów oraz typy pomocnicze, np. UUID;
+- `@jobberknoll/app` - warstwa aplikacji, zawierająca całą logikę biznesową podsystemu, w tym realizację przypadków użycia;
+- `@jobberknoll/api` - warstwa prezentacji, zawierająca implementację REST API, serializację danych oraz odpowiedzialna za OpenAPI;
+- `@jobberknoll/infra` - warstwa infrastruktury, zawierająca implementację interfejsów stanowiącą most z zewnętrznymi zależnościami.
+
+Poszczególne foldery zawierają odpowiednio:
+
+- `api` - podfolder biblioteki `@jobberknoll/api`:
+  - `contracts` - definicje typów zapytań i odpowiedzi dla API;
+  - `controllers` - implementacje kontrolerów (`int`, `ext`) obsługujących zapytania;
+  - `helpers` - pomocnicze funkcje dla kontrolerów, np. ekstrakcja nagłówków z API Gateway;
+  - `mappers` - funkcje mapujące model informacyjny na kontrakty oraz odwrotnie (wzorzec projektowy [Adapter](https://refactoring.guru/design-patterns/adapter));
+  - `middlewares` - funkcje pośredniczące, np. CORS (wzorzec projektowy [Chain of Responsibility](https://refactoring.guru/design-patterns/chain-of-responsibility));
+- `app` - podfolder biblioteki `@jobberknoll/app`:
+  - `interfaces` - klasy abstrakcyjne i interfejsy dla zależności zewnętrznych, np. baza danych, serwis e-mail (wzorzec projektowy [Strategy](https://refactoring.guru/design-patterns/strategy));
+  - `security` - odpowiednio opakowane i ujednolicone wywołania do bibliotek obsługujących JWT, JWKs, BCrypt, itd.;
+  - `use-cases` - implementacje przypadków użycia, po jednym przypadku na plik, niefortunnie, zawiera również implementacje funkcjonalności, które nie mapują się bezpośrednio na przypadki użycia, ponieważ realizują endpointy wewnętrzne (wzorzec projektowy [Command](https://refactoring.guru/design-patterns/command));
+- `core` - podfolder biblioteki `@jobberknoll/core`:
+  - `domain` - model dziedzinowy systemu:
+    - `entities` - encje z modelu informacyjnego;
+    - `errors` - definicje błędów wraz z abstrakcyjną klasą rodzicem;
+  - `shared` - współdzielone typy niezwiązane z dziedziną, np. UUID, typy algebraiczne do obsługi błędów;
+- `infra` - podfolder biblioteki `@jobberknoll/infra`:
+  - `email` - implementacja serwisu e-mail oraz jego mocków;
+  - `logging` - implementacja loggingu, z ewentualną agregacją logów oraz jego mocków;
+  - `user-repository` - implementacja persystencji użytkowników oraz jej mocków;
+- `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją; z racji, że folder `tests` nie zawiera żadnej aplikacji do uruchomienia ani niczego nie eksportuje, został on utworzony jako zwykły podfolder przestrzeni roboczej, a nie osobna biblioteka.
+
+W przypadku sidecar Feather, wymagania były bardzo podobne, a jednocześnie pojawił się dodatkowy argument - sidecar warto oprzeć na podobnym stacku technologicznym, aby uniknąć częstej zmiany kontekstu przy równoległym rozwijaniu obu komponentów przez ten sam zespół programistyczny. W związku z tym, ponownie zdecydowano się na język TypeScript na Deno oraz framework Hono.
+
+Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruje się zewnętrznie jedynie z jednym innym REST API; nie posiada zaawansowanej logiki biznesowej; wystawia jedynie dwa endpointy, z czego jeden to healthcheck), że nie występuje potrzeba podziału wertykalnego ani horyzontalnego. Prawdopodobnie cały komponent da się zawrzeć w jednej bibliotece Deno, o strukturze podobnej do tej:
+
+<table>
+  <tr>
+    <td>
+      <ul>
+        <li><code>api.ts</code> - definicje endpointów API oraz ich obsługa (warstwa prezentacji);</li>
+        <li><code>app.ts</code> - definicja logiki biznesowej (warstwa aplikacji);</li>
+        <li><code>security.ts</code> - obsługa JWT (warstwa aplikacji);</li>
+        <li><code>jwks.ts</code> - obsługa sejfu JWKs, w tym pobieranie z Jobberknoll i cachowanie (warstwa infrastruktury);</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li><code>api.test.ts</code> - testy integracyjne oraz end-to-end dla API;</li>
+        <li><code>app.test.ts</code> - testy jednostkowe dla logiki biznesowej;</li>
+        <li><code>security.test.ts</code> - testy jednostkowe dla obsługi JWT;</li>
+        <li><code>jwks.test.ts</code> - testy jednostkowe dla obsługi JWKs.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+**Źródła:**
+
+- [Wikipedia - Tagged union](https://en.wikipedia.org/wiki/Tagged_union)
+- [Deno, the next-generation JavaScript runtime](https://deno.com)
+- [Hono](https://hono.dev/)
+- Wykład 4: Style architektoniczne
+- Robert Martin - Clean Architecture
+- [Clean Architecture Folder Structure](https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure)
 
 ### API
 
@@ -2133,6 +2235,7 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 | **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`       | Jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/endpoints`    | Jobberknoll   | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
 | `GET`      | `/int/v1/accounts/:id` | Jobberknoll   | Inferius      | Pobranie informacji o koncie.                                                  |
 | `GET`      | `/int/v1/jwks`         | Jobberknoll   | Feather       | Pobranie kluczy publicznych ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).  |
 | `GET`      | `/int/v1/health`       | Feather       | —             | Sprawdzenie stanu sidecar ([`M/03`](#m03-healthchecki-dla-serwisów)).          |
@@ -2140,7 +2243,74 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ## Bilet
 
-TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
+Do implementacji serwisu Clabbert wybrano język **Java** z frameworkiem **Spring Boot**.
+
+Wybór ten podyktowany był następującymi czynnikami:
+
+- **doświadczenie zespołu** - większość członków zespołu posiada doświadczenie w programowaniu w języku Java, co pozwoli na spełnienie wymogu wymienionego wyżej - znajomość języka przez co najmniej jedną osobę spoza serwisu w celu przeprowadzenia code review,
+- **dostępność AWS SDK** - AWS SDK wspiera język Java, co pozwoli na łatwe korzystanie z usług AWS,
+- **dostępność bibliotek** - Java posiada bardzo rozbudowaną bazę bibliotek, co pozwoli na szybkie i efektywne rozwijanie serwisu,
+- **dojrzałość frameworka** - Spring Boot jest jednym z najpopularniejszych frameworków do tworzenia aplikacji w języku Java, co pozwoli na szybkie rozwiązywanie ewentualnych problemów,
+- **łatwość w testowaniu** - Java jest językiem, który posiada wiele rozbudowanych narzędzi do testowania, co ułatwi proces testowania serwisu.
+
+W serwisie Clabbert zdecydowano się na wykorzystanie, bądź co bądź elastycznego, wzorca architektonicznego **clean architecture** autorstwa Roberta C. Martina. Wzorzec ten to podejście do tworzenia oprogramowania, które skupia się na przejrzystości i oddzieleniu odpowiedzialności w aplikacji.
+
+Struktura aplikacji opiera się na koncentrycznych kręgach, gdzie każda warstwa ma jasno określoną rolę. W centrum znajdują się encje – modele i logika biznesowa, które są niezależne od reszty systemu. Następna warstwa to przypadki użycia, które określają, w jaki sposób aplikacja działa i realizuje swoje funkcje. Kolejna to adaptery interfejsów, które zajmują się przekształcaniem danych między warstwami, np. konwertując dane bazy na modele aplikacji. Na zewnątrz znajdują się frameworki i narzędzia, czyli wszystko, co służy do komunikacji ze światem zewnętrznym – serwery, bazy danych, API.
+
+![Clean code architecture](./images/clean_architecture.png)
+
+Dzięki takiemu podejściu aplikacja jest bardziej odporna na zmiany technologiczne – można wymienić bazę danych, zmienić framework czy interfejs użytkownika, a logika biznesowa pozostaje nienaruszona. Clean Architecture stawia na długoterminową trwałość systemu, co jest szczególnie ważne w projektach rozwijanych przez lata.
+
+Realizacja tego wzorca w projekcie Clabbert, w formie diagramu pakietów, przedstawia się następująco:
+
+![Diagram pakietów Clabbert](./images/package-diagram-clabbert.drawio.svg)
+
+Aplikacja składa się z dwóch głównych pakietów:
+
+- `main` - zawiera główną aplikację
+- `test` - zawiera testy głównej aplikacji
+
+Pakiet `main` składa się z następujących pakietów:
+
+- `domain` - zawiera model informacyjny aplikacji oraz definicję błędów
+- `application` - zawiera logikę biznesową aplikacji
+- `infrastructure` - zawiera implementację adapterów interfejsów, stanowi warstwę dostępu do zewnętrznych zasobów
+- `api` - zawiera implementację REST API aplikacji oraz odpowiada za serializację i deserializację danych
+
+Pakiet `domain` składa się z:
+
+- `entities` - zawiera encje z modelu informacyjnego
+- `exceptions` - zawiera definicje błędów generowanych przez aplikację
+
+Pakiet `application` składa się z:
+
+- `abstractions` - zawiera klasy abstrakcyjne oraz interfejsy dla zależności zewnętrznych
+- `common` - zawiera wspólne klasy i narzędzia dla modułów aplikacji
+- `modules` - zawiera moduły aplikacji, które realizują tematycznie podzielone grupy konkretnych przypadków użycia oraz implementacje funkcjonalności niebędących przypadkami użycia. Należy zauważyć, że moduł `validation` nie odpowiada za walidację danych w aplikacji, a za implementację przypadków użycia związanych z encją `Validation`.
+
+Pakiet `infrastructure` składa się z:
+
+- `configurations` - zawiera konfiguracje aplikacji
+- `repositories` - zawiera implementacje repozytoriów dla encji z modelu informacyjnego
+- `logging` - zawiera implementację loggingu w aplikacji
+- `messaging` - zawiera implementację komunikacji z kolejkami wiadomości
+- `internalservices` - zawiera implementacje komunikacji z pozostałymi mikroserwisami
+
+Pakiet `api` składa się z:
+
+- `controllers` - zawiera kontrolery REST API z podziałem na dostępne wewnętrznie i publicznie
+- `middlewares` - zawiera funkcje pośredniczące
+- `contracts` - zawiera definicje typów zapytań i odpowiedzi dla API
+- `mappers` - zawiera funkcje mapujące obiekty z modelu informacyjnego na obiekty kontraktów
+
+Pakiet `test` składa się z implementacji testów jednostkowych, integracyjnych oraz end-to-end dla poszczególnych modułów aplikacji.
+
+**Źródła:**
+
+- [spring.io - Spring Boot](https://spring.io/projects/spring-boot)
+- Robert Martin - Clean Architecture
+- [blog.cleancoder.com - The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [milanjovanovic.tech - Clean Architecture Folder Structure](https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure)
 
 ### API
 
@@ -2163,9 +2333,10 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
-| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health` | Clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| **Metoda** | **Endpoint**        | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`    | Clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/endpoints` | Clabbert      | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
 
 ## Płatność
 
