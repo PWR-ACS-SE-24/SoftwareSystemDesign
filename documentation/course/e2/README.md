@@ -2398,8 +2398,8 @@ Każdy wycinek w systemie odpowiada jednej z jego domen:
 Każdy wycinek jest kolejno podzielony na elementy:
 
 - `database` – encje oraz repozytoria, które odpowiadają za komunikację z bazą danych,
-- `api` – kontrolery oraz DTO, które odpowiadają za obsługę zapytań HTTP,
-- `domain` – serwisy odpowiedzialne za logikę biznesową,
+- `service` – serwisy odpowiedzialne za logikę biznesową,
+- `controller` – kontrolery oraz DTO, które odpowiadają za obsługę zapytań HTTP,
 - `test` – testy jednostkowe oraz integracyjne.
 
 Dodatkowo, system zawiera pakiet wspólny:
@@ -2408,7 +2408,7 @@ Dodatkowo, system zawiera pakiet wspólny:
 
 Oraz pakiet systemowy:
 
-- `internal` - części systemu używane tylko wewnątrz systemu, np. healthchecki.
+- `internal` - części aplikacji używane tylko wewnątrz systemu, np. healthchecki.
 
 ![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
 
