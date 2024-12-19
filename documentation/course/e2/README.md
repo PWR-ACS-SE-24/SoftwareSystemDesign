@@ -2170,31 +2170,30 @@ Do implementacji serwisu Inferius wybrano język **Java** z frameworkiem **Sprin
 
 Wybór ten podyktowany był następującymi czynnikami:
 
-- **doświadczenie zespołu** - większość członków zespołu posiada doświadczenie w programowaniu w języku Java, co pozwoli na spełnienie wymogu wymienionego wyżej - znajomość języka przez co najmniej jedną osobę spoza serwisu w celu przeprowadzenia code review,
-- **dostępność AWS SDK** - AWS SDK wspiera język Java, co pozwoli na łatwe korzystanie z usług AWS,
-- **dostępność bibliotek** - Java posiada bardzo rozbudowaną bazę bibliotek, co pozwoli na szybkie i efektywne rozwijanie serwisu,
-- **dojrzałość frameworka** - Spring Boot jest jednym z najpopularniejszych frameworków do tworzenia aplikacji w języku Java, co pozwoli na szybkie rozwiązywanie ewentualnych problemów,
-- **łatwość w testowaniu** - Java jest językiem, który posiada wiele rozbudowanych narzędzi do testowania, co ułatwi proces testowania serwisu.
+- **doświadczenie zespołu** - większość członków zespołu posiada doświadczenie w programowaniu w języku Java,
+- **dojrzały ekosystem** - Java jest jednym z najpopularniejszych języków programowania, co przekłada się na dostępność wielu narzędzi i bibliotek,
+- **społeczeność** - Java jest językiem o dużym wsparciu społeczności, co ułatwia rozwiązywanie problemów i zdobywanie wiedzy,
+- **łatwość w testowaniu** - Java jest językiem, który jest dobrze wspierany przez narzędzia do testowania, co ułatwia pisanie testów.,
 
 ![Diagram pakietów Inferius](./images/package-diagram-inferius.drawio.svg)
 
 Architektura podsystemu Inferius została zaprojektowana zgodnie z podejściem **Vertical Slice Architecture**, które promuje podział aplikacji na niezależne funkcjonalne jednostki. Każda jednostka (slice) jest odpowiedzialna za jeden aspekt działania systemu i obejmuje wszystkie potrzebne warstwy: dostęp do bazy danych, logikę biznesową, API oraz testy.
 
 Każdy slice w systemie odpowiada jednej z kluczowych domen:
-- **Wallet**: Odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
-- **Fine**: Zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
-- **CreditCardInfo**: Obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
-- **WalletHistory**: Rejestruje historię operacji finansowych, takich jak doładowania portfela.
+- `wallet` - odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
+- `fine` - zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
+- creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
+- `wallethistory` - rejestruje historię operacji finansowych, takich jak doładowania portfela.
 
 Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
-- **Database** – warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
-- **Domain** – logika biznesowa, która definiuje, jak dane są przetwarzane i jakie reguły biznesowe są stosowane.
-- **API** – punkty końcowe zapewniające interfejs komunikacji dla klientów systemu.
-- **Test** – zestaw testów jednostkowych i integracyjnych zapewniających poprawność działania slice'a.
+- `database` - warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
+- `domain` - logika biznesowa, która definiuje, jak dane są przetwarzane i jakie reguły biznesowe są stosowane.
+- `api` - punkty końcowe zapewniające interfejs komunikacji dla klientów systemu.
+- `test` - zestaw testów jednostkowych i integracyjnych zapewniających poprawność działania slice'a.
 
 Dodatkowo, system zawiera dwa pakiety wspólne:
-- **Shared**: Wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
-- **Internal**: Moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
+- `shared` - wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
+- `internal` - moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
 
 W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdrażanie zmian i izolowanie problemów w jednym module bez wpływu na inne części systemu. Nowe funkcjonalności można dodawać jako bez konieczności modyfikacji istniejących modułów.
 
