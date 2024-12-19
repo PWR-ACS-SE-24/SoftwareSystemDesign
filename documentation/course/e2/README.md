@@ -2251,9 +2251,12 @@ TODO @jakubzehner
 
 ## PU `PAY/17`
 
+> Jako _pasażer_ chcę mieć możliwość przeglądania wystawionych _mandatów_.
+
 ![Realizacja przypadku użycia - Wyświetlanie mandatów](./images/sequence-diagram-inferius-get-fines.drawio.svg)
 
 ## PU `PAY/20`
+> Jako _pasażer_ chcę mieć możliwość zaktualizowania danych karty kredytowej.
 
 ![Realizacja przypadku użycia - Zaktualizowanie danych karty kredytowej](./images/sequence-diagram-inferius-update-card.drawio.svg)
 

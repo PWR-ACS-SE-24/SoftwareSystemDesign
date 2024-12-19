@@ -158,7 +158,7 @@ W zakres projektu wchodzi:
 - `PAY/17` - Jako _pasażer_ chcę mieć możliwość przeglądania wystawionych _mandatów_.
 - `PAY/18` - Jako _pasażer_ chcę mieć możliwość wyświetlenia szczegółów _mandatu_.
 - `PAY/19` - Jako _pasażer_ chcę mieć możliwość wyświetlenia dodanych kart kredytowych.
-- `PAY/20` - Jako _pasażer_ chcę mieć możliwość zaktualiowania danych karty kredytowej.
+- `PAY/20` - Jako _pasażer_ chcę mieć możliwość zaktualizowania danych karty kredytowej.
 - `PAY/21` - Jako _bileter_ chcę mieć możliwość wystawienia _mandatu_.
 - `PAY/22` - Jako _bileter_ chcę mieć możliwość zmiany _statusu mandatu_ na _anulowany_
 - `PAY/23` - Jako _bileter_ chcę mieć możliwość przeglądania historii _mandatów_.
