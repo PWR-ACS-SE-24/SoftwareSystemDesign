@@ -1827,6 +1827,9 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
   <tr>
     <td colspan="3"><code>fine.time <= NOW()</code></td>
   </tr>
+  <tr>
+    <td colspan="3"><code>wallet_history.amount_pln > 0</code></td>
+  </tr>
 </table>
 
 Z uwagi na średnie obciążenie bazy danych w podsystemie Inferius, jako klasę instancji wybrano `db.m7g.large`. Wersja `large` oferuje 2 vCPU oraz 8 GiB RAM. Baza przechowuje istotne i wrażliwe dane, zatem kluczowe jest włączenie szyfrowania.
@@ -2183,7 +2186,6 @@ Każdy slice w systemie odpowiada jednej z kluczowych domen:
 - `wallet` - odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
 - `fine` - zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
 - creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
-- `wallethistory` - rejestruje historię operacji finansowych, takich jak doładowania portfela.
 
 Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
 - `database` - warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
@@ -2194,6 +2196,10 @@ Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
 Dodatkowo, system zawiera dwa pakiety wspólne:
 - `shared` - wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
 - `internal` - moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
+
+Całość opiera się na wspólnej bazie danych oznaczonej jako `Payment Database`, do której wszystkie slice'y mają dostęp.
+
+System korzysta również z komponentu `Payment Gateway`, który obsługuje przetwarzanie płatności. Pełni on rolę niezależnego komponentu zewnętrznego, co pozwala na elastyczność w przypadku zmiany dostawcy lub rozbudowy funkcjonalności płatniczych w przyszłości.
 
 W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdrażanie zmian i izolowanie problemów w jednym module bez wpływu na inne części systemu. Nowe funkcjonalności można dodawać jako bez konieczności modyfikacji istniejących modułów.
 
@@ -2221,10 +2227,11 @@ W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdr
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |     
-| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health` | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
-| `POST`     | `/int/v1/charge` | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
+| **Metoda** | **Endpoint**        | **Producent** | **Konsument** | **Opis**                                                                       |     
+| ---------- | ------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`    | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/endpoints` | Inferius      | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
+| `POST`     | `/int/v1/charge`    | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
 
 ## Logistyka
 
