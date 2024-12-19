@@ -2126,7 +2126,7 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ## Bilet
 
-TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
+TODO @jakubzehner: Dodać diagram pakietów, opis architektury.
 
 ### API
 
