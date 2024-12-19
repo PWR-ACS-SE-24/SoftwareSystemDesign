@@ -2372,11 +2372,23 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 # Realizacja przypadków użycia
 
-## PU `ACC/??`
+## PU `ACC/01`
+
+> Jako _gość_ chcę mieć możliwość rejestracji _konta_ _pasażera_.
+
+![Realizacja przypadku użycia - Rejestracja](./images/sequence-diagram-jobberknoll-register.drawio.svg)
+
+## PU `ACC/02`
+
+> Jako _gość_ chcę mieć możliwość zalogowania się do _konta_ (_administratora_, _biletera_, _kierowcy_, _pasażera_).
 
 TODO @tchojnacki
 
-## PU `ACC/??`
+## PU `ACC/11` & PU `ACC/12`
+
+> Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _biletera_.
+
+> Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _kierowcy_.
 
 TODO @tchojnacki
 
