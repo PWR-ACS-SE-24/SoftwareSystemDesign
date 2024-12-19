@@ -1105,11 +1105,11 @@ TODO @mlodybercik
 
 ### Kupno biletu
 
-TODO @jakubzehner + @piterek130
+![Scenariusz interakcji - Kupno biletu](./images/sequence-diagram-scenario-ticket-purchase.drawio.svg)
 
 ### Kontrola biletowa
 
-TODO @jakubzehner + @piterek130: + wystawienie mandatu
+![Scenariusz interakcji - Kontrola biletowa](./images/sequence-diagram-scenario-ticket-inspection.drawio.svg)
 
 ### Zgłoszenie awarii
 
@@ -1670,7 +1670,7 @@ Z uwagi na dużą ilość danych, zdecydowano się na czas retencji kopii zapaso
 
 ### Płatność
 
-Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typów wyliczeniowych, które odpowiadają za obsługę płatności oraz zarządzanie mandatami. Klasa `Wallet` przechowuje informacje o stanie środków pasażerów, `CreditCardInfo` odpowiada za przechowywanie danych kart kredytowych powiązanych z portfelem pasażera, a `Fine` przechowuje informacje o nałożonych mandatach. W tym przypadku podobnie jak w podsystemie Clabbert zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, ponieważ tak jak w poprzednim przykładzie rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach. 
+Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typów wyliczeniowych, które odpowiadają za obsługę płatności oraz zarządzanie mandatami. Klasa `Wallet` przechowuje informacje o stanie środków pasażerów, `CreditCardInfo` odpowiada za przechowywanie danych kart kredytowych powiązanych z portfelem pasażera, a `Fine` przechowuje informacje o nałożonych mandatach. W tym przypadku podobnie jak w podsystemie Clabbert zdecydowano się na reprezentację typów wyliczeniowych w postaci tekstu, konkretniej `varchar(32)`, ponieważ tak jak w poprzednim przykładzie rozmiar ten jest wystarczający dla obecnych wartości typów wyliczeniowych i umożliwia jednocześnie przyszłe dodanie kolejnych literałów o dłuższych nazwach.
 
 ![Diagram bazodanowy Inferius](./images/database-diagram-inferius.drawio.svg)
 
@@ -1755,7 +1755,7 @@ Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wi
 - `credit_card_info`: 24 + 24 = 48 bajtów,
 - `fine`: 24 + 24 + 24 = 72 bajty.
 
-Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln * 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln * 610 = 1.22 GB, a rocznie 1.2 mln * 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 * 455 = 20 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
+Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln \* 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln \* 610 = 1.22 GB, a rocznie 1.2 mln \* 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 \* 455 = 20 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
 
 Zdecydowano się na czas retencji kopii zapasowych wynoszący 35 dni, ze względu na przetrzymywanie finansowych oraz transakcyjnych danych.
 
