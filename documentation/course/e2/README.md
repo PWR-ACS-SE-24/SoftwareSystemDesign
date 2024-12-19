@@ -2115,14 +2115,14 @@ Z racji na to, że podsystem Jobberknoll składa się z tylko jednego wycinka we
 
 <table>
   <tr>
-    <td colspan="2">jądro / dziedzina</td>
+    <th colspan="2">jądro / dziedzina</th>
   </tr>
   <tr>
-    <td colspan="2">aplikacja / przypadki użycia / logika biznesowa</td>
+    <th colspan="2">aplikacja / przypadki użycia / logika biznesowa</th>
   </tr>
   <tr>
-    <td>prezentacja (np. REST API)</td> 
-    <td>infrastruktura (np. baza danych, zewnętrzne API)</td>
+    <th>prezentacja (np. REST API)</th> 
+    <th>infrastruktura (np. baza danych, zewnętrzne API)</th>
   </tr>
 </table>
 
