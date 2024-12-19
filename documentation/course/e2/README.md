@@ -2372,13 +2372,43 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 # Realizacja przypadków użycia
 
-## PU `ACC/??`
+## PU `ACC/01`
 
-TODO @tchojnacki
+> Jako _gość_ chcę mieć możliwość rejestracji _konta_ _pasażera_.
 
-## PU `ACC/??`
+![Realizacja przypadku użycia - Rejestracja](./images/sequence-diagram-jobberknoll-register.drawio.svg)
 
-TODO @tchojnacki
+## PU `ACC/02`
+
+> Jako _gość_ chcę mieć możliwość zalogowania się do _konta_ (_administratora_, _biletera_, _kierowcy_, _pasażera_).
+
+![Realizacja przypadku użycia - Logowanie](./images/sequence-diagram-jobberknoll-login.drawio.svg)
+
+## PU `ACC/03`
+
+> Jako _osoba zalogowana_ chcę mieć możliwość wylogowania się ze swojego _konta_.
+
+![Realizacja przypadku użycia - Wylogowanie](./images/sequence-diagram-jobberknoll-logout.drawio.svg)
+
+## PU `ACC/04`
+
+> Jako _osoba zalogowana_ chcę mieć możliwość wyświetlenia informacji o swoim _koncie_.
+
+![Realizacja przypadku użycia - Informacje o koncie](./images/sequence-diagram-jobberknoll-self.drawio.svg)
+
+## PU `ACC/07`
+
+> Jako _osoba zalogowana_ chcę mieć możliwość wyświetlenia swoich preferencji (motywu kolorystycznego, języka aplikacji).
+
+![Realizacja przypadku użycia - Preferencje](./images/sequence-diagram-jobberknoll-settings.drawio.svg)
+
+## PU `ACC/11`, `ACC/12`
+
+> Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _biletera_.
+
+> Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _kierowcy_.
+
+![Realizacja przypadku użycia - Tworzenie konta](./images/sequence-diagram-jobberknoll-create-account.drawio.svg)
 
 ## PU `TIC/??`
 
