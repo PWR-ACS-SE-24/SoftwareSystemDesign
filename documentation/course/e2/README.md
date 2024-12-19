@@ -718,6 +718,7 @@ Usługą dostępną w chmurze AWS, która pozwala na zastosowanie tego rozwiąza
       <ul>
         <li>Złożona infrastruktura</li>
         <li>Trudniejszy dostęp do danych między serwisami</li>
+        <li>Brak możliwości użycia operacji JOIN pomiędzy baza danych</li>
       </ul>
     </td>
   </tr>
@@ -759,7 +760,7 @@ Jednak rozwiązanie to wiąże się z pewnymi wyzwaniami. Zarządzanie wieloma b
     </td>
     <td>
       <ul>
-        <li>Skaluje się pionowo</li>
+        <li>Nie skaluje się dobrze poziomo</li>
         <li>Wydajność spada przy przetwarzaniu dużych wolumenów danych</li>
         <li>Przetwarzanie transakcji wymaga blokowania określonych rekordów</li>
       </ul>
@@ -816,6 +817,7 @@ Jednak rozwiązanie to wiąże się z pewnymi wyzwaniami. Zarządzanie wieloma b
         <li>Automatyczne skalowanie</li>
         <li>Bezpieczeństwo</li>
         <li>Szybkie wdrożenie</li>
+        <li>Automatyczne kopie zapasowe</li>
       </ul>
     </td>
     <td>
@@ -834,6 +836,8 @@ Jednak rozwiązanie to wiąże się z pewnymi wyzwaniami. Zarządzanie wieloma b
 Wybierając RDS jako platformę dla baz ACID, zyskuje się zautomatyzowane zarządzanie infrastrukturą, obejmujące tworzenie kopii zapasowych, aktualizacje systemu i konfigurację replikacji. AWS RDS obsługuje także funkcję Multi-AZ (Multi-Availability Zone), która zapewnia wysoką dostępność i odporność na awarie. W przypadku awarii instancji głównej, RDS automatycznie przełącza ruch na zapasowy węzeł w innej strefie dostępności, minimalizując przestoje. Dodatkowo, usługa pozwala na łatwe skalowanie zarówno w pionie (zwiększenie zasobów instancji), jak i poziomie (dodanie replik odczytu), co sprawia, że baza danych może być dostosowana do zmieniających się potrzeb aplikacji.
 
 AWS RDS eliminuje konieczność ręcznego zarządzania serwerem, pozwalając skupić się na projektowaniu bazy danych i optymalizacji zapytań. Dzięki natywnemu wsparciu dla ACID, zapewnia gwarancje transakcyjne i spójność danych, co czyni je odpowiednim wyborem dla aplikacji wymagających niezawodności oraz bezpieczeństwa. Rozwiązanie to łączy stabilność i wydajność baz transakcyjnych z wygodą korzystania z usług zarządzanych w chmurze, jednocześnie redukując ryzyko błędów administracyjnych oraz koszty związane z utrzymaniem infrastruktury.
+
+Zdecydowano się zastosować to rozwiązanie dla każdego z mikroserwisów, aby zapewnić spójność, łatwość zarządzania oraz ujednolicenie infrastruktury w całym systemie. Taka decyzja pozwala uniknąć komplikacji związanych z koniecznością obsługi różnych typów baz danych, co mogłoby prowadzić do dodatkowych nakładów pracy na integrację i utrzymanie. Pomimo że jeden z mikroserwisów - Leprechaun - mógłby prawdopodobnie korzystać z bazy NoSQL z większymi korzyściami, wybrano bazę ACID w celu zachowania jednolitego podejścia do zarządzania danymi i zapewnienia wysokiej niezawodności całego systemu. Dzięki temu ograniczono ryzyko związane z różnicami w modelach danych, a także uproszczono proces monitorowania i skalowania infrastruktury w dłuższej perspektywie.
 
 **Źródła:**
 
@@ -1089,7 +1093,7 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
     </td>
     <td>
       <ul>
-        <li>Zależność od sprzętu</li>
+        <li>Zależność od dodatkowego sprzętu - kamery</li>
         <li>Trudniejsza implementacja</li>
       </ul>
     </td>
