@@ -2199,7 +2199,7 @@ Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruj
 - [Wikipedia - Tagged union](https://en.wikipedia.org/wiki/Tagged_union)
 - [Deno, the next-generation JavaScript runtime](https://deno.com)
 - [Hono](https://hono.dev/)
-- Wykład 4: Style architektoniczne 
+- Wykład 4: Style architektoniczne
 - Robert Martin - Clean Architecture
 - [Clean Architecture Folder Structure](https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure)
 
@@ -2252,7 +2252,7 @@ W serwisie Clabbert zdecydowano się na wykorzystanie, bądź co bądź elastycz
 
 Struktura aplikacji opiera się na koncentrycznych kręgach, gdzie każda warstwa ma jasno określoną rolę. W centrum znajdują się encje – modele i logika biznesowa, które są niezależne od reszty systemu. Następna warstwa to przypadki użycia, które określają, w jaki sposób aplikacja działa i realizuje swoje funkcje. Kolejna to adaptery interfejsów, które zajmują się przekształcaniem danych między warstwami, np. konwertując dane bazy na modele aplikacji. Na zewnątrz znajdują się frameworki i narzędzia, czyli wszystko, co służy do komunikacji ze światem zewnętrznym – serwery, bazy danych, API.
 
-![Clean code architecture](./images/clean_architecture.png)
+![Clean code architecture](./images/clean-architecture.drawio.svg)
 
 Dzięki takiemu podejściu aplikacja jest bardziej odporna na zmiany technologiczne – można wymienić bazę danych, zmienić framework czy interfejs użytkownika, a logika biznesowa pozostaje nienaruszona. Clean Architecture stawia na długoterminową trwałość systemu, co jest szczególnie ważne w projektach rozwijanych przez lata.
 
@@ -2410,13 +2410,49 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 ![Realizacja przypadku użycia - Tworzenie konta](./images/sequence-diagram-jobberknoll-create-account.drawio.svg)
 
-## PU `TIC/??`
+## PU `TIC/01`, `TIC/02`, `TIC/03`, `TIC/04`, `TIC/05`
 
-TODO @jakubzehner
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu jednorazowego_.
 
-## PU `TIC/??`
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu czasowego_.
 
-TODO @jakubzehner
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu okresowego_.
+
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu ulgowego_.
+
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu normalnego_.
+
+![Realizacja przypadku użycia - kupno biletu](./images/sequence-diagram-clabbert-ticket-purchase.drawio.svg)
+
+## PU `TIC/06`, `TIC/11`
+
+> Jako _pasażer_ chcę mieć możliwość wyświetlenia listy swoich zakupionych _biletów_.
+
+> Jako _pasażer_ chcę mieć możliwość zobaczenia historii zakupionych _biletów_.
+
+![Realizacja przypadku użycia - wyświetlanie listy biletów](./images/sequence-diagram-clabbert-ticket-list.drawio.svg)
+
+## PU `TIC/07`, `TIC/09`
+
+> Jako _pasażer_ chcę mieć możliwość wyświetlenia szczegółów zakupionego _biletu_.
+
+> Jako _pasażer_ chcę mieć możliwość okazania _biletu_ do _sprawdzenia ważności biletu_.
+
+![Realizacja przypadku użycia - wyświetlenie szczegółów biletu](./images/sequence-diagram-clabbert-ticket-details.drawio.svg)
+
+## PU `TIC/10`, `TIC/13`
+
+> Jako _pasażer_ chcę mieć możliwość zobaczenia _oferty biletów_.
+
+> Jako _administrator_ chcę mieć możliwość wyświetlenia _oferty biletów_.
+
+![Realizacja przypadku użycia - wyświetlenie ofery biletowej](./images/sequence-diagram-clabbert-ticket-offers.drawio.svg)
+
+## PU `TIC/12`
+
+> Jako _bileter_ chcę mieć możliwość _sprawdzenia ważności_ _biletu_ _pasażera_.
+
+![Realizacja przypadku użycia - inspekcja biletu](./images/sequence-diagram-clabbert-ticket-inspection.drawio.svg)
 
 ## PU `PAY/??`
 
