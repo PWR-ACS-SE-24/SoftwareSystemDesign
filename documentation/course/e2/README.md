@@ -2185,21 +2185,21 @@ Architektura podsystemu Inferius została zaprojektowana zgodnie z podejściem *
 Każdy slice w systemie odpowiada jednej z kluczowych domen:
 - `wallet` - odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
 - `fine` - zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
-- creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
+- `creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
 
 Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
 - `database` - warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
-- `domain` - logika biznesowa, która definiuje, jak dane są przetwarzane i jakie reguły biznesowe są stosowane.
-- `api` - punkty końcowe zapewniające interfejs komunikacji dla klientów systemu.
+- `service` - logika biznesowa, która definiuje, jak dane są przetwarzane i jakie reguły biznesowe są stosowane.
+- `controller` - punkty końcowe zapewniające interfejs komunikacji dla klientów systemu.
 - `test` - zestaw testów jednostkowych i integracyjnych zapewniających poprawność działania slice'a.
 
 Dodatkowo, system zawiera dwa pakiety wspólne:
 - `shared` - wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
 - `internal` - moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
 
-Całość opiera się na wspólnej bazie danych oznaczonej jako `Payment Database`, do której wszystkie slice'y mają dostęp.
+Całość opiera się na wspólnej bazie danych oznaczonej jako Payment Database, do której wszystkie slice'y mają dostęp.
 
-System korzysta również z komponentu `Payment Gateway`, który obsługuje przetwarzanie płatności. Pełni on rolę niezależnego komponentu zewnętrznego, co pozwala na elastyczność w przypadku zmiany dostawcy lub rozbudowy funkcjonalności płatniczych w przyszłości.
+System korzysta również z komponentu Payment Gateway, który obsługuje przetwarzanie płatności. Pełni on rolę niezależnego komponentu zewnętrznego, co pozwala na elastyczność w przypadku zmiany dostawcy lub rozbudowy funkcjonalności płatniczych w przyszłości.
 
 W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdrażanie zmian i izolowanie problemów w jednym module bez wpływu na inne części systemu. Nowe funkcjonalności można dodawać jako bez konieczności modyfikacji istniejących modułów.
 
