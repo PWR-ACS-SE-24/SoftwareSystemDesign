@@ -29,10 +29,11 @@ Skład zespołu:
 Celem projektu jest stworzenie systemu informatycznego wspomagającego komunikację miejską. System ma ułatwić pasażerom korzystanie z komunikacji miejskiej poprzez możliwość zakupu biletów online, przeglądanie rozkładu jazdy oraz dostęp do informacji o awariach. System ma również ułatwić pracę kierowcom i bileterom poprzez możliwość kontroli ważności biletów oraz zgłaszania awarii.
 
 ### Cele projektu
+
 - Wdrożenie systemu informatycznego w przeciągu 6 miesięcy od rozpoczęcia projektu, wraz z jednoczesnym wsparciem istniejącego systemu.
 - Całkowite przejście na nowy system informatyczny w przeciągu 3 miesięcy od wdrożenia.
 - Skrócenie czasu potrzebnego na _zakup_ _biletu_ przez _pasażera_ w _pojeździe_ o 40% w przeciągu 4 miesięcy od całkowitego wdrożenia systemu. Porównanie wyników poprzez przeprowadzenie pomiaru czasów przed i po wdrożeniu systemu.
-- Skrócenie czasu potrzebnego na _sprawdzenie ważności biletu_ o 45% w przeciągu 4 miesięcy od pełnego wdrożenia systemu. 
+- Skrócenie czasu potrzebnego na _sprawdzenie ważności biletu_ o 45% w przeciągu 4 miesięcy od pełnego wdrożenia systemu.
 - Skrócenie czasu potrzebnego na wystawienie _mandatu_ o 70% w przeciągu 6 miesięcy od całkowitego wdrożenia systemu. Zarówno poprzedni jak i nowy system mierzą czas trwania tej czynności.
 - Zwiększenie odsetku płatności za _mandaty_ o 20% w przeciągu 6 miesięcy od całkowitego wdrożenia systemu. Porównanie wyników poprzez przeprowadzenie pomiaru liczby opłaconych _mandatów_ przed i po wdrożeniu systemu.
 - Wzrost liczby usatysfakcjonowanych _pasażerów_ korzystających z komunikacji miejskiej o przynajmniej 30% w przeciągu 6 miesięcy od całkowitego wdrożenia systemu. Porównanie wyników poprzez przeprowadzenie ankiety satysfakcji _pasażerów_ przed i po wdrożeniu systemu.
@@ -48,50 +49,50 @@ W zakres projektu wchodzi:
 
 ## Słownik pojęć
 
-| Termin                          | Synonimy              | Definicja terminu                                                                                                                |
-| ------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| **Administrator**               | _admin_               | Typ _konta_, użytkownik należący do organizacji, który zarządza _kontami_, _ofertami biletów_ i _logistyką_.                     |
-| **Awaria**                      | _accident_            | Nieprzewidziane zdarzenie, które powoduje przerwanie kursu _pojazdu_ z _rozkładu jazdy_ i jest zgłaszane przez pracownika.       |
-| **Bilet**                       | _ticket_              | Wirtualne potwierdzenie prawa _pasażera_ do podróży _pojazdem_ transportu publicznego, _zakupione_ za pomocą systemu.            |
-| **Bilet czasowy**               | _time-limited ticket_ | _Bilet_, który jest _ważny_, jeśli jego _czas ważności_, liczony od _skasowania_, nie minął.                                     |
-| **Bilet jednorazowy**           | _single-fare ticket_  | _Bilet_, który jest _ważny_, jeśli został _skasowany_ w tym samym _pojeździe_ co _sprawdzony_.                                   |
-| **Bilet normalny**              | _standard ticket_     | _Bilet_, który może być używany przez każdego.                                                                                   |
-| **Bilet okresowy**              | _long-term ticket_    | _Bilet_, który jest _ważny_, jeśli jest używany w swoim _okresie ważności_.                                                      |
-| **Bilet ulgowy**                | _reduced ticket_      | _Bilet_, który może być używany przez osoby uprawnione (studentów, seniorów, itp.).                                              |
-| **Bileter**                     | _inspector_           | Typ _konta_, użytkownik należący do organizacji, który może _sprawdzać ważność biletu_, wystawiać _mandaty_ i zgłaszać _awarie_. |
-| **BLIK**                        | _BLIK_                | System płatności mobilnych, który pozwala na dokonywanie płatności za pomocą 6 cyfrowego kodu.                                   |
-| **Cena biletu**                 | _price_               | Kwota pieniężna, którą _pasażer_ musi zapłacić za _bilet_.                                                                       |
-| **Czas ważności**               | _duration_            | Czas od _skasowania_, przez który _bilet czasowy_ jest _ważny_.                                                                  |
-| **Dane karty kredytowej**       | _credit card info_    | Informacje o karcie kredytowej, które pozwalają na dodanie karty do _konta_.                                                     |
-| **Gość**                        | _guest_               | Osoba, która nie jest zalogowana do systemu.                                                                                     |
-| **Kasownik**                    | _validator_           | Fizyczne urządzenie w _pojeździe_, które pozwala _pasażerowi_ _skasować_ _bilet_.                                                |
-| **Kierowca**                    | _driver_              | Typ _konta_, użytkownik należący do organizacji, który prowadzi _pojazd_ i zgłasza _awarie_.                                     |
-| **Kod biletu**                  | _code_                | Unikalny identyfikator zakupionego _biletu_.                                                                                     |
-| **Konto**                       | _account_             | Uogólnienie _pasażera_, _biletera_, _kierowcy_ i _administratora_.                                                               |
-| **Kurs**                        | _route_               | Trasa, którą pokonuje _pojazd_ na danej _linii_                                                                                  |
-| **Linia**                       | _line_                | Trasa identyfikowana cyframi lub literami, zawierająca _przystanki_, którą pokonują _pojazdy_ podczas jazdy.                     |
-| **Logistyka**                   | _logistics_           | Część systemu odpowiedzialna za _pojazdy_, _przystanki_, _rozkłady jazdy_ i _awarie_.                                            |
-| **Mandat**                      | _fine_                | Kara pieniężna, którą _bileter_ może nałożyć na _pasażera_ za nieważny _bilet_.                                                  | 
-| **Mandat anulowany**            | _fine cancelled_      | _Mandat_, który został unieważniony przez _biletera_.                                                                            |
-| **Mandat nieopłacony**          | _fine unpaid_         | _Mandat_, który jest aktywny i oczekuje na uregulowanie przez _pasażera_.                                                        |
-| **Mandat opłacony**             | _fine paid_           | _Mandat_, który został uregulowany przez _pasażera_.                                                                             |
-| **Oferta biletu**               | _ticket offer_        | Kombinacja _zakresu biletu_ i _typu biletu_.                                                                                     |
-| **Okres ważności**              | _interval_            | Daty, w których _bilet okresowy_ jest _ważny_.                                                                                   |
-| **Osoba zalogowana**            | _member_              | Osoba zalogowana do systemu jako _administrator_, _bileter_, _kierowca_ albo _pasażer_.                                          |
-| **Pasażer**                     | _passenger_           | Typ _konta_, użytkownik zewnętrzny dla organizacji, który może _zakupywać_ _bilety_.                                             |
-| **Płatność**                    | _payment_             | Proces dokonywania opłaty za _bilet_.                                                                                            |
-| **Pojazd**                      | _vehicle_             | Autobus lub tramwaj, identyfikowany unikalnym numerem bocznym, na który _pasażer_ kupuje _bilety_ i w którym są _kasowniki_.     |
-| **Portfel**                     | _wallet_              | Stan wirtualnego konta _pasażera_, z którego pobierane są opłaty za _bilety_.                                                    |
+| Termin                          | Synonimy              | Definicja terminu                                                                                                                                      |
+| ------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Administrator**               | _admin_               | Typ _konta_, użytkownik należący do organizacji, który zarządza _kontami_, _ofertami biletów_ i _logistyką_.                                           |
+| **Awaria**                      | _accident_            | Nieprzewidziane zdarzenie, które powoduje przerwanie kursu _pojazdu_ z _rozkładu jazdy_ i jest zgłaszane przez pracownika.                             |
+| **Bilet**                       | _ticket_              | Wirtualne potwierdzenie prawa _pasażera_ do podróży _pojazdem_ transportu publicznego, _zakupione_ za pomocą systemu.                                  |
+| **Bilet czasowy**               | _time-limited ticket_ | _Bilet_, który jest _ważny_, jeśli jego _czas ważności_, liczony od _skasowania_, nie minął.                                                           |
+| **Bilet jednorazowy**           | _single-fare ticket_  | _Bilet_, który jest _ważny_, jeśli został _skasowany_ w tym samym _pojeździe_ co _sprawdzony_.                                                         |
+| **Bilet normalny**              | _standard ticket_     | _Bilet_, który może być używany przez każdego.                                                                                                         |
+| **Bilet okresowy**              | _long-term ticket_    | _Bilet_, który jest _ważny_, jeśli jest używany w swoim _okresie ważności_.                                                                            |
+| **Bilet ulgowy**                | _reduced ticket_      | _Bilet_, który może być używany przez osoby uprawnione (studentów, seniorów, itp.).                                                                    |
+| **Bileter**                     | _inspector_           | Typ _konta_, użytkownik należący do organizacji, który może _sprawdzać ważność biletu_, wystawiać _mandaty_ i zgłaszać _awarie_.                       |
+| **BLIK**                        | _BLIK_                | System płatności mobilnych, który pozwala na dokonywanie płatności za pomocą 6 cyfrowego kodu.                                                         |
+| **Cena biletu**                 | _price_               | Kwota pieniężna, którą _pasażer_ musi zapłacić za _bilet_.                                                                                             |
+| **Czas ważności**               | _duration_            | Czas od _skasowania_, przez który _bilet czasowy_ jest _ważny_.                                                                                        |
+| **Dane karty kredytowej**       | _credit card info_    | Informacje o karcie kredytowej, które pozwalają na dodanie karty do _konta_.                                                                           |
+| **Gość**                        | _guest_               | Osoba, która nie jest zalogowana do systemu.                                                                                                           |
+| **Kasownik**                    | _validator_           | Fizyczne urządzenie w _pojeździe_, które pozwala _pasażerowi_ _skasować_ _bilet_.                                                                      |
+| **Kierowca**                    | _driver_              | Typ _konta_, użytkownik należący do organizacji, który prowadzi _pojazd_ i zgłasza _awarie_.                                                           |
+| **Kod biletu**                  | _code_                | Unikalny identyfikator zakupionego _biletu_.                                                                                                           |
+| **Konto**                       | _account_             | Uogólnienie _pasażera_, _biletera_, _kierowcy_ i _administratora_.                                                                                     |
+| **Kurs**                        | _route_               | Trasa, którą pokonuje _pojazd_ na danej _linii_                                                                                                        |
+| **Linia**                       | _line_                | Trasa identyfikowana cyframi lub literami, zawierająca _przystanki_, którą pokonują _pojazdy_ podczas jazdy.                                           |
+| **Logistyka**                   | _logistics_           | Część systemu odpowiedzialna za _pojazdy_, _przystanki_, _rozkłady jazdy_ i _awarie_.                                                                  |
+| **Mandat**                      | _fine_                | Kara pieniężna, którą _bileter_ może nałożyć na _pasażera_ za nieważny _bilet_.                                                                        |
+| **Mandat anulowany**            | _fine cancelled_      | _Mandat_, który został unieważniony przez _biletera_.                                                                                                  |
+| **Mandat nieopłacony**          | _fine unpaid_         | _Mandat_, który jest aktywny i oczekuje na uregulowanie przez _pasażera_.                                                                              |
+| **Mandat opłacony**             | _fine paid_           | _Mandat_, który został uregulowany przez _pasażera_.                                                                                                   |
+| **Oferta biletu**               | _ticket offer_        | Kombinacja _zakresu biletu_ i _typu biletu_.                                                                                                           |
+| **Okres ważności**              | _interval_            | Daty, w których _bilet okresowy_ jest _ważny_.                                                                                                         |
+| **Osoba zalogowana**            | _member_              | Osoba zalogowana do systemu jako _administrator_, _bileter_, _kierowca_ albo _pasażer_.                                                                |
+| **Pasażer**                     | _passenger_           | Typ _konta_, użytkownik zewnętrzny dla organizacji, który może _zakupywać_ _bilety_.                                                                   |
+| **Płatność**                    | _payment_             | Proces dokonywania opłaty za _bilet_.                                                                                                                  |
+| **Pojazd**                      | _vehicle_             | Autobus lub tramwaj, identyfikowany unikalnym numerem bocznym, na który _pasażer_ kupuje _bilety_ i w którym są _kasowniki_.                           |
+| **Portfel**                     | _wallet_              | Stan wirtualnego konta _pasażera_, z którego pobierane są opłaty za _bilety_.                                                                          |
 | **Powód mandatu**               | _fine reason_         | Przyczyna nałożenia _mandatu_, może przyjmować wartości brak biletu, nieważny bilet, wygasły bilet, brak dokumentu, nieuprawnione zatrzymanie pojazdu. |
-| **Przystanek**                  | _stop_                | Miejsce, w którym _pasażer_ może wsiąść lub wysiąść z _pojazdu_.                                                                 |
-| **Rozkład jazdy**               | _timetable_           | Plan, w którym są zapisane godziny odjazdów _pojazdów_ danej _linii_ z _przystanków_.                                            |
-| **Skasowanie**                  | _validation_          | Proces, w którym _pasażer_ wykorzystuje _kasownik_ aby _bilet jednorazowy_ lub _bilet czasowy_ stał się _ważny_.                 |
-| **Sprawdzenie ważności biletu** | _inspection_          | Proces, w którym _bileter_ sprawdza, czy _bilet_ _pasażera_ jest _ważny_.                                                        |
-| **Status mandatu**              | _fine status_         | Stan _mandatu_, może przyjmować wartości _opłacony_ , _nieopłacony_ lub _anulowany_.                                             |
-| **Typ biletu**                  | _ticket kind_         | Rodzaj zniżki _biletu_, czyli _normalny_ lub _ulgowy_.                                                                           |
-| **Ważność**                     | _validity_            | Stan _biletu_, ważny (_valid_) albo nieważny (_invalid_), tylko ważny _bilet_ daje prawo do podróży.                             |
-| **Zakres biletu**               | _ticket scope_        | Rodzaj określenia ważności _biletu_, czyli _jednorazowy_, _czasowy_ lub _okresowy_.                                              |
-| **Zakup**                       | _purchase_            | Proces nabywania _biletu_ przez _pasażera_, potwierdzony przez _płatność_.                                                       |
+| **Przystanek**                  | _stop_                | Miejsce, w którym _pasażer_ może wsiąść lub wysiąść z _pojazdu_.                                                                                       |
+| **Rozkład jazdy**               | _timetable_           | Plan, w którym są zapisane godziny odjazdów _pojazdów_ danej _linii_ z _przystanków_.                                                                  |
+| **Skasowanie**                  | _validation_          | Proces, w którym _pasażer_ wykorzystuje _kasownik_ aby _bilet jednorazowy_ lub _bilet czasowy_ stał się _ważny_.                                       |
+| **Sprawdzenie ważności biletu** | _inspection_          | Proces, w którym _bileter_ sprawdza, czy _bilet_ _pasażera_ jest _ważny_.                                                                              |
+| **Status mandatu**              | _fine status_         | Stan _mandatu_, może przyjmować wartości _opłacony_ , _nieopłacony_ lub _anulowany_.                                                                   |
+| **Typ biletu**                  | _ticket kind_         | Rodzaj zniżki _biletu_, czyli _normalny_ lub _ulgowy_.                                                                                                 |
+| **Ważność**                     | _validity_            | Stan _biletu_, ważny (_valid_) albo nieważny (_invalid_), tylko ważny _bilet_ daje prawo do podróży.                                                   |
+| **Zakres biletu**               | _ticket scope_        | Rodzaj określenia ważności _biletu_, czyli _jednorazowy_, _czasowy_ lub _okresowy_.                                                                    |
+| **Zakup**                       | _purchase_            | Proces nabywania _biletu_ przez _pasażera_, potwierdzony przez _płatność_.                                                                             |
 
 # Specyfikacja i analiza wymagań
 
@@ -136,7 +137,6 @@ W zakres projektu wchodzi:
 - `TIC/15` - Jako _administrator_ chcę mieć możliwość edytowania _biletów_ w _ofercie biletów_.
 - `TIC/16` - Jako _administrator_ chcę mieć możliwość usuwania _biletów_ z _oferty biletów_.
 
-
 ### Płatność (Piotr Kot)
 
 - `PAY/01` - Jako _pasażer_ chcę mieć możliwość wyświetlenia listy dostępnych metod płatności.
@@ -144,7 +144,7 @@ W zakres projektu wchodzi:
 - `PAY/03` - Jako _pasażer_ chcę mieć możliwość usunięcia karty kredytowej ze swojego _konta_.
 - `PAY/04` - Jako _pasażer_ chcę mieć możliwość wyboru _BLIK_ jako metodę płatności.
 - `PAY/05` - Jako _pasażer_ chcę mieć możliwość wyboru karty kredytowej jako metodę płatności.
-- `PAY/06` - Jako _pasażer_ chcę mieć możliwość wyboru _portfela_ jako metody płatności. 
+- `PAY/06` - Jako _pasażer_ chcę mieć możliwość wyboru _portfela_ jako metody płatności.
 - `PAY/07` - Jako _pasażer_ chcę mieć możliwość dodania środków do swojego _portfela_.
 - `PAY/08` - Jako _pasażer_ chcę mieć możliwość sprawdzenia stanu swojego _portfela_.
 - `PAY/09` - Jako _pasażer_ chcę mieć możliwość przeglądania historii doładowań _portfela_.
@@ -442,6 +442,7 @@ Reguły zostały podzielone według encji, których dotyczą oraz są uporządko
 - `REG/19/14` - Status jest domyślnie aktywny.
 
 ### Status biletu (`TicketStatus`)
+
 - `REG/20/01` - Istnieją trzy statusy biletu: zakupiony, w trakcie realizacji, anulowany.
 - `REG/20/02` - Status biletu zmienia się na zakupiony po pomyślnym opłaceniu.
 - `REG/20/03` - Status biletu zmienia się na anulowany po braku opłacenia w określonym czasie.
@@ -481,7 +482,7 @@ Reguły zostały podzielone według encji, których dotyczą oraz są uporządko
 
 ### Wymaganie 1 (Tomasz Chojnacki)
 
-1. `ACC/01` - Jako _gość_ chcę mieć możliwość rejestracji _konta_ _pasażera_. 
+1. `ACC/01` - Jako _gość_ chcę mieć możliwość rejestracji _konta_ _pasażera_.
 
 #### Mapa nawigacyjna
 
@@ -605,10 +606,12 @@ classDiagram
 <!-- ------------------------------------------------------------------------------------------------------------------------- -->
 
 ### Wymaganie 5 (Jakub Zehner)
+
 1. `TIC/06` - Jako _pasażer_ chcę mieć możliwość wyświetlenia listy swoich zakupionych _biletów_.
 2. `TIC/11` - Jako _pasażer_ chcę mieć możliwość zobaczenia historii zakupionych _biletów_.
 
 #### Mapa nawigacyjna
+
 ```mermaid
 classDiagram
     direction LR
@@ -632,7 +635,7 @@ classDiagram
     class EkranSzczegolowBiletu {
         <<ServerPage>>
         }
-        
+
     class EkranOfertyBiletow {
         <<ServerPage>>
         }
@@ -649,17 +652,19 @@ classDiagram
 
     EkranTwoichBiletow ..> EkranOfertyBiletow: «Navigates»\n«EndUseCase»\n{ event = btnSklep }
     EkranOfertyBiletow ..> EkranTwoichBiletow: «Navigates»\n«StartUseCase»\n{ event = btnTwojeBilety }
-    
+
 ```
 
 #### Prototypy ekranów
 
 ![TIC/06](images/Ticket1.png)
 
-### Wymaganie 6 (Jakub Zehner) 
+### Wymaganie 6 (Jakub Zehner)
+
 1. `TIC/10` - Jako _pasażer_ chcę mieć możliwość zobaczenia _oferty biletów_.
 
 #### Mapa nawigacyjna
+
 ```mermaid
 classDiagram
     direction LR
@@ -667,7 +672,7 @@ classDiagram
     class EkranOfertyBiletow {
         <<ServerPage>>
         listaBiletowJednorazowych
-        listaBiletowCzasowych   
+        listaBiletowCzasowych
         listaBiletowOkresowych
         }
 
@@ -694,17 +699,20 @@ classDiagram
     EkranOfertyBiletow ..> EkranTwoichBiletow: «Navigates»\n«EndUseCase»\n{ event = btnTwojeBilety }
 
     EkranOfertyBiletow ..>  EkranOfertyBiletow: «Reloads»\n{ event = btnUlgowe }
-    EkranOfertyBiletow ..>  EkranOfertyBiletow: «Reloads»\n{ event = btnNormalne } 
+    EkranOfertyBiletow ..>  EkranOfertyBiletow: «Reloads»\n{ event = btnNormalne }
 ```
 
 #### Prototypy ekranów
+
 ![TIC/07](images/Ticket2.png)
 
 ### Wymaganie 7 (Jakub Zehner)
+
 1. `TIC/07` - Jako _pasażer_ chcę mieć możliwość wyświetlenia szczegółów zakupionego _biletu_.
 2. `TIC/09` - Jako _pasażer_ chcę mieć możliwość okazania _biletu_ do _sprawdzenia ważności biletu_.
 
 #### Mapa nawigacyjna
+
 ```mermaid
 classDiagram
     direction LR
@@ -724,7 +732,7 @@ classDiagram
         typBiletu
         zakresBiletu
     }
-        
+
     EkranTwoichBiletow ..> EkranSzczegolowBiletu: «Navigates»\n«StartUseCase»\n{ event = btnPokazDoKontroli }
     EkranSzczegolowBiletu ..> EkranTwoichBiletow: «Navigates»\n«EndUseCase»\n{ event = btnPowrot }
 
@@ -735,9 +743,11 @@ classDiagram
 ![TIC/10](images/Ticket3.png)
 
 ### Wymaganie 8 (Jakub Zehner)
- `TIC/12` - Jako _bileter_ chcę mieć możliwość _sprawdzenia ważności_ _biletu_ _pasażera_.
+
+`TIC/12` - Jako _bileter_ chcę mieć możliwość _sprawdzenia ważności_ _biletu_ _pasażera_.
 
 #### Mapa nawigacyjna
+
 ```mermaid
 classDiagram
     direction LR
@@ -745,7 +755,7 @@ classDiagram
     class PasekNawigacyjny {
         <<ServerPage>>
         }
-    
+
     class EkranKontroliBiletu {
         <<ServerPage>>
         kodPojazdu
@@ -763,11 +773,13 @@ classDiagram
     EkranKontroliBiletu ..> KomunikatKontroliBiletu: «Displays»\n{ event = zeskanowanoQR }
     KomunikatKontroliBiletu ..> EkranKontroliBiletu: «Hides»\n{ event = btnZamknij }
 
-    
+
 ```
 
 #### Prototypy ekranów
+
 ![TIC/12](images/Ticket4.png)
+
 <!-- ------------------------------------------------------------------------------------------------------------------------- -->
 
 ### Wymaganie 9 (Piotr Kot)
@@ -783,7 +795,7 @@ classDiagram
 classDiagram
     direction LR
     class EkranBiletów { <<ServerPage>> }
-    class EkranZakupuBiletu { 
+    class EkranZakupuBiletu {
         <<ServerPage>>
         typBiletu }
     class MetodaPlatnosciDropdown { <<Component>> }
@@ -794,6 +806,7 @@ classDiagram
 ```
 
 #### Prototypy ekranów
+
 ![PAY/01](images/Payment2.png)
 
 ### Wymaganie 10 (Piotr Kot)
@@ -806,7 +819,7 @@ classDiagram
 classDiagram
     direction LR
     class EkranListyKart { <<ServerPage>> }
-    class EkranDodawaniaKarty { 
+    class EkranDodawaniaKarty {
         <<ServerPage>>
         numerKarty
         imieINazwisko
@@ -819,6 +832,7 @@ classDiagram
 ```
 
 #### Prototypy ekranów
+
 ![PAY/02](images/Payment3.png)
 
 ### Wymaganie 11 (Piotr Kot)
@@ -826,14 +840,13 @@ classDiagram
 1. `PAY/07` - Jako _pasażer_ chcę mieć możliwość dodania środków do swojego _portfela_.
 2. `PAY/08` - jako _pasażer_ chcę mieć możliwość sprawdzenia stanu swojego _portfela_.
 
-
 #### Mapa nawigacyjna
 
 ```mermaid
 classDiagram
     direction LR
     class EkranBiletów { <<ServerPage>> }
-    class EkranDoladowaniaPortfela { 
+    class EkranDoladowaniaPortfela {
         <<ServerPage>>
         kwota }
     class MetodaPlatnosciDropdown { <<Component>> }
@@ -846,6 +859,7 @@ classDiagram
 ```
 
 #### Prototypy ekranów
+
 ![PAY/07](images/Payment4.png)
 
 ### Wymaganie 12 (Piotr Kot)
@@ -860,7 +874,7 @@ classDiagram
 classDiagram
     direction LR
     class EkranBiletów { <<ServerPage>> }
-    class EkranZakupuBiletu { 
+    class EkranZakupuBiletu {
         <<ServerPage>>
         typBiletu }
     class MetodaPlatnosciDropdown { <<Component>> }
@@ -874,6 +888,7 @@ classDiagram
 ```
 
 #### Prototypy ekranów
+
 ![PAY/13](images/Payment1.png)
 
 <!-- ------------------------------------------------------------------------------------------------------------------------- -->
