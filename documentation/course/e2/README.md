@@ -2217,13 +2217,13 @@ TODO @jakubzehner
 
 TODO @jakubzehner
 
-## PU `PAY/??`
+## PU `PAY/17`
 
-TODO @piterek130
+![Realizacja przypadku użycia - Wyświetlanie mandatów](./images/sequence-diagram-inferius-get-fines.drawio.svg)
 
-## PU `PAY/??`
+## PU `PAY/20`
 
-TODO @piterek130
+![Realizacja przypadku użycia - Zaktualizowanie danych karty kredytowej](./images/sequence-diagram-inferius-update-card.drawio.svg)
 
 ## PU `LOG/??`
 
