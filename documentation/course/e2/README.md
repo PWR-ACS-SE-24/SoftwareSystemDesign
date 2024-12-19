@@ -931,7 +931,7 @@ Wzorzec sidecar (_bocznik_, _przyczepa_) stosowany jest głównie w architekturz
 
 Zgodnie z mechanizmem [`M/11`](#m11-autoryzacja-z-użyciem-jwt), token JWT może walidować każda usługa, która ma dostęp do klucza publicznego z pary kluczy, którą podpisano token. W związku z tym, odpowiedzialność może przejąć sidecar, tak długo, jak będzie miał dostęp do kluczy publicznych z głównego serwera autoryzacji. Jako, że z powodów bezpieczeństwa klucze do podpisu JWT powinny być rotowane, jak i z powodu możliwości zastosowania różnych kluczy dla różnych instancji serwerów, powstaje potrzeba dzielenia się kluczami publicznymi. Popularnym mechanizmem rozwiązującym ten problem jest zastosowanie JWKS (JSON Web Key Sets), które jest standardem specyfikującym endpoint wystawiany przez serwer autoryzacji, z którego można pobrać listę wszystkich ważnych kluczy publicznych. Do ładunku JWT dodana jest informacja o ID klucza, którym podpisano token (`kid`), co pozwala na wybór odpowiedniego klucza do weryfikacji (musi to być oczywiście klucz wystawiony przez serwer autoryzacji). W związku z tym, zapytanie do głównego serwera autoryzacji odbywa się jednie przy pierwszym zapytaniu po uruchomieniu sidecar, a następnie klucze są cachowane lokalnie. W przypadku napotkania nieznanego `kid`, sidecar ponownie odpytuje serwer autoryzacji, z zastosowaniem rate limitingu, aby uniknąć ataków typu DoS powodowanych przez umyślne podawanie niepoprawnych `kid` przez klientów.
 
-Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawiane wspólnie na diagramach sekwencji dotyczących realizacji przypadków użycia. W miejscu każdego zapytania z API Gateway do Account Service na diagramach można mentalnie wstawić poniższą sekwencję zdarzeń:
+Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawiane wspólnie na diagramach sekwencji dotyczących realizacji przypadków użycia. W miejscu każdego zapytania z API Gateway do Account Sidecar na diagramach można mentalnie wstawić poniższą sekwencję zdarzeń:
 
 ![Diagram sekwencji M/12](./images/sequence-diagram-mechanism-12.drawio.svg)
 
@@ -2082,9 +2082,15 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Logistyka
 
+Do implementacji systemu obsługującej logistykę JakPrzyjade wybrano język programowania **TypeScript** z użyciem frameworka **NestJS**, w środowisku **Node.js**.
+
+Wybór ten podyktowany był głównie brakiem skomplikowanych operacji wykonywanych przez ten wycinek systemu oraz powszechnością języka TypeScript (również w zespole). Rozszerzenie języka JavaScript o statyczne typowanie pozwala na uniknięcie wielu błędów poprzez przerzucenie ich dużej części na etap kodowania, co jest istotne w przypadku systemu, który ma być zarówno wydajny jak i bezpieczny.
+
+Framework **NestJS** został wybrany ze względu na swoje wsparcie statycznego typowania dzięki TypeScriptowi, modularność, wydajność, łatwość testowania oraz dużą ilość gotowych rozwiązań, które pozwolą na szybkie i efektywne tworzenie systemu dostarczającego funkcjonalność CRUD za pomocą REST API.
+
 ![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
 
-Część systemu obsługująca logistykę JakPrzyjade, zarządzająca trasami, przystankami, pojazdami, awariami oraz rozkładami jazdy podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Każda z tych części odpowiada za zarządzanie jednym z elementów systemu. Każda z nich składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`).
+Architektura podsystemu podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Takie podejście stosuje się, gdy aplikacja jest podzielona na luźno powiązane ze sobą części, które są odpowiedzialne za różne aspekty systemu. Pozwala to na uniknięcie dużej ilości abstrakcji między warstwami logicznymi, co ułatwia zrozumienie kodu i jego rozwój. Taki wycinek systemu składa się z elementów wymaganych do jego działania, takich jak repozytoria, encje i kontrolery. W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z logiką DRY.
 
 ### API
 
