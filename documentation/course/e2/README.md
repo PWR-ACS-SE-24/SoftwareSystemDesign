@@ -2069,9 +2069,9 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 | `passenger`              | `PUT`      | `/ext/v1/cards/:id`            | `PAY/20`                     | Zaktualizowanie danych karty płatniczej.    |
 | `passenger`              | `DELETE`   | `/ext/v1/cards/:id`            | `PAY/03`                     | Usunięcie karty płatniczej.                 |
 | `passenger`              | `POST`     | `/ext/v1/wallet/add-funds`     | `PAY/07`                     | Doładowanie portfela.                       |
-| `passenger`              | `POST`     | `/ext/v1/wallet/fines/:id/pay` | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.                       |
 | `passenger`              | `GET`      | `/ext/v1/wallet`               | `PAY/08`                     | Pobranie stanu portfela.                    |
 | `passenger`              | `GET`      | `/ext/v1/wallet/history`¹      | `PAY/09`                     | Pobranie historii doładowań portfela.       |
+| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`        | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.               |
 | `passenger`              | `GET`      | `/ext/v1/transations`¹         | `PAY/10`                     | Pobranie historii transakcji.               |
 | `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹               | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                    |
 | `passenger`              | `GET`      | `/ext/v1/fines/:id`            | `PAY/18`                     | Pobranie informacji o mandacie.             |
