@@ -2140,7 +2140,7 @@ Do implementacji serwisu Clabbert wybrano język **Java** z frameworkiem **Sprin
 Wybór ten podyktowany był następującymi czynnikami:
 
 - **doświadczenie zespołu** - większość członków zespołu posiada doświadczenie w programowaniu w języku Java, co pozwoli na spełnienie wymogu wymienionego wyżej - znajomość języka przez co najmniej jedną osobę spoza serwisu w celu przeprowadzenia code review,
-- **dostępność AWS SDK** - AWS SDK dla języka Java jest jednym z najbardziej rozbudowanych i obsługuje wszystkie usługi, które mogą być potrzebne w projekcie,
+- **dostępność AWS SDK** - AWS SDK wspiera język Java, co pozwoli na łatwe korzystanie z usług AWS,
 - **dostępność bibliotek** - Java posiada bardzo rozbudowaną bazę bibliotek, co pozwoli na szybkie i efektywne rozwijanie serwisu,
 - **dojrzałość frameworka** - Spring Boot jest jednym z najpopularniejszych frameworków do tworzenia aplikacji w języku Java, co pozwoli na szybkie rozwiązywanie ewentualnych problemów,
 - **łatwość w testowaniu** - Java jest językiem, który posiada wiele rozbudowanych narzędzi do testowania, co ułatwi proces testowania serwisu.
@@ -2178,7 +2178,7 @@ Pakiet `application` składa się z:
 
 - `abstractions` - zawiera klasy abstarkcyjne oraz interfejsy dla zależności zewnętrznych
 - `common` - zawiera wspólne klasy i narzędzia dla modułów aplikacji
-- `modules` - zawiera moduły aplikacji, które realizują tematycznie podzielone grupy konkretnych przypadków użycia
+- `modules` - zawiera moduły aplikacji, które realizują tematycznie podzielone grupy konkretnych przypadków użycia oraz implementacje funkcjonalności niebędących przypadkami użycia. Należy zauważyć, że moduł `validation` nie odpowiada za walidację danych w aplikacji, a za implementację przypadków użycia związanych z encją `Validation`.
 
 Pakiet `infrastructure` składa się z:
 
@@ -2195,7 +2195,7 @@ Pakiet `api` składa się z:
 - `contracts` - zawiera definicje typów zapytań i odpowiedzi dla API
 - `mappers` - zawiera funkcje mapujące obiekty z modelu informacyjnego na obiekty kontraktów
 
-Pakiet `test` składa się z implementacji testów jednostkowych oraz integracyjnych dla poszczególnych modułów aplikacji.
+Pakiet `test` składa się z implementacji testów jednostkowych, integracyjnych oraz end-to-end dla poszczególnych modułów aplikacji.
 
 **Źródła:**
 
@@ -2238,27 +2238,27 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 
 #### API publiczne
 
-| **Rola**                 | **Metoda** | **Endpoint**                   | **Wymagania**                | **Opis**                                    |
-| ------------------------ | ---------- | ------------------------------ | ---------------------------- | ------------------------------------------- |
-| `passenger`              | `GET`      | `/ext/v1/cards`                | `PAY/19`                     | Pobranie listy kart płatniczych.            |
-| `passenger`              | `POST`     | `/ext/v1/cards`                | `PAY/02`                     | Dodanie nowej karty płatniczej.             |
-| `passenger`              | `PUT`      | `/ext/v1/cards/:id`            | `PAY/20`                     | Zaktualizowanie danych karty płatniczej.    |
-| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`            | `PAY/03`                     | Usunięcie karty płatniczej.                 |
-| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds`     | `PAY/07`                     | Doładowanie portfela.                       |
-| `passenger`              | `GET`      | `/ext/v1/wallet`               | `PAY/08`                     | Pobranie stanu portfela.                    |
-| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹      | `PAY/09`                     | Pobranie historii doładowań portfela.       |
-| `passenger`              | `GET`      | `/ext/v1/transations`¹         | `PAY/10`                     | Pobranie historii transakcji.               |
-| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹               | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                    |
-| `passenger`              | `GET`      | `/ext/v1/fines/:id`            | `PAY/18`                     | Pobranie informacji o mandacie.             |
-| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`        | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.               |
-| `inspector`              | `POST`     | `/ext/v1/fines`                | `PAY/21`                     | Wystawienie mandatu.                        |
-| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel`     | `PAY/22`                     | Anulowanie mandatu.                         |
+| **Rola**                 | **Metoda** | **Endpoint**               | **Wymagania**                | **Opis**                                 |
+| ------------------------ | ---------- | -------------------------- | ---------------------------- | ---------------------------------------- |
+| `passenger`              | `GET`      | `/ext/v1/cards`            | `PAY/19`                     | Pobranie listy kart płatniczych.         |
+| `passenger`              | `POST`     | `/ext/v1/cards`            | `PAY/02`                     | Dodanie nowej karty płatniczej.          |
+| `passenger`              | `PUT`      | `/ext/v1/cards/:id`        | `PAY/20`                     | Zaktualizowanie danych karty płatniczej. |
+| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`        | `PAY/03`                     | Usunięcie karty płatniczej.              |
+| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds` | `PAY/07`                     | Doładowanie portfela.                    |
+| `passenger`              | `GET`      | `/ext/v1/wallet`           | `PAY/08`                     | Pobranie stanu portfela.                 |
+| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹  | `PAY/09`                     | Pobranie historii doładowań portfela.    |
+| `passenger`              | `GET`      | `/ext/v1/transations`¹     | `PAY/10`                     | Pobranie historii transakcji.            |
+| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹           | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                 |
+| `passenger`              | `GET`      | `/ext/v1/fines/:id`        | `PAY/18`                     | Pobranie informacji o mandacie.          |
+| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`    | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.            |
+| `inspector`              | `POST`     | `/ext/v1/fines`            | `PAY/21`                     | Wystawienie mandatu.                     |
+| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel` | `PAY/22`                     | Anulowanie mandatu.                      |
 
 ¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |     
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health` | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 | `POST`     | `/int/v1/charge` | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
