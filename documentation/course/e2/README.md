@@ -1737,7 +1737,7 @@ Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wi
 
 - `wallet`: 24 + 24 = 48 bajtów,
 - `credit_card_info`: 24 + 24 = 48 bajtów,
-- `fine`: 24 + 24 + 24 = 72 bajty.
+- `fine`: 24 + 24 + 24 = 72 bajty,
 - `wallet_history`: 24 + 24 = 48 bajtów.
 
 Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln \* 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln \* 610 = 1.22 GB, a rocznie 1.2 mln \* 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 \* 455 = 20 MB. Zakładając również, że każda osoba doda do swojego portfela w aplikacji fundusze dwa razy w roku, to w pierwszym roku działania systemu będzie to 2 mln \* 96 = 192 MB, a rocznie 1.2 mln \* 96 = 115 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
@@ -2075,8 +2075,8 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 | `passenger`              | `GET`      | `/ext/v1/transations`¹         | `PAY/10`                     | Pobranie historii transakcji.               |
 | `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹               | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                    |
 | `passenger`              | `GET`      | `/ext/v1/fines/:id`            | `PAY/18`                     | Pobranie informacji o mandacie.             |
-| `inspector`              | `POST`     | `/ext/v1/fines`                | `PAY/19`                     | Wystawienie mandatu.                        |
-| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel`     | `PAY/20`                     | Anulowanie mandatu.                         |
+| `inspector`              | `POST`     | `/ext/v1/fines`                | `PAY/21`                     | Wystawienie mandatu.                        |
+| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel`     | `PAY/22`                     | Anulowanie mandatu.                         |
 
 ¹ - endpoint wspiera paginację oraz filtrowanie.
 
