@@ -2166,7 +2166,7 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Płatność
 
-Do implementacji serwisu Clabbert wybrano język **Java** z frameworkiem **Spring Boot**.
+Do implementacji serwisu Inferius wybrano język **Java** z frameworkiem **Spring Boot**.
 
 Wybór ten podyktowany był następującymi czynnikami:
 
