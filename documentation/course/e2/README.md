@@ -2197,9 +2197,9 @@ Dodatkowo, system zawiera dwa pakiety wspólne:
 - `shared` - wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
 - `internal` - moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
 
-Całość opiera się na wspólnej bazie danych oznaczonej jako `Payment Database`, do której wszystkie slice'y mają dostęp.
+Całość opiera się na wspólnej bazie danych oznaczonej jako Payment Database, do której wszystkie slice'y mają dostęp.
 
-System korzysta również z komponentu `Payment Gateway`, który obsługuje przetwarzanie płatności. Pełni on rolę niezależnego komponentu zewnętrznego, co pozwala na elastyczność w przypadku zmiany dostawcy lub rozbudowy funkcjonalności płatniczych w przyszłości.
+System korzysta również z komponentu Payment Gateway, który obsługuje przetwarzanie płatności. Pełni on rolę niezależnego komponentu zewnętrznego, co pozwala na elastyczność w przypadku zmiany dostawcy lub rozbudowy funkcjonalności płatniczych w przyszłości.
 
 W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdrażanie zmian i izolowanie problemów w jednym module bez wpływu na inne części systemu. Nowe funkcjonalności można dodawać jako bez konieczności modyfikacji istniejących modułów.
 
