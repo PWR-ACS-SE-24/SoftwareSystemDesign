@@ -2015,30 +2015,82 @@ Do implementacji podsystemu Jobberknoll wybrano język **Typescript** na środow
 
 Przy wyborze języka programowania kierowano się następującymi kryteriami (od najważniejszego):
 
-+ **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKs;
-+ **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę SDK AWS;
-+ **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności systemu, celem jest przesunięcie możliwie dużej liczby błędów na etap kompilacji;
-+ **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony poprzednio, który ma na celu zapewnienie sprawnego i bezstronnego code review;
-+ **dostępność algebraicznych typów danych** - w samym centrum modelu informacyjnego podsystemu znajduje się typ stanowiący algebraiczny typ danych, a dokładniej rekord z wariantami (ang. _tagged union_ lub _sum type_), w związku z tym istotne jest, aby język wspierał takie konstrukcje natywnie, bez konieczności emulacji za pomocą mechanizmów programowania obiektowego.
+1. **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKs;
+2. **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę SDK AWS;
+3. **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności systemu, celem jest przesunięcie możliwie dużej liczby błędów na etap kompilacji;
+4. **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony poprzednio, który ma na celu zapewnienie sprawnego i bezstronnego code review;
+5. **dostępność algebraicznych typów danych** - w samym centrum modelu informacyjnego podsystemu znajduje się typ stanowiący algebraiczny typ danych, a dokładniej rekord z wariantami (ang. _tagged union_ lub _sum type_), w związku z tym istotne jest, aby język wspierał takie konstrukcje natywnie, bez konieczności emulacji za pomocą mechanizmów programowania obiektowego.
 
 Z uwagi na powyższe wymagania, odpowiedni okazał się być język TypeScript, spełniający wszystkie wymagania. W przypadku wykorzystania języka TypeScript lub JavaScript na serwerze, konieczny jest wybór środowiska uruchomieniowego, gdzie dwie najpopularniejsze opcje to Node.js oraz Deno. Silnik Deno został stworzony przez autora Node.js jako próba naprawienia problemów, które pojawiły się przez lata w starszym Node.js. Względem Node.js, Deno:
 
-- wspiera natywnie TypeScript, pozbywając się kroku transpilacji;
-- posiada rozbudowaną bibliotekę standardową, bazującą na standardach webowych;
-- jest bezpieczniejszy (wymaga jasnego zezwolenia na dostęp do zasobów takich jak sieć, system plików czy zmienne środowiskowe);
-- może być skompilowany do pojedynczego pliku wykonywalnego, uruchamialnego bez konieczności instalacji środowiska uruchomieniowego, ułatwiając wdrożenie aplikacji;
-- posiada wbudowane narzędzia do testowania, formatowania kodu, generowania dokumentacji;
-- oferuje pełną kompatybilność z pakietami npm projektowanymi dla Node.js, jednocześnie zapewniając własne repozytorium pakietów.
+- **wspiera natywnie TypeScript**, pozbywając się kroku transpilacji;
+- posiada **rozbudowaną bibliotekę standardową**, bazującą na standardach webowych;
+- jest **bezpieczniejszy** (wymaga jasnego zezwolenia na dostęp do zasobów takich jak sieć, system plików czy zmienne środowiskowe);
+- może być **skompilowany do pojedynczego pliku** wykonywalnego, uruchamialnego bez konieczności instalacji środowiska uruchomieniowego, ułatwiając wdrożenie aplikacji;
+- posiada **wbudowane narzędzia** do testowania, formatowania kodu, generowania dokumentacji;
+- oferuje **pełną kompatybilność** z pakietami npm projektowanymi dla Node.js, jednocześnie zapewniając własne repozytorium pakietów.
 
 W związku z tym, wybrano Deno jako środowisko uruchomieniowe.
 
-W kwestii frameworków webowych, w przypadku TypeScript, wybór jest bardzo szeroki. Głównymi wymogami przy wyborze była kompaktowość, szybkość działania, popularność, wsparcie OpenAPI oraz od strony developer experience - wsparcie bloków `async` oraz statyczna typizacja. Wybrano framework Hono, radzący sobie dobrze ze wszystkimi wymaganiami.
+W kwestii frameworków webowych, w przypadku TypeScript, wybór jest bardzo szeroki. Głównymi wymogami przy wyborze była kompaktowość, szybkość działania, popularność, wsparcie OpenAPI, oparcie na standardach webowych oraz od strony developer experience - wsparcie bloków `async` oraz statyczna typizacja. Wybrano framework Hono, radzący sobie dobrze ze wszystkimi wymaganiami.
+
+Z racji na to, że podsystem Jobberknoll składa się z tylko jednego wycinka wertykalnego - obsługi kont użytkowników oraz operuje na tylko jednej encji, zdecydowano się na niestosowanie podziału według funkcjonalności. Architektura systemu podąża za wzorcem Clean Architecture, będącym szczególnym przypadkiem architektury heksagonalnej. Wzorzec zakłada podział systemu na warstwy od wewnętrznych do zewnętrznych, gdzie dana warstwa może korzystać tylko z warstw znajdujących się bliżej centrum systemu niż ona sama. Typowy podział warstw w Clean Architecture to:
+
+<table>
+  <tr>
+    <td colspan="2">jądro / dziedzina</td>
+  </tr>
+  <tr>
+    <td colspan="2">aplikacja / przypadki użycia / logika biznesowa</td>
+  </tr>
+  <tr>
+    <td>prezentacja (np. REST API)</td> 
+    <td>infrastruktura (np. baza danych, zewnętrzne API)</td>
+  </tr>
+</table>
+
+Główną zaletą takiej architektury jest możliwość łatwej wymiany warstw zewnętrznych, przykładowo, w teorii, zmiana bazy danych powinna być możliwa bez żadnej ingerencji w dziedzinę czy logikę biznesową. Realizacja tego wzorca w podsystemie Jobberknoll, w formie diagramu pakietów, wygląda następująco:
 
 ![Diagram pakietów Jobberknoll](./images/package-diagram-jobberknoll.drawio.svg)
+
+Aplikacja składa się z czterech bibliotek połączonych w jedną przestrzeń roboczą:
+
+- `@jobberknoll/core` - warstwa dziedziny, zawierająca anemiczny model informacyjny, definicje błędów oraz typy pomocnicze (np. UUID);
+- `@jobberknoll/app` - warstwa aplikacji, zawierająca całą logikę biznesową podsystemu, w tym realizację przypadków użycia;
+- `@jobberknoll/api` - warstwa prezentacji, zawierająca implementację REST API, serializację danych oraz odpowiedzialna za OpenAPI;
+- `@jobberknoll/infra` - warstwa infrastruktury, zawierająca implementację interfejsów stanowiącą most z zewnętrznymi zależnościami.
+
+Poszczególne foldery zawierają odpowiednio:
+
+- `api` - podfolder biblioteki `@jobberknoll/api`:
+  - `contracts` - definicje typów zapytań i odpowiedzi dla API;
+  - `controllers` - implementacje kontrolerów (`int`, `ext`) obsługujących zapytania;
+  - `helpers` - pomocnicze funkcje dla kontrolerów, np. ekstrakcja nagłówków z API Gateway;
+  - `mappers` - funkcje mapujące model informacyjny na kontrakty oraz odwrotnie (wzorzec projektowy [Adapter](https://refactoring.guru/design-patterns/adapter));
+  - `middlewares` - funkcje pośredniczące, np. CORS (wzorzec projektowy [Chain of Responsibility](https://refactoring.guru/design-patterns/chain-of-responsibility));
+- `app` - podfolder biblioteki `@jobberknoll/app`:
+  - `interfaces` - klasy abstrakcyjne i interfejsy dla zależności zewnętrznych, np. baza danych, serwis e-mail (wzorzec projektowy [Strategy](https://refactoring.guru/design-patterns/strategy));
+  - `security` - odpowiednio opakowane i ujednolicone wywołania do bibliotek obsługujących JWT, JWKs, BCrypt, itd.;
+  - `use-cases` - implementacje przypadków użycia, po jednym przypadku na plik, niefortunnie, zawiera również implementacje funkcjonalności, które nie mapują się bezpośrednio na przypadki użycia, ponieważ realizują endpointy wewnętrzne (wzorzec projektowy [Command](https://refactoring.guru/design-patterns/command));
+- `core` - podfolder biblioteki `@jobberknoll/core`:
+  - `domain` - model dziedzinowy systemu:
+    - `entities` - encje z modelu informacyjnego;
+    - `errors` - definicje błędów;
+  - `shared` - współdzielone typy niezwiązane z dziedziną, np. UUID, typy algebraiczne do obsługi błędów;
+- `infra` - podfolder biblioteki `@jobberknoll/infra`:
+  - `email` - implementacja serwisu e-mail;
+  - `logging` - implementacja loggingu, z ewentualną agregacją logów;
+  - `user-repository` - implementacja persystencji użytkowników;
+- `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją.
 
 **Źródła:**
 
 - [Wikipedia - Tagged union](https://en.wikipedia.org/wiki/Tagged_union)
+- [Deno, the next-generation JavaScript runtime](https://deno.com)
+- [Hono](https://hono.dev/)
+- Wykład 4: Style architektoniczne 
+- Robert Martin - Clean Architecture
+- [Clean Architecture Folder Structure](https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure)
 
 ### API
 
