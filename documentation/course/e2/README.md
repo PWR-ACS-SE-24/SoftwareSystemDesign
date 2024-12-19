@@ -2021,7 +2021,7 @@ Przy wyborze języka programowania kierowano się następującymi kryteriami (od
 4. **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony powyżej, który ma na celu zapewnienie sprawnego i bezstronnego code review;
 5. **dostępność algebraicznych typów danych** - w samym centrum modelu informacyjnego podsystemu znajduje się typ stanowiący algebraiczny typ danych, a dokładniej rekord z wariantami (ang. _tagged union_ lub _sum type_), w związku z tym istotne jest, aby język wspierał takie konstrukcje natywnie, bez konieczności emulacji za pomocą mechanizmów programowania obiektowego.
 
-Z uwagi na powyższe wymagania, odpowiedni okazał się być język TypeScript, spełniający wszystkie wymagania. W przypadku wykorzystania języka TypeScript lub JavaScript na serwerze, konieczny jest wybór środowiska uruchomieniowego, gdzie dwie najpopularniejsze opcje to Node.js oraz Deno. Silnik Deno został stworzony przez autora Node.js jako próba naprawienia problemów, które pojawiły się przez lata w starszym Node.js. Względem Node.js, Deno:
+Z uwagi na powyższe wymagania, odpowiedni okazał się być język TypeScript, spełniający wszystkie wymagania. W przypadku wykorzystania języka TypeScript lub JavaScript na serwerze, konieczny jest wybór środowiska uruchomieniowego, gdzie dwie najpopularniejsze opcje to Node.js oraz Deno. Silnik Deno został stworzony przez autora Node.js jako próba naprawienia problemów, które pojawiły się przez lata w jego starszym odpowiedniku. Deno:
 
 - **wspiera natywnie TypeScript**, pozbywając się kroku transpilacji;
 - posiada **rozbudowaną bibliotekę standardową**, bazującą na standardach webowych;
@@ -2075,12 +2075,12 @@ Poszczególne foldery zawierają odpowiednio:
 - `core` - podfolder biblioteki `@jobberknoll/core`:
   - `domain` - model dziedzinowy systemu:
     - `entities` - encje z modelu informacyjnego;
-    - `errors` - definicje błędów;
+    - `errors` - definicje błędów wraz z abstrakcyjną klasą rodzicem;
   - `shared` - współdzielone typy niezwiązane z dziedziną, np. UUID, typy algebraiczne do obsługi błędów;
 - `infra` - podfolder biblioteki `@jobberknoll/infra`:
-  - `email` - implementacja serwisu e-mail;
-  - `logging` - implementacja loggingu, z ewentualną agregacją logów;
-  - `user-repository` - implementacja persystencji użytkowników;
+  - `email` - implementacja serwisu e-mail oraz jego mocków;
+  - `logging` - implementacja loggingu, z ewentualną agregacją logów oraz jego mocków;
+  - `user-repository` - implementacja persystencji użytkowników oraz jej mocków;
 - `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją; z racji, że folder `tests` nie zawiera żadnej aplikacji do uruchomienia ani niczego nie eksportuje, został on utworzony jako zwykły podfolder przestrzeni roboczej, a nie osobny moduł.
 
 **Źródła:**
@@ -2119,6 +2119,7 @@ Poszczególne foldery zawierają odpowiednio:
 | **Metoda** | **Endpoint**           | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`       | jobberknoll   | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/endpoints`    | Jobberknoll   | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
 | `GET`      | `/int/v1/accounts/:id` | jobberknoll   | inferius      | Pobranie informacji o koncie.                                                  |
 | `GET`      | `/int/v1/jwks`         | jobberknoll   | feather       | Pobranie kluczy publicznych ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).  |
 | `GET`      | `/int/v1/health`       | feather       | —             | Sprawdzenie stanu sidecar ([`M/03`](#m03-healthchecki-dla-serwisów)).          |
