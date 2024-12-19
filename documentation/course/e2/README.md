@@ -2176,7 +2176,7 @@ Pakiet `domain` składa się z:
 
 Pakiet `application` składa się z:
 
-- `abstractions` - zawiera klasy abstarkcyjne oraz interfejsy dla zależności zewnętrznych
+- `abstractions` - zawiera klasy abstrakcyjne oraz interfejsy dla zależności zewnętrznych
 - `common` - zawiera wspólne klasy i narzędzia dla modułów aplikacji
 - `modules` - zawiera moduły aplikacji, które realizują tematycznie podzielone grupy konkretnych przypadków użycia oraz implementacje funkcjonalności niebędących przypadkami użycia. Należy zauważyć, że moduł `validation` nie odpowiada za walidację danych w aplikacji, a za implementację przypadków użycia związanych z encją `Validation`.
 
