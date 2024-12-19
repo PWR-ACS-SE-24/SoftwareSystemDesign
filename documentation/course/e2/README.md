@@ -2384,6 +2384,12 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 ![Realizacja przypadku użycia - Logowanie](./images/sequence-diagram-jobberknoll-login.drawio.svg)
 
+## PU `ACC/04`
+
+> Jako _osoba zalogowana_ chcę mieć możliwość wyświetlenia informacji o swoim _koncie_.
+
+![Realizacja przypadku użycia - Informacje o koncie](./images/sequence-diagram-jobberknoll-self.drawio.svg)
+
 ## PU `ACC/11`, `ACC/12`
 
 > Jako _administrator_ chcę mieć możliwość tworzenia _konta_ _biletera_.
