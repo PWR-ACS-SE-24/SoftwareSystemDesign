@@ -2011,14 +2011,14 @@ TODO @everyone
 
 ## Konto
 
-Do implementacji podsystemu Jobberknoll wybrano język **Typescript** na środowisku uruchomieniowym **Deno** oraz frameworkiem **Hono**.
+Do implementacji podsystemu Jobberknoll wybrano język **Typescript** na środowisku uruchomieniowym **Deno** z frameworkiem **Hono**.
 
 Przy wyborze języka programowania kierowano się następującymi kryteriami (od najważniejszego):
 
 1. **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKs;
-2. **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę SDK AWS;
-3. **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności systemu, celem jest przesunięcie możliwie dużej liczby błędów na etap kompilacji;
-4. **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony poprzednio, który ma na celu zapewnienie sprawnego i bezstronnego code review;
+2. **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę AWS SDK;
+3. **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności podsystemu Jobberknoll, istnieje potrzeba przesunięcia możliwie dużej liczby błędów na etap kompilacji;
+4. **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony powyżej, który ma na celu zapewnienie sprawnego i bezstronnego code review;
 5. **dostępność algebraicznych typów danych** - w samym centrum modelu informacyjnego podsystemu znajduje się typ stanowiący algebraiczny typ danych, a dokładniej rekord z wariantami (ang. _tagged union_ lub _sum type_), w związku z tym istotne jest, aby język wspierał takie konstrukcje natywnie, bez konieczności emulacji za pomocą mechanizmów programowania obiektowego.
 
 Z uwagi na powyższe wymagania, odpowiedni okazał się być język TypeScript, spełniający wszystkie wymagania. W przypadku wykorzystania języka TypeScript lub JavaScript na serwerze, konieczny jest wybór środowiska uruchomieniowego, gdzie dwie najpopularniejsze opcje to Node.js oraz Deno. Silnik Deno został stworzony przez autora Node.js jako próba naprawienia problemów, które pojawiły się przez lata w starszym Node.js. Względem Node.js, Deno:
@@ -2055,7 +2055,7 @@ Główną zaletą takiej architektury jest możliwość łatwej wymiany warstw z
 
 Aplikacja składa się z czterech bibliotek połączonych w jedną przestrzeń roboczą:
 
-- `@jobberknoll/core` - warstwa dziedziny, zawierająca anemiczny model informacyjny, definicje błędów oraz typy pomocnicze (np. UUID);
+- `@jobberknoll/core` - warstwa dziedziny, zawierająca anemiczny model informacyjny, definicje błędów oraz typy pomocnicze, np. UUID;
 - `@jobberknoll/app` - warstwa aplikacji, zawierająca całą logikę biznesową podsystemu, w tym realizację przypadków użycia;
 - `@jobberknoll/api` - warstwa prezentacji, zawierająca implementację REST API, serializację danych oraz odpowiedzialna za OpenAPI;
 - `@jobberknoll/infra` - warstwa infrastruktury, zawierająca implementację interfejsów stanowiącą most z zewnętrznymi zależnościami.
@@ -2081,7 +2081,7 @@ Poszczególne foldery zawierają odpowiednio:
   - `email` - implementacja serwisu e-mail;
   - `logging` - implementacja loggingu, z ewentualną agregacją logów;
   - `user-repository` - implementacja persystencji użytkowników;
-- `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją.
+- `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją; z racji, że folder `tests` nie zawiera żadnej aplikacji do uruchomienia ani niczego nie eksportuje, został on utworzony jako zwykły podfolder przestrzeni roboczej, a nie osobny moduł.
 
 **Źródła:**
 
