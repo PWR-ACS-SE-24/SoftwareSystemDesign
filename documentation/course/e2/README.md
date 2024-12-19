@@ -2170,27 +2170,27 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 
 #### API publiczne
 
-| **Rola**                 | **Metoda** | **Endpoint**                   | **Wymagania**                | **Opis**                                    |
-| ------------------------ | ---------- | ------------------------------ | ---------------------------- | ------------------------------------------- |
-| `passenger`              | `GET`      | `/ext/v1/cards`                | `PAY/19`                     | Pobranie listy kart płatniczych.            |
-| `passenger`              | `POST`     | `/ext/v1/cards`                | `PAY/02`                     | Dodanie nowej karty płatniczej.             |
-| `passenger`              | `PUT`      | `/ext/v1/cards/:id`            | `PAY/20`                     | Zaktualizowanie danych karty płatniczej.    |
-| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`            | `PAY/03`                     | Usunięcie karty płatniczej.                 |
-| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds`     | `PAY/07`                     | Doładowanie portfela.                       |
-| `passenger`              | `GET`      | `/ext/v1/wallet`               | `PAY/08`                     | Pobranie stanu portfela.                    |
-| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹      | `PAY/09`                     | Pobranie historii doładowań portfela.       |
-| `passenger`              | `GET`      | `/ext/v1/transations`¹         | `PAY/10`                     | Pobranie historii transakcji.               |
-| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹               | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                    |
-| `passenger`              | `GET`      | `/ext/v1/fines/:id`            | `PAY/18`                     | Pobranie informacji o mandacie.             |
-| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`        | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.               |
-| `inspector`              | `POST`     | `/ext/v1/fines`                | `PAY/21`                     | Wystawienie mandatu.                        |
-| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel`     | `PAY/22`                     | Anulowanie mandatu.                         |
+| **Rola**                 | **Metoda** | **Endpoint**               | **Wymagania**                | **Opis**                                 |
+| ------------------------ | ---------- | -------------------------- | ---------------------------- | ---------------------------------------- |
+| `passenger`              | `GET`      | `/ext/v1/cards`            | `PAY/19`                     | Pobranie listy kart płatniczych.         |
+| `passenger`              | `POST`     | `/ext/v1/cards`            | `PAY/02`                     | Dodanie nowej karty płatniczej.          |
+| `passenger`              | `PUT`      | `/ext/v1/cards/:id`        | `PAY/20`                     | Zaktualizowanie danych karty płatniczej. |
+| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`        | `PAY/03`                     | Usunięcie karty płatniczej.              |
+| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds` | `PAY/07`                     | Doładowanie portfela.                    |
+| `passenger`              | `GET`      | `/ext/v1/wallet`           | `PAY/08`                     | Pobranie stanu portfela.                 |
+| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹  | `PAY/09`                     | Pobranie historii doładowań portfela.    |
+| `passenger`              | `GET`      | `/ext/v1/transations`¹     | `PAY/10`                     | Pobranie historii transakcji.            |
+| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹           | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                 |
+| `passenger`              | `GET`      | `/ext/v1/fines/:id`        | `PAY/18`                     | Pobranie informacji o mandacie.          |
+| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`    | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.            |
+| `inspector`              | `POST`     | `/ext/v1/fines`            | `PAY/21`                     | Wystawienie mandatu.                     |
+| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel` | `PAY/22`                     | Anulowanie mandatu.                      |
 
 ¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |     
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health` | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 | `POST`     | `/int/v1/charge` | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
@@ -2209,13 +2209,25 @@ TODO @tchojnacki
 
 TODO @tchojnacki
 
-## PU `TIC/??`
+## PU `TIC/01`, `TIC/02`, `TIC/03`, `TIC/04`, `TIC/05`, `TIC/06`
 
-TODO @jakubzehner
+![TIC/01](./images/sequence-diagram-clabbert-TIC01.drawio.svg)
 
-## PU `TIC/??`
+## PU `TIC/06`, `TIC/11`
 
-TODO @jakubzehner
+![TIC/06](./images/sequence-diagram-clabbert-TIC06.drawio.svg)
+
+## PU `TIC/07`, `TIC/09`
+
+![TIC/07](./images/sequence-diagram-clabbert-TIC07.drawio.svg)
+
+## PU `TIC/10`, `TIC/13`
+
+![TIC/10](./images/sequence-diagram-clabbert-TIC10.drawio.svg)
+
+## PU `TIC/12`
+
+![TIC/12](./images/sequence-diagram-clabbert-TIC12.drawio.svg)
 
 ## PU `PAY/??`
 
