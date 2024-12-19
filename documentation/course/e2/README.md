@@ -2175,27 +2175,27 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 
 #### API publiczne
 
-| **Rola**                 | **Metoda** | **Endpoint**                   | **Wymagania**                | **Opis**                                    |
-| ------------------------ | ---------- | ------------------------------ | ---------------------------- | ------------------------------------------- |
-| `passenger`              | `GET`      | `/ext/v1/cards`                | `PAY/19`                     | Pobranie listy kart płatniczych.            |
-| `passenger`              | `POST`     | `/ext/v1/cards`                | `PAY/02`                     | Dodanie nowej karty płatniczej.             |
-| `passenger`              | `PUT`      | `/ext/v1/cards/:id`            | `PAY/20`                     | Zaktualizowanie danych karty płatniczej.    |
-| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`            | `PAY/03`                     | Usunięcie karty płatniczej.                 |
-| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds`     | `PAY/07`                     | Doładowanie portfela.                       |
-| `passenger`              | `GET`      | `/ext/v1/wallet`               | `PAY/08`                     | Pobranie stanu portfela.                    |
-| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹      | `PAY/09`                     | Pobranie historii doładowań portfela.       |
-| `passenger`              | `GET`      | `/ext/v1/transations`¹         | `PAY/10`                     | Pobranie historii transakcji.               |
-| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹               | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                    |
-| `passenger`              | `GET`      | `/ext/v1/fines/:id`            | `PAY/18`                     | Pobranie informacji o mandacie.             |
-| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`        | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.               |
-| `inspector`              | `POST`     | `/ext/v1/fines`                | `PAY/21`                     | Wystawienie mandatu.                        |
-| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel`     | `PAY/22`                     | Anulowanie mandatu.                         |
+| **Rola**                 | **Metoda** | **Endpoint**               | **Wymagania**                | **Opis**                                 |
+| ------------------------ | ---------- | -------------------------- | ---------------------------- | ---------------------------------------- |
+| `passenger`              | `GET`      | `/ext/v1/cards`            | `PAY/19`                     | Pobranie listy kart płatniczych.         |
+| `passenger`              | `POST`     | `/ext/v1/cards`            | `PAY/02`                     | Dodanie nowej karty płatniczej.          |
+| `passenger`              | `PUT`      | `/ext/v1/cards/:id`        | `PAY/20`                     | Zaktualizowanie danych karty płatniczej. |
+| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`        | `PAY/03`                     | Usunięcie karty płatniczej.              |
+| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds` | `PAY/07`                     | Doładowanie portfela.                    |
+| `passenger`              | `GET`      | `/ext/v1/wallet`           | `PAY/08`                     | Pobranie stanu portfela.                 |
+| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹  | `PAY/09`                     | Pobranie historii doładowań portfela.    |
+| `passenger`              | `GET`      | `/ext/v1/transations`¹     | `PAY/10`                     | Pobranie historii transakcji.            |
+| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹           | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                 |
+| `passenger`              | `GET`      | `/ext/v1/fines/:id`        | `PAY/18`                     | Pobranie informacji o mandacie.          |
+| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`    | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.            |
+| `inspector`              | `POST`     | `/ext/v1/fines`            | `PAY/21`                     | Wystawienie mandatu.                     |
+| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel` | `PAY/22`                     | Anulowanie mandatu.                      |
 
 ¹ - endpoint wspiera paginację oraz filtrowanie.
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |     
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health` | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 | `POST`     | `/int/v1/charge` | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
@@ -2204,13 +2204,21 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 
 Do implementacji systemu obsługującej logistykę JakPrzyjade wybrano język programowania **TypeScript** z użyciem frameworka **NestJS**, w środowisku **Node.js**.
 
-Wybór ten podyktowany był głównie brakiem skomplikowanych operacji wykonywanych przez ten wycinek systemu oraz powszechnością języka TypeScript (również w zespole). Rozszerzenie języka JavaScript o statyczne typowanie pozwala na uniknięcie wielu błędów poprzez przerzucenie ich dużej części na etap kompilacji, co jest istotne w przypadku systemu, który ma być zarówno wydajny jak i bezpieczny.
+Wybór ten podyktowany był następującymi czynnikami:
 
-Framework **NestJS** został wybrany ze względu na swoje wsparcie statycznego typowania dzięki TypeScriptowi, modularność, wydajność, łatwość testowania oraz dużą ilość gotowych rozwiązań, które pozwolą na szybkie i efektywne tworzenie systemu dostarczającego funkcjonalność CRUD za pomocą REST API.
+- **małe skomplikowanie systemu** - wycinek systemu zajmujący się logistyką jest stosunkowo prosty, składa się głównie z prostych operacji CRUD na encjach, co zostawia większe pole do wyboru technologii,
+- **dostępność bibliotek** - TypeScript jest jednym z najpopularniejszych języków programowania, co sprawia, że dostępnych jest wiele bibliotek ułatwiających pracę, co pozwoli na szybkie i efektywne tworzenie systemu, w tym biblioteki do interakcji z AWS, bazami danych, testowania, itp.,
+- **statyczne typowanie** - TypeScript pozwala na uniknięcie wielu błędów poprzez przerzucenie ich dużej części na etap kompilacji, co jest istotne w przypadku systemu, który ma być zarówno wydajny jak i bezpieczny,
+- **powszechne zastosowanie** - TypeScript jak i NestJS są popularnymi technologiami, co pozwoli na łatwe znalezienie informacji oraz pomocy w razie problemów,
+- **znajomość w zespole** - TypeScript jest językiem, który jest znany przez większość członków zespołu, co pozwoli na sprawny code review, a także na szybkie rozwiązywanie problemów.
+
+Architektura podsystemu podzielona została na pionowe części zgodnie z podejściem _vertical slice_. W porównaniu do architektury warstwowej, _vertical slice_ pozwala na zwiększenie zrozumienia kodu oraz ułatwia rozwój, ponieważ każda część systemu jest odpowiedzialna za cały jeden aspekt w pionie, zamiast częsci jednej warstwy w poziomie. Takie podejście stosuje się, gdy aplikacja jest podzielona na luźno powiązane ze sobą części, które są odpowiedzialne za różne aspekty systemu. Pozwala to na uniknięcie dużej liczby abstrakcji między warstwami logicznymi.
+
+![Architektura _vertical slice_](./images/vertical-slice-architecture.drawio.svg)
+
+W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z regułą DRY.
 
 ![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
-
-Architektura podsystemu podzielona została na pionowe części zgodnie z architekturą _vertical slice_. Takie podejście stosuje się, gdy aplikacja jest podzielona na luźno powiązane ze sobą części, które są odpowiedzialne za różne aspekty systemu. Pozwala to na uniknięcie dużej liczby abstrakcji między warstwami logicznymi, co ułatwia zrozumienie kodu i jego rozwój. Taki wycinek systemu składa się z elementów wymaganych do jego działania, takich jak repozytoria, encje i kontrolery. W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z regułą DRY.
 
 ### API
 
