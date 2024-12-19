@@ -2384,11 +2384,23 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 ![Realizacja przypadku użycia - Logowanie](./images/sequence-diagram-jobberknoll-login.drawio.svg)
 
+## PU `ACC/03`
+
+> Jako _osoba zalogowana_ chcę mieć możliwość wylogowania się ze swojego _konta_.
+
+![Realizacja przypadku użycia - Wylogowanie](./images/sequence-diagram-jobberknoll-logout.drawio.svg)
+
 ## PU `ACC/04`
 
 > Jako _osoba zalogowana_ chcę mieć możliwość wyświetlenia informacji o swoim _koncie_.
 
 ![Realizacja przypadku użycia - Informacje o koncie](./images/sequence-diagram-jobberknoll-self.drawio.svg)
+
+## PU `ACC/07`
+
+> Jako _osoba zalogowana_ chcę mieć możliwość wyświetlenia swoich preferencji (motywu kolorystycznego, języka aplikacji).
+
+![Realizacja przypadku użycia - Preferencje](./images/sequence-diagram-jobberknoll-settings.drawio.svg)
 
 ## PU `ACC/11`, `ACC/12`
 
