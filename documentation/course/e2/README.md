@@ -2199,7 +2199,7 @@ Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruj
 - [Wikipedia - Tagged union](https://en.wikipedia.org/wiki/Tagged_union)
 - [Deno, the next-generation JavaScript runtime](https://deno.com)
 - [Hono](https://hono.dev/)
-- Wykład 4: Style architektoniczne 
+- Wykład 4: Style architektoniczne
 - Robert Martin - Clean Architecture
 - [Clean Architecture Folder Structure](https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure)
 
@@ -2410,25 +2410,42 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 ![Realizacja przypadku użycia - Tworzenie konta](./images/sequence-diagram-jobberknoll-create-account.drawio.svg)
 
-## PU `TIC/01`, `TIC/02`, `TIC/03`, `TIC/04`, `TIC/05`, `TIC/06`
+## PU `TIC/01`, `TIC/02`, `TIC/03`, `TIC/04`, `TIC/05`
 
-![TIC/01](./images/sequence-diagram-clabbert-TIC01.drawio.svg)
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu jednorazowego_.
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu czasowego_.
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu okresowego_.
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu ulgowego_.
+> Jako _pasażer_ chcę mieć możliwość _zakupu_ _biletu normalnego_.
+
+![Realizacja przypadku użycia - kupno biletu](./images/sequence-diagram-clabbert-ticket-purchase.drawio.svg)
 
 ## PU `TIC/06`, `TIC/11`
 
-![TIC/06](./images/sequence-diagram-clabbert-TIC06.drawio.svg)
+> Jako _pasażer_ chcę mieć możliwość wyświetlenia listy swoich zakupionych _biletów_.
+> Jako _pasażer_ chcę mieć możliwość zobaczenia historii zakupionych _biletów_.
+
+![Realizacja przypadku użycia - wyświetlanie listy biletów](./images/sequence-diagram-clabbert-ticket-list.drawio.svg)
 
 ## PU `TIC/07`, `TIC/09`
 
-![TIC/07](./images/sequence-diagram-clabbert-TIC07.drawio.svg)
+> Jako _pasażer_ chcę mieć możliwość wyświetlenia szczegółów zakupionego _biletu_.
+> Jako _pasażer_ chcę mieć możliwość okazania _biletu_ do _sprawdzenia ważności biletu_.
+
+![Realizacja przypadku użycia - wyświetlenie szczegółów biletu](./images/sequence-diagram-clabbert-ticket-details.drawio.svg)
 
 ## PU `TIC/10`, `TIC/13`
 
-![TIC/10](./images/sequence-diagram-clabbert-TIC10.drawio.svg)
+> Jako _pasażer_ chcę mieć możliwość zobaczenia _oferty biletów_.
+> Jako _administrator_ chcę mieć możliwość wyświetlenia _oferty biletów_.
+
+![Realizacja przypadku użycia - wyświetlenie ofery biletowej](./images/sequence-diagram-clabbert-ticket-offers.drawio.svg)
 
 ## PU `TIC/12`
 
-![TIC/12](./images/sequence-diagram-clabbert-TIC12.drawio.svg)
+> Jako _bileter_ chcę mieć możliwość _sprawdzenia ważności_ _biletu_ _pasażera_.
+
+![Realizacja przypadku użycia - inspekcja biletu](./images/sequence-diagram-clabbert-ticket-inspection.drawio.svg)
 
 ## PU `PAY/??`
 
