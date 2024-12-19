@@ -1395,6 +1395,8 @@ Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z
 
 ### Płatność
 
+W porównaniu do modelu opisanego w specyfikacji wymagań, dodano klasę `WalletHistory`, która pozwala na śledzenie historii doładowań porfela.
+
 ![Diagram klas Inferius](./images/class-diagram-inferius.drawio.svg)
 
 ### Logistyka
@@ -1822,6 +1824,9 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
   </tr>
   <tr>
     <td colspan="3"><code>fine.time <= NOW()</code></td>
+  </tr>
+  <tr>
+    <td colspan="3"><code>wallet_history.amount_pln > 0</code></td>
   </tr>
 </table>
 
@@ -2335,7 +2340,39 @@ Pakiet `test` składa się z implementacji testów jednostkowych, integracyjnych
 
 ## Płatność
 
-TODO @piterek130: Dodać diagram pakietów, opis architektury.
+Do implementacji serwisu Inferius wybrano język **Java** z frameworkiem **Spring Boot**.
+
+Wybór ten podyktowany był następującymi czynnikami:
+
+- **doświadczenie zespołu** - większość członków zespołu posiada doświadczenie w programowaniu w języku Java,
+- **dojrzały ekosystem** - Java jest jednym z najpopularniejszych języków programowania, co przekłada się na dostępność wielu narzędzi i bibliotek,
+- **społeczeność** - Java jest językiem o dużym wsparciu społeczności, co ułatwia rozwiązywanie problemów i zdobywanie wiedzy,
+- **łatwość w testowaniu** - Java jest językiem, który jest dobrze wspierany przez narzędzia do testowania, co ułatwia pisanie testów.,
+
+![Diagram pakietów Inferius](./images/package-diagram-inferius.drawio.svg)
+
+Architektura podsystemu Inferius została zaprojektowana zgodnie z podejściem **Vertical Slice Architecture**, które promuje podział aplikacji na niezależne funkcjonalne jednostki. Każda jednostka (slice) jest odpowiedzialna za jeden aspekt działania systemu i obejmuje wszystkie potrzebne warstwy: dostęp do bazy danych, logikę biznesową, API oraz testy.
+
+Każdy slice w systemie odpowiada jednej z kluczowych domen:
+- `wallet` - odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
+- `fine` - zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
+- `creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
+
+Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
+- `database` - warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
+- `service` - logika biznesowa, która definiuje, jak dane są przetwarzane i jakie reguły biznesowe są stosowane.
+- `controller` - punkty końcowe zapewniające interfejs komunikacji dla klientów systemu.
+- `test` - zestaw testów jednostkowych i integracyjnych zapewniających poprawność działania slice'a.
+
+Dodatkowo, system zawiera dwa pakiety wspólne:
+- `shared` - wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
+- `internal` - moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
+
+Całość opiera się na wspólnej bazie danych oznaczonej jako Payment Database, do której wszystkie slice'y mają dostęp.
+
+System korzysta również z komponentu Payment Gateway, który obsługuje przetwarzanie płatności. Pełni on rolę niezależnego komponentu zewnętrznego, co pozwala na elastyczność w przypadku zmiany dostawcy lub rozbudowy funkcjonalności płatniczych w przyszłości.
+
+W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdrażanie zmian i izolowanie problemów w jednym module bez wpływu na inne części systemu. Nowe funkcjonalności można dodawać jako bez konieczności modyfikacji istniejących modułów.
 
 ### API
 
@@ -2361,10 +2398,11 @@ TODO @piterek130: Dodać diagram pakietów, opis architektury.
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
-| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health` | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
-| `POST`     | `/int/v1/charge` | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
+| **Metoda** | **Endpoint**        | **Producent** | **Konsument** | **Opis**                                                                       |     
+| ---------- | ------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`    | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/endpoints` | Inferius      | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
+| `POST`     | `/int/v1/charge`    | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
 
 ## Logistyka
 
@@ -2454,13 +2492,16 @@ TODO @mlodybercik: Dodać diagram pakietów, opis architektury i endpointy.
 
 ![Realizacja przypadku użycia - inspekcja biletu](./images/sequence-diagram-clabbert-ticket-inspection.drawio.svg)
 
-## PU `PAY/??`
+## PU `PAY/17`
 
-TODO @piterek130
+> Jako _pasażer_ chcę mieć możliwość przeglądania wystawionych _mandatów_.
 
-## PU `PAY/??`
+![Realizacja przypadku użycia - Wyświetlanie mandatów](./images/sequence-diagram-inferius-get-fines.drawio.svg)
 
-TODO @piterek130
+## PU `PAY/20`
+> Jako _pasażer_ chcę mieć możliwość zaktualizowania danych karty kredytowej.
+
+![Realizacja przypadku użycia - Zaktualizowanie danych karty kredytowej](./images/sequence-diagram-inferius-update-card.drawio.svg)
 
 ## PU `LOG/??`
 
