@@ -2126,7 +2126,74 @@ TODO @tchojnacki: Dodać diagram pakietów, opis architektury.
 
 ## Bilet
 
-TODO @jakubzehner: Dodać diagram pakietów, opis architektury.
+Do implementacji serwisu Clabbert wybrano język **Java** z frameworkiem **Spring Boot**.
+
+Wybór ten podyktowany był następującymi czynnikami:
+
+- **doświadczenie zespołu** - większość członków zespołu posiada doświadczenie w programowaniu w języku Java, co pozwoli na spełnienie wymogu wymienionego wyżej - znajomość języka przez co najmniej jedną osobę spoza serwisu w celu przeprowadzenia code review,
+- **dostępność AWS SDK** - AWS SDK dla języka Java jest jednym z najbardziej rozbudowanych i obsługuje wszystkie usługi, które mogą być potrzebne w projekcie,
+- **dostępność bibliotek** - Java posiada bardzo rozbudowaną bazę bibliotek, co pozwoli na szybkie i efektywne rozwijanie serwisu,
+- **dojrzałość frameworka** - Spring Boot jest jednym z najpopularniejszych frameworków do tworzenia aplikacji w języku Java, co pozwoli na szybkie rozwiązywanie ewentualnych problemów,
+- **łatwość w testowaniu** - Java jest językiem, który posiada wiele rozbudowanych narzędzi do testowania, co ułatwi proces testowania serwisu.
+
+W serwisie Clabbert zdecydowano się na wykorzystanie, bądź co bądź elastycznego, wzorca architektonicznego **clean architecture** autorstwa Roberta C. Martina. Wzorzec ten to podejście do tworzenia oprogramowania, które skupia się na przejrzystości i oddzieleniu odpowiedzialności w aplikacji.
+
+Struktura aplikacji opiera się na koncentrycznych kręgach, gdzie każda warstwa ma jasno określoną rolę. W centrum znajdują się encje – modele i logika biznesowa, które są niezależne od reszty systemu. Następna warstwa to przypadki użycia, które określają, w jaki sposób aplikacja działa i realizuje swoje funkcje. Kolejna to adaptery interfejsów, które zajmują się przekształcaniem danych między warstwami, np. konwertując dane bazy na modele aplikacji. Na zewnątrz znajdują się frameworki i narzędzia, czyli wszystko, co służy do komunikacji ze światem zewnętrznym – serwery, bazy danych, API.
+
+![Clean code architecture](./images/clean_architecture.png)
+
+Dzięki takiemu podejściu aplikacja jest bardziej odporna na zmiany technologiczne – można wymienić bazę danych, zmienić framework czy interfejs użytkownika, a logika biznesowa pozostaje nienaruszona. Clean Architecture stawia na długoterminową trwałość systemu, co jest szczególnie ważne w projektach rozwijanych przez lata.
+
+Realizacja tego wzorca w projekcie Clabbert, w formie diagramu pakietów, przedstawia się następująco:
+
+![Diagram pakietów Clabbert](./images/package-diagram-clabbert.drawio.svg)
+
+Aplikacja składa się z dwóch głównych pakietów:
+
+- `main` - zawiera główną aplikację
+- `test` - zawiera testy głównej aplikacji
+
+Pakiet `main` składa się z następujących pakietów:
+
+- `domain` - zawiera model informacyjny aplikacji oraz definicję błędów
+- `application` - zawiera logikę biznesową aplikacji
+- `infrastructure` - zawiera implementację adapterów interfejsów, stanowi warstwę dostępu do zewnętrznych zasobów
+- `api` - zawiera implementację REST API aplikacji oraz odpowiada za serializację i deserializację danych
+
+Pakiet `domain` składa się z:
+
+- `entities` - zawiera encje z modelu informacyjnego
+- `exceptions` - zawiera definicje błędów generowanych przez aplikację
+
+Pakiet `application` składa się z:
+
+- `abstractions` - zawiera klasy abstarkcyjne oraz interfejsy dla zależności zewnętrznych
+- `common` - zawiera wspólne klasy i narzędzia dla modułów aplikacji
+- `modules` - zawiera moduły aplikacji, które realizują tematycznie podzielone grupy konkretnych przypadków użycia
+
+Pakiet `infrastructure` składa się z:
+
+- `configurations` - zawiera konfiguracje aplikacji
+- `repositories` - zawiera implementacje repozytoriów dla encji z modelu informacyjnego
+- `logging` - zawiera implementację loggingu w aplikacji
+- `messaging` - zawiera implementację komunikacji z kolejkami wiadomości
+- `internalservices` - zawiera implementacje komunikacji z pozostałymi mikroserwisami
+
+Pakiet `api` składa się z:
+
+- `controllers` - zawiera kontrolery REST API z podziałem na dostępne wewnętrznie i publicznie
+- `middlewares` - zawiera funkcje pośredniczące
+- `contracts` - zawiera definicje typów zapytań i odpowiedzi dla API
+- `mappers` - zawiera funkcje mapujące obiekty z modelu informacyjnego na obiekty kontraktów
+
+Pakiet `test` składa się z implementacji testów jednostkowych oraz integracyjnych dla poszczególnych modułów aplikacji.
+
+**Źródła:**
+
+- [spring.io - Spring Boot](https://spring.io/projects/spring-boot)
+- Robert Martin - Clean Architecture
+- [blog.cleancoder.com - The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [milanjovanovic.tech - Clean Architecture Folder Structure](https://www.milanjovanovic.tech/blog/clean-architecture-folder-structure)
 
 ### API
 
@@ -2149,9 +2216,10 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury.
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |
-| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
-| `GET`      | `/int/v1/health` | Clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| **Metoda** | **Endpoint**        | **Producent** | **Konsument** | **Opis**                                                                       |
+| ---------- | ------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health`    | Clabbert      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `GET`      | `/int/v1/endpoints` | Clabbert      | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
 
 ## Płatność
 
