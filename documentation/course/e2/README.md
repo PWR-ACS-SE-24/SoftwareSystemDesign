@@ -2387,7 +2387,28 @@ Architektura podsystemu podzielona została na pionowe części zgodnie z podej�
 
 ![Architektura _vertical slice_](./images/vertical-slice-architecture.drawio.svg)
 
-W tym przypadku, każda z części składa się z elementów wchodzących w interakcję z bazą danych (`database`), elementów odpowiedzialnych za obsługę zapytań HTTP (`api`), elementów odpowiedzialnych za logikę biznesową (`domain`) oraz dodatkowego pakietu odpowiedzialnego za testy systemu (`test`). Wszystkie z nich korzystają z dodatkowego modułu dostarczającego funkcjonalności wspólne i pomocnicze (`shared`), zgodnie z regułą DRY.
+Każdy wycinek w systemie odpowiada jednej z jego domen:
+
+- `stop` - odpowiada za zarządzanie przystankami,
+- `accident` - odopowiada za zarządzanie awariami,
+- `line` - odpowiada za zarządzanie liniami,
+- `route` - odpowiada za zarządzanie rozkładami jazdy,
+- `vehicle` - odpowiada za zarządzanie pojazdami,
+
+Każdy wycinek jest kolejno podzielony na elementy:
+
+- `database` – encje oraz repozytoria, które odpowiadają za komunikację z bazą danych,
+- `api` – kontrolery oraz DTO, które odpowiadają za obsługę zapytań HTTP,
+- `domain` – serwisy odpowiedzialne za logikę biznesową,
+- `test` – testy jednostkowe oraz integracyjne.
+
+Dodatkowo, system zawiera pakiet wspólny:
+
+- `shared` - zawiera wspólne typy oraz funkcje, które są używane w wielu częściach systemu,
+
+Oraz pakiet systemowy:
+
+- `internal` - części systemu używane tylko wewnątrz systemu, np. healthchecki.
 
 ![Diagram pakietów Leprechaun](./images/package-diagram-leprechaun.drawio.svg)
 
@@ -2458,9 +2479,13 @@ TODO @piterek130
 
 ## PU `LOG/01`
 
+> Jako pasażer chce mieć mozliwość przeglądania linii.
+
 ![Realizacja przypadku użycia - Wyświetlanie linii](./images/sequence-diagram-leprechaun-get-lines.drawio.svg)
 
 ## PU `LOG/19`
+
+> Jako administrator chcę mieć możliwość usuwania pojazdów.
 
 ![Realizacja przypadku użycia - Usunięcie pojazdu](./images/sequence-diagram-leprechaun-remove-vehicle.drawio.svg)
 
