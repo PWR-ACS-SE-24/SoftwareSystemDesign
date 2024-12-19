@@ -1397,8 +1397,6 @@ Ponadto, dzięki zastososowaniu UUID jako identyfikatora usunięto pole `code` z
 
 ### Płatność
 
-TODO @piterek130: opis zmian
-
 ![Diagram klas Inferius](./images/class-diagram-inferius.drawio.svg)
 
 ### Logistyka
@@ -1783,6 +1781,11 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
     <td>Indeks tworzony automatycznie przez bazę danych.</td>
   </tr>
   <tr>
+    <td><code>wallet_history.id</code></td>
+    <td>b-tree (unikalny)</td>
+    <td>Indeks tworzony automatycznie przez bazę danych.</td>
+  </tr>
+  <tr>
     <td><code>fine.passenger_id</code></td>
     <td>b-tree</td>
     <td>Indeks wspierający wyszukiwanie mandatów pasażera.</td>
@@ -1797,6 +1800,10 @@ Model informacyjny podsystemu Inferius składa się z trzech klas i dwóch typó
     <td>b-tree</td>
     <td>Indeks wspierający wyszukiwanie kart kredytowych według portfela.</td>
   </tr>
+  <tr>
+    <td><code>wallet-history.wallet_id</code></td>
+    <td>b-tree</td>
+    <td>Indeks wspierający wyszukiwanie historii doładowań portfela według portfela.</td>
   <tr>
     <th colspan="3">Ograniczenia</th>
   </tr>
@@ -1826,15 +1833,17 @@ Jako górną estymację fizycznego rozmiaru wiersza bazy danych przyjęto sumę 
 
 - `wallet`: 16 + 16 + 8 = 40 bajtów,
 - `credit_card_info`: 16 + 16 + 255 + 16 + 255 + 4 = 562 bajty,
-- `fine`: 16 + 16 + 16 + 255 + 8 + 8 + 32 + 32 = 383 bajty.
+- `fine`: 16 + 16 + 16 + 255 + 8 + 8 + 32 + 32 = 383 bajty,
+- `wallet_history`: 16 + 16 + 8 + 8 = 48 bajtów.
 
 Dodatkowo indeksy na tabeli mają następujące estymowane rozmiary na każdy wiersz:
 
 - `wallet`: 24 + 24 = 48 bajtów,
 - `credit_card_info`: 24 + 24 = 48 bajtów,
-- `fine`: 24 + 24 + 24 = 72 bajty.
+- `fine`: 24 + 24 + 24 = 72 bajty,
+- `wallet_history`: 24 + 24 = 48 bajtów.
 
-Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln \* 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln \* 610 = 1.22 GB, a rocznie 1.2 mln \* 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 \* 455 = 20 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
+Zakładając, że we Wrocławiu mieszka 825 tys. osób[^ludnosc-wroclawia] oraz odwiedza go 1.2 mln turystów rocznie[^turysci-wroclawia] oraz że każda osoba bedzie posiadała swoją aplikację to górna granica wynosi **2 mln unikalnych użytkowników** (2 mln \* 88 = 176 MB) w pierwszym roku działania systemu oraz **wzrost o maksymalnie 1.2 mln kont rocznie** (105 MB). Zakładając że każda osoba doda do swojego konta 2 karty kredytowe, to w pierwszym roku działania systemu będzie to 2 mln \* 610 = 1.22 GB, a rocznie 1.2 mln \* 610 = 732 MB. Dodatkowo zakładając, że **rocznie kontrolerzy wystawiają 45 000**[^roczne-mandaty] mandatów, to roczny przyrost danych wynosi około 45 000 \* 455 = 20 MB. Zakładając również, że każda osoba doda do swojego portfela w aplikacji fundusze dwa razy w roku, to w pierwszym roku działania systemu będzie to 2 mln \* 96 = 192 MB, a rocznie 1.2 mln \* 96 = 115 MB. Sumarycznie, roczny przyrost danych wynosi około 2 GB rocznie. Ze względu na to, że minimalny rozmiar bazy danych na RDS wynosi **20GB**, został on wybrany jako początkowy rozmiar bazy danych. Biorąc pod uwagę również, że większość aproksymacji zawyżała wynik, początkowy rozmiar bazy danych powinien być wystarczający.
 
 Zdecydowano się na czas retencji kopii zapasowych wynoszący 35 dni, ze względu na przetrzymywanie finansowych oraz transakcyjnych danych.
 
@@ -2155,7 +2164,36 @@ TODO @jakubzehner: Dodać diagram pakietów, opis architektury i endpointy.
 
 ## Płatność
 
-TODO @piterek130: Dodać diagram pakietów, opis architektury i endpointy.
+TODO @piterek130: Dodać diagram pakietów, opis architektury.
+
+### API
+
+#### API publiczne
+
+| **Rola**                 | **Metoda** | **Endpoint**                   | **Wymagania**                | **Opis**                                    |
+| ------------------------ | ---------- | ------------------------------ | ---------------------------- | ------------------------------------------- |
+| `passenger`              | `GET`      | `/ext/v1/cards`                | `PAY/19`                     | Pobranie listy kart płatniczych.            |
+| `passenger`              | `POST`     | `/ext/v1/cards`                | `PAY/02`                     | Dodanie nowej karty płatniczej.             |
+| `passenger`              | `PUT`      | `/ext/v1/cards/:id`            | `PAY/20`                     | Zaktualizowanie danych karty płatniczej.    |
+| `passenger`              | `DELETE`   | `/ext/v1/cards/:id`            | `PAY/03`                     | Usunięcie karty płatniczej.                 |
+| `passenger`              | `POST`     | `/ext/v1/wallet/add-funds`     | `PAY/07`                     | Doładowanie portfela.                       |
+| `passenger`              | `GET`      | `/ext/v1/wallet`               | `PAY/08`                     | Pobranie stanu portfela.                    |
+| `passenger`              | `GET`      | `/ext/v1/wallet/history`¹      | `PAY/09`                     | Pobranie historii doładowań portfela.       |
+| `passenger`              | `GET`      | `/ext/v1/transations`¹         | `PAY/10`                     | Pobranie historii transakcji.               |
+| `passenger`, `inspector` | `GET`      | `/ext/v1/fines`¹               | `PAY/17`, `PAY/23`           | Pobranie listy mandatów.                    |
+| `passenger`              | `GET`      | `/ext/v1/fines/:id`            | `PAY/18`                     | Pobranie informacji o mandacie.             |
+| `passenger`              | `POST`     | `/ext/v1/fines/:id/pay`        | `PAY/14`, `PAY/15`, `PAY/16` | Realizacja płatności mandatu.               |
+| `inspector`              | `POST`     | `/ext/v1/fines`                | `PAY/21`                     | Wystawienie mandatu.                        |
+| `inspector`              | `PUT`      | `/ext/v1/fines/:id/cancel`     | `PAY/22`                     | Anulowanie mandatu.                         |
+
+¹ - endpoint wspiera paginację oraz filtrowanie.
+
+#### API wewnętrzne
+
+| **Metoda** | **Endpoint**     | **Producent** | **Konsument** | **Opis**                                                                       |     
+| ---------- | ---------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
+| `GET`      | `/int/v1/health` | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
+| `POST`     | `/int/v1/charge` | Inferius      | Clabbert      | Obciążenie portfela pasażera ([`M/08`](#m08-zewnętrzna-bramka-płatności)).     |
 
 ## Logistyka
 
