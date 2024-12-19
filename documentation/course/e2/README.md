@@ -2158,7 +2158,32 @@ Poszczególne foldery zawierają odpowiednio:
   - `email` - implementacja serwisu e-mail oraz jego mocków;
   - `logging` - implementacja loggingu, z ewentualną agregacją logów oraz jego mocków;
   - `user-repository` - implementacja persystencji użytkowników oraz jej mocków;
-- `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją; z racji, że folder `tests` nie zawiera żadnej aplikacji do uruchomienia ani niczego nie eksportuje, został on utworzony jako zwykły podfolder przestrzeni roboczej, a nie osobny moduł.
+- `tests` - folder z testami integracyjnymi oraz end-to-end, testujący całą aplikację metodyką black-box; testy jednostkowe znajdują się natomiast bezpośrednio obok plików, które testują, w folderach z implementacją; z racji, że folder `tests` nie zawiera żadnej aplikacji do uruchomienia ani niczego nie eksportuje, został on utworzony jako zwykły podfolder przestrzeni roboczej, a nie osobna biblioteka.
+
+W przypadku sidecar Feather, wymagania były bardzo podobne, a jednocześnie pojawił się dodatkowy argument - sidecar warto oprzeć na podobnym stacku technologicznym, aby uniknąć częstej zmiany kontekstu przy równoległym rozwijaniu obu komponentów przez ten sam zespół programistyczny. W związku z tym, ponownie zdecydowano się na język TypeScript na Deno oraz framework Hono.
+
+Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruje się zewnętrznie jedynie z jednym innym REST API; nie posiada zaawansowanej logiki biznesowej; wystawia jedynie dwa endpointy, z czego jeden to healthcheck), że nie występuje potrzeba podziału wertykalnego ani horyzontalnego. Prawdopodobnie cały komponent da się zawrzeć w jednej bibliotece Deno, o strukturze podobnej do tej:
+
+<table>
+  <tr>
+    <td>
+      <ul>
+        <li><code>api.ts</code> - definicje endpointów API oraz ich obsługa (warstwa prezentacji);</li>
+        <li><code>app.ts</code> - definicja logiki biznesowej (warstwa aplikacji);</li>
+        <li><code>security.ts</code> - obsługa JWT (warstwa aplikacji);</li>
+        <li><code>jwks.ts</code> - obsługa sejfu JWKs, w tym pobieranie z Jobberknoll i cachowanie (warstwa infrastruktury);</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li><code>api.test.ts</code> - testy integracyjne oraz end-to-end dla API;</li>
+        <li><code>app.test.ts</code> - testy jednostkowe dla logiki biznesowej;</li>
+        <li><code>security.test.ts</code> - testy jednostkowe dla obsługi JWT;</li>
+        <li><code>jwks.test.ts</code> - testy jednostkowe dla obsługi JWKs.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 **Źródła:**
 
