@@ -1329,44 +1329,27 @@ Zgodnie z mechanizmem [`M/04`: Wdrożenie w chmurze AWS](#m04-wdrożenie-w-chmur
 > [!NOTE]
 > Przedstawiona tutaj decyzja zakłada brak jakichkolwiek ograniczeń. Ze względu na tworzenie tego projektu na koncie studenckim AWS zaproponowane rozwiązanie będzie się różniło od późniejszego etapu wdrożenia.
 
+Wszystkie pody systemu będą posiadały analogiczną konfigurację:
+
 <table>
-  <tr>
-    <th colspan="2">Ogólne informacje</th>
-  </tr>
-  <tr>
-    <th>Nazwa</th>
-    <th>Hostname</th>
-  </tr>
-  <tr>
-    <th>OS</th>
-    <td>System operacyjny wraz z wersją</td>
-  </tr>
-  <tr>
-    <th>Opis</th>
-    <td></td>
-  </tr>
-  <tr>
-    <th>Adres publiczny</th>
-    <td>Tak/Nie</td>
-  </tr>
   <tr>
     <th colspan="2">Konfiguracja sprzętowa</th>
   </tr>
   <tr>
-    <th>Nazwa konfiguracji</th>
-    <td><code>c4g.medium</code></td>
+    <th>Typ instancji</th>
+    <td><code>c8g.medium</code></td>
   </tr>
   <tr>
     <th>Typ dysku twardego</th>
-    <td>np. <code>GP3</code>; <code>magnetic</code></td>
+    <td><code>gp3</code></td>
   </tr>
   <tr>  
     <th>Wielkość dysku</th>
-    <td>8GB</td>
+    <td>32 GB</td>
   </tr>
   <tr>  
     <th>Szyfrowanie dysku</th>
-    <td>Tak/Nie</td>
+    <td>Tak</td>
   </tr>
 </table>
 
