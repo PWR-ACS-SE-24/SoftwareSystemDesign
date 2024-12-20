@@ -2103,7 +2103,26 @@ Zespoły realizujące poszczególne serwisy miały dowolność dotyczącą wybor
 
 ## Frontend
 
-TODO @everyone
+Do implementacji części frontendowej wybrano język **TypeScript** z frameworkiem **Angular**. Wybór ten podyktowany był następującymi kryteriami:
+
+- **znajomość w zespole** - zespół posiada doświadczenie w pracy z Angular,
+- **dependency injection** - Angular posiada wbudowany mechanizm wstrzykiwania zależności, co pozwala na rozłączenie logiki biznesowej od logiki prezentacji,
+- **_batteries-included_** - Angular dostarcza wiele gotowych rozwiązań, takich jak routing, formularze i obsługa HTTP, co pozwala na szybkie rozpoczęcie pracy nad projektem,
+- **świetne wsparcie** - Angular jest rozwijany przez Google, co zapewnia stabilność i wsparcie.
+
+System Hogwart składa się z architektury typowej dla projektów wykonanych w technologii Angular, gdzie każdy element jest odpowiedzialny za jedną funkcjonalność. Wszystkie komponenty są zorganizowane w modułach, które są odpowiedzialne za grupowanie logiki biznesowej i prezentacji w logiczne jednostki. Moduły są z kolei zorganizowane w strukturę hierarchiczną, zawężającą zakres funkcjonalności.
+
+![Diagram pakietów Hogwart](./images/package-diagram-hogwart.drawio.svg)
+
+Poszczególne foldery zawierają odpowiednio części systemu widoczne dla każdego z aktorów systemu (komponenty i serwisy):
+
+- `inspector` - funkcjonalność odpowiedzialna za biletera,
+- `guest` - funkcjonalność odpowiedzialna za gościa,
+- `driver` - funkcjonalność odpowiedzialna za kierowcę,
+- `passenger` - funkcjonalność odpowiedzialna za pasażera,
+- `admin` - funkcjonalność odpowiedzialna za administratora.
+
+Dodatkowo, wydzielony został element wspólny dla wszystkich aktorów systemu, który zawiera wspólne komponenty, formularze, serwisy tłumaczenie i testy (`shared`).
 
 ## Konto
 
@@ -2359,17 +2378,20 @@ Wybór ten podyktowany był następującymi czynnikami:
 Architektura podsystemu Inferius została zaprojektowana zgodnie z podejściem **Vertical Slice Architecture**, które promuje podział aplikacji na niezależne funkcjonalne jednostki. Każda jednostka (slice) jest odpowiedzialna za jeden aspekt działania systemu i obejmuje wszystkie potrzebne warstwy: dostęp do bazy danych, logikę biznesową, API oraz testy.
 
 Każdy slice w systemie odpowiada jednej z kluczowych domen:
+
 - `wallet` - odpowiada za zarządzanie portfelem pasażera, przechowując informacje o jego saldzie.
 - `fine` - zarządza mandatami pasażerów, w tym ich szczegółami, powodami wystawienia i statusem płatności.
 - `creditcardinfo` - obsługuje dane kart kredytowych pasażerów, takie jak numer karty, dane posiadacza i datę ważności.
 
 Każda z tych domen jest zaimplementowana w osobnym slice'ie, który zawiera:
+
 - `database` - warstwa odpowiedzialna za dostęp do danych w bazie i ich modyfikacje.
 - `service` - logika biznesowa, która definiuje, jak dane są przetwarzane i jakie reguły biznesowe są stosowane.
 - `controller` - punkty końcowe zapewniające interfejs komunikacji dla klientów systemu.
 - `test` - zestaw testów jednostkowych i integracyjnych zapewniających poprawność działania slice'a.
 
 Dodatkowo, system zawiera dwa pakiety wspólne:
+
 - `shared` - wspólne funkcjonalności, takie jak autoryzacja i abstrakcje używane w wielu slice'ach.
 - `internal` - moduły wewnętrzne odpowiedzialne za monitorowanie stanu systemu oraz zarządzanie konfiguracją.
 
@@ -2403,7 +2425,7 @@ W takim podejściu każdy slice jest autonomiczny, co umożliwia łatwiejsze wdr
 
 #### API wewnętrzne
 
-| **Metoda** | **Endpoint**        | **Producent** | **Konsument** | **Opis**                                                                       |     
+| **Metoda** | **Endpoint**        | **Producent** | **Konsument** | **Opis**                                                                       |
 | ---------- | ------------------- | ------------- | ------------- | ------------------------------------------------------------------------------ |
 | `GET`      | `/int/v1/health`    | Inferius      | —             | Sprawdzenie stanu głównego serwisu ([`M/03`](#m03-healthchecki-dla-serwisów)). |
 | `GET`      | `/int/v1/endpoints` | Inferius      | Phoenix       | Pobranie serializowanej listy dostępnych ścieżek API.                          |
@@ -2580,6 +2602,7 @@ Oraz pakiet systemowy:
 ![Realizacja przypadku użycia - Wyświetlanie mandatów](./images/sequence-diagram-inferius-get-fines.drawio.svg)
 
 ## PU `PAY/20`
+
 > Jako _pasażer_ chcę mieć możliwość zaktualizowania danych karty kredytowej.
 
 ![Realizacja przypadku użycia - Zaktualizowanie danych karty kredytowej](./images/sequence-diagram-inferius-update-card.drawio.svg)
