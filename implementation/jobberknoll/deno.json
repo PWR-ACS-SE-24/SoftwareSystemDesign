@@ -1,0 +1,6 @@
+{
+  "workspace": ["api", "app", "core", "infra"],
+  "tasks": {
+    "start": "deno run main.ts"
+  }
+}
