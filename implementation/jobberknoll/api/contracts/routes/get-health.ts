@@ -12,7 +12,11 @@ export const getHealth = createRoute({
   responses: {
     200: jsonResponse(
       HealthDto,
-      "Successfully retrieved service health status.",
+      "Retrieved service health, service is healthy.",
+    ),
+    503: jsonResponse(
+      HealthDto,
+      "Retrieved service health, service is unhealthy.",
     ),
   },
 });

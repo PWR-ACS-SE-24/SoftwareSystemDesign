@@ -16,4 +16,4 @@ This should make the implementation easy for Inferius and Clabbert, while also b
 }
 ```
 
-The error statuses, such as `500 Internal Server Error` should not be present in the OpenAPI documentation, since there is never a need to explicitly return such status from the controller. The `5XX` codes, as well as actual network errors, can generally be encountered when calling any endpoint. The consumer should treat them both as a sign of the service being unhealthy.
+The endpoint should return a `200 OK` if the service is possibly healthy (`UP`, `UNKNOWN`), and a `503 Service Unavailable` if the service is unhealthy (`DOWN`, `OUT_OF_SERVICE`).
