@@ -1,21 +1,15 @@
 import type { AppError } from "./app-error.ts";
 
-export class AccountNotFoundError implements AppError {
-  public constructor(private readonly id: string) {}
+export type AccountNotFoundError = AppError & {
+  code: 404;
+  kind: "account-not-found";
+};
 
-  public get kind(): "account-not-found" {
-    return "account-not-found";
-  }
-
-  public get code(): 404 {
-    return 404;
-  }
-
-  public get messageEn(): string {
-    return `Account with id "${this.id}" was not found!`;
-  }
-
-  public get messagePl(): string {
-    return `Konto o id "${this.id}" nie zostało znalezione!`;
-  }
+export function accountNotFoundError(id: string): AccountNotFoundError {
+  return {
+    code: 404 as const,
+    kind: "account-not-found" as const,
+    messageEn: `Account with ID "${id}" was not found!`,
+    messagePl: `Konto o ID "${id}" nie zostało znalezione!`,
+  } satisfies AppError;
 }

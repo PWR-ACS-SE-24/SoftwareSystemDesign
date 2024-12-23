@@ -1,6 +1,6 @@
 export type AppError = {
-  kind: string;
   code: number;
+  kind: string;
   messageEn: string;
   messagePl?: string;
 };

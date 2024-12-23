@@ -1,6 +1,6 @@
 import { createRoute, type RouteHandler } from "@hono/zod-openapi";
 import { jsonRes } from "~/shared/openapi.ts";
-import { HealthDto } from "../contracts/health-dto.ts";
+import { HealthDto } from "../contracts/mod.ts";
 
 export const getHealthRoute = createRoute({
   method: "get",
@@ -23,5 +23,5 @@ export const getHealthRoute = createRoute({
 
 export function getHealthHandler(): RouteHandler<typeof getHealthRoute> {
   // TODO @tchojnacki: Extract this logic to the application layer
-  return (c) => c.json({ status: "UP" as const }, 200);
+  return (c) => c.json({ status: "UP" }, 200);
 }

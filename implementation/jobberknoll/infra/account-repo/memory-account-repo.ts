@@ -1,5 +1,9 @@
 import type { AccountRepo } from "@jobberknoll/app";
-import { type Account, AccountNotFoundError } from "@jobberknoll/core/domain";
+import {
+  type Account,
+  type AccountNotFoundError,
+  accountNotFoundError,
+} from "@jobberknoll/core/domain";
 import { err, ok, type Result } from "@jobberknoll/core/shared";
 
 export class MemoryAccountRepo implements AccountRepo {
@@ -11,7 +15,7 @@ export class MemoryAccountRepo implements AccountRepo {
     return Promise.resolve(
       id in this.accounts
         ? ok(this.accounts[id])
-        : err(new AccountNotFoundError(id)),
+        : err(accountNotFoundError(id)),
     );
   }
 }

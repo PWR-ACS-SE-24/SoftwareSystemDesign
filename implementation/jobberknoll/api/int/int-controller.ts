@@ -2,7 +2,12 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import denoJson from "~/deno.json" with { type: "json" };
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
-import { getHealthHandler, getHealthRoute } from "./routes/get-health-route.ts";
+import {
+  getAccountByIdHandler,
+  getAccountByIdRoute,
+  getHealthHandler,
+  getHealthRoute,
+} from "./routes/mod.ts";
 
 export class IntController implements Controller {
   public get prefix(): string {
@@ -11,7 +16,8 @@ export class IntController implements Controller {
 
   public get routes(): OpenAPIHono {
     const app = new OpenAPIHono()
-      .openapi(getHealthRoute, getHealthHandler());
+      .openapi(getHealthRoute, getHealthHandler())
+      .openapi(getAccountByIdRoute, getAccountByIdHandler());
 
     configureDocs(app, {
       path: this.prefix,

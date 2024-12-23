@@ -1,3 +1,3 @@
 import type { AccountBase } from "./account-base.ts";
 
-export type Admin = AccountBase & { tag: "admin" };
+export type Admin = AccountBase & { type: "admin" };
