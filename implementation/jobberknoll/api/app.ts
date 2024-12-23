@@ -1,5 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import type { Controller } from "./controllers/controller.ts";
+import type { Controller } from "~/shared/controller.ts";
 
 export function buildApp(controllers: Controller[]): OpenAPIHono {
   const app = new OpenAPIHono();

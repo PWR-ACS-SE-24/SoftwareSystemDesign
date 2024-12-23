@@ -1,8 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { getHealth } from "../contracts/routes/get-health.ts";
-import denoJson from "../deno.json" with { type: "json" };
-import { configureDocs } from "../helpers/docs.ts";
-import type { Controller } from "./controller.ts";
+import denoJson from "~/deno.json" with { type: "json" };
+import type { Controller } from "~/shared/controller.ts";
+import { configureDocs } from "~/shared/docs.ts";
+import { getHealthHandler, getHealthRoute } from "./routes/get-health-route.ts";
 
 export class IntController implements Controller {
   public get prefix(): string {
@@ -11,8 +11,7 @@ export class IntController implements Controller {
 
   public get routes(): OpenAPIHono {
     const app = new OpenAPIHono()
-      // TODO @tchojnacki: Extract this logic to the application layer
-      .openapi(getHealth, (c) => c.json({ status: "UP" as const }, 200));
+      .openapi(getHealthRoute, getHealthHandler());
 
     configureDocs(app, {
       prefix: this.prefix,
