@@ -14,7 +14,7 @@ export class IntController implements Controller {
       .openapi(getHealthRoute, getHealthHandler());
 
     configureDocs(app, {
-      prefix: this.prefix,
+      path: this.prefix,
       title: "Jobberknoll Internal API",
       version: denoJson.version,
       description: "The internal API for JakPrzyjade account management.",

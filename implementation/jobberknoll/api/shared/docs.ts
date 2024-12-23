@@ -3,7 +3,7 @@ import type { OpenAPIHono } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
 
 type SetupDocsOptions = {
-  prefix: string;
+  path: string;
   title: string;
   version: string;
   description?: string;
@@ -12,7 +12,7 @@ type SetupDocsOptions = {
 
 export function configureDocs(
   app: OpenAPIHono,
-  { prefix, title, version, description, externalDocs }: SetupDocsOptions,
+  { path, title, version, description, externalDocs }: SetupDocsOptions,
 ) {
   app.get("/docs", (c) =>
     c.json(
@@ -32,15 +32,15 @@ export function configureDocs(
       description,
     },
     externalDocs,
-    servers: [{ url: new URL(c.req.url).origin + prefix }],
+    servers: [{ url: new URL(c.req.url).origin + path }],
   }));
 
-  app.get("/docs/swagger", swaggerUI({ url: `${prefix}/docs/openapi.json` }));
+  app.get("/docs/swagger", swaggerUI({ url: `${path}/docs/openapi.json` }));
 
   app.get(
     "/docs/scalar",
     apiReference({
-      spec: { url: `${prefix}/docs/openapi.json` },
+      spec: { url: `${path}/docs/openapi.json` },
       theme: "kepler",
       defaultHttpClient: {
         targetKey: "js",
