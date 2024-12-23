@@ -1,11 +1,11 @@
 import type { Account } from "@jobberknoll/core/domain";
-import { isErr, ok } from "@jobberknoll/core/shared";
+import { isErr, ok, uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals } from "@std/assert";
 import { MemoryAccountRepo } from "./memory-account-repo.ts";
 
 Deno.test("getAccountById should return an account if it exists", async () => {
   const account = {
-    id: "0193f4bc-2657-7dcd-895a-c21c45e5b334",
+    id: uuid(),
     type: "passenger",
     fullName: "John Smith",
     email: "john.smith@example.com",
@@ -22,7 +22,7 @@ Deno.test("getAccountById should return an account if it exists", async () => {
 });
 
 Deno.test("getAccountById should return an error if the account does not exist", async () => {
-  const id = "0193f4bc-2657-7dcd-895a-c21c45e5b334";
+  const id = uuid();
   const accountRepo = new MemoryAccountRepo();
 
   const result = await accountRepo.getAccountById(id);

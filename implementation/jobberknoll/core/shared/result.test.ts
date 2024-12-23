@@ -1,37 +1,37 @@
 import { assert, assertEquals } from "@std/assert";
 import { err, isErr, isOk, ok } from "./result.ts";
 
-Deno.test("ok creates an Ok result", () => {
+Deno.test("ok should create an Ok Result", () => {
   const result = ok("test");
 
   assertEquals(result, { tag: "ok", value: "test" });
 });
 
-Deno.test("err creates an Err result", () => {
+Deno.test("err should create an Err Result", () => {
   const result = err("test");
 
   assertEquals(result, { tag: "err", value: "test" });
 });
 
-Deno.test("isOk returns true for Ok results", () => {
+Deno.test("isOk should return true for an Ok Result", () => {
   const result = ok("test");
 
   assert(isOk(result));
 });
 
-Deno.test("isOk returns false for Err results", () => {
+Deno.test("isOk should return false for an Err Result", () => {
   const result = err("test");
 
   assert(!isOk(result));
 });
 
-Deno.test("isErr returns true for Err results", () => {
+Deno.test("isErr should return true for an Err Result", () => {
   const result = err("test");
 
   assert(isErr(result));
 });
 
-Deno.test("isErr returns false for Ok results", () => {
+Deno.test("isErr should return false for an Ok Result", () => {
   const result = ok("test");
 
   assert(!isErr(result));

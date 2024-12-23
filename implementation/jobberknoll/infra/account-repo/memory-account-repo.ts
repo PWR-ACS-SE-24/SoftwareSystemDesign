@@ -4,13 +4,13 @@ import {
   type AccountNotFoundError,
   accountNotFoundError,
 } from "@jobberknoll/core/domain";
-import { err, ok, type Result } from "@jobberknoll/core/shared";
+import { err, ok, type Result, type UUID } from "@jobberknoll/core/shared";
 
 export class MemoryAccountRepo implements AccountRepo {
-  public constructor(private readonly accounts: Record<string, Account> = {}) {}
+  public constructor(private readonly accounts: Record<UUID, Account> = {}) {}
 
   public getAccountById(
-    id: string,
+    id: UUID,
   ): Promise<Result<Account, AccountNotFoundError>> {
     return Promise.resolve(
       id in this.accounts

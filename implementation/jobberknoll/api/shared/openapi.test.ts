@@ -14,7 +14,7 @@ Deno.test("jsonRes should return a response object", () => {
   });
 });
 
-Deno.test("errorDto should validate correct errors", () => {
+Deno.test("errorDto should accept correct errors", () => {
   const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
   const testError = {
     code: 400,
@@ -53,7 +53,7 @@ Deno.test("errorDto should reject mismatched kinds", () => {
   assert(!result.success);
 });
 
-Deno.test("IdParamSchema should validate correct IDs", () => {
+Deno.test("IdParamSchema should accept correct IDs", () => {
   const id = "0193f56a-fdc6-7ac4-b6b5-76402783f36b";
 
   const result = IdParamSchema.safeParse({ id });
