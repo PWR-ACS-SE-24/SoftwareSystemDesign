@@ -1,0 +1,31 @@
+services:
+  clabbert-db:
+    image: "postgres:17"
+    container_name: clabbert-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=clabbert
+      - PGUSER=postgres # To fix fatal error "role "root" does not exist" when running pg_isready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "clabbert"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+      start_period: 1s
+
+  clabbert-app:
+    image: "clabbert"
+    build: .
+    container_name: clabbert-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      clabbert-db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://clabbert-db:5432/clabbert
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
