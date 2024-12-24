@@ -1,4 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import type { Service } from "@jobberknoll/app";
 import denoJson from "~/deno.json" with { type: "json" };
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
@@ -11,6 +12,8 @@ import {
 } from "./routes/mod.ts";
 
 export class IntController implements Controller {
+  public constructor(private readonly service: Service) {}
+
   public get prefix(): string {
     return "/int/v1";
   }
@@ -18,7 +21,10 @@ export class IntController implements Controller {
   public get routes(): OpenAPIHono {
     const app = new OpenAPIHono({ defaultHook })
       .openapi(getHealthRoute, getHealthHandler())
-      .openapi(getAccountByIdRoute, getAccountByIdHandler());
+      .openapi(
+        getAccountByIdRoute,
+        getAccountByIdHandler(this.service.getAccountById),
+      );
 
     configureErrorHandler(app);
 

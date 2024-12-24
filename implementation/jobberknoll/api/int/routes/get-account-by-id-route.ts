@@ -1,10 +1,12 @@
 import { createRoute, type RouteHandler } from "@hono/zod-openapi";
-import { accountNotFoundError } from "@jobberknoll/core/domain";
+import type { GetAccountByIdUseCase } from "@jobberknoll/app";
+import { isOk } from "@jobberknoll/core/shared";
 import {
   AccountDto,
   AccountNotFoundDto,
   SchemaMismatchDto,
 } from "~/shared/contracts/mod.ts";
+import { mapAccountToDto } from "~/shared/mappers/mod.ts";
 import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 
 export const getAccountByIdRoute = createRoute({
@@ -25,8 +27,14 @@ export const getAccountByIdRoute = createRoute({
   },
 });
 
-export function getAccountByIdHandler(): RouteHandler<
-  typeof getAccountByIdRoute
-> {
-  return (c) => c.json(accountNotFoundError(c.req.valid("param").id), 404);
+export function getAccountByIdHandler(
+  getAccountById: GetAccountByIdUseCase,
+): RouteHandler<typeof getAccountByIdRoute> {
+  return async (c) => {
+    const { id } = c.req.valid("param");
+    const res = await getAccountById.invoke(id);
+    return isOk(res)
+      ? c.json(mapAccountToDto(res.value), 200)
+      : c.json(res.value, res.value.code);
+  };
 }

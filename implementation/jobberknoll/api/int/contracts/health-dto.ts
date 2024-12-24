@@ -39,3 +39,5 @@ export const HealthDto = z
       },
     ],
   });
+
+export type HealthDto = z.infer<typeof HealthDto>;

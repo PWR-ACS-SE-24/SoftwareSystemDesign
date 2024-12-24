@@ -32,3 +32,5 @@ export const AccountDto = z.object({
     phoneNumber: "+48 123 456 789",
   }],
 });
+
+export type AccountDto = z.infer<typeof AccountDto>;

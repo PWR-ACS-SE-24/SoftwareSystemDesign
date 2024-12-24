@@ -100,7 +100,7 @@ Well known error codes and kinds are presented below:
 Pagination follows the [Spring Boot conventions](https://docs.spring.io/spring-data/rest/reference/paging-and-sorting.html). The query parameters are:
 
 - `page` - page number, starting from 0 inclusively (default: 0)
-- `size` - page size, starting from 1 inclusively, up to 100 inclusively (default: 50)
+- `size` - page size, starting from 1 inclusively, up to 100 inclusively (default: 10)
 
 Example paginated request looks like this:
 
