@@ -1,3 +1,4 @@
+import type { z } from "@hono/zod-openapi";
 import { errorDto } from "~/shared/openapi.ts";
 
 export const ServerFailureDto = errorDto(
@@ -6,3 +7,5 @@ export const ServerFailureDto = errorDto(
   "server-failure",
   "An unexpected server failure occurred.",
 );
+
+export type ServerFailureDto = z.infer<typeof ServerFailureDto>;

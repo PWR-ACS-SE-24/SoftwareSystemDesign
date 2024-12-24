@@ -1,3 +1,4 @@
+import type { z } from "@hono/zod-openapi";
 import { errorDto } from "~/shared/openapi.ts";
 
 export const SchemaMismatchDto = errorDto(
@@ -6,3 +7,5 @@ export const SchemaMismatchDto = errorDto(
   "schema-mismatch",
   "The request data did not align with the schema.",
 );
+
+export type SchemaMismatchDto = z.infer<typeof SchemaMismatchDto>;
