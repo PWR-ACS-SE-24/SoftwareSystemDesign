@@ -1,19 +1,16 @@
 import type { Hook, OpenAPIHono, z } from "@hono/zod-openapi";
 import type { Env, ErrorHandler } from "hono";
-import {
-  ServerFailureDto,
-  type UnprocessableEntityDto,
-} from "./contracts/mod.ts";
+import { type SchemaMismatchDto, ServerFailureDto } from "./contracts/mod.ts";
 
 export const defaultHook: Hook<unknown, Env, string, unknown> = (res, c) => {
   if (!res.success) {
     return c.json(
       {
         code: 422,
-        kind: "unprocessable-entity",
+        kind: "schema-mismatch",
         messageEn: "The request data did not align with the schema!",
         messagePl: "Dane zapytania nie zgadzają się ze schematem!",
-      } satisfies z.infer<typeof UnprocessableEntityDto>,
+      } satisfies z.infer<typeof SchemaMismatchDto>,
       422,
     );
   }

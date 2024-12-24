@@ -3,7 +3,7 @@ import { accountNotFoundError } from "@jobberknoll/core/domain";
 import {
   AccountDto,
   AccountNotFoundDto,
-  UnprocessableEntityDto,
+  SchemaMismatchDto,
 } from "~/shared/contracts/mod.ts";
 import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 
@@ -19,7 +19,7 @@ export const getAccountByIdRoute = createRoute({
     200: jsonRes(AccountDto, "Retrieved account by ID."),
     404: jsonRes(AccountNotFoundDto, "The account could not be found."),
     422: jsonRes(
-      UnprocessableEntityDto,
+      SchemaMismatchDto,
       "The request data did not align with the schema.",
     ),
   },

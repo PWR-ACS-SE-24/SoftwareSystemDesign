@@ -1,8 +1,8 @@
 import { errorDto } from "~/shared/openapi.ts";
 
-export const UnprocessableEntityDto = errorDto(
-  "UnprocessableEntityDto",
+export const SchemaMismatchDto = errorDto(
+  "SchemaMismatchDto",
   422,
-  "unprocessable-entity",
+  "schema-mismatch",
   "The request data did not align with the schema.",
 );
