@@ -1,11 +1,11 @@
 import { createRoute, type RouteHandler } from "@hono/zod-openapi";
 import { accountNotFoundError } from "@jobberknoll/core/domain";
-import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 import {
   AccountDto,
   AccountNotFoundDto,
   UnprocessableEntityDto,
-} from "../contracts/mod.ts";
+} from "~/shared/contracts/mod.ts";
+import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 
 export const getAccountByIdRoute = createRoute({
   method: "get",

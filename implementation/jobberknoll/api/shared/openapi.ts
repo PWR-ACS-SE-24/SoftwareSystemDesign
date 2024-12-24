@@ -37,6 +37,6 @@ export const IdParamSchema = z.object({
       in: "path",
     },
     description: "Resource identifier as UUIDv7.",
-    examples: ["0193f54e-aefd-7133-8a1a-9f009bf0b36e"],
+    examples: [uuid()],
   }),
 });

@@ -1,4 +1,5 @@
 import { z } from "@hono/zod-openapi";
+import { uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals } from "@std/assert";
 import { errorDto, IdParamSchema, jsonRes } from "./openapi.ts";
 
@@ -54,7 +55,7 @@ Deno.test("errorDto should reject mismatched kinds", () => {
 });
 
 Deno.test("IdParamSchema should accept correct IDs", () => {
-  const id = "0193f56a-fdc6-7ac4-b6b5-76402783f36b";
+  const id = uuid();
 
   const result = IdParamSchema.safeParse({ id });
 

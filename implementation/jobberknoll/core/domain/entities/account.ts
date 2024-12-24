@@ -1,6 +1,29 @@
-import type { Admin } from "./admin.ts";
-import type { Driver } from "./driver.ts";
-import type { Inspector } from "./inspector.ts";
-import type { Passenger } from "./passenger.ts";
+import type { UUID } from "@jobberknoll/core/shared";
+
+type AccountBase = {
+  id: UUID;
+  fullName: string;
+  email: string;
+  hashedPassword: string;
+  isActive: boolean;
+  lastModified: number;
+};
+
+export type Passenger = AccountBase & {
+  type: "passenger";
+  phoneNumber?: string;
+};
+
+export type Driver = AccountBase & {
+  type: "driver";
+};
+
+export type Admin = AccountBase & {
+  type: "admin";
+};
+
+export type Inspector = AccountBase & {
+  type: "inspector";
+};
 
 export type Account = Passenger | Driver | Admin | Inspector;
