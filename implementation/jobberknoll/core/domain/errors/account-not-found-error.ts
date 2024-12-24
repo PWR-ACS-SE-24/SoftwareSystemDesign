@@ -10,7 +10,7 @@ export function accountNotFoundError(id: UUID): AccountNotFoundError {
   return {
     code: 404 as const,
     kind: "account-not-found" as const,
-    messageEn: `Account with ID "${id}" was not found!`,
-    messagePl: `Konto o ID "${id}" nie zostało znalezione!`,
+    messageEn: `Account with ID {${id}} was not found!`,
+    messagePl: `Konto o ID {${id}} nie zostało znalezione!`,
   } satisfies AppError;
 }
