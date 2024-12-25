@@ -21,12 +21,3 @@ Deno.test(
     assert(isErr(result));
   },
 );
-
-Deno.test("getAccountById should return account-not-found if the account is inactive", async () => {
-  const inactiveAccount = { ...accountMock, isActive: false };
-  const accountRepo = new MemoryAccountRepo([inactiveAccount]);
-
-  const result = await accountRepo.getAccountById(inactiveAccount.id);
-
-  assert(isErr(result));
-});

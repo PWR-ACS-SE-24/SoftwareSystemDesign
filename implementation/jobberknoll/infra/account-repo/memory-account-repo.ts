@@ -19,7 +19,7 @@ export class MemoryAccountRepo implements AccountRepo {
     id: UUID,
   ): Promise<Result<Account, AccountNotFoundError>> {
     return Promise.resolve(
-      (id in this.accounts && this.accounts[id].isActive)
+      (id in this.accounts)
         ? ok(this.accounts[id])
         : err(accountNotFoundError(id)),
     );

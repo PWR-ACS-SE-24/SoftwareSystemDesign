@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertNotEquals } from "@std/assert";
 import { isNone, isSome } from "./option.ts";
 import { uuid } from "./uuid.ts";
 
@@ -6,6 +6,13 @@ Deno.test("uuid should generate a string with correct length", () => {
   const id = uuid();
 
   assertEquals(id.length, 36);
+});
+
+Deno.test("uuid should generate unique strings", () => {
+  const id1 = uuid();
+  const id2 = uuid();
+
+  assertNotEquals(id1, id2);
 });
 
 Deno.test("uuid should accept its own output", () => {
