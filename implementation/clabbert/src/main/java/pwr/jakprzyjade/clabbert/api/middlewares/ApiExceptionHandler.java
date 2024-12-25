@@ -31,7 +31,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException exception, WebRequest request) {
+    public ResponseEntity<ErrorDto> handleNoHandlerFoundException(NoHandlerFoundException exception, WebRequest request) {
         var body = ErrorDto.builder()
                 .code(HttpStatus.NOT_FOUND.value())
                 .kind("not-found")
@@ -43,7 +43,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAll(Exception exception, WebRequest request) {
+    public ResponseEntity<ErrorDto> handleAll(Exception exception, WebRequest request) {
         var body = ErrorDto.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .kind("internal-server-error")
