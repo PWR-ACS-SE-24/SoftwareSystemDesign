@@ -23,20 +23,24 @@ public class SpringMediator implements Mediator {
             throw new NullPointerException("The given request object cannot be null");
         }
 
-        final var requestType = request.getClass();
-        final var responseType = (Class<TResponse>) ((ParameterizedType) requestType.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        var handlers = getBeanNames(RequestHandler.class, request);
 
-        final var beanNames = context.getBeanNamesForType(ResolvableType.forClassWithGenerics(RequestHandler.class, requestType, responseType));
-
-        if (beanNames.length == 0) {
-            throw new IllegalStateException("No handlers seemed to be registered to handle the given request. Make sure the handler is defined and marked as a spring component");
-        } else if (beanNames.length > 1) {
+        if (handlers.length == 0) {
+            throw new IllegalStateException("No handlers seemed to be registered to handle the given request.");
+        } else if (handlers.length > 1) {
             throw new IllegalStateException("More than one handlers found. Only one handler per request is allowed.");
         }
 
-        final var requestHandler = (RequestHandler<Request<TResponse>, TResponse>) context.getBean(beanNames[0]);
+        final var requestHandler = (RequestHandler<Request<TResponse>, TResponse>) context.getBean(handlers[0]);
 
         return requestHandler.handle(request);
+    }
+
+    private <TResponse> String[] getBeanNames(Class<?> searchedType, Request<TResponse> request) {
+        final var requestType = request.getClass();
+        final var responseType = (Class<TResponse>) ((ParameterizedType) requestType.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+
+        return context.getBeanNamesForType(ResolvableType.forClassWithGenerics(searchedType, requestType, responseType));
     }
 
 }
