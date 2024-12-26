@@ -31,6 +31,7 @@ public class SpringMediator implements Mediator {
                     "More than one handlers found. Only one handler per request is allowed.");
         }
 
+        @SuppressWarnings("unchecked")
         final var requestHandler =
                 (RequestHandler<Request<TResponse>, TResponse>) context.getBean(handlers[0]);
 
@@ -39,6 +40,8 @@ public class SpringMediator implements Mediator {
 
     private <TResponse> String[] getBeanNames(Class<?> searchedType, Request<TResponse> request) {
         final var requestType = request.getClass();
+
+        @SuppressWarnings("unchecked")
         final var responseType =
                 (Class<TResponse>)
                         ((ParameterizedType) requestType.getGenericInterfaces()[0])
