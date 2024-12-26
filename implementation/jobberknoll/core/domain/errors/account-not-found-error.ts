@@ -8,9 +8,9 @@ export type AccountNotFoundError = AppError & {
 
 export function accountNotFoundError(id: UUID): AccountNotFoundError {
   return {
-    code: 404 as const,
-    kind: "account-not-found" as const,
+    code: 404,
+    kind: "account-not-found",
     messageEn: `Account with ID {${id}} was not found!`,
     messagePl: `Konto o ID {${id}} nie zostało znalezione!`,
-  } satisfies AppError;
+  } as const;
 }
