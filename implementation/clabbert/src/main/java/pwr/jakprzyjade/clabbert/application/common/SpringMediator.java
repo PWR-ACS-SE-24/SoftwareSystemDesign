@@ -1,3 +1,4 @@
+/* @jakubzehner (C) 2024 */
 package pwr.jakprzyjade.clabbert.application.common;
 
 import java.lang.reflect.ParameterizedType;
