@@ -1,0 +1,55 @@
+name: clabbert-ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "implemntation/clabbert/**"
+      - ".github/workflows/clabbert.yml"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+    branches:
+      - main
+    paths:
+      - "implemntation/clabbert/**"
+      - ".github/workflows/clabbert.yml"
+
+jobs:
+  build:
+    if: github.event.pull_request.draft == false
+    name: Build and test project
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: implementation/clabbert
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "microsoft"
+
+      - name: Check formatting
+        run: ./gradlew spotlessCheck
+
+      - name: Run Build
+        run: ./gradlew assemble
+
+      - name: Run Unit Tests
+        run: ./gradlew test
+
+      - name: Run Integration Tests
+        run: ./gradlew integrationTest
