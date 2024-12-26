@@ -9,5 +9,4 @@ public class ClabbertApplication {
     public static void main(String[] args) {
         SpringApplication.run(ClabbertApplication.class, args);
     }
-
 }

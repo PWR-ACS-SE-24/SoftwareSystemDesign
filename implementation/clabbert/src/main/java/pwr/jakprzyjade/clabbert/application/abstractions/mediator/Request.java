@@ -7,5 +7,4 @@ package pwr.jakprzyjade.clabbert.application.abstractions.mediator;
  * @param <TResponse> The type of the response expected from handling this
  * request.
  */
-public interface Request<TResponse> {
-}
+public interface Request<TResponse> {}

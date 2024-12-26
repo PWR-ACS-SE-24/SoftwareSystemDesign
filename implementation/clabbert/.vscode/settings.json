@@ -1,0 +1,19 @@
+{
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "editor.indentSize": 4,
+  "java.format.enabled": false,
+  "[java]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": null
+  },
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.java$",
+        "cmd": "rf=${relativeFile}; gradle -PprojSpotlessTarget=${rf} spotlessApply --project-dir ${workspaceFolder}; echo ${rf}; echo ${workspaceFolder}"
+      }
+    ]
+  },
+  "jdk.java.onSave.organizeImports": false
+}

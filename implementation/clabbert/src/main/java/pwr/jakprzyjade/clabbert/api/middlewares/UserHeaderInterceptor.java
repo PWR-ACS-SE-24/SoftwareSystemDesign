@@ -1,15 +1,13 @@
 package pwr.jakprzyjade.clabbert.api.middlewares;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import pwr.jakprzyjade.clabbert.api.annotations.UserRoles;
 import pwr.jakprzyjade.clabbert.domain.UserRole;
 import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserIdHeaderMissing;
@@ -20,10 +18,13 @@ import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserUnauthorized
 @Component
 public class UserHeaderInterceptor implements HandlerInterceptor {
 
-    static private final List<String> supportedRoles = Arrays.stream(UserRole.values()).map(Enum::name).toList();
+    private static final List<String> supportedRoles =
+            Arrays.stream(UserRole.values()).map(Enum::name).toList();
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         var userId = request.getHeader("user-id");
         var userRole = request.getHeader("user-role");
 
@@ -42,8 +43,7 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
             throw new UserIdHeaderMissing();
         }
 
-        if (requiredRoles.isPresent()
-                && !List.of(requiredRoles.get()).contains(userRoleEnum)) {
+        if (requiredRoles.isPresent() && !List.of(requiredRoles.get()).contains(userRoleEnum)) {
             throw new UserUnauthorized();
         }
 

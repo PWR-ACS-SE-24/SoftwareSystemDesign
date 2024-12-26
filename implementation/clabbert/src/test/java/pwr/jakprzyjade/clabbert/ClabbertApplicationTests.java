@@ -12,5 +12,4 @@ class ClabbertApplicationTests {
     void testTest() {
         Assertions.assertThat(2 + 2).isEqualTo(4);
     }
-
 }
