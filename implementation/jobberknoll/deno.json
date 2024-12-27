@@ -2,7 +2,8 @@
   "version": "0.2.0",
   "workspace": ["api", "app", "core", "infra"],
   "tasks": {
-    "dev": "deno run --allow-net --allow-env main.ts"
+    "dev": "deno run --allow-net --allow-env main.ts",
+    "compile": "deno compile --allow-net --allow-env --output jobberknoll main.ts"
   },
   "imports": {
     "$workspace": "./deno.json",

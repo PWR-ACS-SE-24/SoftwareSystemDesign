@@ -1,0 +1,13 @@
+services:
+  jobberknoll-app:
+    build: "."
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/int/v1/health"]
+      interval: 1m
+      timeout: 5s
+      start_period: 10s
+      start_interval: 1s
