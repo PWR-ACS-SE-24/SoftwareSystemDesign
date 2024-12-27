@@ -28,30 +28,22 @@ Deno.test("errorDto should accept correct errors", () => {
   assert(result.success);
 });
 
-Deno.test("errorDto should reject mismatched codes", () => {
+Deno.test("errorDto should reject mismatched codes and kinds", () => {
   const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
-  const testError = {
-    code: 401,
-    kind: "test",
-    messageEn: "Test error message.",
-  };
 
-  const result = TestDto.safeParse(testError);
+  for (
+    const [code, kind] of [
+      [401, "test"],
+      [400, "wrong"],
+      [402, "wrong"],
+    ] as const
+  ) {
+    const testError = { code, kind, messageEn: "Message." };
 
-  assert(!result.success);
-});
+    const result = TestDto.safeParse(testError);
 
-Deno.test("errorDto should reject mismatched kinds", () => {
-  const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
-  const testError = {
-    code: 400,
-    kind: "test2",
-    messageEn: "Test error message.",
-  };
-
-  const result = TestDto.safeParse(testError);
-
-  assert(!result.success);
+    assert(!result.success);
+  }
 });
 
 Deno.test("IdParamSchema should accept correct IDs", () => {
