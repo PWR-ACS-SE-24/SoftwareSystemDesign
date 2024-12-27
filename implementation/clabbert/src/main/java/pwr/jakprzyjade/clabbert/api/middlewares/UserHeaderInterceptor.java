@@ -57,7 +57,7 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
         var userRoleEnum = UserRole.valueOf(userRole.toUpperCase());
         var requiredRoles = getRequiredRoles(handler);
 
-        if (requiredRoles.isPresent() && !List.of(requiredRoles.get()).contains(userRoleEnum)) {
+        if (requiredRoles.map(roles -> !roles.contains(userRoleEnum)).orElse(false)) {
             throw new UserUnauthorizedException();
         }
 
@@ -66,16 +66,16 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private Optional<UserRole[]> getRequiredRoles(Object handler) {
+    private Optional<List<UserRole>> getRequiredRoles(Object handler) {
         if (handler instanceof HandlerMethod handlerMethod) {
             var methodAnnotation = handlerMethod.getMethodAnnotation(UserRoles.class);
             if (methodAnnotation != null) {
-                return Optional.of(methodAnnotation.value());
+                return Optional.of(Arrays.asList(methodAnnotation.value()));
             }
 
             var classAnnotation = handlerMethod.getBeanType().getAnnotation(UserRoles.class);
             if (classAnnotation != null) {
-                return Optional.of(classAnnotation.value());
+                return Optional.of(Arrays.asList(classAnnotation.value()));
             }
         }
         return Optional.empty();
