@@ -1,4 +1,4 @@
-import { generate, validate } from "@std/uuid/unstable-v7";
+import { v7 as generate, validate, version } from "uuid";
 import { none, type Option, some } from "./option.ts";
 
 const __brand: unique symbol = Symbol("UUID");
@@ -11,7 +11,7 @@ export function uuid(text?: string): UUID | Option<UUID> {
     return generate() as UUID;
   }
 
-  if (validate(text)) {
+  if (validate(text) && version(text) === 7) {
     return some(text as UUID);
   }
 
