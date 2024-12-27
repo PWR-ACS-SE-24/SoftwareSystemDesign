@@ -1,6 +1,6 @@
+import workspace from "$workspace" with { type: "json" };
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Service } from "@jobberknoll/app";
-import denoJson from "~/deno.json" with { type: "json" };
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
 import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
@@ -31,7 +31,7 @@ export class IntController implements Controller {
     configureDocs(app, {
       path: this.prefix,
       title: "Jobberknoll Internal API",
-      version: denoJson.version,
+      version: workspace.version,
       description: "The internal API for JakPrzyjade account management.",
       externalDocs: {
         url: "https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign",
