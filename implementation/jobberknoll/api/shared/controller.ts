@@ -1,6 +1,6 @@
 import type { OpenAPIHono } from "@hono/zod-openapi";
 
-export interface Controller {
+export type Controller = {
   prefix: string;
   routes: OpenAPIHono;
-}
+};
