@@ -3,7 +3,7 @@ import { setupProd } from "./setup.ts";
 
 if (import.meta.main) {
   const { app, logger } = setupProd();
-  // TODO @tchojnacki: Set up CI/CD
+
   Deno.serve(
     {
       port: envPort(),
@@ -12,6 +12,6 @@ if (import.meta.main) {
           addr: `http://${addr.hostname}:${addr.port}`,
         }),
     },
-    app.fetch,
+    app.fetch
   );
 }
