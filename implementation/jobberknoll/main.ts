@@ -12,6 +12,6 @@ if (import.meta.main) {
           addr: `http://${addr.hostname}:${addr.port}`,
         }),
     },
-    app.fetch
+    app.fetch,
   );
 }
