@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import pwr.jakprzyjade.clabbert.domain.exceptions.AbstractException;
 
 @Getter
-public class UserUnauthorized extends AbstractException {
+public class UserUnauthorizedException extends AbstractException {
 
-    public UserUnauthorized() {
+    public UserUnauthorizedException() {
         super(
                 HttpStatus.UNAUTHORIZED,
                 "User is unauthorized to perform this operation",

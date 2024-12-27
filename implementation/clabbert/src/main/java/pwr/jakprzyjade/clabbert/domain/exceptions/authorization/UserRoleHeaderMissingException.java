@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 import pwr.jakprzyjade.clabbert.domain.exceptions.AbstractException;
 
 @Getter
-public class UserRoleHeaderMissing extends AbstractException {
+public class UserRoleHeaderMissingException extends AbstractException {
 
-    public UserRoleHeaderMissing() {
+    public UserRoleHeaderMissingException() {
         super(
                 HttpStatus.BAD_REQUEST,
-                "user-role header is missing",
-                "Brak nagłówka user-role w żądaniu");
+                "jp-user-role header is missing",
+                "Brak nagłówka jp-user-role w żądaniu");
     }
 }

@@ -21,7 +21,8 @@ public class ApiExceptionHandler {
                         .getClass()
                         .getSimpleName()
                         .replaceAll("([a-z])([A-Z])", "$1-$2")
-                        .toLowerCase();
+                        .toLowerCase()
+                        .replace("-exception", "");
 
         var body =
                 ErrorDto.builder()
@@ -53,7 +54,7 @@ public class ApiExceptionHandler {
         var body =
                 ErrorDto.builder()
                         .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                        .kind("internal-server-error")
+                        .kind("server-failure")
                         .messageEn("An internal server error occurred.")
                         .messagePl("Wystąpił wewnętrzny błąd serwera.")
                         .build();

@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 import pwr.jakprzyjade.clabbert.domain.exceptions.AbstractException;
 
 @Getter
-public class UserIdHeaderMissing extends AbstractException {
+public class UserRoleNotSupportedException extends AbstractException {
 
-    public UserIdHeaderMissing() {
+    public UserRoleNotSupportedException() {
         super(
                 HttpStatus.BAD_REQUEST,
-                "user-id header is missing",
-                "Brak nagłówka user-id w żądaniu");
+                "User role is not supported by service",
+                "Rola użytkownika nie jest obsługiwana przez serwis");
     }
 }

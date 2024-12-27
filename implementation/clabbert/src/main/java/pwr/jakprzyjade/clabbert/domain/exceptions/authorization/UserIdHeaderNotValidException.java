@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 import pwr.jakprzyjade.clabbert.domain.exceptions.AbstractException;
 
 @Getter
-public class UserRoleNotSupported extends AbstractException {
+public class UserIdHeaderNotValidException extends AbstractException {
 
-    public UserRoleNotSupported() {
+    public UserIdHeaderNotValidException() {
         super(
                 HttpStatus.BAD_REQUEST,
-                "User role is not supported by service",
-                "Rola użytkownika nie jest obsługiwana przez serwis");
+                "jp-user-id header is not valid UUID",
+                "Nagłówek jp-user-id nie jest poprawnym UUID");
     }
 }
