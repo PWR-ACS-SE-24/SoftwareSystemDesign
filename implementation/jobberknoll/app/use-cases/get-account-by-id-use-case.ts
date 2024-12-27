@@ -23,7 +23,10 @@ export class GetAccountByIdUseCase extends UseCase<
   Account,
   AccountNotFoundError
 > {
-  constructor(private readonly accountRepo: AccountRepo, logger: Logger) {
+  public constructor(
+    private readonly accountRepo: AccountRepo,
+    logger: Logger,
+  ) {
     super(logger);
   }
 

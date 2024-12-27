@@ -1,4 +1,6 @@
 import { createRoute, type RouteHandler } from "@hono/zod-openapi";
+import type { GetHealthUseCase } from "@jobberknoll/app";
+import { expect, uuid } from "@jobberknoll/core/shared";
 import { jsonRes } from "~/shared/openapi.ts";
 import { HealthDto } from "../contracts/mod.ts";
 
@@ -21,7 +23,15 @@ export const getHealthRoute = createRoute({
   },
 });
 
-export function getHealthHandler(): RouteHandler<typeof getHealthRoute> {
-  // TODO @tchojnacki: Extract this logic to the application layer
-  return (c) => c.json({ status: "UP" }, 200);
+export function getHealthHandler(
+  getHealth: GetHealthUseCase,
+): RouteHandler<typeof getHealthRoute> {
+  return async (c) => {
+    const serviceHealth = expect(
+      await getHealth.invoke(null, uuid()),
+      "service health request should never fail",
+    );
+    const code = ["UP", "UNKNOWN"].includes(serviceHealth.status) ? 200 : 503;
+    return c.json(serviceHealth, code);
+  };
 }

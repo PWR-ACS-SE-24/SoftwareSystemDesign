@@ -23,7 +23,10 @@ export class IntController implements Controller {
 
   public get routes(): OpenAPIHono {
     const app = new OpenAPIHono({ defaultHook })
-      .openapi(getHealthRoute, getHealthHandler())
+      .openapi(
+        getHealthRoute,
+        getHealthHandler(this.service.getHealth),
+      )
       .openapi(
         getAccountByIdRoute,
         getAccountByIdHandler(this.service.getAccountById),

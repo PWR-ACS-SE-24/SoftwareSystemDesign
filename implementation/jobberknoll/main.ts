@@ -1,4 +1,4 @@
-import { PORT } from "@jobberknoll/app";
+import { envPort } from "./app/mod.ts";
 import { setupProd } from "./setup.ts";
 
 if (import.meta.main) {
@@ -7,7 +7,7 @@ if (import.meta.main) {
   // TODO @tchojnacki: Set up CI/CD
   Deno.serve(
     {
-      port: PORT,
+      port: envPort(),
       onListen: (addr) => logger.info(null, "listen", { addr }),
     },
     app.fetch,
