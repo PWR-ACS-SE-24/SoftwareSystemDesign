@@ -1,3 +1,4 @@
+/* @jakubzehner (C) 2024 */
 package pwr.jakprzyjade.clabbert;
 
 import org.assertj.core.api.Assertions;
@@ -12,5 +13,4 @@ class ClabbertApplicationTests {
     void testTest() {
         Assertions.assertThat(2 + 2).isEqualTo(4);
     }
-
 }
