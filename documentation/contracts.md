@@ -214,17 +214,15 @@ Other services MUST accept well-known headers on all incoming requests and SHOUL
 
 Other services SHOULD discard well-known headers on all outgoing requests to the outside of the system for security reasons.
 
-If the `jp-request-id` header is missing, the service SHOULD generate a new one themselves and pass it along to any outgoing internal requests. This is to support requests, which are not initiated by Phoenix or other services (e.g. testing, debugging, OpenAPI). The `jp-request-id` header is to be expected on both internal (`/int`) and external (`/ext`) incoming requests. The request ID SHOULD be included in all service logs. The request ID MAY be abbreviated in the logs, to the last N characters.
+Other services SHOULD set the `user-agent` header to the name of the service, followed by its semantic version, e.g. `Jobberknoll/0.1.0`, `Clabbert/1.2.3` for any outgoing internal requests.
 
-Incoming requests to external (`/ext`) endpoints SHOULD require `jp-user-id` and `jp-user-role` headers to be present.
+If the `jp-request-id` header is missing, the service SHOULD generate a new one themselves and pass it along to any outgoing internal requests. This is to support requests, which are not initiated by Phoenix or other services (e.g. testing, debugging, OpenAPI). The `jp-request-id` header is to be expected on both internal (`/int`) and external (`/ext`) incoming requests. The request ID SHOULD be included in all service logs. The request ID MAY be abbreviated in the logs, to the last N characters. This header SHOULD be expected on all incoming requests to both internal (`/int`) and external (`/ext`) endpoints.
 
-Incoming requests to internal (`/int`) endpoints SHOULD NOT require `jp-user-id` and `jp-user-role` headers to be present, but they SHOULD be accepted if they are present.
+The `jp-user-id` header SHOULD be required on all incoming requests to external (`/ext`) endpoints and MAY be present on incoming requests to internal (`/int`) endpoints. The `jp-user-id` header SHOULD be passed along to other services without any modifications. The service SHOULD include the `jp-user-id` header in all outgoing requests to external (`/ext`) endpoints. The `jp-user-id` header MAY be included in outgoing requests to internal (`/int`) endpoints. The `jp-user-id` header's value SHOULD be validated in each service.
 
-Outgoing requests to external (`/ext`) endpoints of other services SHOULD include `user-agent`, `jp-user-id`, `jp-user-role`, and `jp-request-id` headers.
+The `jp-user-role` header SHOULD be required on all incoming requests to external (`/ext`) endpoints and MAY be present on incoming requests to internal (`/int`) endpoints. The `jp-user-role` header SHOULD be passed along to other services without any modifications. The service SHOULD include the `jp-user-role` header in all outgoing requests to external (`/ext`) endpoints. The `jp-user-role` header MAY be included in outgoing requests to internal (`/int`) endpoints. The use cases for `member` SHOULD accept all of `passenger`, `driver`, `admin` and `inspector`. The `jp-user-role` header's value SHOULD be validated in each service.
 
-Outgoing requests to internal (`/int`) endpoints of other services SHOULD include `user-agent` and `jp-request-id` headers and MAY include `jp-user-id` and `jp-user-role` headers.
-
-The `jp-user-id` and `jp-user-role` headers SHOULD be passed along without any modifications. The `user-agent` header SHOULD be set accordingly and SHOULD NOT be passed along from the incoming request. The `jp-request-id` header SHOULD be passed along without any modifications (exception: it can be generated if it was previously missing).
+The Feather sidecar SHOULD NOT require the `jp-user-id` and `jp-user-role` headers to be present in any the incoming requests. It SHOULD accept the `user-agent` and `jp-request-id` headers and use them for logging purposes. It SHOULD NOT set the `jp-user-id` and `jp-user-role` headers in any outgoing requests, should set the `user-agent` to `Feather/1.0.0` (or any other version) and SHOULD pass the `jp-request-id` header along.
 
 ## Environment variables
 
