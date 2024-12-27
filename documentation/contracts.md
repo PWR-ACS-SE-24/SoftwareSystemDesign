@@ -106,14 +106,12 @@ type AppError = {
 ```
 
 ```Java
-@Data
-@AllArgsConstructor
-public class AppError {
-    @NotNull private final int code;
-    @NotNull private final String kind;
-    @NotNull private final String messageEn;
-    private final String messagePl;
-}
+public record AppError(
+    int code,
+    String kind, // not null
+    String messageEn, // not null
+    String messagePl
+) {}
 ```
 
 Well known error codes and kinds are presented below:
