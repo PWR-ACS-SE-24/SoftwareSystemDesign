@@ -4,7 +4,7 @@ import { none, type Option, some } from "./option.ts";
 const __brand: unique symbol = Symbol("UUID");
 export type UUID = string & { readonly __brand: typeof __brand };
 
-export const NIL_UUID = "00000000-0000-0000-0000-000000000000" as UUID;
+export const NIL_UUID = NIL as UUID;
 
 export function uuid(): UUID;
 export function uuid(text: string): Option<UUID>;
