@@ -1,6 +1,6 @@
 import workspace from "$workspace" with { type: "json" };
 import { OpenAPIHono } from "@hono/zod-openapi";
-import type { Service } from "@jobberknoll/app";
+import type { Logger, Service } from "@jobberknoll/app";
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
 import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
@@ -12,7 +12,10 @@ import {
 } from "./routes/mod.ts";
 
 export class IntController implements Controller {
-  public constructor(private readonly service: Service) {}
+  public constructor(
+    private readonly service: Service,
+    private readonly logger: Logger,
+  ) {}
 
   public get prefix(): string {
     return "/int/v1";
@@ -26,7 +29,7 @@ export class IntController implements Controller {
         getAccountByIdHandler(this.service.getAccountById),
       );
 
-    configureErrorHandler(app);
+    configureErrorHandler(app, this.logger);
 
     configureDocs(app, {
       path: this.prefix,
