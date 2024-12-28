@@ -8,10 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 @Component
 public class InfoHeaderInterceptor implements HandlerInterceptor {
@@ -30,27 +28,17 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
             @NonNull Object handler)
             throws Exception {
         var requestId = request.getHeader("jp-request-id");
+        var requestIdUUID =
+                requestId == null || !UUID_REGEX.matcher(requestId).matches()
+                        ? UUID_GENERATOR.generate()
+                        : UUID.fromString(requestId);
 
-        if (requestId == null || !UUID_REGEX.matcher(requestId).matches()) {
-            request.setAttribute("requestId", UUID_GENERATOR.generate());
-        } else {
-            request.setAttribute("requestId", requestId);
-        }
-
-        return true;
-    }
-
-    @Override
-    public void postHandle(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull Object handler,
-            @Nullable ModelAndView modelAndView)
-            throws Exception {
-        var requestId = (UUID) request.getAttribute("requestId");
-        response.setHeader("jp-request-id", requestId.toString());
+        request.setAttribute("requestId", requestIdUUID);
+        response.setHeader("jp-request-id", requestIdUUID.toString());
 
         var version = getClass().getPackage().getImplementationVersion();
         response.setHeader("user-agent", "Clabbert/" + version);
+
+        return true;
     }
 }
