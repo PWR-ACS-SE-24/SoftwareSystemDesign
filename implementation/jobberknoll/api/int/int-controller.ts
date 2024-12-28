@@ -1,6 +1,6 @@
+import workspace from "$workspace" with { type: "json" };
 import { OpenAPIHono } from "@hono/zod-openapi";
-import type { Service } from "@jobberknoll/app";
-import denoJson from "~/deno.json" with { type: "json" };
+import type { Logger, Service } from "@jobberknoll/app";
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
 import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
@@ -12,7 +12,10 @@ import {
 } from "./routes/mod.ts";
 
 export class IntController implements Controller {
-  public constructor(private readonly service: Service) {}
+  public constructor(
+    private readonly service: Service,
+    private readonly logger: Logger,
+  ) {}
 
   public get prefix(): string {
     return "/int/v1";
@@ -20,18 +23,21 @@ export class IntController implements Controller {
 
   public get routes(): OpenAPIHono {
     const app = new OpenAPIHono({ defaultHook })
-      .openapi(getHealthRoute, getHealthHandler())
+      .openapi(
+        getHealthRoute,
+        getHealthHandler(this.service.getHealth),
+      )
       .openapi(
         getAccountByIdRoute,
         getAccountByIdHandler(this.service.getAccountById),
       );
 
-    configureErrorHandler(app);
+    configureErrorHandler(app, this.logger);
 
     configureDocs(app, {
       path: this.prefix,
       title: "Jobberknoll Internal API",
-      version: denoJson.version,
+      version: workspace.version,
       description: "The internal API for JakPrzyjade account management.",
       externalDocs: {
         url: "https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign",

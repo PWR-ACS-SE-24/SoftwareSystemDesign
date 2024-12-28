@@ -1,6 +1,5 @@
 {
   "name": "@jobberknoll/core",
-  "version": "0.1.0",
   "exports": {
     "./domain": "./domain/mod.ts",
     "./shared": "./shared/mod.ts"

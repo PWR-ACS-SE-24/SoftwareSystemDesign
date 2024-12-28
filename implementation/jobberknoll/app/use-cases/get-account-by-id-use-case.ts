@@ -11,24 +11,32 @@ import {
   type UUID,
 } from "@jobberknoll/core/shared";
 import type { AccountRepo } from "~/interfaces/mod.ts";
+import type { Logger } from "~/shared/mod.ts";
 import { UseCase } from "./use-case.ts";
 
+type GetAccountByIdReq = {
+  accountId: UUID;
+};
+
 export class GetAccountByIdUseCase extends UseCase<
-  UUID,
+  GetAccountByIdReq,
   Account,
   AccountNotFoundError
 > {
-  constructor(private readonly accountRepo: AccountRepo) {
-    super();
+  public constructor(
+    private readonly accountRepo: AccountRepo,
+    logger: Logger,
+  ) {
+    super(logger);
   }
 
   protected async handle(
-    id: UUID,
+    { accountId }: GetAccountByIdReq,
   ): Promise<Result<Account, AccountNotFoundError>> {
-    const account = await this.accountRepo.getAccountById(id);
+    const account = await this.accountRepo.getAccountById(accountId);
     if (isOk(account) && account.value.isActive) {
       return ok(account.value);
     }
-    return err(accountNotFoundError(id));
+    return err(accountNotFoundError(accountId));
   }
 }

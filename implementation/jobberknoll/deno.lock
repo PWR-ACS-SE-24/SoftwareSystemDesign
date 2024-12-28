@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@std/assert@^1.0.10": "1.0.10",
+    "jsr:@std/fmt@^1.0.3": "1.0.3",
     "jsr:@std/internal@^1.0.5": "1.0.5",
     "npm:@hono/swagger-ui@0.5": "0.5.0_hono@4.6.14",
     "npm:@hono/zod-openapi@~0.18.3": "0.18.3_hono@4.6.14_zod@3.24.1",
@@ -16,6 +17,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/fmt@1.0.3": {
+      "integrity": "97765c16aa32245ff4e2204ecf7d8562496a3cb8592340a80e7e554e0bb9149f"
     },
     "@std/internal@1.0.5": {
       "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
@@ -103,6 +107,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@^1.0.10",
+      "jsr:@std/fmt@^1.0.3",
       "npm:@hono/swagger-ui@0.5",
       "npm:@hono/zod-openapi@~0.18.3",
       "npm:@scalar/hono-api-reference@~0.5.165",
