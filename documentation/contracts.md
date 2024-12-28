@@ -224,4 +224,4 @@ The Feather sidecar SHOULD NOT require the `jp-user-id` and `jp-user-role` heade
 
 ## Environment variables
 
-The `PORT` environment variable SHOULD be supported by all services. The default value for the port SHOULD be defined by the service itself. The service SHOULD listen on the configured port.
+The `SERVER_PORT` environment variable SHOULD be supported by all services. The default value for the port SHOULD be defined by the service itself. The service SHOULD listen on the configured port.
