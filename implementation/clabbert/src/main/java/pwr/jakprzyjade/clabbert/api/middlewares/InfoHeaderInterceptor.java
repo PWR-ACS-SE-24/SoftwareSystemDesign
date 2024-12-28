@@ -27,8 +27,8 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
             @NonNull HttpServletResponse response,
             @NonNull Object handler)
             throws Exception {
-        var requestId = request.getHeader("jp-request-id");
-        var requestIdUUID =
+        final var requestId = request.getHeader("jp-request-id");
+        final var requestIdUUID =
                 requestId == null || !UUID_REGEX.matcher(requestId).matches()
                         ? UUID_GENERATOR.generate()
                         : UUID.fromString(requestId);
@@ -36,7 +36,7 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
         request.setAttribute("requestId", requestIdUUID);
         response.setHeader("jp-request-id", requestIdUUID.toString());
 
-        var version = getClass().getPackage().getImplementationVersion();
+        final var version = getClass().getPackage().getImplementationVersion();
         response.setHeader("user-agent", "Clabbert/" + version);
 
         return true;

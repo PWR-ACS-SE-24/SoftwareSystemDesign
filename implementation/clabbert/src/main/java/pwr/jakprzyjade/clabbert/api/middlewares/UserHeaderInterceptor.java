@@ -39,8 +39,8 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
             @NonNull HttpServletResponse response,
             @NonNull Object handler)
             throws Exception {
-        var userRole = request.getHeader("jp-user-role");
-        var userId = request.getHeader("jp-user-id");
+        final var userRole = request.getHeader("jp-user-role");
+        final var userId = request.getHeader("jp-user-id");
 
         if (userRole == null) {
             throw new UserRoleHeaderMissingException();
@@ -58,9 +58,9 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
             throw new UserIdHeaderNotValidException();
         }
 
-        var userRoleEnum = UserRole.valueOf(userRole.toUpperCase());
-        var userIdUUID = UUID.fromString(userId);
-        var requiredRoles = getRequiredRoles(handler);
+        final var userRoleEnum = UserRole.valueOf(userRole.toUpperCase());
+        final var userIdUUID = UUID.fromString(userId);
+        final var requiredRoles = getRequiredRoles(handler);
 
         if (requiredRoles.map(roles -> !roles.contains(userRoleEnum)).orElse(false)) {
             throw new UserUnauthorizedException();
@@ -70,7 +70,7 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
             throw new UserIdHeaderNotValidException();
         }
 
-        var userData = UserData.builder().id(userIdUUID).role(userRoleEnum).build();
+        final var userData = UserData.builder().id(userIdUUID).role(userRoleEnum).build();
 
         request.setAttribute("userData", userData);
         return true;
@@ -78,12 +78,12 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
 
     private Optional<List<UserRole>> getRequiredRoles(Object handler) {
         if (handler instanceof HandlerMethod handlerMethod) {
-            var methodAnnotation = handlerMethod.getMethodAnnotation(UserRoles.class);
+            final var methodAnnotation = handlerMethod.getMethodAnnotation(UserRoles.class);
             if (methodAnnotation != null) {
                 return Optional.of(Arrays.asList(methodAnnotation.value()));
             }
 
-            var classAnnotation = handlerMethod.getBeanType().getAnnotation(UserRoles.class);
+            final var classAnnotation = handlerMethod.getBeanType().getAnnotation(UserRoles.class);
             if (classAnnotation != null) {
                 return Optional.of(Arrays.asList(classAnnotation.value()));
             }

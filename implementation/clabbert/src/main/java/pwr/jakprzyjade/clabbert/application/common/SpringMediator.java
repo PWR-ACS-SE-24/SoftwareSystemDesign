@@ -22,7 +22,7 @@ public class SpringMediator implements Mediator {
             throw new NullPointerException("The given request object cannot be null");
         }
 
-        var handlers = getBeanNames(RequestHandler.class, request);
+        final var handlers = getBeanNames(RequestHandler.class, request);
 
         if (handlers.length == 0) {
             throw new IllegalStateException(
