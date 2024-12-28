@@ -1,3 +1,9 @@
+FROM ubuntu:24.10 AS runner-base
+
+RUN apt-get -y update
+RUN apt-get -y install curl
+
+
 FROM denoland/deno:2.1.4 AS builder
 
 WORKDIR /app
@@ -8,10 +14,7 @@ COPY . .
 RUN deno task compile
 
 
-FROM ubuntu:24.10 AS runner
-
-RUN apt-get -y update
-RUN apt-get -y install curl
+FROM runner-base AS runner
 
 EXPOSE 8000
 WORKDIR /app
