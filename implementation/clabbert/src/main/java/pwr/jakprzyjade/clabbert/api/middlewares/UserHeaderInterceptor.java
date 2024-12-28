@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import pwr.jakprzyjade.clabbert.api.annotations.UserRoles;
-import pwr.jakprzyjade.clabbert.domain.UserRole;
+import pwr.jakprzyjade.clabbert.application.abstractions.users.UserData;
+import pwr.jakprzyjade.clabbert.application.abstractions.users.UserRole;
 import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserIdHeaderMissingException;
+import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserIdHeaderNotValidException;
 import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserRoleHeaderMissingException;
 import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserRoleNotSupportedException;
 import pwr.jakprzyjade.clabbert.domain.exceptions.authorization.UserUnauthorizedException;
@@ -29,14 +31,16 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
             Pattern.compile(
                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
+    private static final UUID NIL_UUID = new UUID(0, 0);
+
     @Override
     public boolean preHandle(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull Object handler)
             throws Exception {
-        var userId = request.getHeader("jp-user-id");
         var userRole = request.getHeader("jp-user-role");
+        var userId = request.getHeader("jp-user-id");
 
         if (userRole == null) {
             throw new UserRoleHeaderMissingException();
@@ -51,18 +55,24 @@ public class UserHeaderInterceptor implements HandlerInterceptor {
         }
 
         if (!UUID_REGEX.matcher(userId).matches()) {
-            throw new UserIdHeaderMissingException();
+            throw new UserIdHeaderNotValidException();
         }
 
         var userRoleEnum = UserRole.valueOf(userRole.toUpperCase());
+        var userIdUUID = UUID.fromString(userId);
         var requiredRoles = getRequiredRoles(handler);
 
         if (requiredRoles.map(roles -> !roles.contains(userRoleEnum)).orElse(false)) {
             throw new UserUnauthorizedException();
         }
 
-        request.setAttribute("userId", UUID.fromString(userId));
-        request.setAttribute("userRole", userRoleEnum);
+        if (userRoleEnum == UserRole.GUEST && !NIL_UUID.equals(userIdUUID)) {
+            throw new UserIdHeaderNotValidException();
+        }
+
+        var userData = UserData.builder().id(userIdUUID).role(userRoleEnum).build();
+
+        request.setAttribute("userData", userData);
         return true;
     }
 
