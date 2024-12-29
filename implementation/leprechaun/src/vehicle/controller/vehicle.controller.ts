@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
@@ -8,15 +8,11 @@ import {
 } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
-import { HttpExceptionDto, SchemaMismatchException } from '../../shared/api/http-exceptions';
+import { HttpExceptionDto } from '../../shared/api/http-exceptions';
+import { UUIDPipe } from '../../shared/api/uuidpipe';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
 import { VehicleDto } from './vehicle.dto';
-
-export const UUIDPipe = new ParseUUIDPipe({
-  version: '7',
-  exceptionFactory: () => new SchemaMismatchException(),
-});
 
 @Controller('/ext/v1/vehicles')
 @ApiExtraModels(PaginatedDto)

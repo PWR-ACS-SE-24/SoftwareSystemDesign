@@ -29,7 +29,7 @@ export class VehicleService {
 
   async createVehicle(createVehicle: CreateVehicleDto): Promise<Vehicle> {
     await this.validationService.validate(createVehicle);
-    return this.vehicleRepository.create({ isActive: true, sideNumber: createVehicle.sideNumber });
+    return this.vehicleRepository.create(createVehicle);
   }
 
   async deleteVehicleById(id: string): Promise<void> {

@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Vehicle } from '../database/vehicle.entity';
+import { CreateVehicleDto } from './vehicle-create.dto';
 
-export class VehicleDto {
+export class VehicleDto extends CreateVehicleDto {
   @ApiProperty({
     description: 'Vehicle ID',
     maxLength: 36,
@@ -12,15 +13,6 @@ export class VehicleDto {
   readonly id: string;
 
   @ApiProperty({
-    description: 'Side number of the vehicle',
-    maxLength: 16,
-    minLength: 1,
-    nullable: false,
-    examples: ['2137', '94102-3170150114'],
-  })
-  readonly sideNumber: string;
-
-  @ApiProperty({
     description: 'Vehicle status',
     nullable: false,
     examples: [true, false],
@@ -28,8 +20,8 @@ export class VehicleDto {
   readonly isActive: boolean;
 
   constructor(id: string, sideNumber: string, isActive: boolean) {
+    super(sideNumber);
     this.id = id;
-    this.sideNumber = sideNumber;
     this.isActive = isActive;
   }
 

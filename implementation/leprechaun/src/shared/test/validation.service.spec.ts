@@ -12,6 +12,16 @@ class TestDto {
   }
 }
 
+class TestInheritanceDto extends TestDto {
+  @IsString()
+  readonly text2: string;
+
+  constructor(text: any, text2: any) {
+    super(text);
+    this.text2 = text2;
+  }
+}
+
 describe('ValidationService', () => {
   let service: ValidationService;
 
@@ -45,10 +55,30 @@ describe('ValidationService', () => {
     await expect(service.validate(dto as unknown as TestDto)).rejects.toThrow(SchemaMismatchException);
   });
 
+  it('should not allow for unknown types when updating', async () => {
+    const dto = {
+      text: '123',
+      randomField: 'random',
+    };
+    await expect(service.validate(dto as unknown as TestDto, true)).rejects.toThrow(SchemaMismatchException);
+  });
+
   it('should not validate unknown fields', async () => {
     const dto = new TestDto('123');
     (dto as any).randomField = 'random';
 
     await expect(service.validate(dto)).rejects.toThrow(SchemaMismatchException);
+  });
+
+  it('should not validate unknown fields when updating', async () => {
+    const dto = new TestDto('123');
+    (dto as any).randomField = 'random';
+
+    await expect(service.validate(dto, true)).rejects.toThrow(SchemaMismatchException);
+  });
+
+  it('should validate inheritance', async () => {
+    const dto = new TestInheritanceDto('123', '321');
+    await expect(service.validate(dto)).resolves.toBeTruthy();
   });
 });

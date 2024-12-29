@@ -12,7 +12,7 @@ import { VehicleService } from '../service/vehicle.service';
 const moduleMocker = new ModuleMocker(global);
 
 const UUID_SAMPLE = '019411be-c6c3-7f67-83c1-c088d4280102';
-const VEHICLE = { id: UUID_SAMPLE, sideNumber: '2136', isActive: true };
+const VEHICLE: Vehicle = { id: UUID_SAMPLE, sideNumber: '2136', isActive: true };
 const VEHICLES: Vehicle[] = [VEHICLE];
 
 describe('VehicleController', () => {
