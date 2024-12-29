@@ -17,8 +17,8 @@ export class PaginatedDto<TDto> {
     this.data = data;
   }
 
-  static fromEntities<TDto>(total: number, size: number, page: number, entities: TDto[]): PaginatedDto<TDto> {
-    return new PaginatedDto<TDto>(total, size, page, entities);
+  static fromEntities<TDto>(total: number, size: number, page: number, data: TDto[]): PaginatedDto<TDto> {
+    return new PaginatedDto<TDto>(total, size, page, data);
   }
 
   static sanitizePagination(size: number, page: number): { size: number; page: number } {
