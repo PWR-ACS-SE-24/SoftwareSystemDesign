@@ -1,5 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import { expect, uuid } from "@jobberknoll/core/shared";
+import { isNone, uuid } from "@jobberknoll/core/shared";
 
 export function jsonRes<T>(schema: T, description: string) {
   return {
@@ -28,10 +28,17 @@ export function errorDto<C extends number, K extends string>(
   }).openapi(name, { description });
 }
 
+const uuidValidator = z.string().uuid().transform((id, ctx) => {
+  const option = uuid(id);
+  if (isNone(option)) {
+    ctx.addIssue({ code: z.ZodIssueCode.invalid_string, validation: "uuid" });
+    return z.NEVER;
+  }
+  return option.value;
+});
+
 export const IdParamSchema = z.object({
-  id: z.string().uuid().transform((id) =>
-    expect(uuid(id), "ID previously validated by Zod must be a UUID")
-  ).openapi({
+  id: uuidValidator.openapi({
     param: {
       name: "id",
       in: "path",

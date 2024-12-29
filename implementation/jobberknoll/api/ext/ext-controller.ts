@@ -4,6 +4,7 @@ import { SERVICE_VERSION } from "@jobberknoll/core/shared";
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
 import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
+import { getAccountByIdHandler, getAccountByIdRoute } from "./routes/mod.ts";
 
 export class ExtController implements Controller {
   public constructor(
@@ -16,7 +17,11 @@ export class ExtController implements Controller {
   }
 
   public get routes(): OpenAPIHono {
-    const app = new OpenAPIHono({ defaultHook });
+    const app = new OpenAPIHono({ defaultHook })
+      .openapi(
+        getAccountByIdRoute,
+        getAccountByIdHandler(this.service.getAccountById),
+      );
 
     configureErrorHandler(app, this.logger);
 
