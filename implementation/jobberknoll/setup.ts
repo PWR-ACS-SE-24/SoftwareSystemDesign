@@ -1,28 +1,20 @@
-import { buildApp, IntController } from "@jobberknoll/api";
-import { buildService, Logger } from "@jobberknoll/app";
+import { buildApi } from "@jobberknoll/api";
+import { AccountRepo, buildService, Logger } from "@jobberknoll/app";
 import type { Account } from "@jobberknoll/core/domain";
 import { MemoryAccountRepo, prettyLogTransport } from "@jobberknoll/infra";
-
-export function setupProd() {
-  const logger = new Logger([prettyLogTransport()]);
-  // TODO @tchojnacki: Replace with a persistent repository
-  const accountRepo = new MemoryAccountRepo();
-  const service = buildService(accountRepo, logger);
-  const intController = new IntController(service, logger);
-  const app = buildApp([intController]);
-  return { app, logger };
-}
 
 type SetupTestOptions = {
   seededAccounts?: Account[];
 };
 
-export function setupTest(options: SetupTestOptions = {}) {
-  const { seededAccounts = [] } = options;
-  const logger = new Logger();
-  const accountRepo = new MemoryAccountRepo(seededAccounts);
+function setup(accountRepo: AccountRepo, logger: Logger) {
   const service = buildService(accountRepo, logger);
-  const intController = new IntController(service, logger);
-  const app = buildApp([intController]);
-  return { app, logger };
+  const api = buildApi(service, logger);
+  return { api, accountRepo, logger };
 }
+
+export const setupProd = () =>
+  setup(new MemoryAccountRepo(), new Logger([prettyLogTransport()]));
+
+export const setupTest = ({ seededAccounts = [] }: SetupTestOptions = {}) =>
+  setup(new MemoryAccountRepo(seededAccounts), new Logger());

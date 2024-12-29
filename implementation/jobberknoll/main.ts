@@ -2,7 +2,7 @@ import { envServerPort } from "./app/mod.ts";
 import { setupProd } from "./setup.ts";
 
 if (import.meta.main) {
-  const { app, logger } = setupProd();
+  const { api, logger } = setupProd();
 
   Deno.serve(
     {
@@ -12,6 +12,6 @@ if (import.meta.main) {
           addr: `http://${addr.hostname}:${addr.port}`,
         }),
     },
-    app.fetch,
+    api.fetch,
   );
 }

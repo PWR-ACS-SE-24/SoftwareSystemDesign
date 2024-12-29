@@ -1,4 +1,4 @@
-import { SERVICE, type UUID } from "@jobberknoll/core/shared";
+import { SERVICE_AGENT, type UUID } from "@jobberknoll/core/shared";
 import type { LogLevel, LogTags, LogTransport } from "~/interfaces/mod.ts";
 
 type LogParams = {
@@ -38,7 +38,7 @@ export class Logger {
 
   private log(params: LogParams): void {
     const data = {
-      service: SERVICE,
+      service: SERVICE_AGENT,
       requestId: params.requestId,
       time: Date.now(),
       level: params.level,
