@@ -1,8 +1,8 @@
-import { envServerPort } from "./app/mod.ts";
-import { setupProd } from "./setup.ts";
+import { envProd, envServerPort } from "./app/mod.ts";
+import { setupDev, setupProd } from "./setup.ts";
 
 if (import.meta.main) {
-  const { api, logger } = setupProd();
+  const { api, logger } = envProd() ? await setupProd() : setupDev();
 
   Deno.serve(
     {

@@ -1,6 +1,15 @@
 import { buildApi } from "@jobberknoll/api";
-import { AccountRepo, buildService, Logger } from "@jobberknoll/app";
-import { MemoryAccountRepo, prettyLogTransport } from "@jobberknoll/infra";
+import {
+  AccountRepo,
+  buildService,
+  envDatabaseUrl,
+  Logger,
+} from "@jobberknoll/app";
+import {
+  MemoryAccountRepo,
+  PostgresAccountRepo,
+  prettyLogTransport,
+} from "@jobberknoll/infra";
 
 function setup(accountRepo: AccountRepo, logger: Logger) {
   const service = buildService(accountRepo, logger);
@@ -8,7 +17,13 @@ function setup(accountRepo: AccountRepo, logger: Logger) {
   return { api, accountRepo, logger };
 }
 
-export const setupProd = () =>
+export const setupDev = () =>
   setup(new MemoryAccountRepo(), new Logger([prettyLogTransport()]));
+
+export const setupProd = async () =>
+  setup(
+    await PostgresAccountRepo.setup(envDatabaseUrl()),
+    new Logger([prettyLogTransport()]),
+  );
 
 export const setupTest = () => setup(new MemoryAccountRepo(), new Logger());
