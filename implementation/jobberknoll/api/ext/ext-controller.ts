@@ -7,6 +7,8 @@ import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
 import {
   createAccountHandler,
   createAccountRoute,
+  deleteAccountHandler,
+  deleteAccountRoute,
   getAccountByIdHandler,
   getAccountByIdRoute,
 } from "./routes/mod.ts";
@@ -26,6 +28,10 @@ export class ExtController implements Controller {
       .openapi(
         createAccountRoute,
         createAccountHandler(this.service.createAccount),
+      )
+      .openapi(
+        deleteAccountRoute,
+        deleteAccountHandler(this.service.deleteAccount),
       )
       .openapi(
         getAccountByIdRoute,
