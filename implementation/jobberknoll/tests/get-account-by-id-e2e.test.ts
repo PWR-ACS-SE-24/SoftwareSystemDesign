@@ -63,7 +63,7 @@ Deno.test(
 );
 
 Deno.test(
-  "GET /int/v1/accounts/{id} should return schema-mismatch if the account id is not a UUID",
+  "GET /int/v1/accounts/{id} should return schema-mismatch if the account id is not an UUID",
   async () => {
     const { api } = setupTest();
 
@@ -168,7 +168,7 @@ Deno.test(
 );
 
 Deno.test(
-  "GET /ext/v1/accounts/{id} should return schema-mismatch if the account id is not a UUID",
+  "GET /ext/v1/accounts/{id} should return schema-mismatch if the account id is not an UUID",
   async () => {
     const { api } = setupTest();
 
