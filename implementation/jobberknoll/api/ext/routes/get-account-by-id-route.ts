@@ -1,6 +1,7 @@
 import { createRoute, type RouteHandler } from "@hono/zod-openapi";
 import type { GetAccountByIdUseCase } from "@jobberknoll/app";
-import { isOk, uuid } from "@jobberknoll/core/shared";
+import { isOk } from "@jobberknoll/core/shared";
+import { extHeadersSchema } from "~/ext/openapi.ts";
 import {
   AccountDto,
   AccountNotFoundDto,
@@ -15,6 +16,7 @@ export const getAccountByIdRoute = createRoute({
   summary: "Get account by ID",
   tags: ["Accounts"],
   request: {
+    headers: extHeadersSchema("admin"),
     params: IdParamSchema,
   },
   responses: {
@@ -31,8 +33,9 @@ export function getAccountByIdHandler(
   getAccountById: GetAccountByIdUseCase,
 ): RouteHandler<typeof getAccountByIdRoute> {
   return async (c) => {
+    const { "jp-request-id": requestId } = c.req.valid("header");
     const { id: accountId } = c.req.valid("param");
-    const res = await getAccountById.invoke({ accountId }, uuid());
+    const res = await getAccountById.invoke({ accountId }, requestId);
     return isOk(res)
       ? c.json(mapAccountToDto(res.value), 200)
       : c.json(res.value, res.value.code);
