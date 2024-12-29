@@ -10,11 +10,8 @@ export abstract class UseCase<Req, Res, Err> {
 
     const res = await this.handle(req);
 
-    if (isOk(res)) {
-      this.logger.debug(requestId, `${method} - end`, { res: res.value });
-    } else {
-      this.logger.warn(requestId, `${method} - end`, { err: res.value });
-    }
+    const tags = isOk(res) ? { res: res.value } : { err: res.value };
+    this.logger.debug(requestId, `${method} - end`, tags);
     return res;
   }
 

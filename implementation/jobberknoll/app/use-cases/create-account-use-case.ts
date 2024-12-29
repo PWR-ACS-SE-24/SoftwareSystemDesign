@@ -38,7 +38,7 @@ export class CreateAccountUseCase extends UseCase<
       id: uuid(),
       type: req.type,
       fullName: req.fullName,
-      email: req.email,
+      email: req.email.toLowerCase(),
       hashedPassword: req.password, // TODO: hash password
       isActive: true,
       lastModified: Date.now(),

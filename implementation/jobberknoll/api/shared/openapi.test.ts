@@ -36,7 +36,7 @@ Deno.test("errorDto should reject mismatched codes and kinds", () => {
       [401, "test"],
       [400, "wrong"],
       [402, "wrong"],
-    ] as const
+    ]
   ) {
     const testError = { code, kind, messageEn: "Message." };
 
