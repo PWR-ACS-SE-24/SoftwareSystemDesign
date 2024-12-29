@@ -1,19 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModuleMocker } from 'jest-mock';
-import { v7 as uuid } from 'uuid';
 import { CreateLineDto } from '../controller/line-create.dto';
 import { LineController } from '../controller/line.controller';
 import { Line } from '../database/line.entity';
 import { LineService } from '../service/line.service';
 
 const moduleMocker = new ModuleMocker(global);
+jest.mock('../database/line.entity');
 
-const UUID_SAMPLE = '019411be-c6c3-7f67-83c1-c088d4280102';
-const LINE: Line = {
-  id: UUID_SAMPLE,
-  name: 'Klinii',
-  isActive: true,
-};
+const LINE: Line = new Line('Kliniki');
 const LINES: Line[] = [LINE];
 
 describe('LineController', () => {
@@ -31,9 +26,9 @@ describe('LineController', () => {
             listAll: jest.fn().mockResolvedValue({ vehicles: LINES, total: LINES.length }),
             findLineById: jest.fn().mockResolvedValue(LINES[0]),
             createLine: jest.fn().mockImplementation((newLine: CreateLineDto) => {
-              const vehicle = { id: uuid(), ...newLine, isActive: true };
-              LINES.push(vehicle);
-              return vehicle;
+              const line = new Line(newLine.name);
+              LINES.push(line);
+              return line;
             }),
             deleteLineById: jest.fn().mockResolvedValue(undefined),
             updateLineById: jest.fn().mockResolvedValue(LINES[0]),

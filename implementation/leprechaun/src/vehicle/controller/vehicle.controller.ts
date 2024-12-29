@@ -9,7 +9,7 @@ import {
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
-import { UUIDPipe } from '../../shared/api/uuidpipe';
+import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '../../shared/api/pipes';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
 import { VehicleDto } from './vehicle.dto';
@@ -43,7 +43,7 @@ export class VehicleController {
 
   @Post('/')
   @ApiCreatedResponse({ type: VehicleDto, description: 'Created vehicle' })
-  async createVehicle(@Body() createVehicle: CreateVehicleDto): Promise<VehicleDto> {
+  async createVehicle(@Body(ValidateCreatePipe) createVehicle: CreateVehicleDto): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.createVehicle(createVehicle);
 
     return VehicleDto.fromEntity(vehicle);
@@ -62,7 +62,7 @@ export class VehicleController {
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async updateVehicleById(
     @Param('id', UUIDPipe) id: string,
-    @Body() updateVehicle: UpdateVehicleDto,
+    @Body(ValidateUpdatePipe) updateVehicle: UpdateVehicleDto,
   ): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.updateVehicleById(id, updateVehicle);
 

@@ -4,7 +4,7 @@ import { v7 as uuidv7 } from 'uuid';
 @Entity()
 @Filter({ name: 'active', cond: { isActive: true }, default: true })
 export class Vehicle {
-  @PrimaryKey()
+  @PrimaryKey({ type: 'uuid' })
   id = uuidv7(); // TODO: redo as a custom type
 
   @Property({ length: 16, nullable: false })
@@ -12,4 +12,8 @@ export class Vehicle {
 
   @Property({ nullable: false, default: true })
   isActive: boolean = true;
+
+  constructor(sideNumber: string) {
+    this.sideNumber = sideNumber;
+  }
 }

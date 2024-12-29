@@ -9,7 +9,7 @@ import {
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
-import { UUIDPipe } from '../../shared/api/uuidpipe';
+import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '../../shared/api/pipes';
 import { StopService } from '../service/stop.service';
 import { CreateStopDto, UpdateStopDto } from './stop-create.dto';
 import { StopDto } from './stop.dto';
@@ -43,7 +43,7 @@ export class StopController {
 
   @Post('/')
   @ApiCreatedResponse({ type: StopDto, description: 'Created stop' })
-  async createStop(@Body() createStop: CreateStopDto): Promise<StopDto> {
+  async createStop(@Body(ValidateCreatePipe) createStop: CreateStopDto): Promise<StopDto> {
     const stop = await this.stopService.createStop(createStop);
 
     return StopDto.fromEntity(stop);
@@ -60,7 +60,10 @@ export class StopController {
   @Patch('/:id')
   @ApiOkResponse({ type: StopDto, description: 'Updated stop' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'stop not found' })
-  async updateStopById(@Param('id', UUIDPipe) id: string, @Body() updatestop: UpdateStopDto): Promise<StopDto> {
+  async updateStopById(
+    @Param('id', UUIDPipe) id: string,
+    @Body(ValidateUpdatePipe) updatestop: UpdateStopDto,
+  ): Promise<StopDto> {
     const stop = await this.stopService.updateStopById(id, updatestop);
 
     return StopDto.fromEntity(stop);

@@ -28,7 +28,6 @@ export class StopService {
   }
 
   async createStop(createStop: CreateStopDto): Promise<Stop> {
-    await this.validationService.validate(createStop);
     return this.stopRepository.create(createStop);
   }
 
@@ -39,8 +38,6 @@ export class StopService {
 
   async updateStopById(id: string, updateStop: UpdateStopDto) {
     // TODO: switch all lines to use new stop when updating
-    await this.validationService.validate(updateStop, true);
-
     // As per the requirements, we don't update in place, but rather set isActive to false and create a new one
     const stop = await this.findStopById(id);
     await this.deleteStopById(id);

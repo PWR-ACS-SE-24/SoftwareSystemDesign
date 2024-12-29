@@ -28,7 +28,6 @@ export class VehicleService {
   }
 
   async createVehicle(createVehicle: CreateVehicleDto): Promise<Vehicle> {
-    await this.validationService.validate(createVehicle);
     return this.vehicleRepository.create(createVehicle);
   }
 
@@ -40,8 +39,6 @@ export class VehicleService {
 
   async updateVehicleById(id: string, updateVehicle: UpdateVehicleDto): Promise<Vehicle> {
     // TODO: switch all routes to use new vehicle when updating
-    await this.validationService.validate(updateVehicle, true);
-
     // As per the requirements, we don't update in place, but rather set isActive to false and create a new one
     const vehicle = await this.findVehicleById(id);
     await this.deleteVehicleById(id);
