@@ -8,6 +8,7 @@ export class GetHealthUseCase extends UseCase<null, ServiceHealth, never> {
   }
 
   protected handle(_: null): Promise<Result<ServiceHealth, never>> {
+    // TODO: Fetch infrastructure health.
     return Promise.resolve(ok({ status: "UP" }));
   }
 }

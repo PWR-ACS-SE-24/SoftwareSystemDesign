@@ -3,7 +3,7 @@ import type { UserRole } from "@jobberknoll/app";
 import type { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
 
 export function authorize<R extends RouteConfig>(
-  expectedRole: UserRole,
+  expectedRole: UserRole, // TODO: also handle "member"
   handler: RouteHandler<R>,
 ): RouteHandler<R> {
   return (c, next) => {
