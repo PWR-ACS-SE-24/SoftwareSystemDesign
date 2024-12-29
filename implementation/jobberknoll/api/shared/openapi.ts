@@ -1,6 +1,22 @@
 import { z } from "@hono/zod-openapi";
 import { isNone, uuid } from "@jobberknoll/core/shared";
 
+export function jsonReq<T>(
+  schema: T,
+  description: string,
+  required: boolean = true,
+) {
+  return {
+    content: {
+      "application/json": {
+        schema,
+      },
+    },
+    description,
+    required,
+  };
+}
+
 export function jsonRes<T>(schema: T, description: string) {
   return {
     content: {

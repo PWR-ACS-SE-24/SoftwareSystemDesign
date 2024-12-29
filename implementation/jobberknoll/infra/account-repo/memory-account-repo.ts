@@ -8,11 +8,26 @@ import { err, ok, type Result, type UUID } from "@jobberknoll/core/shared";
 
 export class MemoryAccountRepo implements AccountRepo {
   private readonly accounts: Record<UUID, Account> = {};
+  private readonly emails: Set<string> = new Set();
 
   public constructor(seeded: Account[] = []) {
     for (const account of seeded) {
       this.accounts[account.id] = account;
+      this.emails.add(account.email);
     }
+  }
+
+  public createAccount(account: Account): Promise<void> {
+    if (account.id in this.accounts || this.emails.has(account.email)) {
+      return Promise.reject();
+    }
+    this.accounts[account.id] = account;
+    this.emails.add(account.email);
+    return Promise.resolve();
+  }
+
+  public isEmailTaken(email: string): Promise<boolean> {
+    return Promise.resolve(this.emails.has(email));
   }
 
   public getAccountById(

@@ -1,4 +1,4 @@
-import type { Result, UUID } from "@jobberknoll/core/shared";
+import { isOk, type Result, type UUID } from "@jobberknoll/core/shared";
 import type { Logger } from "~/shared/mod.ts";
 
 export abstract class UseCase<Req, Res, Err> {
@@ -7,9 +7,14 @@ export abstract class UseCase<Req, Res, Err> {
   public async invoke(req: Req, requestId: UUID): Promise<Result<Res, Err>> {
     const method = `${this.constructor.name}#invoke`;
     this.logger.debug(requestId, `${method} - start`, { req: req });
-    // TODO @tchojnacki: Add validation
+
     const res = await this.handle(req);
-    this.logger.debug(requestId, `${method} - end`, { res });
+
+    if (isOk(res)) {
+      this.logger.debug(requestId, `${method} - end`, { res: res.value });
+    } else {
+      this.logger.warn(requestId, `${method} - end`, { err: res.value });
+    }
     return res;
   }
 
