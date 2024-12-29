@@ -10,13 +10,6 @@ export class MemoryAccountRepo implements AccountRepo {
   private readonly accounts: Record<UUID, Account> = {};
   private readonly emails: Set<string> = new Set();
 
-  public constructor(seeded: Account[] = []) {
-    for (const account of seeded) {
-      this.accounts[account.id] = account;
-      this.emails.add(account.email);
-    }
-  }
-
   public createAccount(account: Account): Promise<void> {
     if (account.id in this.accounts || this.emails.has(account.email)) {
       return Promise.reject();

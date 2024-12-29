@@ -5,7 +5,8 @@ import { setupTest } from "../setup.ts";
 Deno.test(
   `GET /int/v1/accounts/{id} should return an account if it exists`,
   async () => {
-    const { api } = setupTest({ seededAccounts: [accountMock] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(accountMock);
 
     const response = await api.request(
       `/int/v1/accounts/${accountMock.id}`,
@@ -21,7 +22,8 @@ Deno.test(
 );
 
 Deno.test(`GET /int/v1/accounts/{id} should not leak private fields`, async () => {
-  const { api } = setupTest({ seededAccounts: [accountMock] });
+  const { api, accountRepo } = setupTest();
+  await accountRepo.createAccount(accountMock);
 
   const response = await api.request(
     `/int/v1/accounts/${accountMock.id}`,
@@ -50,7 +52,8 @@ Deno.test(
   `GET /int/v1/accounts/{id} should return account-not-found if the account is inactive`,
   async () => {
     const inactiveAccount = { ...accountMock, isActive: false };
-    const { api } = setupTest({ seededAccounts: [inactiveAccount] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(inactiveAccount);
 
     const response = await api.request(
       `/int/v1/accounts/${inactiveAccount.id}`,
@@ -78,7 +81,8 @@ Deno.test(
 Deno.test(
   `GET /ext/v1/accounts/{id} should reject for non-admin users`,
   async () => {
-    const { api } = setupTest({ seededAccounts: [accountMock] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(accountMock);
 
     const response = await api.request(
       `/ext/v1/accounts/${accountMock.id}`,
@@ -94,7 +98,8 @@ Deno.test(
 Deno.test(
   `GET /ext/v1/accounts/{id} should return an account if it exists`,
   async () => {
-    const { api } = setupTest({ seededAccounts: [accountMock] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(accountMock);
 
     const response = await api.request(
       `/ext/v1/accounts/${accountMock.id}`,
@@ -111,7 +116,8 @@ Deno.test(
 );
 
 Deno.test(`GET /ext/v1/accounts/{id} should not leak private fields`, async () => {
-  const { api } = setupTest({ seededAccounts: [accountMock] });
+  const { api, accountRepo } = setupTest();
+  await accountRepo.createAccount(accountMock);
 
   const response = await api.request(
     `/ext/v1/accounts/${accountMock.id}`,
@@ -144,7 +150,8 @@ Deno.test(
   `GET /ext/v1/accounts/{id} should return account-not-found if the account is inactive`,
   async () => {
     const inactiveAccount = { ...accountMock, isActive: false };
-    const { api } = setupTest({ seededAccounts: [inactiveAccount] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(inactiveAccount);
 
     const response = await api.request(
       `/ext/v1/accounts/${inactiveAccount.id}`,
