@@ -44,7 +44,7 @@ describe('ValidationService', () => {
 
   it('should validate DTO with correct schema', async () => {
     const dto = new TestDto('123');
-    await expect(service.validate(dto)).resolves.toBeTruthy();
+    await expect(service.validate(dto)).resolves.not.toThrow();
   });
 
   it('should not validate unknown types raw', async () => {
@@ -79,6 +79,6 @@ describe('ValidationService', () => {
 
   it('should validate inheritance', async () => {
     const dto = new TestInheritanceDto('123', '321');
-    await expect(service.validate(dto)).resolves.toBeTruthy();
+    await expect(service.validate(dto)).resolves.not.toThrow();
   });
 });

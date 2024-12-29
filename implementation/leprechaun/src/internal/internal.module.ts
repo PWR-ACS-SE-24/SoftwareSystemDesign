@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { HealthcheckController } from './healthcheck/healthcheck.controller';
-import { RoutesController } from './routes/routes.controller';
+import { SharedModule } from '../shared/shared.module';
+import { MonitoringController } from './controller/monitoring.controller';
 
 @Module({
-  controllers: [HealthcheckController, RoutesController]
+  imports: [SharedModule],
+  controllers: [MonitoringController],
 })
 export class InternalModule {}

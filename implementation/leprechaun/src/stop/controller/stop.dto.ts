@@ -9,15 +9,23 @@ export class StopDto extends CreateStopDto {
     nullable: false,
     examples: ['b4e9b1c1-9f7d-7b9b-8e9d-1c9f7d4b9b8e'],
   })
-  id: string;
+  readonly id: string;
 
-  constructor(id: string, name: string, latitude: number, longitude: number) {
+  @ApiProperty({
+    description: 'Stop status',
+    nullable: false,
+    examples: [true, false],
+  })
+  readonly isActive: boolean;
+
+  constructor(id: string, name: string, latitude: number, longitude: number, isActive: boolean) {
     super(name, latitude, longitude);
     this.id = id;
+    this.isActive = isActive;
   }
 
   static fromEntity(entity: Stop): StopDto {
-    return new StopDto(entity.id, entity.name, entity.latitude, entity.longitude);
+    return new StopDto(entity.id, entity.name, entity.latitude, entity.longitude, entity.isActive);
   }
 
   static fromEntities(entities: Stop[]): StopDto[] {

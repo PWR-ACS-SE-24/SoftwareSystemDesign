@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import * as request from 'supertest';
 import { v7 as uuid } from 'uuid';
 import { HttpExceptionFilter, InternalExceptionFilter } from '../../shared/api/http-exception.filter';
@@ -43,11 +43,6 @@ describe('VehicleController', () => {
             updateVehicleById: jest.fn().mockResolvedValue(VEHICLES[0]),
           };
           return mocked;
-        }
-        if (typeof token === 'function') {
-          const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-          const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-          return new Mock();
         }
       })
       .compile();

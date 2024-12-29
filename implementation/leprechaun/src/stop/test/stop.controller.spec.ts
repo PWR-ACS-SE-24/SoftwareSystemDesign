@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import { v7 as uuid } from 'uuid';
 import { CreateStopDto } from '../controller/stop-create.dto';
 import { StopController } from '../controller/stop.controller';
@@ -41,11 +41,6 @@ describe('StopController', () => {
             updateStopById: jest.fn().mockResolvedValue(STOPS[0]),
           };
           return mocked;
-        }
-        if (typeof token === 'function') {
-          const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-          const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-          return new Mock();
         }
       })
       .compile();

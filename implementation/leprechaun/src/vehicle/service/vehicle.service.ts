@@ -39,6 +39,7 @@ export class VehicleService {
   }
 
   async updateVehicleById(id: string, updateVehicle: UpdateVehicleDto): Promise<Vehicle> {
+    // TODO: switch all routes to use new vehicle when updating
     await this.validationService.validate(updateVehicle, true);
 
     // As per the requirements, we don't update in place, but rather set isActive to false and create a new one

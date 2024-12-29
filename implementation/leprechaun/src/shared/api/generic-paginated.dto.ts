@@ -10,7 +10,7 @@ export class PaginatedDto<TDto> {
   @ApiProperty({ description: 'Current page number', example: 12, minimum: 0, default: 0 })
   readonly page: number;
 
-  constructor(total, size, page, data) {
+  constructor(total: number, size: number, page: number, data: TDto[]) {
     this.total = total;
     this.size = size;
     this.page = page;
