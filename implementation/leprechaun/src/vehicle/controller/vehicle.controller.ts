@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
-import { ResourceNotFoundException, SchemaMismatchException } from '../../shared/api/http-exceptions';
+import { HttpExceptionDto, SchemaMismatchException } from '../../shared/api/http-exceptions';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
 import { VehicleDto } from './vehicle.dto';
@@ -38,7 +38,7 @@ export class VehicleController {
 
   @Get('/:id')
   @ApiOkResponse({ type: VehicleDto, description: 'Vehicle details' })
-  @ApiNotFoundResponse({ type: ResourceNotFoundException, description: 'Vehicle not found' })
+  @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async getVehicleById(@Param('id', UUIDPipe) id: string): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.findVehicleById(id);
 
@@ -56,14 +56,14 @@ export class VehicleController {
   @Delete('/:id')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Vehicle deleted' })
-  @ApiNotFoundResponse({ type: ResourceNotFoundException, description: 'Vehicle not found' })
+  @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async deleteVehicleById(@Param('id', UUIDPipe) id: string): Promise<void> {
     await this.vehicleService.deleteVehicleById(id);
   }
 
   @Patch('/:id')
   @ApiOkResponse({ type: VehicleDto, description: 'Updated vehicle' })
-  @ApiNotFoundResponse({ type: ResourceNotFoundException, description: 'Vehicle not found' })
+  @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async updateVehicleById(
     @Param('id', UUIDPipe) id: string,
     @Body() updateVehicle: UpdateVehicleDto,

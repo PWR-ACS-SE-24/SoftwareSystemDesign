@@ -1,16 +1,22 @@
-// import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
+enum ErrorKind {
+  SchemaMismatchException = 'schema-mismatch-exception',
+  NotFoundException = 'resource-not-found-exception',
+  InternalServerError = 'internal-server-error',
+}
+
 interface AppError {
-  kind: string;
+  kind: ErrorKind;
   code: number;
   messageEn: string;
   messagePl?: string;
 }
 
-export class HttpException extends Error implements AppError {
-  @ApiProperty({ description: 'Error kind' })
-  kind: string;
+export class HttpExceptionDto implements AppError {
+  @ApiProperty({ description: 'Error kind', enum: ErrorKind, isArray: false })
+  kind: ErrorKind;
   @ApiProperty({ description: 'HTTP status code' })
   code: number;
   @ApiProperty({ description: 'Error message in English' })
@@ -18,50 +24,46 @@ export class HttpException extends Error implements AppError {
   @ApiProperty({ description: 'Error message in Polish', required: false })
   messagePl?: string;
 
-  get message(): string {
-    return this.kind;
-  }
-
-  constructor() {
-    super();
-    Object.setPrototypeOf(this, HttpException.prototype);
+  constructor(kind: ErrorKind, code: number, messageEn: string, messagePl: string) {
+    this.kind = kind;
+    this.code = code;
+    this.messageEn = messageEn;
+    this.messagePl = messagePl;
   }
 }
-
-export class InternalServerError extends HttpException {
-  kind: string = 'internal-server-error';
-  code: number = 500;
-  messageEn: string = 'Internal server error';
-  messagePl: string = 'Wewnętrzny błąd serwera';
-
-  constructor() {
-    super();
-    Object.setPrototypeOf(this, InternalServerError.prototype);
-  }
-}
-
-export class ResourceNotFoundException extends HttpException {
-  kind: string = 'resource-not-found';
-  code: number = 404;
-  messageEn: string;
-  messagePl?: string;
-
-  constructor(id: string) {
-    super();
-    Object.setPrototypeOf(this, ResourceNotFoundException.prototype);
-    this.messageEn = `Resource with id ${id} not found`;
-    this.messagePl = `Nie znaleziono zasobu o id ${id}`;
-  }
-}
-
 export class SchemaMismatchException extends HttpException {
-  kind: string = 'schema-mismatch';
-  code: number = 422;
-  messageEn: string = 'The request data did not align with the schema.';
-  messagePl: string = 'Dane zapytania nie zgadzają się ze schematem.';
-
   constructor() {
-    super();
-    Object.setPrototypeOf(this, SchemaMismatchException.prototype);
+    super('Schema mismatch exception', HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+}
+
+// Typical HTTP exceptions
+export const exceptionMap = {
+  SchemaMismatchException: () =>
+    new HttpExceptionDto(
+      ErrorKind.SchemaMismatchException,
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      'Schema mismatch exception',
+      'Niezgodność schematu',
+    ),
+  NotFoundException: (id: any) => {
+    const messageEn = typeof id === 'string' ? `Resource with id {${id}} not found.` : `Resource not found.`;
+    const messagePl = typeof id === 'string' ? `Nie znaleziono zasobu o id {${id}}.` : `Nie znaleziono zasobu.`;
+    return new HttpExceptionDto(ErrorKind.NotFoundException, HttpStatus.NOT_FOUND, messageEn, messagePl);
+  },
+  InternalServerError: () =>
+    new HttpExceptionDto(
+      ErrorKind.InternalServerError,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      'Internal server error',
+      'Wewnętrzny błąd serwera',
+    ),
+};
+
+export function mapException<T extends HttpException>(error: T): AppError {
+  try {
+    return exceptionMap[error.constructor.name](error.getResponse());
+  } catch (e) {
+    return exceptionMap.InternalServerError();
   }
 }

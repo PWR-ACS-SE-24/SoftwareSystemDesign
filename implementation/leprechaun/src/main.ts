@@ -16,7 +16,9 @@ async function bootstrap() {
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('/int/v1/docs/swagger', app, documentFactory, {
+    jsonDocumentUrl: '/int/v1/docs/openapi.json',
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }

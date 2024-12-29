@@ -1,7 +1,6 @@
 import { EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable } from '@nestjs/common';
-import { ResourceNotFoundException } from '../../shared/api/http-exceptions';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ValidationService } from '../../shared/api/validation.service';
 import { CreateVehicleDto, UpdateVehicleDto } from '../controller/vehicle-create.dto';
 import { Vehicle } from '../database/vehicle.entity';
@@ -23,7 +22,7 @@ export class VehicleService {
 
   async findVehicleById(id: string): Promise<Vehicle> {
     const vehicle = await this.vehicleRepository.findOne({ id });
-    if (!vehicle) throw new ResourceNotFoundException(id);
+    if (!vehicle) throw new NotFoundException(id);
 
     return vehicle;
   }
@@ -36,7 +35,7 @@ export class VehicleService {
   async deleteVehicleById(id: string): Promise<void> {
     // As per the requirements, we don't delete, but rather set isActive to false
     const updated = await this.vehicleRepository.nativeUpdate({ id }, { isActive: false });
-    if (!updated) throw new ResourceNotFoundException(id);
+    if (!updated) throw new NotFoundException(id);
   }
 
   async updateVehicleById(id: string, updateVehicle: UpdateVehicleDto): Promise<Vehicle> {

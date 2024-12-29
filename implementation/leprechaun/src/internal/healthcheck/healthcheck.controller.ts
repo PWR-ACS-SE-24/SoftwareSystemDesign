@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiOkResponse } from '@nestjs/swagger';
 import { HealthcheckDto, HealthcheckStatus } from './healthcheck.dto';
 
-@Controller('healthcheck')
+@Controller('/int/v1/health')
 export class HealthcheckController {
   @Get('/')
   @ApiOkResponse({ type: HealthcheckDto, description: 'Healthcheck status' })

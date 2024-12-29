@@ -1,7 +1,7 @@
 import { EntityManager } from '@mikro-orm/core';
 import { getRepositoryToken } from '@mikro-orm/nestjs';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ResourceNotFoundException } from '../../shared/api/http-exceptions';
 import { ValidationService } from '../../shared/api/validation.service';
 import { CreateVehicleDto } from '../controller/vehicle-create.dto';
 import { Vehicle } from '../database/vehicle.entity';
@@ -49,7 +49,7 @@ describe('VehicleService', () => {
 
   it('should find vehicle by id', async () => {
     await expect(service.findVehicleById(UUID_SAMPLE)).resolves.toEqual(VEHICLE);
-    await expect(service.findVehicleById('not a uuid D:')).rejects.toThrow(ResourceNotFoundException);
+    await expect(service.findVehicleById('not a uuid D:')).rejects.toThrow(NotFoundException);
   });
 
   it('should create vehicle', async () => {
@@ -58,6 +58,6 @@ describe('VehicleService', () => {
 
   it('should delete vehicle by id', async () => {
     await expect(service.deleteVehicleById(UUID_SAMPLE)).resolves.toBeUndefined();
-    await expect(service.deleteVehicleById('not a uuid D:')).rejects.toThrow(ResourceNotFoundException);
+    await expect(service.deleteVehicleById('not a uuid D:')).rejects.toThrow(NotFoundException);
   });
 });
