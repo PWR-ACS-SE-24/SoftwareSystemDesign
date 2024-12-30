@@ -1,5 +1,21 @@
 import { z } from "@hono/zod-openapi";
-import { expect, uuid } from "@jobberknoll/core/shared";
+import { isNone, uuid } from "@jobberknoll/core/shared";
+
+export function jsonReq<T>(
+  schema: T,
+  description: string,
+  required: boolean = true,
+) {
+  return {
+    content: {
+      "application/json": {
+        schema,
+      },
+    },
+    description,
+    required,
+  };
+}
 
 export function jsonRes<T>(schema: T, description: string) {
   return {
@@ -28,15 +44,35 @@ export function errorDto<C extends number, K extends string>(
   }).openapi(name, { description });
 }
 
+export const UuidSchema = z.string().uuid().transform((id, ctx) => {
+  const option = uuid(id);
+  if (isNone(option)) {
+    ctx.addIssue({ code: z.ZodIssueCode.invalid_string, validation: "uuid" });
+    return z.NEVER;
+  }
+  return option.value;
+});
+
+export const RequestIdSchema = UuidSchema.optional().transform((id) =>
+  id ?? uuid()
+)
+  .openapi({
+    description: "Request ID as UUIDv7.",
+    examples: [uuid()],
+  });
+
+export const UserAgentSchema = z.string().optional().openapi({
+  description: "Name of the caller.",
+  examples: ["Phoenix/1.0.0"],
+});
+
 export const IdParamSchema = z.object({
-  id: z.string().uuid().transform((id) =>
-    expect(uuid(id), "ID previously validated by Zod must be a UUID")
-  ).openapi({
+  id: UuidSchema.openapi({
     param: {
       name: "id",
       in: "path",
     },
-    description: "Resource identifier as UUIDv7.",
+    description: "Resource ID as UUIDv7.",
     examples: [uuid()],
   }),
 });

@@ -1,7 +1,9 @@
 import { createRoute, type RouteHandler } from "@hono/zod-openapi";
 import type { GetAccountByIdUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
-import { IntHeadersSchema } from "~/int/openapi.ts";
+import { authorize } from "~/ext/authorization.ts";
+import { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
+import { extHeadersSchema } from "~/ext/openapi.ts";
 import {
   AccountDto,
   AccountNotFoundDto,
@@ -15,12 +17,17 @@ export const getAccountByIdRoute = createRoute({
   path: "/accounts/{id}",
   summary: "Get account by ID",
   tags: ["Accounts"],
+  description: "Only for admin users.",
   request: {
-    headers: IntHeadersSchema,
+    headers: extHeadersSchema("admin"),
     params: IdParamSchema,
   },
   responses: {
     200: jsonRes(AccountDto, "Retrieved account by ID."),
+    401: jsonRes(
+      UserUnauthorizedDto,
+      "The user does not have access to the resource.",
+    ),
     404: jsonRes(AccountNotFoundDto, "The account could not be found."),
     422: jsonRes(
       SchemaMismatchDto,
@@ -32,12 +39,12 @@ export const getAccountByIdRoute = createRoute({
 export function getAccountByIdHandler(
   getAccountById: GetAccountByIdUseCase,
 ): RouteHandler<typeof getAccountByIdRoute> {
-  return async (c) => {
+  return authorize("admin", async (c) => {
     const { "jp-request-id": requestId } = c.req.valid("header");
     const { id: accountId } = c.req.valid("param");
     const res = await getAccountById.invoke({ accountId }, requestId);
     return isOk(res)
       ? c.json(mapAccountToDto(res.value), 200)
       : c.json(res.value, res.value.code);
-  };
+  });
 }

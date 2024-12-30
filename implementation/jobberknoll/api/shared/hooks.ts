@@ -20,7 +20,7 @@ export const defaultHook: Hook<unknown, Env, string, unknown> = (res, c) => {
 export function configureErrorHandler(app: OpenAPIHono, logger: Logger) {
   app.openAPIRegistry.register("ServerFailureDto", ServerFailureDto);
   app.onError((err, c) => {
-    logger.error(null, "onError", { err });
+    logger.error(null, "onError", { err: err.message });
     return c.json(
       {
         code: 500,

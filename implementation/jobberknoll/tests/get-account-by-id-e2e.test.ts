@@ -1,27 +1,30 @@
 import { accountMock, uuid } from "@jobberknoll/core/shared";
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertObjectMatch } from "@std/assert";
 import { setupTest } from "../setup.ts";
 
 Deno.test(
   "GET /int/v1/accounts/{id} should return an account if it exists",
   async () => {
-    const { app } = setupTest({ seededAccounts: [accountMock] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(accountMock);
 
-    const response = await app.request(`/int/v1/accounts/${accountMock.id}`);
+    const response = await api.request(
+      `/int/v1/accounts/${accountMock.id}`,
+    );
     const body = await response.json();
 
     assertEquals(response.status, 200);
-    assertEquals(body.id, accountMock.id);
-    assertEquals(body.type, accountMock.type);
-    assertEquals(body.fullName, accountMock.fullName);
-    assertEquals(body.email, accountMock.email);
+    assertObjectMatch(accountMock, body);
   },
 );
 
 Deno.test("GET /int/v1/accounts/{id} should not leak private fields", async () => {
-  const { app } = setupTest({ seededAccounts: [accountMock] });
+  const { api, accountRepo } = setupTest();
+  await accountRepo.createAccount(accountMock);
 
-  const response = await app.request(`/int/v1/accounts/${accountMock.id}`);
+  const response = await api.request(
+    `/int/v1/accounts/${accountMock.id}`,
+  );
   const body = await response.json();
 
   assert(!("hashedPassword" in body));
@@ -32,9 +35,9 @@ Deno.test("GET /int/v1/accounts/{id} should not leak private fields", async () =
 Deno.test(
   "GET /int/v1/accounts/{id} should return account-not-found if the account does not exist",
   async () => {
-    const { app } = setupTest();
+    const { api } = setupTest();
 
-    const response = await app.request(`/int/v1/accounts/${uuid()}`);
+    const response = await api.request(`/int/v1/accounts/${uuid()}`);
     const body = await response.json();
 
     assertEquals(response.status, 404);
@@ -46,9 +49,10 @@ Deno.test(
   "GET /int/v1/accounts/{id} should return account-not-found if the account is inactive",
   async () => {
     const inactiveAccount = { ...accountMock, isActive: false };
-    const { app } = setupTest({ seededAccounts: [inactiveAccount] });
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(inactiveAccount);
 
-    const response = await app.request(
+    const response = await api.request(
       `/int/v1/accounts/${inactiveAccount.id}`,
     );
     const body = await response.json();
@@ -59,11 +63,118 @@ Deno.test(
 );
 
 Deno.test(
-  "GET /int/v1/accounts/{id} should return schema-mismatch if the account id is not a UUID",
+  "GET /int/v1/accounts/{id} should return schema-mismatch if the account id is not an UUID",
   async () => {
-    const { app } = setupTest();
+    const { api } = setupTest();
 
-    const response = await app.request(`/int/v1/accounts/123`);
+    const response = await api.request("/int/v1/accounts/123");
+    const body = await response.json();
+
+    assertEquals(response.status, 422);
+    assertEquals(body.kind, "schema-mismatch");
+  },
+);
+
+const correctHeaders = {
+  "jp-user-id": uuid(),
+  "jp-user-role": "admin",
+  "jp-request-id": uuid(),
+  "user-agent": "Phoenix/1.0.0",
+};
+
+Deno.test(
+  "GET /ext/v1/accounts/{id} should return user-unauthorized if user is not an admin",
+  async () => {
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(accountMock);
+
+    const response = await api.request(`/ext/v1/accounts/${accountMock.id}`, {
+      headers: { ...correctHeaders, "jp-user-role": "passenger" },
+    });
+    const body = await response.json();
+
+    assertEquals(response.status, 401);
+    assertEquals(body.kind, "user-unauthorized");
+  },
+);
+
+Deno.test(
+  "GET /ext/v1/accounts/{id} should return an account if it exists",
+  async () => {
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(accountMock);
+
+    const response = await api.request(
+      `/ext/v1/accounts/${accountMock.id}`,
+      { headers: correctHeaders },
+    );
+    const body = await response.json();
+
+    assertEquals(response.status, 200);
+    assertEquals(body.id, accountMock.id);
+    assertEquals(body.type, accountMock.type);
+    assertEquals(body.fullName, accountMock.fullName);
+    assertEquals(body.email, accountMock.email);
+  },
+);
+
+Deno.test("GET /ext/v1/accounts/{id} should not leak private fields", async () => {
+  const { api, accountRepo } = setupTest();
+  await accountRepo.createAccount(accountMock);
+
+  const response = await api.request(
+    `/ext/v1/accounts/${accountMock.id}`,
+    { headers: correctHeaders },
+  );
+  const body = await response.json();
+
+  assert(!("hashedPassword" in body));
+  assert(!("isActive" in body));
+  assert(!("lastModified" in body));
+});
+
+Deno.test(
+  "GET /ext/v1/accounts/{id} should return account-not-found if the account does not exist",
+  async () => {
+    const { api } = setupTest();
+
+    const response = await api.request(
+      `/ext/v1/accounts/${uuid()}`,
+      { headers: correctHeaders },
+    );
+    const body = await response.json();
+
+    assertEquals(response.status, 404);
+    assertEquals(body.kind, "account-not-found");
+  },
+);
+
+Deno.test(
+  "GET /ext/v1/accounts/{id} should return account-not-found if the account is inactive",
+  async () => {
+    const inactiveAccount = { ...accountMock, isActive: false };
+    const { api, accountRepo } = setupTest();
+    await accountRepo.createAccount(inactiveAccount);
+
+    const response = await api.request(
+      `/ext/v1/accounts/${inactiveAccount.id}`,
+      { headers: correctHeaders },
+    );
+    const body = await response.json();
+
+    assertEquals(response.status, 404);
+    assertEquals(body.kind, "account-not-found");
+  },
+);
+
+Deno.test(
+  "GET /ext/v1/accounts/{id} should return schema-mismatch if the account id is not an UUID",
+  async () => {
+    const { api } = setupTest();
+
+    const response = await api.request("/ext/v1/accounts/123", {
+      headers: correctHeaders,
+    });
     const body = await response.json();
 
     assertEquals(response.status, 422);

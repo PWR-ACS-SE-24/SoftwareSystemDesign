@@ -5,27 +5,33 @@ import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
 import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
 import {
+  createAccountHandler,
+  createAccountRoute,
+  deleteAccountHandler,
+  deleteAccountRoute,
   getAccountByIdHandler,
   getAccountByIdRoute,
-  getHealthHandler,
-  getHealthRoute,
 } from "./routes/mod.ts";
 
-export class IntController implements Controller {
+export class ExtController implements Controller {
   public constructor(
     private readonly service: Service,
     private readonly logger: Logger,
   ) {}
 
   public get prefix(): string {
-    return "/int/v1";
+    return "/ext/v1";
   }
 
   public get routes(): OpenAPIHono {
     const app = new OpenAPIHono({ defaultHook })
       .openapi(
-        getHealthRoute,
-        getHealthHandler(this.service.getHealth),
+        createAccountRoute,
+        createAccountHandler(this.service.createAccount),
+      )
+      .openapi(
+        deleteAccountRoute,
+        deleteAccountHandler(this.service.deleteAccount),
       )
       .openapi(
         getAccountByIdRoute,
@@ -36,9 +42,9 @@ export class IntController implements Controller {
 
     configureDocs(app, {
       path: this.prefix,
-      title: "Jobberknoll Internal API",
+      title: "Jobberknoll External API",
       version: SERVICE_VERSION,
-      description: "The internal API for JakPrzyjade account management.",
+      description: "The external API for JakPrzyjade account management.",
       externalDocs: {
         url: "https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign",
       },

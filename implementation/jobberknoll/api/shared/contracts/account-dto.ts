@@ -6,7 +6,7 @@ export const AccountDto = z.object({
     description: "Account identifier as UUIDv7.",
     examples: [uuid()],
   }),
-  type: z.enum(["passenger", "driver", "admin", "inspector"]).openapi({
+  type: z.enum(["admin", "driver", "inspector", "passenger"]).openapi({
     description: "Type of the account.",
     examples: ["passenger"],
   }),

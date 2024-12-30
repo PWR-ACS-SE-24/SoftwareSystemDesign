@@ -140,6 +140,10 @@ Well known error codes and kinds are presented below:
     <th colspan="2">Jobberknoll</th>
   </tr>
   <tr>
+    <td><code>400</code></td>
+    <td><code>invalid-account-data</code></td>
+  </tr>
+  <tr>
     <td><code>404</code></td>
     <td><code>account-not-found</code></td>
   </tr>
@@ -177,7 +181,7 @@ Example paginated request looks like this:
 GET /api/account/v1/accounts?page=2&size=10
 ```
 
-Invalid pagination request (negative `page`, size `smaller` than 1, `size` bigger than 100) SHOULD return a `422` error with the `schema-mismatch` kind.
+~~Invalid pagination request (negative `page`, size `smaller` than 1, `size` bigger than 100) SHOULD return a `422` error with the `schema-mismatch` kind.~~ TODO: Confirm this behavior.
 
 ## Endpoints route
 
