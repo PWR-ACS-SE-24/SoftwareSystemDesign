@@ -45,6 +45,7 @@ export class MemoryAccountRepo implements AccountRepo {
     id: UUID,
   ): Promise<Option<AccountNotFoundError>> {
     if (id in this.accounts) {
+      this.emails.delete(this.accounts[id].email);
       delete this.accounts[id];
       return Promise.resolve(none());
     }
