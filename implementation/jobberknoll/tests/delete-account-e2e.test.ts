@@ -10,7 +10,7 @@ const correctHeaders = {
 };
 
 Deno.test(
-  "DELETE /ext/v1/accounts/{id} should deactivate the account if it exists",
+  "DELETE /ext/v1/accounts/{id} should delete the account if it exists",
   async () => {
     const { api, accountRepo } = setupTest();
     await accountRepo.createAccount(accountMock);
@@ -68,24 +68,6 @@ Deno.test(
     const { api } = setupTest();
 
     const response = await api.request(`/ext/v1/accounts/${uuid()}`, {
-      method: "DELETE",
-      headers: correctHeaders,
-    });
-    const body = await response.json();
-
-    assertEquals(response.status, 404);
-    assertEquals(body.kind, "account-not-found");
-  },
-);
-
-Deno.test(
-  "DELETE /ext/v1/accounts/{id} should return account-not-found if the account is already deactivated",
-  async () => {
-    const { api, accountRepo } = setupTest();
-    await accountRepo.createAccount(accountMock);
-    await accountRepo.deactivateAccount(accountMock.id);
-
-    const response = await api.request(`/ext/v1/accounts/${accountMock.id}`, {
       method: "DELETE",
       headers: correctHeaders,
     });

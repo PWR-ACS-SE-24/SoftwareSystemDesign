@@ -13,7 +13,7 @@ import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 export const deleteAccountRoute = createRoute({
   method: "delete",
   path: "/accounts/{id}",
-  summary: "Deactivate an account",
+  summary: "Delete an account",
   tags: ["Accounts"],
   description: "Only for admin users.",
   request: {
@@ -21,7 +21,7 @@ export const deleteAccountRoute = createRoute({
     params: IdParamSchema,
   },
   responses: {
-    204: { description: "Account deactivated successfully." },
+    204: { description: "Account deleted successfully." },
     401: jsonRes(
       UserUnauthorizedDto,
       "The user does not have access to the resource.",

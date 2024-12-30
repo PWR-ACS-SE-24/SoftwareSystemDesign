@@ -5,5 +5,5 @@ export type AccountRepo = {
   createAccount(account: Account): Promise<void>;
   isEmailTaken(email: string): Promise<boolean>;
   getAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>>;
-  deactivateAccount(id: UUID): Promise<Option<AccountNotFoundError>>;
+  deleteAccount(id: UUID): Promise<Option<AccountNotFoundError>>;
 };

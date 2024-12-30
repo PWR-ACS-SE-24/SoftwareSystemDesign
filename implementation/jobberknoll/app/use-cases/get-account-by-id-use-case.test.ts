@@ -26,17 +26,3 @@ Deno.test(
     assert(isErr(result));
   },
 );
-
-Deno.test("GetAccountByIdUseCase should return account-not-found if the account is inactive", async () => {
-  const inactiveAccount = { ...accountMock, isActive: false };
-  const accountRepo = new MemoryAccountRepo();
-  await accountRepo.createAccount(inactiveAccount);
-  const useCase = new GetAccountByIdUseCase(accountRepo, new Logger());
-
-  const result = await useCase.invoke(
-    { accountId: inactiveAccount.id },
-    uuid(),
-  );
-
-  assert(isErr(result));
-});

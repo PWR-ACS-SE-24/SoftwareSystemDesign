@@ -40,8 +40,7 @@ export class CreateAccountUseCase extends UseCase<
       fullName: req.fullName,
       email: req.email.toLowerCase(),
       hashedPassword: req.password, // TODO: hash password
-      isActive: true,
-      lastModified: Date.now(),
+      lastModified: Math.floor(Date.now() / 1000),
     };
 
     await this.accountRepo.createAccount(account);

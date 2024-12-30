@@ -30,12 +30,12 @@ export class ExtController implements Controller {
         createAccountHandler(this.service.createAccount),
       )
       .openapi(
-        deleteAccountRoute,
-        deleteAccountHandler(this.service.deleteAccount),
-      )
-      .openapi(
         getAccountByIdRoute,
         getAccountByIdHandler(this.service.getAccountById),
+      )
+      .openapi(
+        deleteAccountRoute,
+        deleteAccountHandler(this.service.deleteAccount),
       );
 
     configureErrorHandler(app, this.logger);

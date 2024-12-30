@@ -5,13 +5,12 @@ type AccountBase = {
   fullName: string;
   email: string;
   hashedPassword: string;
-  isActive: boolean;
   lastModified: number;
 };
 
 export type Passenger = AccountBase & {
   type: "passenger";
-  phoneNumber?: string;
+  phoneNumber: string | null;
 };
 
 export type Driver = AccountBase & {

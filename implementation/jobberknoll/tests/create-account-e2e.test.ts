@@ -45,7 +45,6 @@ Deno.test("POST /ext/v1/accounts not leak private fields", async () => {
   const body = await response.json();
 
   assert(!("hashedPassword" in body));
-  assert(!("isActive" in body));
   assert(!("lastModified" in body));
 });
 

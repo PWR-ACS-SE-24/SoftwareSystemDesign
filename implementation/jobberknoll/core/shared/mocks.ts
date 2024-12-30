@@ -8,6 +8,6 @@ export const accountMock: Account = {
   email: "john.smith@example.com",
   hashedPassword:
     "$2a$12$9rnvHqxGPHRiMtBZlKwKluiQ.qDY3BkmAFN3prpZdkuRhtE9Zx0gy",
-  isActive: true,
-  lastModified: 1734977958974,
+  lastModified: 1735558355,
+  phoneNumber: null,
 };

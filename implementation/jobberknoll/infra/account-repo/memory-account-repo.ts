@@ -12,7 +12,6 @@ import {
   type Result,
   some,
   type UUID,
-  uuid,
 } from "@jobberknoll/core/shared";
 
 export class MemoryAccountRepo implements AccountRepo {
@@ -42,19 +41,12 @@ export class MemoryAccountRepo implements AccountRepo {
     );
   }
 
-  public deactivateAccount(
+  public deleteAccount(
     id: UUID,
   ): Promise<Option<AccountNotFoundError>> {
-    if (id in this.accounts && this.accounts[id].isActive) {
-      // TODO: Think about what account deactivation should actually do.
-      // TODO: Move to /app/security.
+    if (id in this.accounts) {
       this.emails.delete(this.accounts[id].email);
-      this.accounts[id].fullName = "[REDACTED]";
-      this.accounts[id].email = `${uuid()}@redacted.com`;
-      this.accounts[id].hashedPassword = "[REDACTED]";
-      this.accounts[id].isActive = false;
-      this.accounts[id].lastModified = Date.now();
-      this.emails.add(this.accounts[id].email);
+      delete this.accounts[id];
       return Promise.resolve(none());
     }
     return Promise.resolve(some(accountNotFoundError(id)));

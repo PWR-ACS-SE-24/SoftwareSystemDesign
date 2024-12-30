@@ -28,7 +28,6 @@ Deno.test("GET /int/v1/accounts/{id} should not leak private fields", async () =
   const body = await response.json();
 
   assert(!("hashedPassword" in body));
-  assert(!("isActive" in body));
   assert(!("lastModified" in body));
 });
 
@@ -38,23 +37,6 @@ Deno.test(
     const { api } = setupTest();
 
     const response = await api.request(`/int/v1/accounts/${uuid()}`);
-    const body = await response.json();
-
-    assertEquals(response.status, 404);
-    assertEquals(body.kind, "account-not-found");
-  },
-);
-
-Deno.test(
-  "GET /int/v1/accounts/{id} should return account-not-found if the account is inactive",
-  async () => {
-    const inactiveAccount = { ...accountMock, isActive: false };
-    const { api, accountRepo } = setupTest();
-    await accountRepo.createAccount(inactiveAccount);
-
-    const response = await api.request(
-      `/int/v1/accounts/${inactiveAccount.id}`,
-    );
     const body = await response.json();
 
     assertEquals(response.status, 404);
@@ -129,7 +111,6 @@ Deno.test("GET /ext/v1/accounts/{id} should not leak private fields", async () =
   const body = await response.json();
 
   assert(!("hashedPassword" in body));
-  assert(!("isActive" in body));
   assert(!("lastModified" in body));
 });
 
@@ -140,24 +121,6 @@ Deno.test(
 
     const response = await api.request(
       `/ext/v1/accounts/${uuid()}`,
-      { headers: correctHeaders },
-    );
-    const body = await response.json();
-
-    assertEquals(response.status, 404);
-    assertEquals(body.kind, "account-not-found");
-  },
-);
-
-Deno.test(
-  "GET /ext/v1/accounts/{id} should return account-not-found if the account is inactive",
-  async () => {
-    const inactiveAccount = { ...accountMock, isActive: false };
-    const { api, accountRepo } = setupTest();
-    await accountRepo.createAccount(inactiveAccount);
-
-    const response = await api.request(
-      `/ext/v1/accounts/${inactiveAccount.id}`,
       { headers: correctHeaders },
     );
     const body = await response.json();
