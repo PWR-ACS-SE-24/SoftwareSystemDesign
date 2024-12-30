@@ -7,6 +7,6 @@ export function mapAccountToDto(account: Account): AccountDto {
     type: account.type,
     fullName: account.fullName,
     email: account.email,
-    phoneNumber: "phoneNumber" in account ? account.phoneNumber : undefined,
+    phoneNumber: account.type === "passenger" ? account.phoneNumber : undefined,
   });
 }

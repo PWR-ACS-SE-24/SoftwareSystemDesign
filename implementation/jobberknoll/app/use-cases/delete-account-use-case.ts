@@ -29,7 +29,7 @@ export class DeleteAccountUseCase extends UseCase<
   protected async handle(
     req: DeleteAccountReq,
   ): Promise<Result<null, AccountNotFoundError>> {
-    const error = await this.accountRepo.deactivateAccount(req.accountId);
+    const error = await this.accountRepo.deleteAccount(req.accountId);
     return isNone(error) ? ok(null) : err(error.value);
   }
 }

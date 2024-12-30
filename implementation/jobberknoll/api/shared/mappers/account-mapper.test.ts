@@ -15,6 +15,7 @@ Deno.test("mapAccountToDto should not leak private fields", () => {
   const result = mapAccountToDto(accountMock);
 
   assert(!("hashedPassword" in result));
-  assert(!("isActive" in result));
   assert(!("lastModified" in result));
 });
+
+// TODO: Test phoneNumber mapping
