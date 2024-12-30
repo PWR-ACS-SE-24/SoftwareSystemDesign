@@ -18,4 +18,30 @@ Deno.test("mapAccountToDto should not leak private fields", () => {
   assert(!("lastModified" in result));
 });
 
-// TODO: Test phoneNumber mapping
+Deno.test("mapAccountToDto omit phoneNumber for non-passenger types", () => {
+  for (const type of ["admin", "driver", "inspector"] as const) {
+    const result = mapAccountToDto({ ...accountMock, type });
+
+    assert(!("phoneNumber" in result));
+  }
+});
+
+Deno.test("mapAccountToDto should return null for null passenger phoneNumbers", () => {
+  const result = mapAccountToDto({
+    ...accountMock,
+    type: "passenger",
+    phoneNumber: null,
+  });
+
+  assertEquals(result.phoneNumber, null);
+});
+
+Deno.test("mapAccountToDto should return phoneNumber for non-null passenger phoneNumbers", () => {
+  const result = mapAccountToDto({
+    ...accountMock,
+    type: "passenger",
+    phoneNumber: "123-456-7890",
+  });
+
+  assertEquals(result.phoneNumber, "123-456-7890");
+});
