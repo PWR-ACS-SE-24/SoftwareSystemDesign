@@ -1,17 +1,9 @@
 import { z } from "@hono/zod-openapi";
 import { isNone, uuid } from "@jobberknoll/core/shared";
 
-export function jsonReq<T>(
-  schema: T,
-  description: string,
-  required: boolean = true,
-) {
+export function jsonReq<T>(schema: T, description: string, required: boolean = true) {
   return {
-    content: {
-      "application/json": {
-        schema,
-      },
-    },
+    content: { "application/json": { schema } },
     description,
     required,
   };
@@ -19,11 +11,7 @@ export function jsonReq<T>(
 
 export function jsonRes<T>(schema: T, description: string) {
   return {
-    content: {
-      "application/json": {
-        schema,
-      },
-    },
+    content: { "application/json": { schema } },
     description,
   };
 }
@@ -38,9 +26,7 @@ export function errorDto<C extends number, K extends string>(
     code: z.literal(code).openapi({ description: "HTTP status code." }),
     kind: z.literal(kind).openapi({ description: "Error kind." }),
     messageEn: z.string().openapi({ description: "Error message in English." }),
-    messagePl: z.string().optional().openapi({
-      description: "Error message in Polish.",
-    }),
+    messagePl: z.string().optional().openapi({ description: "Error message in Polish." }),
   }).openapi(name, { description });
 }
 
@@ -53,13 +39,8 @@ export const UuidSchema = z.string().uuid().transform((id, ctx) => {
   return option.value;
 });
 
-export const RequestIdSchema = UuidSchema.optional().transform((id) =>
-  id ?? uuid()
-)
-  .openapi({
-    description: "Request ID as UUIDv7.",
-    examples: [uuid()],
-  });
+export const RequestIdSchema = UuidSchema.optional().transform((id) => id ?? uuid())
+  .openapi({ description: "Request ID as UUIDv7.", examples: [uuid()] });
 
 export const UserAgentSchema = z.string().optional().openapi({
   description: "Name of the caller.",
@@ -68,10 +49,7 @@ export const UserAgentSchema = z.string().optional().openapi({
 
 export const IdParamSchema = z.object({
   id: UuidSchema.openapi({
-    param: {
-      name: "id",
-      in: "path",
-    },
+    param: { name: "id", in: "path" },
     description: "Resource ID as UUIDv7.",
     examples: [uuid()],
   }),

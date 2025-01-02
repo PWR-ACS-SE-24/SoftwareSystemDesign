@@ -24,17 +24,13 @@ const LEVELS = {
 export class Logger {
   public constructor(private readonly transports: LogTransport[] = []) {}
 
-  public debug: LogMethod = (requestId, event, tags = {}) =>
-    this.log({ requestId, level: "debug", event, tags });
+  public debug: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "debug", event, tags });
 
-  public info: LogMethod = (requestId, event, tags = {}) =>
-    this.log({ requestId, level: "info", event, tags });
+  public info: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "info", event, tags });
 
-  public warn: LogMethod = (requestId, event, tags = {}) =>
-    this.log({ requestId, level: "warn", event, tags });
+  public warn: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "warn", event, tags });
 
-  public error: LogMethod = (requestId, event, tags = {}) =>
-    this.log({ requestId, level: "error", event, tags });
+  public error: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "error", event, tags });
 
   private log(params: LogParams): void {
     const data = {

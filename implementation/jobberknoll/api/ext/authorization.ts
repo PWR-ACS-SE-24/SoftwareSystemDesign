@@ -2,19 +2,10 @@ import type { RouteConfig, RouteHandler } from "@hono/zod-openapi";
 import { USER_ROLES, type UserRole } from "@jobberknoll/app";
 import type { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
 
-function isValid(
-  expectedRole: UserRole | "member",
-  userRole: string | undefined,
-): boolean {
-  if (!USER_ROLES.includes(userRole as UserRole)) {
-    return false;
-  }
-
-  if (expectedRole === "member") {
-    return userRole !== "guest";
-  } else {
-    return userRole === expectedRole;
-  }
+function isValid(expectedRole: UserRole | "member", userRole: string | undefined): boolean {
+  if (!USER_ROLES.includes(userRole as UserRole)) return false;
+  if (expectedRole === "member") return userRole !== "guest";
+  return userRole === expectedRole;
 }
 
 export function authorize<R extends RouteConfig>(
@@ -24,9 +15,7 @@ export function authorize<R extends RouteConfig>(
   return (c, next) => {
     const userRole = c.req.header("jp-user-role");
 
-    if (isValid(expectedRole, userRole)) {
-      return handler(c, next);
-    }
+    if (isValid(expectedRole, userRole)) return handler(c, next);
 
     return c.json(
       {

@@ -101,10 +101,7 @@ Deno.test("POST /ext/v1/accounts should return schema-mismatch if body has wrong
 
 Deno.test("POST /ext/v1/accounts should return invalid-account-data if the email is already taken", async () => {
   const { api, accountRepo } = setupTest();
-  await accountRepo.createAccount({
-    ...accountMock,
-    email: "taken-email@example.com",
-  });
+  await accountRepo.createAccount({ ...accountMock, email: "taken-email@example.com" });
 
   const response = await api.request("/ext/v1/accounts", {
     method: "POST",
@@ -129,9 +126,7 @@ Deno.test("POST /ext/v1/accounts should create an account fetchable from GET /ex
 
   assertEquals(createResponse.status, 201);
 
-  const getResponse = await api.request(`/ext/v1/accounts/${createBody.id}`, {
-    headers: correctHeaders,
-  });
+  const getResponse = await api.request(`/ext/v1/accounts/${createBody.id}`, { headers: correctHeaders });
   const getBody = await getResponse.json();
 
   assertEquals(getResponse.status, 200);

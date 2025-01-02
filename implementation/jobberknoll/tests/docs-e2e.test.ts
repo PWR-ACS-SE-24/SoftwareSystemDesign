@@ -14,18 +14,15 @@ for (const scope of ["int", "ext"]) {
     assertExists(body.scalar);
   });
 
-  Deno.test(
-    `GET /${scope}/v1/docs/openapi.json should return the OpenAPI spec`,
-    async () => {
-      const { api } = setupTest();
+  Deno.test(`GET /${scope}/v1/docs/openapi.json should return the OpenAPI spec`, async () => {
+    const { api } = setupTest();
 
-      const response = await api.request(`/${scope}/v1/docs/openapi.json`);
-      const body = await response.json();
+    const response = await api.request(`/${scope}/v1/docs/openapi.json`);
+    const body = await response.json();
 
-      assertEquals(response.status, 200);
-      assertEquals(body.openapi, "3.0.0");
-    },
-  );
+    assertEquals(response.status, 200);
+    assertEquals(body.openapi, "3.0.0");
+  });
 
   for (const ui of ["swagger", "scalar"]) {
     Deno.test(`GET /${scope}/v1/docs/${ui} should be available`, async () => {

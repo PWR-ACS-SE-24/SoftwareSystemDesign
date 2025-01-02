@@ -1,8 +1,4 @@
-import {
-  type Account,
-  invalidAccountData,
-  type InvalidAccountDataError,
-} from "@jobberknoll/core/domain";
+import { type Account, invalidAccountData, type InvalidAccountDataError } from "@jobberknoll/core/domain";
 import { err, ok, type Result, uuid } from "@jobberknoll/core/shared";
 import type { AccountRepo } from "~/interfaces/mod.ts";
 import type { Logger } from "~/shared/mod.ts";
@@ -15,21 +11,12 @@ type CreateAccountReq = {
   password: string;
 };
 
-export class CreateAccountUseCase extends UseCase<
-  CreateAccountReq,
-  Account,
-  InvalidAccountDataError
-> {
-  public constructor(
-    private readonly accountRepo: AccountRepo,
-    logger: Logger,
-  ) {
+export class CreateAccountUseCase extends UseCase<CreateAccountReq, Account, InvalidAccountDataError> {
+  public constructor(private readonly accountRepo: AccountRepo, logger: Logger) {
     super(logger);
   }
 
-  protected async handle(
-    req: CreateAccountReq,
-  ): Promise<Result<Account, InvalidAccountDataError>> {
+  protected async handle(req: CreateAccountReq): Promise<Result<Account, InvalidAccountDataError>> {
     if (await this.accountRepo.isEmailTaken(req.email)) {
       return err(invalidAccountData("email"));
     }

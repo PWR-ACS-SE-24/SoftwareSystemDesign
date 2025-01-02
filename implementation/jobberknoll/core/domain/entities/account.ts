@@ -8,21 +8,12 @@ type AccountBase = {
   lastModified: number;
 };
 
-export type Passenger = AccountBase & {
-  type: "passenger";
-  phoneNumber: string | null;
-};
+export type Passenger = AccountBase & { type: "passenger"; phoneNumber: string | null };
 
-export type Driver = AccountBase & {
-  type: "driver";
-};
+export type Driver = AccountBase & { type: "driver" };
 
-export type Admin = AccountBase & {
-  type: "admin";
-};
+export type Admin = AccountBase & { type: "admin" };
 
-export type Inspector = AccountBase & {
-  type: "inspector";
-};
+export type Inspector = AccountBase & { type: "inspector" };
 
 export type Account = Passenger | Driver | Admin | Inspector;
