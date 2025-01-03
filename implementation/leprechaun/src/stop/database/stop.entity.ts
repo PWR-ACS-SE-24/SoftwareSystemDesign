@@ -1,6 +1,5 @@
-import { Collection, Entity, Filter, ManyToMany, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, Filter, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
-import { Line } from '../../line/database/line.entity';
 import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
 
 @Entity()
@@ -21,8 +20,12 @@ export class Stop {
   @Property({ nullable: false, default: true })
   isActive: boolean = true;
 
-  @ManyToMany({ entity: () => Line, pivotEntity: () => StopLineMapping })
-  lines = new Collection<Line>(this);
+  @OneToMany({
+    entity: () => StopLineMapping,
+    mappedBy: (StopLineMapping) => StopLineMapping.stop,
+    orderBy: { order: 'ASC' },
+  })
+  mappings = new Collection<StopLineMapping>(this);
 
   constructor(name: string, latitude: number, longitude: number) {
     this.name = name;

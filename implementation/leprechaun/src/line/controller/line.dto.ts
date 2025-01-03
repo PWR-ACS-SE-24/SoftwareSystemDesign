@@ -1,8 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { StopDto } from '../../stop/controller/stop.dto';
 import { Line } from '../database/line.entity';
-import { CreateLineDto } from './line-create.dto';
 
-export class LineDto extends CreateLineDto {
+export class LineDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(4)
+  @ApiProperty({
+    description: 'Name of the line',
+    maxLength: 4,
+    minLength: 1,
+    nullable: false,
+    examples: ['112', '997', '144', '145'],
+  })
+  readonly name: string;
+
   @ApiProperty({
     description: 'Line ID',
     nullable: false,
@@ -17,14 +30,31 @@ export class LineDto extends CreateLineDto {
   })
   readonly isActive: boolean;
 
-  constructor(id: string, name: string, isActive: boolean) {
-    super(name);
+  @ApiProperty({
+    description: 'Stops of the line',
+    isArray: true,
+    items: {
+      type: 'array',
+      $ref: getSchemaPath(StopDto),
+    },
+  })
+  // FIXME: cant get it to properly show the type
+  readonly stops: StopDto[];
+
+  constructor(id: string, name: string, stops: StopDto[], isActive: boolean) {
+    this.name = name;
+    this.stops = stops;
     this.id = id;
     this.isActive = isActive;
   }
 
   static fromEntity(entity: Line): LineDto {
-    return new LineDto(entity.id, entity.name, entity.isActive);
+    return new LineDto(
+      entity.id,
+      entity.name,
+      entity.mappings.map((i) => StopDto.fromEntity(i.stop)),
+      entity.isActive,
+    );
   }
 
   static fromEntities(entities: Line[]): LineDto[] {

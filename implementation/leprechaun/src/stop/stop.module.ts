@@ -9,5 +9,6 @@ import { StopService } from './service/stop.service';
   imports: [MikroOrmModule.forFeature([Stop]), SharedModule],
   controllers: [StopController],
   providers: [StopService],
+  exports: [StopService],
 })
 export class StopModule {}

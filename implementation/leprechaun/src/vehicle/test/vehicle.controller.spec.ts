@@ -1,139 +1,115 @@
-import { INestApplication } from '@nestjs/common';
+import { EntityManager, MikroORM } from '@mikro-orm/core';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ModuleMocker } from 'jest-mock';
-import * as request from 'supertest';
-import { v7 as uuid } from 'uuid';
-import { HttpExceptionFilter, InternalExceptionFilter } from '../../shared/api/http-exception.filter';
+import { testConfig } from '../../config/mikro-orm.test.config';
+import { SharedModule } from '../../shared/shared.module';
 import { CreateVehicleDto } from '../controller/vehicle-create.dto';
 import { VehicleController } from '../controller/vehicle.controller';
 import { Vehicle } from '../database/vehicle.entity';
 import { VehicleService } from '../service/vehicle.service';
 
-const moduleMocker = new ModuleMocker(global);
-
-const UUID_SAMPLE = '019411be-c6c3-7f67-83c1-c088d4280102';
-const VEHICLE: Vehicle = { id: UUID_SAMPLE, sideNumber: '2136', isActive: true };
-const VEHICLES: Vehicle[] = [VEHICLE];
-
 describe('VehicleController', () => {
   let controller: VehicleController;
-  let app: INestApplication;
-
-  afterEach(async () => {
-    await app.close();
-  });
+  let em: EntityManager;
+  let orm: MikroORM;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [MikroOrmModule.forRoot(testConfig), MikroOrmModule.forFeature([Vehicle]), SharedModule],
       controllers: [VehicleController],
-    })
-      .useMocker((token) => {
-        if (token === VehicleService) {
-          const mocked: {
-            [key in keyof VehicleService]: jest.Mock<VehicleService[key], Parameters<VehicleService[key]>>;
-          } = {
-            listAll: jest.fn().mockResolvedValue({ vehicles: VEHICLES, total: VEHICLES.length }),
-            findVehicleById: jest.fn().mockResolvedValue(VEHICLES[0]),
-            createVehicle: jest.fn().mockImplementation((newVehicle: CreateVehicleDto) => {
-              const vehicle = { id: uuid(), ...newVehicle, isActive: true };
-              VEHICLES.push(vehicle);
-              return vehicle;
-            }),
-            deleteVehicleById: jest.fn().mockResolvedValue(undefined),
-            updateVehicleById: jest.fn().mockResolvedValue(VEHICLES[0]),
-          };
-          return mocked;
-        }
-      })
-      .compile();
+      providers: [VehicleService],
+    }).compile();
 
-    app = module.createNestApplication();
-    app.useGlobalFilters(new InternalExceptionFilter());
-    app.useGlobalFilters(new HttpExceptionFilter());
-
-    await app.init();
     controller = module.get<VehicleController>(VehicleController);
+    em = module.get<EntityManager>(EntityManager);
+    orm = module.get<MikroORM>(MikroORM);
+    await em.begin();
+  });
+
+  afterEach(async () => {
+    await em.rollback();
+    await orm.close(true);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should have pagination', async () => {
-    const badPage = -4;
-    const badSize = 1000;
+  it('should list all vehicles', async () => {
+    // given
+    const vehicle1 = new Vehicle('2136');
+    em.persist(vehicle1);
+    const vehicle2 = new Vehicle('2137');
+    em.persist(vehicle2);
+    await em.flush();
 
-    const response = await controller.getAllVehicles(badPage, badSize);
-    expect(response.total).toBe(VEHICLES.length);
-    expect(response.size).toBe(100);
-    expect(response.page).toBe(0);
-  });
+    // when
+    const response = await controller.getAllVehicles();
 
-  it('should be 200 when listing all vehicles', async () => {
-    await request(app.getHttpServer()).get('/ext/v1/vehicles').expect(200);
-  });
-
-  it('should be 200 when using bad pagination', async () => {
-    await request(app.getHttpServer()).get('/ext/v1/vehicles?page=-13&size=999').expect(200).type('application/json');
+    // then
+    expect(response.total).toBe(2);
+    expect(response.data[0].sideNumber).toBe('2136');
+    expect(response.data[1].sideNumber).toBe('2137');
   });
 
   it('should get vehicle by id', async () => {
-    const response = await controller.getVehicleById(UUID_SAMPLE);
-    expect(response.sideNumber).toBe(VEHICLE.sideNumber);
-  });
+    // given
+    const vehicle1 = new Vehicle('2136');
+    em.persist(vehicle1);
+    const vehicle2 = new Vehicle('2137');
+    em.persist(vehicle2);
+    await em.flush();
 
-  it('should be 200 when getting vehicle by id', async () => {
-    await request(app.getHttpServer()).get(`/ext/v1/vehicles/${UUID_SAMPLE}`).expect(200).type('application/json');
-  });
-
-  it('should 422 when id is bad', async () => {
-    await request(app.getHttpServer()).get('/ext/v1/vehicles/baduuid').expect(422).type('application/json');
+    // when
+    const response = await controller.getVehicleById(vehicle1.id);
+    expect(response.sideNumber).toBe(vehicle1.sideNumber);
+    expect(response.id).toBe(vehicle1.id);
+    expect(response.isActive).toBe(true);
   });
 
   it('should create vehicle', async () => {
-    const response = await controller.createVehicle({ sideNumber: '2139' });
+    // given
+    const newVehicle = new CreateVehicleDto('2139');
+
+    // when
+    const response = await controller.createVehicle(newVehicle);
+    const vehicle = await em.findOne(Vehicle, { id: response.id });
+
+    // then
+    expect(response.id).toBeDefined();
     expect(response.sideNumber).toBe('2139');
+    expect(response.isActive).toBe(true);
+    expect(vehicle).toBeDefined();
+    expect(vehicle?.sideNumber).toBe('2139');
   });
 
-  it('should be 201 when creating vehicle', async () => {
-    await request(app.getHttpServer())
-      .post('/ext/v1/vehicles')
-      .send({ sideNumber: '2139' })
-      .expect(201)
-      .type('application/json');
+  it('should update vehicle isActive instead of deleting', async () => {
+    // given
+    const newVehicle = new Vehicle('2139');
+    await em.persistAndFlush(newVehicle);
+
+    // when
+    await controller.deleteVehicleById(newVehicle.id);
+    const vehicle = await em.refresh(newVehicle, { filters: false });
+
+    // then
+    expect(vehicle).toBeDefined();
+    expect(vehicle?.isActive).toBe(false);
   });
 
-  it('should delete vehicle', async () => {
-    const response = await controller.deleteVehicleById(UUID_SAMPLE);
-    expect(response).toBeUndefined();
-  });
+  it('should create new vehicle when updating', async () => {
+    // given
+    const oldVehicle = new Vehicle('2139');
+    await em.persistAndFlush(oldVehicle);
 
-  it('should be 204 when deleting vehicle', async () => {
-    await request(app.getHttpServer()).delete(`/ext/v1/vehicles/${UUID_SAMPLE}`).expect(204);
-  });
+    // when
+    const updatedVehicle = await controller.updateVehicleById(oldVehicle.id, { sideNumber: '9990' });
+    await em.refresh(oldVehicle, { filters: false });
 
-  it('should 422 when id is bad when deleting', async () => {
-    await request(app.getHttpServer()).delete('/ext/v1/vehicles/baduuid').expect(422).type('application/json');
-  });
-
-  it('should update vehicle', async () => {
-    const response = await controller.updateVehicleById(UUID_SAMPLE, { sideNumber: '2139' });
-    expect(response).toBeDefined();
-  });
-
-  it('should be 200 when updating vehicle', async () => {
-    await request(app.getHttpServer())
-      .patch(`/ext/v1/vehicles/${UUID_SAMPLE}`)
-      .send({ sideNumber: '2139' })
-      .expect(200)
-      .type('application/json');
-  });
-
-  it('should be 422 when updating vehicle with bad id', async () => {
-    await request(app.getHttpServer())
-      .patch('/ext/v1/vehicles/baduuid')
-      .send({ sideNumber: '2139' })
-      .expect(422)
-      .type('application/json');
+    // then
+    expect(oldVehicle.id).not.toBe(updatedVehicle.id);
+    expect(updatedVehicle.sideNumber).toBe('9990');
+    expect(updatedVehicle.isActive).toBe(true);
+    expect(oldVehicle.isActive).toBe(false);
   });
 });

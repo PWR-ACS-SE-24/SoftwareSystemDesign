@@ -1,16 +1,24 @@
-import { EntityRepository } from '@mikro-orm/core';
+import { EntityManager, EntityRepository, QueryFlag } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ValidationService } from '../../shared/api/validation.service';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
+import { LineService } from '../../line/service/line.service';
 import { CreateStopDto, UpdateStopDto } from '../controller/stop-create.dto';
 import { Stop } from '../database/stop.entity';
 
 @Injectable()
 export class StopService {
   constructor(
+    private readonly em: EntityManager,
+
+    @Inject(forwardRef(() => LineService))
+    private readonly lineService: LineService,
+
     @InjectRepository(Stop)
     private readonly stopRepository: EntityRepository<Stop>,
-    private readonly validationService: ValidationService,
+
+    @InjectRepository(StopLineMapping)
+    private readonly stopLineMappingRepository: EntityRepository<StopLineMapping>,
   ) {}
 
   async listAll(size: number, page: number): Promise<{ stops: Stop[]; total: number }> {
@@ -20,31 +28,84 @@ export class StopService {
     return { stops, total };
   }
 
-  async findStopById(id: string): Promise<Stop> {
-    const stop = await this.stopRepository.findOne({ id });
-    if (!stop) throw new NotFoundException(id);
-
-    return stop;
+  async findStopById(stopId: string, filters: boolean = true): Promise<Stop> {
+    return await this.stopRepository.findOneOrFail(
+      { id: stopId },
+      { failHandler: () => new NotFoundException(stopId), filters: filters },
+    );
   }
 
   async createStop(createStop: CreateStopDto): Promise<Stop> {
-    return this.stopRepository.create(createStop);
+    const stop = new Stop(createStop.name, createStop.latitude, createStop.longitude);
+    await this.stopRepository.insert(stop);
+    return stop;
   }
 
-  async deleteStopById(id: string): Promise<void> {
-    const updated = await this.stopRepository.nativeUpdate({ id }, { isActive: false });
-    if (!updated) throw new NotFoundException(id);
+  async getOrderedStopsForLine(lineId: string): Promise<Stop[]> {
+    return (
+      await this.stopLineMappingRepository.findAll({
+        where: { line: lineId },
+        populate: ['stop'],
+        orderBy: { order: 'asc' },
+      })
+    ).map((mapping) => mapping.stop);
   }
 
-  async updateStopById(id: string, updateStop: UpdateStopDto) {
-    // TODO: switch all lines to use new stop when updating
-    // As per the requirements, we don't update in place, but rather set isActive to false and create a new one
-    const stop = await this.findStopById(id);
-    await this.deleteStopById(id);
+  async deleteStopById(stopId: string): Promise<void> {
+    // (as discussed with @tchojnacki)
+    // if stop is being used by a line, we should create a new line without the stop
 
-    // Create new one in place
-    const newStop = await this.createStop({ ...stop, ...updateStop });
+    await this.em.transactional(async () => {
+      const updated = await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
+      if (!updated) throw new NotFoundException(stopId);
 
-    return newStop;
+      const linesUsingStop = await this.lineService.getAllLinesForStop(stopId);
+      if (!linesUsingStop) return;
+
+      // For each line remove the stop
+      for (const line of linesUsingStop) {
+        const orderedStops = await this.getOrderedStopsForLine(line.id);
+        const newStops = orderedStops.filter((stop) => stop.id !== stopId).map((stop) => stop.id);
+        await this.lineService.updateLine({ name: line.name, stops: newStops }, line.id);
+      }
+    });
+  }
+
+  async updateStopById(stopId: string, updateStop: UpdateStopDto): Promise<Stop> {
+    // (as discussed with @tchojnacki)
+    // if stop is being used by a line, we should create a new line with changed stop
+
+    return await this.em.transactional(async () => {
+      const stop = await this.findStopById(stopId);
+      await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
+
+      const newStop = await this.createStop({ ...stop, ...updateStop });
+
+      const linesUsingStop = await this.lineService.getAllLinesForStop(stopId);
+      if (!linesUsingStop) return newStop;
+
+      // For each line replace the stop
+      for (const line of linesUsingStop) {
+        const orderedStops = await this.getOrderedStopsForLine(line.id);
+        const newStops: string[] = [];
+        for (const stop of orderedStops) newStops.push(stop.id === stopId ? newStop.id : stop.id);
+        await this.lineService.updateLine({ name: line.name, stops: newStops }, line.id);
+      }
+      return newStop;
+    });
+  }
+
+  async raiseIfStopsDontExist(stops: string[]): Promise<void> {
+    // If we receive stops we check whether they exist in the database (hopefully inexpensive to check before)
+    const stopSet = new Set(stops);
+
+    // SELECT DISTINCT * FROM stops WHERE id IN ({stops})
+    const stopsIds = await this.stopRepository.find(
+      { id: { $in: stops } },
+      { fields: ['id'], flags: [QueryFlag.DISTINCT] },
+    );
+
+    // If the number of unique stops differ from the number of stops in the database, we throw an exception
+    if (stopsIds.length !== stopSet.size) throw new NotFoundException();
   }
 }

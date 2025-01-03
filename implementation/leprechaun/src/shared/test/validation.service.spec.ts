@@ -1,7 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { IsString } from 'class-validator';
+import { ArgumentMetadata, Type } from '@nestjs/common';
+import { PartialType } from '@nestjs/swagger';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import { SchemaMismatchException } from '../api/http-exceptions';
-import { ValidationService } from '../api/validation.service';
+import { ValidateCreatePipe, ValidateUpdatePipe } from '../api/pipes';
 
 class TestDto {
   @IsString()
@@ -16,69 +17,74 @@ class TestInheritanceDto extends TestDto {
   @IsString()
   readonly text2: string;
 
+  @IsNumber()
+  readonly number: number;
+
+  @IsBoolean()
+  readonly bool: boolean;
+
   constructor(text: any, text2: any) {
     super(text);
     this.text2 = text2;
+    this.number = 1;
+    this.bool = true;
   }
 }
 
+class UpdateTestInheritanceDto extends PartialType(TestInheritanceDto) {}
+
+function getTestMetadata(type: Type<unknown>): ArgumentMetadata {
+  return {
+    type: 'body',
+    metatype: type,
+    data: '',
+  };
+}
+
 describe('ValidationService', () => {
-  let service: ValidationService;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ValidationService],
-    }).compile();
-
-    service = module.get<ValidationService>(ValidationService);
+  it('should reject empty data for creation', async () => {
+    await expect(ValidateCreatePipe.transform('', getTestMetadata(TestDto))).rejects.toThrow(SchemaMismatchException);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should not reject empty data for creation', async () => {
+    await expect(
+      ValidateCreatePipe.transform(<TestDto>{ text: 'eo' }, getTestMetadata(TestDto)),
+    ).resolves.toBeDefined();
   });
 
-  it('should validate DTO', async () => {
-    const dto = new TestDto(123 as unknown as string);
-    await expect(service.validate(dto)).rejects.toThrow(SchemaMismatchException);
+  it('should not reject empty data for update', async () => {
+    await expect(ValidateUpdatePipe.transform(<TestDto>{}, getTestMetadata(TestDto))).resolves.toBeDefined();
   });
 
-  it('should validate DTO with correct schema', async () => {
-    const dto = new TestDto('123');
-    await expect(service.validate(dto)).resolves.not.toThrow();
+  it('should not reject data for update', async () => {
+    await expect(
+      ValidateUpdatePipe.transform(<TestDto>{ text: 'eo' }, getTestMetadata(TestDto)),
+    ).resolves.toBeDefined();
   });
 
-  it('should not validate unknown types raw', async () => {
-    const dto = {
-      text: true,
-      randomField: 'random',
-    };
-    await expect(service.validate(dto as unknown as TestDto)).rejects.toThrow(SchemaMismatchException);
-  });
+  it('should throw for unknown fields', async () => {
+    // given
+    const data = <TestDto>{ text: 'eo', text2: 'oe' };
 
-  it('should not allow for unknown types when updating', async () => {
-    const dto = {
-      text: '123',
-      randomField: 'random',
-    };
-    await expect(service.validate(dto as unknown as TestDto, true)).rejects.toThrow(SchemaMismatchException);
-  });
-
-  it('should not validate unknown fields', async () => {
-    const dto = new TestDto('123');
-    (dto as any).randomField = 'random';
-
-    await expect(service.validate(dto)).rejects.toThrow(SchemaMismatchException);
-  });
-
-  it('should not validate unknown fields when updating', async () => {
-    const dto = new TestDto('123');
-    (dto as any).randomField = 'random';
-
-    await expect(service.validate(dto, true)).rejects.toThrow(SchemaMismatchException);
+    // then
+    await expect(ValidateCreatePipe.transform(data, getTestMetadata(TestDto))).rejects.toThrow(SchemaMismatchException);
+    await expect(ValidateUpdatePipe.transform(data, getTestMetadata(TestDto))).rejects.toThrow(SchemaMismatchException);
   });
 
   it('should validate inheritance', async () => {
-    const dto = new TestInheritanceDto('123', '321');
-    await expect(service.validate(dto)).resolves.not.toThrow();
+    // given
+    const data = <TestInheritanceDto>{ text: 'eo', text2: 'oe', number: 1, bool: true };
+
+    // then
+    await expect(ValidateCreatePipe.transform(data, getTestMetadata(TestInheritanceDto))).resolves.toBeDefined();
+    await expect(ValidateUpdatePipe.transform(data, getTestMetadata(TestInheritanceDto))).resolves.toBeDefined();
+  });
+
+  it('should validate inheritance with partial', async () => {
+    // given
+    const data = <UpdateTestInheritanceDto>{ text: 'eo', text2: 'oe' };
+
+    // then
+    await expect(ValidateUpdatePipe.transform(data, getTestMetadata(UpdateTestInheritanceDto))).resolves.toBeDefined();
   });
 });

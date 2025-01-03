@@ -3,14 +3,14 @@ import { SchemaMismatchException } from './http-exceptions';
 
 export const UUIDPipe = new ParseUUIDPipe({
   version: '7',
-  exceptionFactory: () => new SchemaMismatchException(),
+  exceptionFactory: (err) => new SchemaMismatchException(err as any),
 });
 
 export const ValidateCreatePipe = new ValidationPipe({
   transform: true,
   whitelist: true,
   forbidNonWhitelisted: true,
-  exceptionFactory: () => new SchemaMismatchException(),
+  exceptionFactory: (err) => new SchemaMismatchException(err as any),
 });
 
 export const ValidateUpdatePipe = new ValidationPipe({
@@ -18,5 +18,5 @@ export const ValidateUpdatePipe = new ValidationPipe({
   whitelist: true,
   forbidNonWhitelisted: true,
   skipMissingProperties: true,
-  exceptionFactory: () => new SchemaMismatchException(),
+  exceptionFactory: (err) => new SchemaMismatchException(err as any),
 });

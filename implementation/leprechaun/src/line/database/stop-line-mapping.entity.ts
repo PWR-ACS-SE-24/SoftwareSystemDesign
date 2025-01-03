@@ -1,13 +1,12 @@
-import { Entity, Filter, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 import { Stop } from '../../stop/database/stop.entity';
 import { Line } from './line.entity';
 
 @Entity()
-@Filter({ name: 'active', cond: { isActive: true }, default: true })
 export class StopLineMapping {
   @PrimaryKey({ type: 'uuid' })
-  id = uuidv7(); // TODO: redo as a custom type
+  id = uuidv7();
 
   @ManyToOne({ primary: false, entity: () => Line })
   line: Line;
@@ -19,4 +18,10 @@ export class StopLineMapping {
   order: number;
 
   [PrimaryKeyProp]?: ['id'];
+
+  constructor(line: Line, stop: Stop, order: number) {
+    this.line = line;
+    this.stop = stop;
+    this.order = order;
+  }
 }

@@ -23,7 +23,7 @@ export class VehicleController {
   @ApiPaginatedResponse(VehicleDto)
   async getAllVehicles(
     @Query('page') page_: number = 0,
-    @Query('size') size_: number = 0,
+    @Query('size') size_: number = 50,
     // @Query('filter') TODO: add filter
   ): Promise<PaginatedDto<VehicleDto>> {
     const { size, page } = PaginatedDto.sanitizePagination(size_, page_);
@@ -36,7 +36,7 @@ export class VehicleController {
   @ApiOkResponse({ type: VehicleDto, description: 'Vehicle details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async getVehicleById(@Param('id', UUIDPipe) id: string): Promise<VehicleDto> {
-    const vehicle = await this.vehicleService.findVehicleById(id);
+    const vehicle = await this.vehicleService.findVehicleById(id, false);
 
     return VehicleDto.fromEntity(vehicle);
   }

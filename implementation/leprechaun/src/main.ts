@@ -11,20 +11,23 @@ import { VehicleModule } from './vehicle/vehicle.module';
 
 async function bootstrap() {
   // TODO: Most DTOs contain repeating fields like `id`, `isActive`. Create a base class that contains these fields and extend it in all DTOs.
+  // TODO: We propably need explicit transactins in some places when doing more than single operation.
+  // TODO: When removing any entity we have to check whether it is already disabled, but when using findById we have to return it even if it is disabled.
+  // TODO: Make E2E tests for all endpoints.
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalFilters(new InternalExceptionFilter());
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const internalConfig = new DocumentBuilder()
-    .setTitle('Leprechaun API')
-    .setDescription('API for the Leprechaun service')
+    .setTitle('Internal Leprechaun API')
+    .setDescription('Internal API for the Leprechaun service')
     .setVersion('1.0')
     .build();
 
   const externalConfig = new DocumentBuilder()
-    .setTitle('Leprechaun API')
-    .setDescription('API for the Leprechaun service')
+    .setTitle('External Leprechaun API')
+    .setDescription('External API for the Leprechaun service')
     .setVersion('1.0')
     .build();
 

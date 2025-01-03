@@ -35,8 +35,8 @@ export class HttpExceptionDto implements AppError {
   }
 }
 export class SchemaMismatchException extends HttpException {
-  constructor() {
-    super('Schema mismatch exception', HttpStatus.UNPROCESSABLE_ENTITY);
+  constructor(message: string) {
+    super(message, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }
 

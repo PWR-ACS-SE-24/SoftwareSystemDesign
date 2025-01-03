@@ -23,7 +23,7 @@ export class StopController {
   @ApiPaginatedResponse(StopDto)
   async getAllStops(
     @Query('page') page_: number = 0,
-    @Query('size') size_: number = 0,
+    @Query('size') size_: number = 50,
     // @Query('filter') TODO: add filter
   ): Promise<PaginatedDto<StopDto>> {
     const { size, page } = PaginatedDto.sanitizePagination(size_, page_);
@@ -36,7 +36,7 @@ export class StopController {
   @ApiOkResponse({ type: StopDto, description: 'Stop details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Stop not found' })
   async getStopById(@Param('id', UUIDPipe) id: string): Promise<StopDto> {
-    const vehicle = await this.stopService.findStopById(id);
+    const vehicle = await this.stopService.findStopById(id, false);
 
     return StopDto.fromEntity(vehicle);
   }
