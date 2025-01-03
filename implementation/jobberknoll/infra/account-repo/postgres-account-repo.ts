@@ -1,18 +1,6 @@
 import type { AccountRepo } from "@jobberknoll/app";
-import {
-  type Account,
-  type AccountNotFoundError,
-  accountNotFoundError,
-} from "@jobberknoll/core/domain";
-import {
-  err,
-  none,
-  ok,
-  type Option,
-  type Result,
-  some,
-  type UUID,
-} from "@jobberknoll/core/shared";
+import { type Account, type AccountNotFoundError, accountNotFoundError } from "@jobberknoll/core/domain";
+import { err, none, ok, type Option, type Result, some, type UUID } from "@jobberknoll/core/shared";
 import { Pool } from "postgres";
 
 const POOL_SIZE = 8;

@@ -1,11 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import type { UserRole } from "@jobberknoll/app";
 import { NIL_UUID, uuid } from "@jobberknoll/core/shared";
-import {
-  RequestIdSchema,
-  UserAgentSchema,
-  UuidSchema,
-} from "~/shared/openapi.ts";
+import { RequestIdSchema, UserAgentSchema, UuidSchema } from "~/shared/openapi.ts";
 
 export const extHeadersSchema = (role: UserRole) =>
   z.object({

@@ -7,10 +7,7 @@ if (import.meta.main) {
   Deno.serve(
     {
       port: envServerPort(),
-      onListen: (addr) =>
-        logger.info(null, "listen", {
-          addr: `http://${addr.hostname}:${addr.port}`,
-        }),
+      onListen: (addr) => logger.info(null, "listen", { addr: `http://${addr.hostname}:${addr.port}` }),
     },
     api.fetch,
   );

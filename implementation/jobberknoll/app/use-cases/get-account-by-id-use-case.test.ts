@@ -14,15 +14,12 @@ Deno.test("GetAccountByIdUseCase should return an account if it exists", async (
   assertEquals(result, ok(accountMock));
 });
 
-Deno.test(
-  "GetAccountByIdUseCase should return account-not-found if the account does not exist",
-  async () => {
-    const id = uuid();
-    const accountRepo = new MemoryAccountRepo();
-    const useCase = new GetAccountByIdUseCase(accountRepo, new Logger());
+Deno.test("GetAccountByIdUseCase should return account-not-found if the account does not exist", async () => {
+  const id = uuid();
+  const accountRepo = new MemoryAccountRepo();
+  const useCase = new GetAccountByIdUseCase(accountRepo, new Logger());
 
-    const result = await useCase.invoke({ accountId: id }, uuid());
+  const result = await useCase.invoke({ accountId: id }, uuid());
 
-    assert(isErr(result));
-  },
-);
+  assert(isErr(result));
+});

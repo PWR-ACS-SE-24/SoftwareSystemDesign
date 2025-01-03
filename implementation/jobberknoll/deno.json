@@ -5,6 +5,9 @@
     "dev": "deno run --allow-net --allow-env main.ts",
     "compile": "deno compile --allow-net --allow-env --output jobberknoll main.ts"
   },
+  "fmt": {
+    "lineWidth": 120
+  },
   "imports": {
     "$workspace": "./deno.json",
     "@hono/swagger-ui": "npm:@hono/swagger-ui@^0.5.0",

@@ -16,26 +16,15 @@ export const getHealthRoute = createRoute({
     headers: IntHeadersSchema,
   },
   responses: {
-    200: jsonRes(
-      HealthDto,
-      "Retrieved service health, service is healthy.",
-    ),
-    503: jsonRes(
-      HealthDto,
-      "Retrieved service health, service is unhealthy.",
-    ),
+    200: jsonRes(HealthDto, "Retrieved service health, service is healthy."),
+    503: jsonRes(HealthDto, "Retrieved service health, service is unhealthy."),
   },
 });
 
-export function getHealthHandler(
-  getHealth: GetHealthUseCase,
-): RouteHandler<typeof getHealthRoute> {
+export function getHealthHandler(getHealth: GetHealthUseCase): RouteHandler<typeof getHealthRoute> {
   return async (c) => {
     const { "jp-request-id": requestId } = c.req.valid("header");
-    const serviceHealth = expect(
-      await getHealth.invoke(null, requestId),
-      "service health request should never fail",
-    );
+    const serviceHealth = expect(await getHealth.invoke(null, requestId), "service health request should never fail");
     const code = ["UP", "UNKNOWN"].includes(serviceHealth.status) ? 200 : 503;
     return c.json(serviceHealth, code);
   };
