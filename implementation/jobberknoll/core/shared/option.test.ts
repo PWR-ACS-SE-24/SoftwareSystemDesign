@@ -36,3 +36,5 @@ Deno.test("isNone should return false for Some Option", () => {
 
   assert(!isNone(result));
 });
+
+// TODO: Add missing tests.

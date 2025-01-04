@@ -1,9 +1,11 @@
-import type { Hook, OpenAPIHono } from "@hono/zod-openapi";
+import { type Hook, OpenAPIHono } from "@hono/zod-openapi";
 import type { Logger } from "@jobberknoll/app";
 import type { Env } from "hono";
+import { createMiddleware } from "hono/factory";
+import { isNone, uuid } from "../../core/shared/mod.ts";
 import { type SchemaMismatchDto, ServerFailureDto } from "./contracts/mod.ts";
 
-export const defaultHook: Hook<unknown, Env, string, unknown> = (res, c) => {
+const defaultHook: Hook<unknown, Env, string, unknown> = (res, c) => {
   if (!res.success) {
     return c.json(
       {
@@ -17,7 +19,18 @@ export const defaultHook: Hook<unknown, Env, string, unknown> = (res, c) => {
   }
 };
 
-export function configureErrorHandler(app: OpenAPIHono, logger: Logger) {
+const requestIdMiddleware = createMiddleware(async (c, next) => {
+  const HEADER_NAME = "jp-request-id";
+  const requestId = c.req.header(HEADER_NAME);
+  if (!requestId || isNone(uuid(requestId))) {
+    const headers = new Headers(c.req.raw.headers);
+    headers.set(HEADER_NAME, uuid());
+    c.req.raw = new Request(c.req.url, { ...c.req.raw, headers });
+  }
+  await next();
+});
+
+function configureErrorHandler(app: OpenAPIHono, logger: Logger) {
   app.openAPIRegistry.register("ServerFailureDto", ServerFailureDto);
   app.onError((err, c) => {
     logger.error(null, "onError", { err: err.message });
@@ -31,4 +44,11 @@ export function configureErrorHandler(app: OpenAPIHono, logger: Logger) {
       500,
     );
   });
+}
+
+export function createOpenAPIHono(logger: Logger): OpenAPIHono {
+  const app = new OpenAPIHono({ defaultHook });
+  app.use(requestIdMiddleware);
+  configureErrorHandler(app, logger);
+  return app;
 }
