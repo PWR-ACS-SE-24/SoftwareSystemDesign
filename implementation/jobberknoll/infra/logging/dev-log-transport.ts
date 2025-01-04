@@ -1,4 +1,4 @@
-import type { LogLevel, LogTransport } from "@jobberknoll/app";
+import type { LogTransport } from "@jobberknoll/app";
 import { bold, cyan, gray, green, red, white, yellow } from "@std/fmt/colors";
 
 const COLORS = {
@@ -8,10 +8,8 @@ const COLORS = {
   error: red,
 };
 
-export const prettyLogTransport = (
-  level: LogLevel = "debug",
-): LogTransport => ({
-  level,
+export const devLogTransport = {
+  level: "debug",
   handle: (data) => {
     const date = new Date(data.time);
     const hour = date.getHours().toString().padStart(2, "0");
@@ -26,4 +24,4 @@ export const prettyLogTransport = (
       console.log(gray(JSON.stringify(data.tags)));
     }
   },
-});
+} satisfies LogTransport;
