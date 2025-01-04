@@ -10,11 +10,11 @@ export class MonitoringController {
     type: HealthcheckDto,
     description: 'Internal server error',
     status: HttpStatus.SERVICE_UNAVAILABLE,
-    example: { status: HealthcheckStatus.OUT_OF_SERVICE },
+    example: { status: <HealthcheckStatus>'UP' },
   })
   async healthcheck(): Promise<HealthcheckDto> {
     return {
-      status: HealthcheckStatus.UP,
+      status: 'UP',
     };
   }
 

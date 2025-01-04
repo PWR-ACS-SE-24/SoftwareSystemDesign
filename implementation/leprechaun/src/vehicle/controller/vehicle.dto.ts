@@ -8,6 +8,7 @@ export class VehicleDto extends CreateVehicleDto {
     maxLength: 36,
     minLength: 36,
     nullable: false,
+    format: 'uuid',
     examples: ['f1b1b9b1-1c1b-4b1b-9b1b-1c1b1b1b1b1b'],
   })
   readonly id: string;

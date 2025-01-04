@@ -18,8 +18,11 @@ export class LineDto {
 
   @ApiProperty({
     description: 'Line ID',
+    maxLength: 36,
+    minLength: 36,
     nullable: false,
-    examples: ['b4e9b1c1-9f7d-7b9b-8e9d-1c9f7d4b9b8e'],
+    format: 'uuid',
+    examples: ['f1b1b9b1-1c1b-7b1b-9b1b-1c1b1b1b1b1b'],
   })
   readonly id: string;
 

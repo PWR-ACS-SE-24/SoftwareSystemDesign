@@ -12,5 +12,6 @@ import { LineService } from './service/line.service';
   imports: [MikroOrmModule.forFeature([Line, Stop, StopLineMapping]), StopModule, SharedModule],
   controllers: [LineController],
   providers: [LineService],
+  exports: [LineService],
 })
 export class LineModule {}
