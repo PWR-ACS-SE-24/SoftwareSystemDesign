@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
-export const ErrorKind: Record<string, [string, number]> = {
+export const ErrorKind = {
   SchemaMismatchException: ['schema-mismatch-exception', HttpStatus.UNPROCESSABLE_ENTITY],
   NotFoundException: ['resource-not-found-exception', HttpStatus.NOT_FOUND],
   InternalServerError: ['internal-server-error', HttpStatus.INTERNAL_SERVER_ERROR],
-} as const;
+} as const satisfies Record<string, [string, number]>;
 
 type Values<Object> = Object[keyof Object];
 type Keys<Object> = keyof Object;
@@ -18,7 +18,7 @@ interface AppError {
 }
 
 export class HttpExceptionDto implements AppError {
-  @ApiProperty({ description: 'Error kind', enum: () => Object.values(ErrorKind), isArray: false })
+  @ApiProperty({ description: 'Error kind', enum: () => Object.values(ErrorKind).map((v) => v[0]), isArray: false })
   kind: string;
   @ApiProperty({ description: 'HTTP status code' })
   code: number;
