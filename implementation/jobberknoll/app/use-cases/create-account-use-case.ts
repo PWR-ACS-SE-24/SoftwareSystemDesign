@@ -1,7 +1,6 @@
 import { type Account, invalidAccountData, type InvalidAccountDataError } from "@jobberknoll/core/domain";
 import { err, ok, type Result, uuid } from "@jobberknoll/core/shared";
-import type { AccountRepo } from "~/interfaces/mod.ts";
-import type { Logger } from "~/shared/mod.ts";
+import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import { UseCase } from "./use-case.ts";
 
 type CreateAccountReq = {

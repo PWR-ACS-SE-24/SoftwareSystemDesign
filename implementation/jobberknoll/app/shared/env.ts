@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Logger } from "./logger.ts";
+import type { Logger } from "~/interfaces/mod.ts";
 
 function envReader<S extends z.ZodType>(key: string, schema: S): () => z.infer<S> {
   return () => {

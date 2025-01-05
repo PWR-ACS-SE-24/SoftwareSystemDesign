@@ -1,5 +1,4 @@
-import type { AccountRepo } from "~/interfaces/mod.ts";
-import type { Logger } from "~/shared/mod.ts";
+import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import * as c from "~/use-cases/mod.ts";
 
 export type Service = {

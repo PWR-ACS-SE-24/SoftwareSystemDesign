@@ -1,6 +1,6 @@
 import type { Account, AccountNotFoundError } from "@jobberknoll/core/domain";
 import type { Option, Result, UUID } from "@jobberknoll/core/shared";
-import type { Logger } from "~/shared/logger.ts";
+import type { Logger } from "./logger.ts";
 
 export abstract class AccountRepo {
   public constructor(private readonly logger: Logger) {}

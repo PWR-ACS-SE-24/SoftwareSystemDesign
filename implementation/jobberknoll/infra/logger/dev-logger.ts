@@ -1,4 +1,4 @@
-import type { LogTransport } from "@jobberknoll/app";
+import { type LogData, Logger } from "@jobberknoll/app";
 import { bold, cyan, gray, green, red, white, yellow } from "@std/fmt/colors";
 
 const COLORS = {
@@ -8,9 +8,10 @@ const COLORS = {
   error: red,
 };
 
-export const devLogTransport = {
-  level: "debug",
-  handle: (data) => {
+export class DevLogger extends Logger {
+  protected readonly level = "debug";
+
+  protected handle(data: LogData) {
     const date = new Date(data.time);
     const hour = date.getHours().toString().padStart(2, "0");
     const minute = date.getMinutes().toString().padStart(2, "0");
@@ -23,5 +24,5 @@ export const devLogTransport = {
     if (Object.keys(data.tags).length > 0) {
       console.log(gray(JSON.stringify(data.tags)));
     }
-  },
-} satisfies LogTransport;
+  }
+}

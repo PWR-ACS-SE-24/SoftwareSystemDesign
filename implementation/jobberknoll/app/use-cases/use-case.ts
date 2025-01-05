@@ -1,5 +1,5 @@
 import { isOk, type Result, type UUID } from "@jobberknoll/core/shared";
-import type { Logger } from "~/shared/mod.ts";
+import type { Logger } from "~/interfaces/mod.ts";
 
 export abstract class UseCase<Req, Res, Err> {
   protected constructor(private readonly logger: Logger) {}

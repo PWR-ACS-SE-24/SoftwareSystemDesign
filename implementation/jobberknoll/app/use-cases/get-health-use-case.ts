@@ -1,5 +1,6 @@
 import { ok, type Result } from "@jobberknoll/core/shared";
-import type { Logger, ServiceHealth } from "~/shared/mod.ts";
+import type { Logger } from "~/interfaces/mod.ts";
+import type { ServiceHealth } from "~/shared/mod.ts";
 import { UseCase } from "./use-case.ts";
 
 export class GetHealthUseCase extends UseCase<null, ServiceHealth, never> {
