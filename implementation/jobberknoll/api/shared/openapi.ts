@@ -41,7 +41,7 @@ export const UuidSchema = z.string().uuid().transform((id, ctx) => {
 
 export const RequestIdSchema = UuidSchema
   .optional()
-  .transform((id) => id!) // NOTE: requestId should be always set by requestIdMiddleware
+  .transform((id) => id!) // SAFETY: requestId is defined as long as requestIdMiddleware is used (so in all requests)
   .openapi({ description: "Request ID as UUIDv7.", examples: [uuid()] });
 
 export const UserAgentSchema = z.string().optional().openapi({

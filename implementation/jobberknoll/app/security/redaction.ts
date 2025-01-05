@@ -20,7 +20,7 @@ export async function redactSensitiveKeysDeep(object: Record<string, unknown>): 
     if (SENSITIVE_KEYS.has(key)) {
       redacted[key] = await redactText(typeof value === "string" ? value : JSON.stringify(value));
     } else if (typeof value === "object" && value !== null) {
-      redacted[key] = await redactSensitiveKeysDeep(value as Record<string, unknown>);
+      redacted[key] = await redactSensitiveKeysDeep(value as Record<string, unknown>); // SAFETY: https://github.com/microsoft/TypeScript/issues/41746#issuecomment-737361754
     } else {
       redacted[key] = value;
     }
