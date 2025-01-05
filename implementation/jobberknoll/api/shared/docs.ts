@@ -42,10 +42,7 @@ export function configureDocs(
     apiReference({
       spec: { url: `${path}/docs/openapi.json` },
       theme: "kepler",
-      defaultHttpClient: {
-        targetKey: "js",
-        clientKey: "fetch",
-      },
+      defaultHttpClient: { targetKey: "js", clientKey: "fetch" },
       hideClientButton: true,
     }),
   );
