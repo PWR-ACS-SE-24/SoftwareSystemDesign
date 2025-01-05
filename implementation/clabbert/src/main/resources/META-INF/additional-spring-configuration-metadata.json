@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "clabbert.seeder.ticket-offer",
+      "type": "java.lang.Boolean",
+      "description": "Flag to enable/disable the ticket offer seeder"
+    },
+    {
+      "name": "clabbert.internal-services.leprechaun",
+      "type": "java.lang.String",
+      "description": "Address of the leprechaun service"
+    },
+    {
+      "name": "clabbert.internal-services.inferius",
+      "type": "java.lang.String",
+      "description": "Address of the inferius service"
+    }
+  ]
+}
