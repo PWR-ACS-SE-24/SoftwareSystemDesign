@@ -5,9 +5,10 @@ import { Logger } from "~/shared/mod.ts";
 import { GetAccountByIdUseCase } from "./get-account-by-id-use-case.ts";
 
 Deno.test("GetAccountByIdUseCase should return an account if it exists", async () => {
-  const accountRepo = new MemoryAccountRepo();
+  const logger = new Logger();
+  const accountRepo = new MemoryAccountRepo(logger);
   await accountRepo.createAccount(accountMock);
-  const useCase = new GetAccountByIdUseCase(accountRepo, new Logger());
+  const useCase = new GetAccountByIdUseCase(accountRepo, logger);
 
   const result = await useCase.invoke({ accountId: accountMock.id }, uuid());
 
@@ -16,8 +17,9 @@ Deno.test("GetAccountByIdUseCase should return an account if it exists", async (
 
 Deno.test("GetAccountByIdUseCase should return account-not-found if the account does not exist", async () => {
   const id = uuid();
-  const accountRepo = new MemoryAccountRepo();
-  const useCase = new GetAccountByIdUseCase(accountRepo, new Logger());
+  const logger = new Logger();
+  const accountRepo = new MemoryAccountRepo(logger);
+  const useCase = new GetAccountByIdUseCase(accountRepo, logger);
 
   const result = await useCase.invoke({ accountId: id }, uuid());
 

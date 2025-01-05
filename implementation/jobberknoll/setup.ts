@@ -8,20 +8,17 @@ function setup(accountRepo: AccountRepo, logger: Logger) {
   return { api, accountRepo, logger };
 }
 
-export const setupDev = () =>
-  setup(
-    new MemoryAccountRepo(),
-    new Logger([devLogTransport]),
-  );
+export const setupDev = () => {
+  const logger = new Logger([devLogTransport]);
+  return setup(new MemoryAccountRepo(logger), logger);
+};
 
-export const setupProd = async () =>
-  setup(
-    await PostgresAccountRepo.setup(envDatabaseUrl()),
-    new Logger([prodLogTransport]),
-  );
+export const setupProd = async () => {
+  const logger = new Logger([prodLogTransport]);
+  return setup(await PostgresAccountRepo.setup(envDatabaseUrl(), logger), logger);
+};
 
-export const setupTest = () =>
-  setup(
-    new MemoryAccountRepo(),
-    new Logger(),
-  );
+export const setupTest = () => {
+  const logger = new Logger();
+  return setup(new MemoryAccountRepo(logger), logger);
+};
