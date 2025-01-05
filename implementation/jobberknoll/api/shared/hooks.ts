@@ -21,27 +21,25 @@ const defaultHook: Hook<unknown, Env, string, unknown> = (res, c) => {
   }
 };
 
-function requestIdMiddleware() {
-  return createMiddleware(async (c, next) => {
-    const HEADER_NAME = "jp-request-id";
-    const requestId = c.req.header(HEADER_NAME);
-    if (!requestId || isNone(uuid(requestId))) {
-      const headers = new Headers(c.req.raw.headers);
-      headers.set(HEADER_NAME, uuid());
-      c.req.raw = new Request(c.req.raw, { headers });
-    }
-    await next();
-  });
-}
+const requestIdMiddleware = createMiddleware(async (c, next) => {
+  const HEADER_NAME = "jp-request-id";
+  const requestId = c.req.header(HEADER_NAME);
+  if (!requestId || isNone(uuid(requestId))) {
+    const headers = new Headers(c.req.raw.headers);
+    headers.set(HEADER_NAME, uuid());
+    c.req.raw = new Request(c.req.raw, { headers });
+  }
+  await next();
+});
 
-function loggingMiddleware(logger: Logger) {
+function loggingMiddlewareFactory(logger: Logger) {
   const extractBody = (r: Request | Response): Promise<unknown | undefined> => r.clone().json().catch(() => undefined);
   return createMiddleware(async (c, next) => {
     const requestId = expect(
       uuid(c.req.header("jp-request-id") ?? ""),
       "requestId should be always set by requestIdMiddleware",
     );
-    logger.info(requestId, "http request - start", {
+    logger.debug(requestId, "http request - start", {
       method: c.req.method,
       route: c.req.routePath,
       url: new URL(c.req.url).pathname + new URL(c.req.url).search,
@@ -49,7 +47,7 @@ function loggingMiddleware(logger: Logger) {
       body: await extractBody(c.req.raw),
     });
     await next();
-    logger.info(requestId, "http request - end", {
+    logger.debug(requestId, "http request - end", {
       status: c.res.status,
       headers: pick(Object.fromEntries(c.res.headers.entries()), ["content-type"]),
       body: await extractBody(c.res),
@@ -75,8 +73,8 @@ function configureErrorHandler(app: OpenAPIHono, logger: Logger) {
 
 export function createOpenAPIHono(logger: Logger): OpenAPIHono {
   const app = new OpenAPIHono({ defaultHook });
-  app.use(requestIdMiddleware());
-  app.use(loggingMiddleware(logger));
+  app.use(requestIdMiddleware);
+  app.use(loggingMiddlewareFactory(logger));
   configureErrorHandler(app, logger);
   return app;
 }
