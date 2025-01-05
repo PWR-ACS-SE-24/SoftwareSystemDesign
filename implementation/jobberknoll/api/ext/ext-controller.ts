@@ -9,9 +9,7 @@ import * as r from "./routes/mod.ts";
 export class ExtController implements Controller {
   public constructor(private readonly service: Service, private readonly logger: Logger) {}
 
-  public get prefix(): string {
-    return "/ext/v1";
-  }
+  public readonly prefix = "/ext/v1";
 
   public get routes(): OpenAPIHono {
     const app = createOpenAPIHono(this.logger)

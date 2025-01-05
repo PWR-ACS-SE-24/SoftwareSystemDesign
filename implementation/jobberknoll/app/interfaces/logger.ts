@@ -5,13 +5,6 @@ export type LogLevel = "debug" | "info" | "warn" | "error";
 
 type LogTags = Record<string, unknown>;
 
-type LogParams = {
-  requestId: UUID | null;
-  level: LogLevel;
-  event: string;
-  tags: LogTags;
-};
-
 export type LogData = {
   service: string;
   requestId: UUID | null;
@@ -21,12 +14,6 @@ export type LogData = {
   tags: LogTags;
 };
 
-type LogMethod = (
-  requestId: UUID | null,
-  event: string,
-  tags?: LogTags,
-) => void;
-
 const LEVELS = {
   debug: 20,
   info: 30,
@@ -35,27 +22,27 @@ const LEVELS = {
 };
 
 export abstract class Logger {
-  public debug: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "debug", event, tags });
+  protected abstract get level(): LogLevel;
 
-  public info: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "info", event, tags });
+  protected abstract handle(data: LogData): void | Promise<void>;
 
-  public warn: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "warn", event, tags });
-
-  public error: LogMethod = (requestId, event, tags = {}) => this.log({ requestId, level: "error", event, tags });
-
-  private log(params: LogParams): void {
-    if (LEVELS[this.level] <= LEVELS[params.level]) {
-      this.handle({
-        service: SERVICE_AGENT,
-        requestId: params.requestId,
-        time: Date.now(),
-        level: params.level,
-        event: params.event,
-        tags: params.tags,
-      });
-    }
+  private logMethod(level: LogLevel): (requestId: UUID | null, event: string, tags?: LogTags) => void {
+    return (requestId, event, tags = {}) => {
+      if (LEVELS[this.level] <= LEVELS[level]) {
+        void this.handle({
+          service: SERVICE_AGENT,
+          requestId,
+          time: Date.now(),
+          level,
+          event,
+          tags,
+        });
+      }
+    };
   }
 
-  protected abstract get level(): LogLevel;
-  protected abstract handle(data: LogData): void | Promise<void>;
+  public debug = this.logMethod("debug");
+  public info = this.logMethod("info");
+  public warn = this.logMethod("warn");
+  public error = this.logMethod("error");
 }
