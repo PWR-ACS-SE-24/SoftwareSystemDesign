@@ -1,5 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import { expect, fromUndefined, isNone, uuid } from "@jobberknoll/core/shared";
+import { isNone, uuid } from "@jobberknoll/core/shared";
 
 export function jsonReq<T>(schema: T, description: string, required: boolean = true) {
   return {
@@ -41,7 +41,7 @@ export const UuidSchema = z.string().uuid().transform((id, ctx) => {
 
 export const RequestIdSchema = UuidSchema
   .optional()
-  .transform((id) => expect(fromUndefined(id), "requestId should be always set by requestIdMiddleware"))
+  .transform((id) => id!) // NOTE: requestId should be always set by requestIdMiddleware
   .openapi({ description: "Request ID as UUIDv7.", examples: [uuid()] });
 
 export const UserAgentSchema = z.string().optional().openapi({
