@@ -19,5 +19,6 @@ import lombok.experimental.SuperBuilder;
 public class LongTermOffer extends TicketOffer {
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "intervalInDays cannot be null") private int intervalInDays;
+    @NotNull(message = "intervalInDays cannot be null")
+    private int intervalInDays;
 }

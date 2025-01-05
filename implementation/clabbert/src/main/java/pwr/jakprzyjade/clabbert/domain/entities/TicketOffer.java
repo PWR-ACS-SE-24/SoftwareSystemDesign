@@ -30,11 +30,13 @@ public abstract class TicketOffer {
     @Id @UUIDv7 private UUID id;
 
     @Column(nullable = false, length = 255)
-    @NotNull(message = "displayNameEn cannot be null") @Size(min = 1, max = 255, message = "displayNameEn must be between 1 and 255 characters")
+    @NotNull(message = "displayNameEn cannot be null")
+    @Size(min = 1, max = 255, message = "displayNameEn must be between 1 and 255 characters")
     private String displayNameEn;
 
     @Column(nullable = false, length = 255)
-    @NotNull(message = "displayNamePl cannot be null") @Size(min = 1, max = 255, message = "displayNamePl must be between 1 and 255 characters")
+    @NotNull(message = "displayNamePl cannot be null")
+    @Size(min = 1, max = 255, message = "displayNamePl must be between 1 and 255 characters")
     private String displayNamePl;
 
     @Column(nullable = false, length = 32, updatable = false)
@@ -42,9 +44,11 @@ public abstract class TicketOffer {
     private TicketKind kind;
 
     @Column(nullable = false, precision = 6, scale = 2, updatable = false)
-    @NotNull(message = "pricePln cannot be null") private BigDecimal pricePln;
+    @NotNull(message = "pricePln cannot be null")
+    private BigDecimal pricePln;
 
     @Column(nullable = false)
-    @NotNull(message = "isActive cannot be null") @Builder.Default
+    @NotNull(message = "isActive cannot be null")
+    @Builder.Default
     private boolean isActive = true;
 }

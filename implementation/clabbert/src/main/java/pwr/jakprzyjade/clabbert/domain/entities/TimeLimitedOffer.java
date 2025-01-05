@@ -20,5 +20,6 @@ import lombok.experimental.SuperBuilder;
 public class TimeLimitedOffer extends TicketOffer {
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "duration cannot be null") private Duration duration;
+    @NotNull(message = "duration cannot be null")
+    private Duration duration;
 }

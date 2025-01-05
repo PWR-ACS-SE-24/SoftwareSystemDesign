@@ -98,7 +98,6 @@ spotless {
     }
     java {
         googleJavaFormat('1.21.0').aosp().reflowLongStrings().skipJavadocFormatting()
-        formatAnnotations()
 
         licenseHeader '/* @jakubzehner (C) $YEAR */'
 

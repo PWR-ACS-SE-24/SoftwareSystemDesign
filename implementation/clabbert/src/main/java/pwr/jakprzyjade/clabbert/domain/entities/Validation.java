@@ -22,9 +22,11 @@ public class Validation {
     @Id @UUIDv7 private UUID id;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "routeId cannot be null") private UUID routeId;
+    @NotNull(message = "routeId cannot be null")
+    private UUID routeId;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "time cannot be null") @Builder.Default
+    @NotNull(message = "time cannot be null")
+    @Builder.Default
     private Instant time = Instant.now();
 }

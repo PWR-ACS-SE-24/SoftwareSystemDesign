@@ -28,19 +28,23 @@ public class Ticket {
     @Id @UUIDv7 private UUID id;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "passengerId cannot be null") private UUID passengerId;
+    @NotNull(message = "passengerId cannot be null")
+    private UUID passengerId;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "purchaseTime cannot be null") @Builder.Default
+    @NotNull(message = "purchaseTime cannot be null")
+    @Builder.Default
     private Instant purchaseTime = Instant.now();
 
     @Column(nullable = false)
-    @NotNull(message = "status cannot be null") @Enumerated(EnumType.STRING)
+    @NotNull(message = "status cannot be null")
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private TicketStatus status = TicketStatus.PENDING;
 
     @JoinColumn(nullable = false, updatable = false, name = "offer_id")
-    @NotNull(message = "offer cannot be null") @ManyToOne
+    @NotNull(message = "offer cannot be null")
+    @ManyToOne
     private TicketOffer offer;
 
     @JoinColumn(name = "validation_id")
