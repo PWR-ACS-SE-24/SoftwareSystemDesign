@@ -1,5 +1,5 @@
 import { isOk, type Result, type UUID } from "@jobberknoll/core/shared";
-import type { Logger } from "~/shared/mod.ts";
+import type { Logger } from "~/interfaces/mod.ts";
 
 export abstract class UseCase<Req, Res, Err> {
   protected constructor(private readonly logger: Logger) {}
@@ -10,7 +10,7 @@ export abstract class UseCase<Req, Res, Err> {
 
     const res = await this.handle(req);
 
-    const tags = isOk(res) ? { res: res.value } : { err: res.value };
+    const tags = isOk(res) ? { ok: res.value } : { err: res.value };
     this.logger.debug(requestId, `${method} - end`, tags);
     return res;
   }
