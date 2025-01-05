@@ -14,6 +14,7 @@ export type LogData = {
   tags: LogTags;
 };
 
+// NOTE: Taken from https://github.com/pinojs/pino/blob/main/docs/api.md#levels
 const LEVELS = {
   debug: 20,
   info: 30,

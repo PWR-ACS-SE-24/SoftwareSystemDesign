@@ -6,6 +6,7 @@ export abstract class AccountRepo {
   public constructor(private readonly logger: Logger) {}
 
   // TODO: Currently, requestId is not passed to the AccountRepo, because UseCase discards it :(
+  // TODO: Also, this can be moved to a separate class, so that it can be reused by other infra classes
   private instrument<A extends unknown[], R>(name: string, handler: (...a: A) => Promise<R>): (...a: A) => Promise<R> {
     const method = `${this.constructor.name}#${name}`;
     return async (...args) => {

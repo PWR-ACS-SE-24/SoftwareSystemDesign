@@ -2,6 +2,8 @@ import { buildApi } from "@jobberknoll/api";
 import { AccountRepo, buildService, envDatabaseUrl, Logger } from "@jobberknoll/app";
 import { DevLogger, MemoryAccountRepo, PostgresAccountRepo, ProdLogger, TestLogger } from "@jobberknoll/infra";
 
+// TODO: Refactor this to inject Logger to other infra classes
+
 function setup(accountRepo: AccountRepo, logger: Logger) {
   const service = buildService(accountRepo, logger);
   const api = buildApi(service, logger);
