@@ -33,7 +33,6 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
                         ? UUID_GENERATOR.generate()
                         : UUID.fromString(requestId);
 
-        request.setAttribute("requestId", requestIdUUID);
         response.setHeader("jp-request-id", requestIdUUID.toString());
 
         final var version = getClass().getPackage().getImplementationVersion();
