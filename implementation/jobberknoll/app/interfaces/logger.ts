@@ -14,6 +14,12 @@ export type LogData = {
   tags: LogTags;
 };
 
+type LogMethod = (
+  requestId: UUID | null,
+  event: string,
+  tags?: LogTags,
+) => void;
+
 // NOTE: Taken from https://github.com/pinojs/pino/blob/main/docs/api.md#levels
 const LEVELS = {
   debug: 20,
@@ -27,7 +33,7 @@ export abstract class Logger {
 
   protected abstract handle(data: LogData): void | Promise<void>;
 
-  private logMethod(level: LogLevel): (requestId: UUID | null, event: string, tags?: LogTags) => void {
+  private logMethod(level: LogLevel): LogMethod {
     return (requestId, event, tags = {}) => {
       if (LEVELS[this.level] <= LEVELS[level]) {
         void this.handle({
@@ -42,8 +48,8 @@ export abstract class Logger {
     };
   }
 
-  public debug = this.logMethod("debug");
-  public info = this.logMethod("info");
-  public warn = this.logMethod("warn");
-  public error = this.logMethod("error");
+  public debug: LogMethod = this.logMethod("debug");
+  public info: LogMethod = this.logMethod("info");
+  public warn: LogMethod = this.logMethod("warn");
+  public error: LogMethod = this.logMethod("error");
 }

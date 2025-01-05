@@ -20,14 +20,26 @@ export abstract class AccountRepo {
   }
 
   protected abstract handleCreateAccount(account: Account): Promise<void>;
-  public createAccount = this.instrument("createAccount", this.handleCreateAccount);
+  public createAccount: (account: Account) => Promise<void> = this.instrument(
+    "createAccount",
+    this.handleCreateAccount,
+  );
 
   protected abstract handleIsEmailTaken(email: string): Promise<boolean>;
-  public isEmailTaken = this.instrument("isEmailTaken", this.handleIsEmailTaken);
+  public isEmailTaken: (email: string) => Promise<boolean> = this.instrument(
+    "isEmailTaken",
+    this.handleIsEmailTaken,
+  );
 
   protected abstract handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>>;
-  public getAccountById = this.instrument("getAccountById", this.handleGetAccountById);
+  public getAccountById: (id: UUID) => Promise<Result<Account, AccountNotFoundError>> = this.instrument(
+    "getAccountById",
+    this.handleGetAccountById,
+  );
 
   protected abstract handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>>;
-  public deleteAccount = this.instrument("deleteAccount", this.handleDeleteAccount);
+  public deleteAccount: (id: UUID) => Promise<Option<AccountNotFoundError>> = this.instrument(
+    "deleteAccount",
+    this.handleDeleteAccount,
+  );
 }
