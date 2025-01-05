@@ -31,6 +31,12 @@ management:
   endpoint:
     health:
       enabled: true
+      show-details: "always"
+  health:
+    defaults:
+      enabled: false
+    db:
+      enabled: true
 
 springdoc:
   api-docs:
