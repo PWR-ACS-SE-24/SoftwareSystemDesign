@@ -25,6 +25,6 @@ export function authorize<R extends RouteConfig>(
         messagePl: "Użytkownik nie ma dostępu do tego zasobu.",
       } satisfies UserUnauthorizedDto,
       401,
-    ) as unknown as ReturnType<RouteHandler<R>>; // SAFETY: the callers of authorize are expected to add UserUnauthorizedDto to the response
+    ) as unknown as ReturnType<RouteHandler<R>>; // SAFETY: the callers of authorize are expected to add UserUnauthorizedDto to the response, even if they don't, it won't ever throw, but the OpenAPI spec will be incomplete
   };
 }
