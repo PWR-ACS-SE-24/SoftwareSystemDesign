@@ -3,7 +3,7 @@
   "workspace": ["api", "app", "core", "infra"],
   "tasks": {
     "dev": "deno run --allow-net --allow-env main.ts",
-    "test": "deno test --coverage && deno coverage",
+    "test": "deno test --coverage && deno coverage --html && deno coverage",
     "compile": "deno compile --allow-net --allow-env --output jobberknoll main.ts"
   },
   "fmt": {

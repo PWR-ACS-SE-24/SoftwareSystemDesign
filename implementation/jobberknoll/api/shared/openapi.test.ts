@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import { uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals } from "@std/assert";
-import { errorDto, IdParamSchema, jsonReq, jsonRes, RequestIdSchema, UserAgentSchema } from "./openapi.ts";
+import { errorDto, IdParamSchema, jsonReq, jsonRes, RequestIdSchema, UserAgentSchema, UuidSchema } from "./openapi.ts";
 
 const TestSchema = z.literal("test");
 const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
@@ -67,6 +67,30 @@ Deno.test("errorDto should reject mismatched codes and kinds", () => {
 
     assert(!result.success);
   }
+});
+
+Deno.test("UuidSchema should accept correct IDs", () => {
+  const id = uuid();
+
+  const result = UuidSchema.safeParse(id);
+
+  assert(result.success);
+});
+
+Deno.test("UuidSchema should reject numerical IDs", () => {
+  const id = "123";
+
+  const result = UuidSchema.safeParse(id);
+
+  assert(!result.success);
+});
+
+Deno.test("UuidSchema should reject IDs with wrong version", () => {
+  const id = "1be75dc9-ac00-45f8-b015-b64d007abf84";
+
+  const result = UuidSchema.safeParse(id);
+
+  assert(!result.success);
 });
 
 Deno.test("RequestIdSchema should accept correct IDs", () => {
