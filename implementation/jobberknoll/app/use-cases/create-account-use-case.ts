@@ -31,6 +31,7 @@ export class CreateAccountUseCase extends UseCase<CreateAccountReq, Account, Inv
     };
 
     await this.accountRepo.createAccount(ctx, account);
+    this.audit("AccountCreated", account.id);
 
     return ok(account);
   }

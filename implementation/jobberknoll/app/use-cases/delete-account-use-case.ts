@@ -1,5 +1,5 @@
 import type { AccountNotFoundError } from "@jobberknoll/core/domain";
-import { err, isNone, ok, type Result, type UUID } from "@jobberknoll/core/shared";
+import { err, isSome, ok, type Result, type UUID } from "@jobberknoll/core/shared";
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import type { Ctx } from "~/shared/ctx.ts";
 import { UseCase } from "./use-case.ts";
@@ -13,6 +13,8 @@ export class DeleteAccountUseCase extends UseCase<DeleteAccountReq, null, Accoun
 
   protected async handle(ctx: Ctx, req: DeleteAccountReq): Promise<Result<null, AccountNotFoundError>> {
     const error = await this.accountRepo.deleteAccount(ctx, req.accountId);
-    return isNone(error) ? ok(null) : err(error.value);
+    if (isSome(error)) return err(error.value);
+    this.audit("AccountDeleted", req.accountId);
+    return ok(null);
   }
 }
