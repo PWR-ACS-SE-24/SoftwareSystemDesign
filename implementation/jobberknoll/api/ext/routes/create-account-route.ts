@@ -1,10 +1,11 @@
-import { createRoute, type RouteHandler } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import type { CreateAccountUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { authorize } from "~/ext/authorization.ts";
 import { CreateAccountDto, InvalidAccountDataDto, UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
 import { AccountDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import type { JkHandler } from "~/shared/hooks.ts";
 import { mapAccountToDto } from "~/shared/mappers/mod.ts";
 import { jsonReq, jsonRes } from "~/shared/openapi.ts";
 
@@ -26,11 +27,10 @@ export const createAccountRoute = createRoute({
   },
 });
 
-export function createAccountHandler(createAccount: CreateAccountUseCase): RouteHandler<typeof createAccountRoute> {
+export function createAccountHandler(createAccount: CreateAccountUseCase): JkHandler<typeof createAccountRoute> {
   return authorize("admin", async (c) => {
-    const { "jp-request-id": requestId } = c.req.valid("header");
     const createAccountReq = c.req.valid("json");
-    const res = await createAccount.invoke({ requestId }, createAccountReq);
+    const res = await createAccount.invoke(c.get("ctx"), createAccountReq);
     return isOk(res) ? c.json(mapAccountToDto(res.value), 201) : c.json(res.value, res.value.code);
   });
 }

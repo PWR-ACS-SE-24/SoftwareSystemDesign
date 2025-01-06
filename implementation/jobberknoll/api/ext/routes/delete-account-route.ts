@@ -1,10 +1,11 @@
-import { createRoute, type RouteHandler } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import type { DeleteAccountUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { authorize } from "~/ext/authorization.ts";
 import { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
 import { AccountNotFoundDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import type { JkHandler } from "~/shared/hooks.ts";
 import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 
 export const deleteAccountRoute = createRoute({
@@ -25,11 +26,10 @@ export const deleteAccountRoute = createRoute({
   },
 });
 
-export function deleteAccountHandler(deleteAccount: DeleteAccountUseCase): RouteHandler<typeof deleteAccountRoute> {
+export function deleteAccountHandler(deleteAccount: DeleteAccountUseCase): JkHandler<typeof deleteAccountRoute> {
   return authorize("admin", async (c) => {
-    const { "jp-request-id": requestId } = c.req.valid("header");
     const { id: accountId } = c.req.valid("param");
-    const res = await deleteAccount.invoke({ requestId }, { accountId });
+    const res = await deleteAccount.invoke(c.get("ctx"), { accountId });
     return isOk(res) ? c.body(null, 204) : c.json(res.value, res.value.code);
   });
 }

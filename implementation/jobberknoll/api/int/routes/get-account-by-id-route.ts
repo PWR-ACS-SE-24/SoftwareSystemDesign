@@ -1,8 +1,9 @@
-import { createRoute, type RouteHandler } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import type { GetAccountByIdUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { IntHeadersSchema } from "~/int/openapi.ts";
 import { AccountDto, AccountNotFoundDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import type { JkHandler } from "~/shared/hooks.ts";
 import { mapAccountToDto } from "~/shared/mappers/mod.ts";
 import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
 
@@ -22,11 +23,10 @@ export const getAccountByIdRoute = createRoute({
   },
 });
 
-export function getAccountByIdHandler(getAccountById: GetAccountByIdUseCase): RouteHandler<typeof getAccountByIdRoute> {
+export function getAccountByIdHandler(getAccountById: GetAccountByIdUseCase): JkHandler<typeof getAccountByIdRoute> {
   return async (c) => {
-    const { "jp-request-id": requestId } = c.req.valid("header");
     const { id: accountId } = c.req.valid("param");
-    const res = await getAccountById.invoke({ requestId }, { accountId });
+    const res = await getAccountById.invoke(c.get("ctx"), { accountId });
     return isOk(res) ? c.json(mapAccountToDto(res.value), 200) : c.json(res.value, res.value.code);
   };
 }
