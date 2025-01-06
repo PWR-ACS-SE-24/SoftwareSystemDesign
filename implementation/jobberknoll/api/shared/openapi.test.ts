@@ -1,10 +1,36 @@
 import { z } from "@hono/zod-openapi";
 import { uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals } from "@std/assert";
-import { errorDto, IdParamSchema, jsonRes } from "./openapi.ts";
+import { errorDto, IdParamSchema, jsonReq, jsonRes, RequestIdSchema, UserAgentSchema } from "./openapi.ts";
+
+const TestSchema = z.literal("test");
+const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
+
+Deno.test("jsonReq should return a request object which is required by default", () => {
+  const description = "A test schema.";
+
+  const result = jsonReq(TestSchema, description);
+
+  assertEquals(result, {
+    content: { "application/json": { schema: TestSchema } },
+    description,
+    required: true,
+  });
+});
+
+Deno.test("jsonReq should return a request object which is not required when specified", () => {
+  const description = "A test schema.";
+
+  const result = jsonReq(TestSchema, description, false);
+
+  assertEquals(result, {
+    content: { "application/json": { schema: TestSchema } },
+    description,
+    required: false,
+  });
+});
 
 Deno.test("jsonRes should return a response object", () => {
-  const TestSchema = z.literal("test");
   const description = "A test schema.";
 
   const result = jsonRes(TestSchema, description);
@@ -16,7 +42,6 @@ Deno.test("jsonRes should return a response object", () => {
 });
 
 Deno.test("errorDto should accept correct errors", () => {
-  const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
   const testError = {
     code: 400,
     kind: "test",
@@ -29,8 +54,6 @@ Deno.test("errorDto should accept correct errors", () => {
 });
 
 Deno.test("errorDto should reject mismatched codes and kinds", () => {
-  const TestDto = errorDto("TestDto", 400, "test", "A test DTO.");
-
   for (
     const [code, kind] of [
       [401, "test"],
@@ -44,6 +67,40 @@ Deno.test("errorDto should reject mismatched codes and kinds", () => {
 
     assert(!result.success);
   }
+});
+
+Deno.test("RequestIdSchema should accept correct IDs", () => {
+  const id = uuid();
+
+  const result = RequestIdSchema.safeParse(id);
+
+  assert(result.success);
+});
+
+Deno.test("RequestIdSchema should accept missing IDs", () => {
+  const result = RequestIdSchema.safeParse(undefined);
+
+  assert(result.success);
+});
+
+Deno.test("RequestIdSchema should reject numerical IDs", () => {
+  const id = "123";
+
+  const result = RequestIdSchema.safeParse(id);
+
+  assert(!result.success);
+});
+
+Deno.test("UserAgentSchema should accept any string", () => {
+  const result = UserAgentSchema.safeParse("Phoenix/1.0.0");
+
+  assert(result.success);
+});
+
+Deno.test("UserAgentSchema should accept missing values", () => {
+  const result = UserAgentSchema.safeParse(undefined);
+
+  assert(result.success);
 });
 
 Deno.test("IdParamSchema should accept correct IDs", () => {
@@ -61,5 +118,3 @@ Deno.test("IdParamSchema should reject numerical IDs", () => {
 
   assert(!result.success);
 });
-
-// TODO: Implement missing tests

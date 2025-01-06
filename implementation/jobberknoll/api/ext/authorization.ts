@@ -3,7 +3,7 @@ import { USER_ROLES, type UserRole } from "@jobberknoll/app";
 import type { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
 
-function isValid(expectedRole: UserRole | "member", userRole: string | undefined): boolean {
+export function isValid(expectedRole: UserRole | "member", userRole: string | undefined): boolean {
   if (!USER_ROLES.includes(userRole as UserRole)) return false; // SAFETY: even if userRole is not a valid UserRole, the check will fail and will never throw (https://github.com/microsoft/TypeScript/issues/26255)
   if (expectedRole === "member") return userRole !== "guest";
   return userRole === expectedRole;
