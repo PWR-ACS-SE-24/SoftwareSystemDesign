@@ -2,7 +2,7 @@ import { createRoute } from "@hono/zod-openapi";
 import type { GetAccountByIdUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { IntHeadersSchema } from "~/int/openapi.ts";
-import { AccountDto, AccountNotFoundDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import { AccountDto, AccountNotFoundResponse, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
 import { mapAccountToDto } from "~/shared/mappers/mod.ts";
 import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
@@ -18,8 +18,8 @@ export const getAccountByIdRoute = createRoute({
   },
   responses: {
     200: jsonRes(AccountDto, "Retrieved account by ID."),
-    404: jsonRes(AccountNotFoundDto, "The account could not be found."),
-    422: jsonRes(SchemaMismatchDto, "The request data did not align with the schema."),
+    404: AccountNotFoundResponse,
+    422: SchemaMismatchResponse,
   },
 });
 

@@ -2,11 +2,11 @@ import { createRoute } from "@hono/zod-openapi";
 import type { DeleteAccountUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { authorize } from "~/ext/authorization.ts";
-import { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
+import { UserUnauthorizedResponse } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
-import { AccountNotFoundDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import { AccountNotFoundResponse, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
-import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
+import { IdParamSchema } from "~/shared/openapi.ts";
 
 export const deleteAccountRoute = createRoute({
   method: "delete",
@@ -20,9 +20,9 @@ export const deleteAccountRoute = createRoute({
   },
   responses: {
     204: { description: "Account deleted successfully." },
-    401: jsonRes(UserUnauthorizedDto, "The user does not have access to the resource."),
-    404: jsonRes(AccountNotFoundDto, "The account could not be found."),
-    422: jsonRes(SchemaMismatchDto, "The request data did not align with the schema."),
+    401: UserUnauthorizedResponse,
+    404: AccountNotFoundResponse,
+    422: SchemaMismatchResponse,
   },
 });
 

@@ -2,9 +2,9 @@ import { createRoute } from "@hono/zod-openapi";
 import type { CreateAccountUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { authorize } from "~/ext/authorization.ts";
-import { CreateAccountDto, InvalidAccountDataDto, UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
+import { CreateAccountDto, InvalidAccountDataResponse, UserUnauthorizedResponse } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
-import { AccountDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import { AccountDto, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
 import { mapAccountToDto } from "~/shared/mappers/mod.ts";
 import { jsonReq, jsonRes } from "~/shared/openapi.ts";
@@ -21,9 +21,9 @@ export const createAccountRoute = createRoute({
   },
   responses: {
     201: jsonRes(AccountDto, "Created a new account."),
-    400: jsonRes(InvalidAccountDataDto, "Some of the provided account data is invalid."),
-    401: jsonRes(UserUnauthorizedDto, "The user does not have access to the resource."),
-    422: jsonRes(SchemaMismatchDto, "The request data did not align with the schema."),
+    400: InvalidAccountDataResponse,
+    401: UserUnauthorizedResponse,
+    422: SchemaMismatchResponse,
   },
 });
 

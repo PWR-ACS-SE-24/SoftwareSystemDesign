@@ -2,9 +2,9 @@ import { createRoute } from "@hono/zod-openapi";
 import type { GetAccountByIdUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { authorize } from "~/ext/authorization.ts";
-import { UserUnauthorizedDto } from "~/ext/contracts/mod.ts";
+import { UserUnauthorizedResponse } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
-import { AccountDto, AccountNotFoundDto, SchemaMismatchDto } from "~/shared/contracts/mod.ts";
+import { AccountDto, AccountNotFoundResponse, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
 import { mapAccountToDto } from "~/shared/mappers/mod.ts";
 import { IdParamSchema, jsonRes } from "~/shared/openapi.ts";
@@ -21,9 +21,9 @@ export const getAccountByIdRoute = createRoute({
   },
   responses: {
     200: jsonRes(AccountDto, "Retrieved account by ID."),
-    401: jsonRes(UserUnauthorizedDto, "The user does not have access to the resource."),
-    404: jsonRes(AccountNotFoundDto, "The account could not be found."),
-    422: jsonRes(SchemaMismatchDto, "The request data did not align with the schema."),
+    401: UserUnauthorizedResponse,
+    404: AccountNotFoundResponse,
+    422: SchemaMismatchResponse,
   },
 });
 
