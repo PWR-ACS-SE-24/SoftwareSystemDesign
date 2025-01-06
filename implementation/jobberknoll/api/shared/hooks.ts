@@ -55,7 +55,7 @@ function loggingMiddlewareFactory(logger: Logger) {
   });
 }
 
-function configureErrorHandler(app: OpenAPIHono, logger: Logger) {
+function configureErrorHandler(logger: Logger, app: OpenAPIHono) {
   app.openAPIRegistry.register("ServerFailureDto", ServerFailureDto);
   app.onError((err, c) => {
     logger.error(null, "onError", { err: err.message });
@@ -75,6 +75,6 @@ export function createOpenAPIHono(logger: Logger): OpenAPIHono {
   const app = new OpenAPIHono({ defaultHook });
   app.use(requestIdMiddleware);
   app.use(loggingMiddlewareFactory(logger));
-  configureErrorHandler(app, logger);
+  configureErrorHandler(logger, app);
   return app;
 }

@@ -6,11 +6,11 @@ import { Pool } from "postgres";
 const POOL_SIZE = 8;
 
 export class PostgresAccountRepo extends AccountRepo {
-  private constructor(private readonly pool: Pool, logger: Logger) {
+  private constructor(logger: Logger, private readonly pool: Pool) {
     super(logger);
   }
 
-  public static async setup(connectionString: string, logger: Logger): Promise<AccountRepo> {
+  public static async setup(logger: Logger, connectionString: string): Promise<AccountRepo> {
     const pool = new Pool(connectionString, POOL_SIZE, true);
 
     using client = await pool.connect();
@@ -32,7 +32,7 @@ export class PostgresAccountRepo extends AccountRepo {
         CHECK (phone_number IS NULL OR type = 'passenger')
       )`;
 
-    return new PostgresAccountRepo(pool, logger);
+    return new PostgresAccountRepo(logger, pool);
   }
 
   protected async handleCreateAccount(account: Account): Promise<void> {

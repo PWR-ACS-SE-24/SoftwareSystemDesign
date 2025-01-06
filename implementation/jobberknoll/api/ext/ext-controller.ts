@@ -7,7 +7,7 @@ import { createOpenAPIHono } from "~/shared/hooks.ts";
 import * as r from "./routes/mod.ts";
 
 export class ExtController implements Controller {
-  public constructor(private readonly service: Service, private readonly logger: Logger) {}
+  public constructor(private readonly logger: Logger, private readonly service: Service) {}
 
   public readonly prefix = "/ext/v1";
 

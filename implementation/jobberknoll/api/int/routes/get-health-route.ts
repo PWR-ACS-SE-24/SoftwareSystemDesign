@@ -24,7 +24,10 @@ export const getHealthRoute = createRoute({
 export function getHealthHandler(getHealth: GetHealthUseCase): RouteHandler<typeof getHealthRoute> {
   return async (c) => {
     const { "jp-request-id": requestId } = c.req.valid("header");
-    const serviceHealth = expect(await getHealth.invoke(null, requestId), "service health request should never fail");
+    const serviceHealth = expect(
+      await getHealth.invoke({ requestId }, null),
+      "service health request should never fail",
+    );
     const code = ["UP", "UNKNOWN"].includes(serviceHealth.status) ? 200 : 503;
     return c.json(serviceHealth, code);
   };

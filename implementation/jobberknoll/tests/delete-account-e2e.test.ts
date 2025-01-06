@@ -1,5 +1,6 @@
 import { accountMock, uuid } from "@jobberknoll/core/shared";
 import { assertEquals } from "@std/assert/equals";
+import { newCtx } from "../app/shared/ctx.ts";
 import { setupTest } from "../setup.ts";
 
 const correctHeaders = {
@@ -10,8 +11,8 @@ const correctHeaders = {
 };
 
 Deno.test("DELETE /ext/v1/accounts/{id} should delete the account if it exists", async () => {
-  const { api, accountRepo } = setupTest();
-  await accountRepo.createAccount(accountMock);
+  const { api, accountRepo } = await setupTest();
+  await accountRepo.createAccount(newCtx(), accountMock);
 
   const response = await api.request(
     `/ext/v1/accounts/${accountMock.id}`,
@@ -24,8 +25,8 @@ Deno.test("DELETE /ext/v1/accounts/{id} should delete the account if it exists",
 });
 
 Deno.test("DELETE /ext/v1/accounts/{id} should return user-unauthorized if user is not an admin", async () => {
-  const { api, accountRepo } = setupTest();
-  await accountRepo.createAccount(accountMock);
+  const { api, accountRepo } = await setupTest();
+  await accountRepo.createAccount(newCtx(), accountMock);
 
   const response = await api.request(`/ext/v1/accounts/${accountMock.id}`, {
     method: "DELETE",
@@ -38,7 +39,7 @@ Deno.test("DELETE /ext/v1/accounts/{id} should return user-unauthorized if user 
 });
 
 Deno.test("DELETE /ext/v1/accounts/{id} should return schema-mismatch if the account id is not an UUID", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts/123", { method: "DELETE", headers: correctHeaders });
   const body = await response.json();
@@ -48,7 +49,7 @@ Deno.test("DELETE /ext/v1/accounts/{id} should return schema-mismatch if the acc
 });
 
 Deno.test("DELETE /ext/v1/accounts/{id} should return account-not-found if the account does not exist", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const response = await api.request(`/ext/v1/accounts/${uuid()}`, { method: "DELETE", headers: correctHeaders });
   const body = await response.json();
@@ -58,8 +59,8 @@ Deno.test("DELETE /ext/v1/accounts/{id} should return account-not-found if the a
 });
 
 Deno.test("DELETE /ext/v1/accounts/{id} should make the account unfetchable from GET /ext/v1/accounts/{id}", async () => {
-  const { api, accountRepo } = setupTest();
-  await accountRepo.createAccount(accountMock);
+  const { api, accountRepo } = await setupTest();
+  await accountRepo.createAccount(newCtx(), accountMock);
 
   await api.request(`/ext/v1/accounts/${accountMock.id}`, { method: "DELETE", headers: correctHeaders });
 

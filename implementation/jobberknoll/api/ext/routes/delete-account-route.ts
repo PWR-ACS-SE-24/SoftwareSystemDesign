@@ -29,7 +29,7 @@ export function deleteAccountHandler(deleteAccount: DeleteAccountUseCase): Route
   return authorize("admin", async (c) => {
     const { "jp-request-id": requestId } = c.req.valid("header");
     const { id: accountId } = c.req.valid("param");
-    const res = await deleteAccount.invoke({ accountId }, requestId);
+    const res = await deleteAccount.invoke({ requestId }, { accountId });
     return isOk(res) ? c.body(null, 204) : c.json(res.value, res.value.code);
   });
 }

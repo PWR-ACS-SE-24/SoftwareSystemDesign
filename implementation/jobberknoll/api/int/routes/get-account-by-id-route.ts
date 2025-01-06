@@ -26,7 +26,7 @@ export function getAccountByIdHandler(getAccountById: GetAccountByIdUseCase): Ro
   return async (c) => {
     const { "jp-request-id": requestId } = c.req.valid("header");
     const { id: accountId } = c.req.valid("param");
-    const res = await getAccountById.invoke({ accountId }, requestId);
+    const res = await getAccountById.invoke({ requestId }, { accountId });
     return isOk(res) ? c.json(mapAccountToDto(res.value), 200) : c.json(res.value, res.value.code);
   };
 }

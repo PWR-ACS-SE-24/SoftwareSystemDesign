@@ -30,7 +30,7 @@ export function createAccountHandler(createAccount: CreateAccountUseCase): Route
   return authorize("admin", async (c) => {
     const { "jp-request-id": requestId } = c.req.valid("header");
     const createAccountReq = c.req.valid("json");
-    const res = await createAccount.invoke(createAccountReq, requestId);
+    const res = await createAccount.invoke({ requestId }, createAccountReq);
     return isOk(res) ? c.json(mapAccountToDto(res.value), 201) : c.json(res.value, res.value.code);
   });
 }
