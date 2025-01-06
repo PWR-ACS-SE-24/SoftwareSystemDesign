@@ -8,7 +8,7 @@ export abstract class UseCase<Req, Res, Err> {
   }
 
   protected abstract handle(ctx: Ctx, req: Req): Promise<Result<Res, Err>>;
-  public invoke: (ctx: Ctx, req: Req) => Promise<Result<Res, Err>>;
+  public readonly invoke: (ctx: Ctx, req: Req) => Promise<Result<Res, Err>>;
 
   protected audit(eventKind: string, subject: UUID) {
     this.logger.info(null, `audit log - ${eventKind}`, { subject });

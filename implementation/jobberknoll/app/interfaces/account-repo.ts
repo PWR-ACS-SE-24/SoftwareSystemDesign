@@ -12,14 +12,14 @@ export abstract class AccountRepo {
   }
 
   protected abstract handleCreateAccount(account: Account): Promise<void>;
-  public createAccount: (ctx: Ctx, account: Account) => Promise<void>;
+  public readonly createAccount: (ctx: Ctx, account: Account) => Promise<void>;
 
   protected abstract handleIsEmailTaken(email: string): Promise<boolean>;
-  public isEmailTaken: (ctx: Ctx, email: string) => Promise<boolean>;
+  public readonly isEmailTaken: (ctx: Ctx, email: string) => Promise<boolean>;
 
   protected abstract handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>>;
-  public getAccountById: (ctx: Ctx, id: UUID) => Promise<Result<Account, AccountNotFoundError>>;
+  public readonly getAccountById: (ctx: Ctx, id: UUID) => Promise<Result<Account, AccountNotFoundError>>;
 
   protected abstract handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>>;
-  public deleteAccount: (ctx: Ctx, id: UUID) => Promise<Option<AccountNotFoundError>>;
+  public readonly deleteAccount: (ctx: Ctx, id: UUID) => Promise<Option<AccountNotFoundError>>;
 }

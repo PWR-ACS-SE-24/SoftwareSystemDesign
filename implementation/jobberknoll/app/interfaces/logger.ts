@@ -49,10 +49,10 @@ export abstract class Logger {
     };
   }
 
-  public debug: LogMethod = this.logMethod("debug");
-  public info: LogMethod = this.logMethod("info");
-  public warn: LogMethod = this.logMethod("warn");
-  public error: LogMethod = this.logMethod("error");
+  public readonly debug: LogMethod = this.logMethod("debug");
+  public readonly info: LogMethod = this.logMethod("info");
+  public readonly warn: LogMethod = this.logMethod("warn");
+  public readonly error: LogMethod = this.logMethod("error");
 
   /**
    * Wraps a handler function with logging and returns a new function DROPPING the context.
