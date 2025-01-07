@@ -12,7 +12,7 @@ export class LineDto {
     maxLength: 4,
     minLength: 1,
     nullable: false,
-    examples: ['112', '997', '144', '145'],
+    examples: ['144', '145', 'N', 'AN11', 'a1', 'a2'],
   })
   readonly name: string;
 

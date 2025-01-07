@@ -1,12 +1,10 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiExtraModels, ApiOkResponse, ApiQuery, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 import { PaginatedDto } from './generic-paginated.dto';
 
-export const ApiPaginatedResponse = <TModel extends Type>(model: TModel) => {
+export const ApiPaginatedResponse = (model: Type) => {
   return applyDecorators(
     ApiExtraModels(PaginatedDto, model),
-    ApiQuery({ name: 'page', type: Number, required: false, default: 0 }),
-    ApiQuery({ name: 'size', type: Number, required: false, default: 10, minimum: 1, maximum: 100 }),
     ApiOkResponse({
       schema: {
         allOf: [

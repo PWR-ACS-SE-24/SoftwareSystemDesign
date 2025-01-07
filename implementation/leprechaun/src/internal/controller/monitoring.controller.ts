@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
-import { HealthcheckDto, HealthcheckStatus } from './healthcheck.dto';
+import { HealthcheckDto } from './healthcheck.dto';
 
 @Controller('/int/v1/')
 export class MonitoringController {
@@ -10,7 +10,7 @@ export class MonitoringController {
     type: HealthcheckDto,
     description: 'Internal server error',
     status: HttpStatus.SERVICE_UNAVAILABLE,
-    example: { status: <HealthcheckStatus>'UP' },
+    example: { status: 'UP' },
   })
   async healthcheck(): Promise<HealthcheckDto> {
     return {

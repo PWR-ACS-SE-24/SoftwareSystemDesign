@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
@@ -9,6 +9,7 @@ import {
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
+import { Paginated, Pagination } from '../../shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '../../shared/api/pipes';
 import { StopService } from '../service/stop.service';
 import { CreateStopDto, UpdateStopDto } from './stop-create.dto';
@@ -22,14 +23,11 @@ export class StopController {
   @Get('/')
   @ApiPaginatedResponse(StopDto)
   async getAllStops(
-    @Query('page') page_: number = 0,
-    @Query('size') size_: number = 50,
+    @Paginated() pagination: Pagination,
     // @Query('filter') TODO: add filter
   ): Promise<PaginatedDto<StopDto>> {
-    const { size, page } = PaginatedDto.sanitizePagination(size_, page_);
-    const { stops, total } = await this.stopService.listAll(size, page);
-
-    return PaginatedDto.fromEntities(total, size, page, StopDto.fromEntities(stops));
+    const { stops, total } = await this.stopService.listAll(pagination);
+    return PaginatedDto.fromEntities(total, pagination, StopDto.fromEntities(stops));
   }
 
   @Get('/:id')

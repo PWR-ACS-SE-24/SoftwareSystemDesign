@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
@@ -9,6 +9,7 @@ import {
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
+import { Paginated, Pagination } from '../../shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '../../shared/api/pipes';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
@@ -22,14 +23,12 @@ export class VehicleController {
   @Get('/')
   @ApiPaginatedResponse(VehicleDto)
   async getAllVehicles(
-    @Query('page') page_: number = 0,
-    @Query('size') size_: number = 50,
-    // @Query('filter') TODO: add filter
+    @Paginated() pagination: Pagination,
+    // TODO: add filter
   ): Promise<PaginatedDto<VehicleDto>> {
-    const { size, page } = PaginatedDto.sanitizePagination(size_, page_);
-    const { vehicles, total } = await this.vehicleService.listAll(size, page);
+    const { vehicles, total } = await this.vehicleService.listAll(pagination);
 
-    return PaginatedDto.fromEntities(total, size, page, VehicleDto.fromEntities(vehicles));
+    return PaginatedDto.fromEntities(total, pagination, VehicleDto.fromEntities(vehicles));
   }
 
   @Get('/:id')

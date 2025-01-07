@@ -7,4 +7,7 @@ export class HealthcheckDto {
   status: HealthcheckStatus;
 
   // TODO: add more fields
+  constructor(status: HealthcheckStatus) {
+    this.status = status;
+  }
 }

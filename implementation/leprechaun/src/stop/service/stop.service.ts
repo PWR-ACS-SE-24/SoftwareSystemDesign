@@ -1,6 +1,7 @@
 import { EntityManager, EntityRepository, QueryFlag } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Pagination } from 'src/shared/api/pagination.decorator';
 import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
 import { LineService } from '../../line/service/line.service';
 import { CreateStopDto, UpdateStopDto } from '../controller/stop-create.dto';
@@ -21,8 +22,11 @@ export class StopService {
     private readonly stopLineMappingRepository: EntityRepository<StopLineMapping>,
   ) {}
 
-  async listAll(size: number, page: number): Promise<{ stops: Stop[]; total: number }> {
-    const stops = await this.stopRepository.findAll({ limit: size, offset: page * size });
+  async listAll(pagination: Pagination): Promise<{ stops: Stop[]; total: number }> {
+    const stops = await this.stopRepository.findAll({
+      limit: pagination.size,
+      offset: pagination.page * pagination.size,
+    });
     const total = await this.stopRepository.count();
 
     return { stops, total };
@@ -31,13 +35,13 @@ export class StopService {
   async findStopById(stopId: string, filters: boolean = true): Promise<Stop> {
     return await this.stopRepository.findOneOrFail(
       { id: stopId },
-      { failHandler: () => new NotFoundException(stopId), filters: filters },
+      { failHandler: () => new NotFoundException({ details: stopId }), filters: filters },
     );
   }
 
   async createStop(createStop: CreateStopDto): Promise<Stop> {
     const stop = new Stop(createStop.name, createStop.latitude, createStop.longitude);
-    await this.stopRepository.insert(stop);
+    await this.em.persistAndFlush(stop);
     return stop;
   }
 
@@ -57,12 +61,11 @@ export class StopService {
 
     await this.em.transactional(async () => {
       const updated = await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
-      if (!updated) throw new NotFoundException(stopId);
+      if (!updated) throw new NotFoundException({ details: stopId });
 
       const linesUsingStop = await this.lineService.getAllLinesForStop(stopId);
-      if (!linesUsingStop) return;
 
-      // For each line remove the stop
+      // For each line that uses the stop remove the stop
       for (const line of linesUsingStop) {
         const orderedStops = await this.getOrderedStopsForLine(line.id);
         const newStops = orderedStops.filter((stop) => stop.id !== stopId).map((stop) => stop.id);
@@ -82,7 +85,6 @@ export class StopService {
       const newStop = await this.createStop({ ...stop, ...updateStop });
 
       const linesUsingStop = await this.lineService.getAllLinesForStop(stopId);
-      if (!linesUsingStop) return newStop;
 
       // For each line replace the stop
       for (const line of linesUsingStop) {

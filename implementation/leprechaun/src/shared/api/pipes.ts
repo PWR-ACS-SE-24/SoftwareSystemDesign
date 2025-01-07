@@ -3,14 +3,14 @@ import { SchemaMismatchException } from './http-exceptions';
 
 export const UUIDPipe = new ParseUUIDPipe({
   version: '7',
-  exceptionFactory: (err) => new SchemaMismatchException(err as any),
+  exceptionFactory: (_) => new SchemaMismatchException('Invalid UUID format'),
 });
 
 export const ValidateCreatePipe = new ValidationPipe({
   transform: true,
   whitelist: true,
   forbidNonWhitelisted: true,
-  exceptionFactory: (err) => new SchemaMismatchException(err as any),
+  exceptionFactory: (_) => new SchemaMismatchException('Invalid create object format'),
 });
 
 export const ValidateUpdatePipe = new ValidationPipe({
@@ -18,5 +18,5 @@ export const ValidateUpdatePipe = new ValidationPipe({
   whitelist: true,
   forbidNonWhitelisted: true,
   skipMissingProperties: true,
-  exceptionFactory: (err) => new SchemaMismatchException(err as any),
+  exceptionFactory: (_) => new SchemaMismatchException('Invalid update object format'),
 });

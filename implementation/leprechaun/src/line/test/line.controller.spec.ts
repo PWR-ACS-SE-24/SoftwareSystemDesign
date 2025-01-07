@@ -56,7 +56,7 @@ describe('LineController', () => {
     await em.persistAndFlush(newLine);
 
     // when
-    const lines = await controller.getAllLines();
+    const lines = await controller.getAllLines({ page: 0, size: 10 });
 
     // then
     expect(lines).toBeDefined();
@@ -97,7 +97,7 @@ describe('LineController', () => {
     await em.persistAndFlush(newLine);
 
     // when
-    const lines = await controller.getAllLines();
+    const lines = await controller.getAllLines({ page: 0, size: 10 });
 
     // then
     expect(lines.data).toHaveLength(0);
@@ -126,8 +126,9 @@ describe('LineController', () => {
     await controller.deleteLineById(newLine.id);
 
     // then
-    const line = await em.refresh(newLine, { filters: false });
-    expect(line.isActive).toEqual(false);
+    const line = await em.findOne(Line, { id: newLine.id }, { filters: false });
+    expect(line).toBeDefined();
+    expect(line!.isActive).toEqual(false);
   });
 
   it('should be findable after deletion', async () => {

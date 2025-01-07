@@ -1,30 +1,21 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { IsArray, IsOptional, IsUUID } from 'class-validator';
+import { LineDto } from './line.dto';
 
-export class CreateLineDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(4)
-  @ApiProperty({
-    description: 'Name of the line',
-    maxLength: 4,
-    minLength: 1,
-    nullable: false,
-    examples: ['112', '997', '144', '145'],
-  })
+export class CreateLineDto extends PickType(LineDto, ['name'] as const) {
   readonly name: string;
 
   @IsOptional()
-  @IsArray({ always: true })
+  @IsArray()
   @IsUUID('7', { each: true })
   @ApiProperty({
     description: 'Stops of the line',
-    isArray: true,
+    type: 'array',
     items: {
       type: 'string',
       format: 'uuid',
     },
-    nullable: false,
+    nullable: true,
     required: false,
     examples: [
       [
@@ -37,6 +28,7 @@ export class CreateLineDto {
   readonly stops: string[];
 
   constructor(name: string, stops: string[] = []) {
+    super();
     this.name = name;
     this.stops = stops;
   }

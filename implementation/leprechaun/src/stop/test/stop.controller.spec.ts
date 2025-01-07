@@ -19,7 +19,7 @@ describe('StopController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MikroOrmModule.forRoot(testConfig),
+        MikroOrmModule.forRoot({ ...testConfig }),
         MikroOrmModule.forFeature([Stop, Line, StopLineMapping]),
         SharedModule,
       ],
@@ -44,7 +44,7 @@ describe('StopController', () => {
     await em.persistAndFlush(newStop);
 
     // when
-    const stops = await controller.getAllStops();
+    const stops = await controller.getAllStops({ page: 0, size: 100 });
 
     // then
     expect(Object.keys(stops)).toMatchObject(['total', 'size', 'page', 'data']);
@@ -92,7 +92,7 @@ describe('StopController', () => {
     await em.persistAndFlush(newStop);
 
     // when
-    const stops = await controller.getAllStops();
+    const stops = await controller.getAllStops({ page: 0, size: 100 });
 
     // then
     expect(stops.data).toHaveLength(0);
@@ -104,27 +104,12 @@ describe('StopController', () => {
     await em.persistAndFlush(new Stop('PWR2', 2.3, 7.1));
 
     // when
-    const stopsP1 = await controller.getAllStops(0, 1);
-    const stopsP2 = await controller.getAllStops(1, 1);
+    const stopsP1 = await controller.getAllStops({ page: 0, size: 1 });
+    const stopsP2 = await controller.getAllStops({ page: 1, size: 1 });
 
     // then
     expect(stopsP1.data).toHaveLength(1);
     expect(stopsP2.data).toHaveLength(1);
-  });
-
-  it('should sanitize pageing', async () => {
-    // given
-    await em.persistAndFlush(new Stop('PWR', 21.37, 37.21));
-    await em.persistAndFlush(new Stop('PWR2', 2.3, 7.1));
-
-    // when
-    const stops = await controller.getAllStops(-3, 4345);
-
-    // then
-    expect(stops.data).toHaveLength(2);
-    expect(stops.total).toEqual(2);
-    expect(stops.size).toEqual(100);
-    expect(stops.page).toEqual(0);
   });
 
   it('should update stop', async () => {
@@ -137,8 +122,8 @@ describe('StopController', () => {
     const oldStop = await em.refresh(stop, { filters: false });
 
     // then
-    expect(oldStop.isActive).toEqual(false);
-    expect(oldStop.id).not.toEqual(newStop.id);
+    expect(oldStop!.isActive).toEqual(false);
+    expect(oldStop!.id).not.toEqual(newStop.id);
     expect(await em.count(Stop, {}, { filters: false })).toEqual(2);
     expect(newStop.id).not.toEqual(stop.id);
     expect(newStop.name).toEqual('PWR2');
@@ -154,7 +139,7 @@ describe('StopController', () => {
 
     // then
     const stop = await em.refresh(newStop, { filters: false });
-    expect(stop.isActive).toEqual(false);
+    expect(stop!.isActive).toEqual(false);
   });
 
   it('should be findable after deletion', async () => {

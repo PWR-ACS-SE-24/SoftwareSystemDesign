@@ -44,7 +44,7 @@ describe('VehicleController', () => {
     await em.flush();
 
     // when
-    const response = await controller.getAllVehicles();
+    const response = await controller.getAllVehicles({ page: 0, size: 10 });
 
     // then
     expect(response.total).toBe(2);

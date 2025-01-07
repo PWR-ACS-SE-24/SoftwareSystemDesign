@@ -7,6 +7,10 @@ export const ErrorKind = {
   InternalServerError: ['internal-server-error', HttpStatus.INTERNAL_SERVER_ERROR],
 } as const satisfies Record<string, [string, number]>;
 
+function isKnownErrorType(key: string): key is keyof typeof ErrorKind {
+  return key in exceptionMap;
+}
+
 type Values<Object> = Object[keyof Object];
 type Keys<Object> = keyof Object;
 
@@ -35,28 +39,35 @@ export class HttpExceptionDto implements AppError {
   }
 }
 export class SchemaMismatchException extends HttpException {
-  constructor(message: string) {
-    super(message, HttpStatus.UNPROCESSABLE_ENTITY);
+  constructor(details: string) {
+    super({ details }, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }
 
-// Typical HTTP exceptions
-export const exceptionMap: Record<Keys<typeof ErrorKind>, (...message: Array<unknown>) => HttpExceptionDto> = {
+export const exceptionMap: Record<
+  Keys<typeof ErrorKind>,
+  (response: string | Record<string, any>) => HttpExceptionDto
+> = {
   SchemaMismatchException: (_) =>
     new HttpExceptionDto(ErrorKind.SchemaMismatchException, 'Schema mismatch exception', 'Niezgodność schematu'),
-  NotFoundException: (id: unknown) => {
-    const messageEn = typeof id === 'string' ? `Resource with id {${id}} not found.` : `Resource not found.`;
-    const messagePl = typeof id === 'string' ? `Nie znaleziono zasobu o id {${id}}.` : `Nie znaleziono zasobu.`;
+
+  NotFoundException: (message) => {
+    let messageEn = 'Resource not found.';
+    let messagePl = 'Nie znaleziono zasobu.';
+    if (typeof message !== 'string' && 'details' in message) {
+      messageEn = `Resource with id {${message.details}} not found.`;
+      messagePl = `Nie znaleziono zasobu o id {${message.details}}.`;
+    }
     return new HttpExceptionDto(ErrorKind.NotFoundException, messageEn, messagePl);
   },
+
   InternalServerError: (_) =>
     new HttpExceptionDto(ErrorKind.InternalServerError, 'Internal server error', 'Wewnętrzny błąd serwera'),
 };
 
 export function mapException<T extends HttpException>(error: T): AppError {
-  try {
-    return exceptionMap[error.constructor.name](error.getResponse());
-  } catch {
-    return exceptionMap.InternalServerError();
-  }
+  const name = error.constructor.name;
+  if (isKnownErrorType(name)) {
+    return exceptionMap[name](error.getResponse());
+  } else return exceptionMap.InternalServerError('');
 }

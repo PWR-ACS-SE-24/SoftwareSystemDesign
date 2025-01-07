@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { Vehicle } from '../database/vehicle.entity';
-import { CreateVehicleDto } from './vehicle-create.dto';
 
-export class VehicleDto extends CreateVehicleDto {
+export class VehicleDto {
   @ApiProperty({
     description: 'Vehicle ID',
     maxLength: 36,
@@ -13,6 +13,18 @@ export class VehicleDto extends CreateVehicleDto {
   })
   readonly id: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(16)
+  @ApiProperty({
+    description: 'Side number of the vehicle',
+    maxLength: 16,
+    minLength: 1,
+    nullable: false,
+    examples: ['2137', '94102-3170150114'],
+  })
+  readonly sideNumber: string;
+
   @ApiProperty({
     description: 'Vehicle status',
     nullable: false,
@@ -21,8 +33,8 @@ export class VehicleDto extends CreateVehicleDto {
   readonly isActive: boolean;
 
   constructor(id: string, sideNumber: string, isActive: boolean) {
-    super(sideNumber);
     this.id = id;
+    this.sideNumber = sideNumber;
     this.isActive = isActive;
   }
 

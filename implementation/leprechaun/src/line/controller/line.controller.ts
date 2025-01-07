@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiExtraModels, ApiNoContentResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
+import { Paginated, Pagination } from '../../shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '../../shared/api/pipes';
 import { StopDto } from '../../stop/controller/stop.dto';
 import { LineService } from '../service/line.service';
@@ -18,14 +19,11 @@ export class LineController {
   @Get('/')
   @ApiPaginatedResponse(LineDto)
   async getAllLines(
-    @Query('page') page_: number = 0,
-    @Query('size') size_: number = 50,
+    @Paginated() pagination: Pagination,
     // @Query('filter') TODO: add filter
   ): Promise<PaginatedDto<LineDto>> {
-    const { size, page } = PaginatedDto.sanitizePagination(size_, page_);
-    const { lines, total } = await this.lineService.listAll(size, page);
-
-    return PaginatedDto.fromEntities(total, size, page, LineDto.fromEntities(lines));
+    const { lines, total } = await this.lineService.listAll(pagination);
+    return PaginatedDto.fromEntities(total, pagination, LineDto.fromEntities(lines));
   }
 
   @Get('/:id')

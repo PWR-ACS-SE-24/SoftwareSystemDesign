@@ -1,6 +1,7 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Pagination } from 'src/shared/api/pagination.decorator';
 import { CreateVehicleDto, UpdateVehicleDto } from '../controller/vehicle-create.dto';
 import { Vehicle } from '../database/vehicle.entity';
 
@@ -13,8 +14,11 @@ export class VehicleService {
     private readonly em: EntityManager,
   ) {}
 
-  async listAll(size: number, page: number): Promise<{ vehicles: Vehicle[]; total: number }> {
-    const vehicles = await this.vehicleRepository.findAll({ limit: size, offset: page * size });
+  async listAll(pagination: Pagination): Promise<{ vehicles: Vehicle[]; total: number }> {
+    const vehicles = await this.vehicleRepository.findAll({
+      limit: pagination.size,
+      offset: pagination.page * pagination.size,
+    });
     const total = await this.vehicleRepository.count();
 
     return { vehicles, total };
@@ -23,7 +27,7 @@ export class VehicleService {
   async findVehicleById(vehicleId: string, filters: boolean = true): Promise<Vehicle> {
     return await this.vehicleRepository.findOneOrFail(
       { id: vehicleId },
-      { failHandler: () => new NotFoundException(vehicleId), filters: filters },
+      { failHandler: () => new NotFoundException({ details: vehicleId }), filters: filters },
     );
   }
 
@@ -36,11 +40,10 @@ export class VehicleService {
   async deleteVehicleById(vehicleId: string): Promise<void> {
     // As per the requirements, we don't delete, but rather set isActive to false
     const updated = await this.vehicleRepository.nativeUpdate({ id: vehicleId }, { isActive: false });
-    if (!updated) throw new NotFoundException(vehicleId);
+    if (!updated) throw new NotFoundException({ details: vehicleId });
   }
 
   async updateVehicleById(vehicleId: string, updateVehicle: UpdateVehicleDto): Promise<Vehicle> {
-    // TODO: switch all routes to use new vehicle when updating
     // As per the requirements, we don't update in place, but rather set isActive to false and create a new one
     const vehicle = await this.findVehicleById(vehicleId);
     await this.deleteVehicleById(vehicleId);

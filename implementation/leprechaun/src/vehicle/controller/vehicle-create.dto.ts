@@ -1,20 +1,11 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { VehicleDto } from './vehicle.dto';
 
-export class CreateVehicleDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(16)
-  @ApiProperty({
-    description: 'Side number of the vehicle',
-    maxLength: 16,
-    minLength: 1,
-    nullable: false,
-    examples: ['2137', '94102-3170150114'],
-  })
+export class CreateVehicleDto extends PickType(VehicleDto, ['sideNumber'] as const) {
   readonly sideNumber: string;
 
   constructor(sideNumber: string) {
+    super();
     this.sideNumber = sideNumber;
   }
 }

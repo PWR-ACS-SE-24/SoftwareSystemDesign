@@ -1,6 +1,7 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Pagination } from 'src/shared/api/pagination.decorator';
 import { v7 } from 'uuid';
 import { StopService } from '../../stop/service/stop.service';
 import { CreateLineDto, UpdateLineDto } from '../controller/line-create.dto';
@@ -22,10 +23,10 @@ export class LineService {
     private readonly stopLineMappingRepository: EntityRepository<StopLineMapping>,
   ) {}
 
-  async listAll(size: number, page: number): Promise<{ lines: Line[]; total: number }> {
+  async listAll(pagination: Pagination): Promise<{ lines: Line[]; total: number }> {
     const lines = await this.lineRepository.findAll({
-      limit: size,
-      offset: page * size,
+      limit: pagination.size,
+      offset: pagination.page * pagination.size,
       populate: ['mappings.line', 'mappings.stop'],
     });
     const total = await this.lineRepository.count();
@@ -36,7 +37,7 @@ export class LineService {
   async getLineById(lineId: string, filters: boolean = true): Promise<Line> {
     const line = await this.lineRepository.findOneOrFail(
       { id: lineId },
-      { failHandler: () => new NotFoundException(lineId), populate: ['mappings.stop'], filters: filters },
+      { failHandler: () => new NotFoundException({ details: lineId }), populate: ['mappings.stop'], filters },
     );
     return line;
   }
@@ -53,7 +54,7 @@ export class LineService {
   async createLine(lineCreateDto: CreateLineDto): Promise<Line> {
     return await this.em.transactional(async () => {
       const line = new Line(lineCreateDto.name);
-      await this.lineRepository.insert(line);
+      this.em.persistAndFlush(line);
 
       // If lines were defined, check if they exist
       if (lineCreateDto.stops) {
@@ -66,9 +67,9 @@ export class LineService {
           // but prevents us from asking db for the entity we know exists
           this.stopLineMappingRepository.create({ id: v7(), line: line.id, stop: stopId, order: index }),
         );
-        await this.stopLineMappingRepository.insertMany(lineMappings);
+        line.mappings.add(lineMappings);
       }
-      return await this.em.refresh(line);
+      return line;
     });
   }
 
@@ -91,6 +92,6 @@ export class LineService {
     // (as discussed with @tchojnacki)
     // simple, just mark as inactive
     const updated = await this.lineRepository.nativeUpdate({ id: lineId }, { isActive: false });
-    if (!updated) throw new NotFoundException(lineId);
+    if (!updated) throw new NotFoundException({ details: lineId });
   }
 }
