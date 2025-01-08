@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertNotEquals } from "@std/assert";
 import { isNone, isSome } from "./option.ts";
-import { uuid } from "./uuid.ts";
+import { NIL_UUID, uuid } from "./uuid.ts";
 
 const fuzz = (test: () => void) => {
   for (let i = 0; i < 100; i++) {
@@ -29,7 +29,7 @@ Deno.test("uuid should accept its own output", () => {
   fuzz(() => {
     const id = uuid();
 
-    const option = uuid(id as string);
+    const option = uuid(id as string); // SAFETY: UUIDs coerce to strings, so this is safe
 
     assert(isSome(option));
   });
@@ -37,6 +37,12 @@ Deno.test("uuid should accept its own output", () => {
 
 Deno.test("uuid should accept valid input", () => {
   const option = uuid("0193f590-e4c4-774d-9d92-8bac692af898");
+
+  assert(isSome(option));
+});
+
+Deno.test("uuid should accept nil UUID", () => {
+  const option = uuid(NIL_UUID);
 
   assert(isSome(option));
 });

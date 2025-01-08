@@ -1,34 +1,16 @@
-import {
-  type Account,
-  type AccountNotFoundError,
-  accountNotFoundError,
-} from "@jobberknoll/core/domain";
-import {
-  err,
-  isOk,
-  ok,
-  type Result,
-  type UUID,
-} from "@jobberknoll/core/shared";
-import type { AccountRepo } from "~/interfaces/mod.ts";
+import type { Account, AccountNotFoundError } from "@jobberknoll/core/domain";
+import type { Result, UUID } from "@jobberknoll/core/shared";
+import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import { UseCase } from "./use-case.ts";
 
-export class GetAccountByIdUseCase extends UseCase<
-  UUID,
-  Account,
-  AccountNotFoundError
-> {
-  constructor(private readonly accountRepo: AccountRepo) {
-    super();
+type GetAccountByIdReq = { accountId: UUID };
+
+export class GetAccountByIdUseCase extends UseCase<GetAccountByIdReq, Account, AccountNotFoundError> {
+  public constructor(private readonly accountRepo: AccountRepo, logger: Logger) {
+    super(logger);
   }
 
-  protected async handle(
-    id: UUID,
-  ): Promise<Result<Account, AccountNotFoundError>> {
-    const account = await this.accountRepo.getAccountById(id);
-    if (isOk(account) && account.value.isActive) {
-      return ok(account.value);
-    }
-    return err(accountNotFoundError(id));
+  protected async handle({ accountId }: GetAccountByIdReq): Promise<Result<Account, AccountNotFoundError>> {
+    return await this.accountRepo.getAccountById(accountId);
   }
 }

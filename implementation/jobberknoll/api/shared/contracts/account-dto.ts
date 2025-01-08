@@ -6,7 +6,7 @@ export const AccountDto = z.object({
     description: "Account identifier as UUIDv7.",
     examples: [uuid()],
   }),
-  type: z.enum(["passenger", "driver", "admin", "inspector"]).openapi({
+  type: z.enum(["admin", "driver", "inspector", "passenger"]).openapi({
     description: "Type of the account.",
     examples: ["passenger"],
   }),
@@ -18,7 +18,7 @@ export const AccountDto = z.object({
     description: "Email address of the account owner.",
     examples: ["john.smith@example.com"],
   }),
-  phoneNumber: z.string().optional().openapi({
+  phoneNumber: z.string().nullable().optional().openapi({
     description: "Phone number of the passenger.",
     examples: ["+48 123 456 789"],
   }),

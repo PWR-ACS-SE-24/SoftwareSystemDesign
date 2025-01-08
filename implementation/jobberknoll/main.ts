@@ -1,9 +1,16 @@
-import { setupProd } from "./setup.ts";
+import { envProd, envServerPort, logEnvironment } from "./app/mod.ts";
+import { setupDev, setupProd } from "./setup.ts";
 
 if (import.meta.main) {
-  const app = setupProd();
-  // TODO @tchojnacki: Support passing PORT from env variables
-  // TODO @tchojnacki: Set up Dockerfile and compose.yml
-  // TODO @tchojnacki: Set up CI/CD
-  Deno.serve({}, app.fetch);
+  const { api, logger } = envProd() ? await setupProd() : setupDev();
+
+  logEnvironment(logger);
+
+  Deno.serve(
+    {
+      port: envServerPort(),
+      onListen: (addr) => logger.info(null, "listen", { host: `http://${addr.hostname}:${addr.port}` }),
+    },
+    api.fetch,
+  );
 }

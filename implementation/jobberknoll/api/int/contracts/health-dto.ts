@@ -13,8 +13,7 @@ const Component = z.object({
     .record(z.string())
     .optional()
     .openapi({
-      description:
-        "Details of the health of a specific part of the application.",
+      description: "Details of the health of a specific part of the application.",
       examples: [{ version: "1.0.0", database: "H2" }],
     }),
 });

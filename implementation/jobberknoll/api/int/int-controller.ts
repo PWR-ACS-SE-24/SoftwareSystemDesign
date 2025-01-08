@@ -1,41 +1,33 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
-import type { Service } from "@jobberknoll/app";
-import denoJson from "~/deno.json" with { type: "json" };
+import type { OpenAPIHono } from "@hono/zod-openapi";
+import type { Logger, Service } from "@jobberknoll/app";
+import { SERVICE_VERSION } from "@jobberknoll/core/shared";
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
-import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
-import {
-  getAccountByIdHandler,
-  getAccountByIdRoute,
-  getHealthHandler,
-  getHealthRoute,
-} from "./routes/mod.ts";
+import { createOpenAPIHono } from "~/shared/hooks.ts";
+import * as r from "./routes/mod.ts";
 
 export class IntController implements Controller {
-  public constructor(private readonly service: Service) {}
+  public constructor(private readonly service: Service, private readonly logger: Logger) {}
 
-  public get prefix(): string {
-    return "/int/v1";
-  }
+  public readonly prefix = "/int/v1";
 
   public get routes(): OpenAPIHono {
-    const app = new OpenAPIHono({ defaultHook })
-      .openapi(getHealthRoute, getHealthHandler())
+    const app = createOpenAPIHono(this.logger)
       .openapi(
-        getAccountByIdRoute,
-        getAccountByIdHandler(this.service.getAccountById),
+        r.getHealthRoute,
+        r.getHealthHandler(this.service.getHealth),
+      )
+      .openapi(
+        r.getAccountByIdRoute,
+        r.getAccountByIdHandler(this.service.getAccountById),
       );
-
-    configureErrorHandler(app);
 
     configureDocs(app, {
       path: this.prefix,
       title: "Jobberknoll Internal API",
-      version: denoJson.version,
+      version: SERVICE_VERSION,
       description: "The internal API for JakPrzyjade account management.",
-      externalDocs: {
-        url: "https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign",
-      },
+      externalDocs: { url: "https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign" },
     });
 
     return app;
