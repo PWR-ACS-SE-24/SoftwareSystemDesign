@@ -39,7 +39,7 @@ export class VehicleService {
 
   async deleteVehicleById(vehicleId: string): Promise<void> {
     // As per the requirements, we don't delete, but rather set isActive to false
-    const updated = await this.vehicleRepository.nativeUpdate({ id: vehicleId }, { isActive: false });
+    const updated = await this.vehicleRepository.nativeUpdate({ id: vehicleId, isActive: true }, { isActive: false });
     if (!updated) throw new NotFoundException({ details: vehicleId });
   }
 

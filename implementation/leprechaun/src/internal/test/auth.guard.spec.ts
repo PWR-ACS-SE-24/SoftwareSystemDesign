@@ -1,11 +1,13 @@
-import { DiscoveryModule } from '@nestjs/core';
+import { DiscoveryModule, Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { MonitoringController } from '../controller/monitoring.controller';
+import { AuthGuard } from '../service/auth.guard';
 import { MonitoringService } from '../service/monitoring.service';
 
-describe('HealthcheckController', () => {
-  let controller: MonitoringController;
+describe('AuthGuard', () => {
+  let reflector: Reflector;
+  let guard: AuthGuard;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -14,10 +16,11 @@ describe('HealthcheckController', () => {
       providers: [MonitoringService],
     }).compile();
 
-    controller = module.get<MonitoringController>(MonitoringController);
+    reflector = module.get<Reflector>(Reflector);
+    guard = new AuthGuard(reflector);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(guard).toBeDefined();
   });
 });

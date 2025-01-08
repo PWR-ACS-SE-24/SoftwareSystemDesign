@@ -78,7 +78,7 @@ export class LineService {
     // simple, just mark as inactive and create a new one
     const line = await this.getLineById(lineId);
     return await this.em.transactional(async () => {
-      await this.lineRepository.nativeUpdate({ id: lineId }, { isActive: false });
+      await this.deleteLineById(lineId);
 
       return await this.createLine({
         ...line,
@@ -91,7 +91,7 @@ export class LineService {
   async deleteLineById(lineId: string): Promise<void> {
     // (as discussed with @tchojnacki)
     // simple, just mark as inactive
-    const updated = await this.lineRepository.nativeUpdate({ id: lineId }, { isActive: false });
+    const updated = await this.lineRepository.nativeUpdate({ id: lineId, isActive: true }, { isActive: false });
     if (!updated) throw new NotFoundException({ details: lineId });
   }
 }

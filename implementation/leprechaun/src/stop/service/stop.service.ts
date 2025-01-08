@@ -60,7 +60,7 @@ export class StopService {
     // if stop is being used by a line, we should create a new line without the stop
 
     await this.em.transactional(async () => {
-      const updated = await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
+      const updated = await this.stopRepository.nativeUpdate({ id: stopId, isActive: true }, { isActive: false });
       if (!updated) throw new NotFoundException({ details: stopId });
 
       const linesUsingStop = await this.lineService.getAllLinesForStop(stopId);
@@ -78,9 +78,9 @@ export class StopService {
     // (as discussed with @tchojnacki)
     // if stop is being used by a line, we should create a new line with changed stop
 
+    const stop = await this.findStopById(stopId);
     return await this.em.transactional(async () => {
-      const stop = await this.findStopById(stopId);
-      await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
+      await this.stopRepository.nativeUpdate({ id: stopId, isActive: true }, { isActive: false });
 
       const newStop = await this.createStop({ ...stop, ...updateStop });
 
