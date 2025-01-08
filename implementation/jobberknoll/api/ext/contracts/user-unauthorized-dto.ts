@@ -1,5 +1,7 @@
 import type { z } from "@hono/zod-openapi";
-import { errorDto } from "~/shared/openapi.ts";
+import { errorDto, jsonRes } from "~/shared/openapi.ts";
+
+const DESCRIPTION = "The user does not have access to the resource.";
 
 export const UserUnauthorizedDto = errorDto(
   "UserUnauthorizedDto",
@@ -7,5 +9,7 @@ export const UserUnauthorizedDto = errorDto(
   "user-unauthorized",
   "The user does not have access to the resource.",
 );
+
+export const UserUnauthorizedResponse = jsonRes(UserUnauthorizedDto, DESCRIPTION);
 
 export type UserUnauthorizedDto = z.infer<typeof UserUnauthorizedDto>;

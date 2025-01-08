@@ -2,7 +2,7 @@ import { envProd, envServerPort, logEnvironment } from "./app/mod.ts";
 import { setupDev, setupProd } from "./setup.ts";
 
 if (import.meta.main) {
-  const { api, logger } = envProd() ? await setupProd() : setupDev();
+  const { api, logger } = envProd() ? await setupProd() : await setupDev();
 
   logEnvironment(logger);
 

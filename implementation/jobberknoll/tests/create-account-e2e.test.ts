@@ -1,5 +1,6 @@
 import { accountMock, isSome, uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertObjectMatch } from "@std/assert";
+import { newCtx } from "../app/shared/ctx.ts";
 import { setupTest } from "../setup.ts";
 
 const correctHeaders = {
@@ -18,7 +19,7 @@ const correctBody = {
 };
 
 Deno.test("POST /ext/v1/accounts should create an account if data is valid", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts", {
     method: "POST",
@@ -35,7 +36,7 @@ Deno.test("POST /ext/v1/accounts should create an account if data is valid", asy
 });
 
 Deno.test("POST /ext/v1/accounts not leak private fields", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts", {
     method: "POST",
@@ -49,7 +50,7 @@ Deno.test("POST /ext/v1/accounts not leak private fields", async () => {
 });
 
 Deno.test("POST /ext/v1/accounts should return user-unauthorized if user is not an admin", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts", {
     method: "POST",
@@ -71,7 +72,7 @@ for (
   ]
 ) {
   Deno.test(`POST /ext/v1/accounts should return schema-mismatch if ${field} is invalid`, async () => {
-    const { api } = setupTest();
+    const { api } = await setupTest();
 
     const response = await api.request("/ext/v1/accounts", {
       method: "POST",
@@ -86,7 +87,7 @@ for (
 }
 
 Deno.test("POST /ext/v1/accounts should return schema-mismatch if body has wrong content-type", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts", {
     method: "POST",
@@ -100,8 +101,8 @@ Deno.test("POST /ext/v1/accounts should return schema-mismatch if body has wrong
 });
 
 Deno.test("POST /ext/v1/accounts should return invalid-account-data if the email is already taken", async () => {
-  const { api, accountRepo } = setupTest();
-  await accountRepo.createAccount({ ...accountMock, email: "taken-email@example.com" });
+  const { api, accountRepo } = await setupTest();
+  await accountRepo.createAccount(newCtx(), { ...accountMock, email: "taken-email@example.com" });
 
   const response = await api.request("/ext/v1/accounts", {
     method: "POST",
@@ -115,7 +116,7 @@ Deno.test("POST /ext/v1/accounts should return invalid-account-data if the email
 });
 
 Deno.test("POST /ext/v1/accounts should create an account fetchable from GET /ext/v1/accounts/{id}", async () => {
-  const { api } = setupTest();
+  const { api } = await setupTest();
 
   const createResponse = await api.request("/ext/v1/accounts", {
     method: "POST",

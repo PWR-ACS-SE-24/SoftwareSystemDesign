@@ -1,18 +1,17 @@
-import type { OpenAPIHono } from "@hono/zod-openapi";
 import type { Logger, Service } from "@jobberknoll/app";
 import { SERVICE_VERSION } from "@jobberknoll/core/shared";
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
-import { createOpenAPIHono } from "~/shared/hooks.ts";
+import { createJkApp, type JkApp } from "~/shared/hooks.ts";
 import * as r from "./routes/mod.ts";
 
 export class ExtController implements Controller {
-  public constructor(private readonly service: Service, private readonly logger: Logger) {}
+  public constructor(private readonly logger: Logger, private readonly service: Service) {}
 
   public readonly prefix = "/ext/v1";
 
-  public get routes(): OpenAPIHono {
-    const app = createOpenAPIHono(this.logger)
+  public get routes(): JkApp {
+    const app = createJkApp(this.logger)
       .openapi(
         r.createAccountRoute,
         r.createAccountHandler(this.service.createAccount),
