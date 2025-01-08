@@ -1,10 +1,13 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
+// prettier-ignore
 export const ErrorKind = {
-  SchemaMismatchException: ['schema-mismatch-exception', HttpStatus.UNPROCESSABLE_ENTITY],
-  NotFoundException: ['resource-not-found-exception', HttpStatus.NOT_FOUND],
-  InternalServerError: ['internal-server-error', HttpStatus.INTERNAL_SERVER_ERROR],
+  SchemaMismatchException: ['schema-mismatch-exception',    HttpStatus.UNPROCESSABLE_ENTITY],
+  NotFoundException:       ['resource-not-found-exception', HttpStatus.NOT_FOUND],
+  InternalServerError:     ['internal-server-error',        HttpStatus.INTERNAL_SERVER_ERROR],
+  UnauthorizedException:   ['unauthorized-exception',       HttpStatus.UNAUTHORIZED],
+  ForbiddenException:      ['forbidden-exception',          HttpStatus.FORBIDDEN],
 } as const satisfies Record<string, [string, number]>;
 
 function isKnownErrorType(key: string): key is keyof typeof ErrorKind {
@@ -63,6 +66,12 @@ export const exceptionMap: Record<
 
   InternalServerError: (_) =>
     new HttpExceptionDto(ErrorKind.InternalServerError, 'Internal server error', 'Wewnętrzny błąd serwera'),
+
+  UnauthorizedException: (_) =>
+    new HttpExceptionDto(ErrorKind.UnauthorizedException, 'Unauthorized exception', 'Nieautoryzowany dostęp'),
+
+  ForbiddenException: (_) =>
+    new HttpExceptionDto(ErrorKind.ForbiddenException, 'Forbidden exception', 'Zabroniony dostęp'),
 };
 
 export function mapException(error: HttpException): AppError {
