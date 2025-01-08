@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
@@ -6,7 +6,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { AuthGuard, Roles } from '../../internal/service/auth.guard';
+import { RequiredPermissions } from '../../internal/service/auth.guard';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
@@ -17,13 +17,12 @@ import { CreateStopDto, UpdateStopDto } from './stop-create.dto';
 import { StopDto } from './stop.dto';
 
 @Controller('/ext/v1/stops')
-@UseGuards(AuthGuard)
 @ApiExtraModels(PaginatedDto)
 export class StopController {
   constructor(private readonly stopService: StopService) {}
 
   @Get('/')
-  @Roles('admin', 'passenger')
+  @RequiredPermissions('admin', 'passenger')
   @ApiPaginatedResponse(StopDto)
   async getAllStops(
     @Paginated() pagination: Pagination,
@@ -34,7 +33,7 @@ export class StopController {
   }
 
   @Get('/:id')
-  @Roles('admin', 'passenger')
+  @RequiredPermissions('admin', 'passenger')
   @ApiOkResponse({ type: StopDto, description: 'Stop details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Stop not found' })
   async getStopById(@Param('id', UUIDPipe) id: string): Promise<StopDto> {
@@ -43,7 +42,7 @@ export class StopController {
   }
 
   @Post('/')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @ApiCreatedResponse({ type: StopDto, description: 'Created stop' })
   async createStop(@Body(ValidateCreatePipe) createStop: CreateStopDto): Promise<StopDto> {
     const stop = await this.stopService.createStop(createStop);
@@ -51,7 +50,7 @@ export class StopController {
   }
 
   @Delete('/:id')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Stop deleted' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Stop not found' })
@@ -60,7 +59,7 @@ export class StopController {
   }
 
   @Patch('/:id')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @ApiOkResponse({ type: StopDto, description: 'Updated stop' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'stop not found' })
   async updateStopById(

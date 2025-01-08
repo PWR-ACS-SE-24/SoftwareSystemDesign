@@ -1,4 +1,5 @@
 import {
+  applyDecorators,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
@@ -7,9 +8,11 @@ import {
   RequestMethod,
   SetMetadata,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { Reflector } from '@nestjs/core';
+import { ApiForbiddenResponse, ApiHeader, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 const USER_ROLE_HEADER = 'jp-user-role';
 const ROLES_METADATA = 'roles';
@@ -22,7 +25,21 @@ function isRoutePermissions(role: string): role is RoutePermissions {
   return Permissions.includes(role as RoutePermissions);
 }
 
-export const Roles = (...roles: RoutePermissions[]) => SetMetadata(ROLES_METADATA, roles);
+export const RequiredPermissions = (...roles: RoutePermissions[]) => {
+  return applyDecorators(
+    SetMetadata(ROLES_METADATA, roles),
+    UseGuards(AuthGuard),
+    ApiHeader({
+      name: USER_ROLE_HEADER,
+      description: 'User role header',
+      required: true,
+      // show required roles instead of all
+      enum: roles,
+    }),
+    ApiUnauthorizedResponse({ description: 'Unauthorized' }),
+    ApiForbiddenResponse({ description: 'Access forbidden' }),
+  );
+};
 
 @Injectable()
 export class AuthGuard implements CanActivate {

@@ -3,14 +3,14 @@ import { DiscoveryModule, Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { MonitoringController } from '../controller/monitoring.controller';
-import { AuthGuard, Roles } from '../service/auth.guard';
+import { AuthGuard, RequiredPermissions } from '../service/auth.guard';
 import { MonitoringService } from '../service/monitoring.service';
 
 @Controller('test')
 @UseGuards(AuthGuard)
 class TestController {
   @Get('/')
-  @Roles('admin', 'driver')
+  @RequiredPermissions('admin', 'driver')
   test() {
     return 'test';
   }

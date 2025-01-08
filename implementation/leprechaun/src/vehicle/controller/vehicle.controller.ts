@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
@@ -6,7 +6,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { AuthGuard, Roles } from '../../internal/service/auth.guard';
+import { RequiredPermissions } from '../../internal/service/auth.guard';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
@@ -17,13 +17,12 @@ import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
 import { VehicleDto } from './vehicle.dto';
 
 @Controller('/ext/v1/vehicles')
-@UseGuards(AuthGuard)
 @ApiExtraModels(PaginatedDto)
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Get('/')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @ApiPaginatedResponse(VehicleDto)
   async getAllVehicles(
     @Paginated() pagination: Pagination,
@@ -34,7 +33,7 @@ export class VehicleController {
   }
 
   @Get('/:id')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @ApiOkResponse({ type: VehicleDto, description: 'Vehicle details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async getVehicleById(@Param('id', UUIDPipe) id: string): Promise<VehicleDto> {
@@ -43,7 +42,7 @@ export class VehicleController {
   }
 
   @Post('/')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @ApiCreatedResponse({ type: VehicleDto, description: 'Created vehicle' })
   async createVehicle(@Body(ValidateCreatePipe) createVehicle: CreateVehicleDto): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.createVehicle(createVehicle);
@@ -51,7 +50,7 @@ export class VehicleController {
   }
 
   @Delete('/:id')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Vehicle deleted' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
@@ -60,7 +59,7 @@ export class VehicleController {
   }
 
   @Patch('/:id')
-  @Roles('admin')
+  @RequiredPermissions('admin')
   @ApiOkResponse({ type: VehicleDto, description: 'Updated vehicle' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async updateVehicleById(
