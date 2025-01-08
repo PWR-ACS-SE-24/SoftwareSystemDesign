@@ -22,7 +22,7 @@ interface AppError {
 }
 
 export class HttpExceptionDto implements AppError {
-  @ApiProperty({ description: 'Error kind', enum: () => Object.values(ErrorKind).map((v) => v[0]), isArray: false })
+  @ApiProperty({ description: 'Error kind', enum: () => Object.values(ErrorKind).map((v) => v[0]) })
   kind: string;
   @ApiProperty({ description: 'HTTP status code' })
   code: number;
@@ -65,7 +65,7 @@ export const exceptionMap: Record<
     new HttpExceptionDto(ErrorKind.InternalServerError, 'Internal server error', 'Wewnętrzny błąd serwera'),
 };
 
-export function mapException<T extends HttpException>(error: T): AppError {
+export function mapException(error: HttpException): AppError {
   const name = error.constructor.name;
   if (isKnownErrorType(name)) {
     return exceptionMap[name](error.getResponse());
