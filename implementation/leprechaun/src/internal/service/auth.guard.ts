@@ -33,6 +33,13 @@ export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const roles: RoutePermissions[] = this.reflector.get(ROLES_METADATA, context.getHandler());
+    const role: string | undefined = request.headers[USER_ROLE_HEADER];
+    if (!role || !isRoutePermissions(role)) {
+      // If no role is defined in the request, assume that the user is not authenticated
+      this.logger.warn('No role defined in the request or bad header');
+      throw new UnauthorizedException();
+    }
+
     if (!roles) {
       // If no roles are defined, assume that no one can access the endpoint
       const methodHandler = context.getHandler();
@@ -42,15 +49,9 @@ export class AuthGuard implements CanActivate {
       this.logger.warn(`No roles defined for ${RequestMethod[httpMethod]} ${controllerPath + methodPath}`);
       throw new ForbiddenException();
     }
-    const role: string | undefined = request.headers[USER_ROLE_HEADER];
-    if (!role) {
-      // If no role is defined in the request, assume that the user is not authenticated
-      this.logger.warn('No role defined in the request');
-      throw new UnauthorizedException();
-    }
 
     // If the role is not in the list of roles, throw a ForbiddenException
-    if (!isRoutePermissions(role) || !roles.includes(role)) {
+    if (!roles.includes(role)) {
       throw new ForbiddenException();
     }
 

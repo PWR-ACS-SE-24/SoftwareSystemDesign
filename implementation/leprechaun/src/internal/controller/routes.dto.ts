@@ -1,6 +1,6 @@
 import { RequestMethod } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { RoutePermissions } from '../service/auth.guard';
+import { Permissions, RoutePermissions } from '../service/auth.guard';
 
 export class RouteDto {
   @ApiProperty({
@@ -20,7 +20,7 @@ export class RouteDto {
 
   @ApiProperty({
     description: 'Roles required to access the endpoint',
-    enum: ['guest', 'passenger', 'driver', 'admin', 'inspector'],
+    enum: Permissions,
     example: ['admin', 'inspector'],
   })
   readonly roles: RoutePermissions[];
