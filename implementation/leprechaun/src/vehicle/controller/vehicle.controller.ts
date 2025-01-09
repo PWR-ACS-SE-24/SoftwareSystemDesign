@@ -6,6 +6,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { RequiredPermissions } from '../../internal/service/auth.guard';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
@@ -21,34 +22,35 @@ export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Get('/')
+  @RequiredPermissions('admin')
   @ApiPaginatedResponse(VehicleDto)
   async getAllVehicles(
     @Paginated() pagination: Pagination,
     // TODO: add filter
   ): Promise<PaginatedDto<VehicleDto>> {
     const { vehicles, total } = await this.vehicleService.listAll(pagination);
-
     return PaginatedDto.fromEntities(total, pagination, VehicleDto.fromEntities(vehicles));
   }
 
   @Get('/:id')
+  @RequiredPermissions('admin')
   @ApiOkResponse({ type: VehicleDto, description: 'Vehicle details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async getVehicleById(@Param('id', UUIDPipe) id: string): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.findVehicleById(id, false);
-
     return VehicleDto.fromEntity(vehicle);
   }
 
   @Post('/')
+  @RequiredPermissions('admin')
   @ApiCreatedResponse({ type: VehicleDto, description: 'Created vehicle' })
   async createVehicle(@Body(ValidateCreatePipe) createVehicle: CreateVehicleDto): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.createVehicle(createVehicle);
-
     return VehicleDto.fromEntity(vehicle);
   }
 
   @Delete('/:id')
+  @RequiredPermissions('admin')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Vehicle deleted' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
@@ -57,6 +59,7 @@ export class VehicleController {
   }
 
   @Patch('/:id')
+  @RequiredPermissions('admin')
   @ApiOkResponse({ type: VehicleDto, description: 'Updated vehicle' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async updateVehicleById(
@@ -64,7 +67,6 @@ export class VehicleController {
     @Body(ValidateUpdatePipe) updateVehicle: UpdateVehicleDto,
   ): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.updateVehicleById(id, updateVehicle);
-
     return VehicleDto.fromEntity(vehicle);
   }
 }

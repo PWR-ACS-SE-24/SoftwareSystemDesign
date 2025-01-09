@@ -166,6 +166,17 @@ Well known error codes and kinds are presented below:
     <td><code>400</code></td>
     <td><code>user-role-not-supported</code></td>
   </tr>
+    <tr>
+    <th colspan="2">Leperechaun</th>
+  </tr>
+  <tr>
+    <td><code>403</code></td>
+    <td><code>user-forbidden</code></td>
+  </tr>
+  <tr>
+    <td><code>404</code></td>
+    <td><code>resource-not-found-exception</code></td>
+  </tr>
 </table>
 
 ## Pagination
@@ -185,7 +196,84 @@ GET /api/account/v1/accounts?page=2&size=10
 
 ## Endpoints route
 
-TODO
+Every service MUST implement endpoint for listing all `/ext/` endpoints. This endpoint SHOULD return a list of all available endpoints in the service. The response MUST be a JSON object with the following schema:
+
+```jsonc
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Endpoints API",
+  "description": "List of all available endpoints in the service.",
+  "type": "array",
+  "readOnly": true,
+  "properties": {
+    "method": {
+      "type": "string",
+      "enum": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "ALL",
+        "OPTIONS",
+        "HEAD",
+        "SEARCH"
+      ],
+      "description": "HTTP method"
+    },
+    "path": {
+      "type": "string",
+      "description": "Path to resource",
+      "example": "/ext/v1/vehicles"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "enum": ["guest", "passenger", "driver", "admin", "inspector"],
+      "description": "Roles required to access the endpoint",
+      "example": ["admin", "inspector"]
+    }
+  },
+  "required": ["method", "path"]
+}
+```
+
+Which translates to the following types in the languages used in the project:
+
+```TypeScript
+type Endpoint = {
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "ALL" | "OPTIONS" | "HEAD" | "SEARCH";
+  path: string;
+  roles: ("guest" | "passenger" | "driver" | "admin" | "inspector")[];
+};
+```
+
+```Java
+public record Endpoint(
+    String method, // not null
+    String path, // not null
+    List<String> roles
+) {}
+```
+
+Example response:
+
+```jsonc
+[
+  {
+    "method": "GET",
+    "path": "/ext/v1/vehicles",
+    "roles": ["admin", "inspector"]
+  },
+  {
+    "method": "POST",
+    "path": "/ext/v1/vehicles",
+    "roles": ["admin"]
+  }
+]
+```
 
 ## Headers
 

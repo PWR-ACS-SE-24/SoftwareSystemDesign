@@ -6,6 +6,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { RequiredPermissions } from '../../internal/service/auth.guard';
 import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
 import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '../../shared/api/http-exceptions';
@@ -21,6 +22,7 @@ export class StopController {
   constructor(private readonly stopService: StopService) {}
 
   @Get('/')
+  @RequiredPermissions('admin', 'passenger')
   @ApiPaginatedResponse(StopDto)
   async getAllStops(
     @Paginated() pagination: Pagination,
@@ -31,23 +33,24 @@ export class StopController {
   }
 
   @Get('/:id')
+  @RequiredPermissions('admin', 'passenger')
   @ApiOkResponse({ type: StopDto, description: 'Stop details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Stop not found' })
   async getStopById(@Param('id', UUIDPipe) id: string): Promise<StopDto> {
     const vehicle = await this.stopService.findStopById(id, false);
-
     return StopDto.fromEntity(vehicle);
   }
 
   @Post('/')
+  @RequiredPermissions('admin')
   @ApiCreatedResponse({ type: StopDto, description: 'Created stop' })
   async createStop(@Body(ValidateCreatePipe) createStop: CreateStopDto): Promise<StopDto> {
     const stop = await this.stopService.createStop(createStop);
-
     return StopDto.fromEntity(stop);
   }
 
   @Delete('/:id')
+  @RequiredPermissions('admin')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Stop deleted' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Stop not found' })
@@ -56,6 +59,7 @@ export class StopController {
   }
 
   @Patch('/:id')
+  @RequiredPermissions('admin')
   @ApiOkResponse({ type: StopDto, description: 'Updated stop' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'stop not found' })
   async updateStopById(
@@ -63,7 +67,6 @@ export class StopController {
     @Body(ValidateUpdatePipe) updatestop: UpdateStopDto,
   ): Promise<StopDto> {
     const stop = await this.stopService.updateStopById(id, updatestop);
-
     return StopDto.fromEntity(stop);
   }
 }

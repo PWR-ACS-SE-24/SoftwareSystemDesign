@@ -1,8 +1,8 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Pagination } from 'src/shared/api/pagination.decorator';
 import { v7 } from 'uuid';
+import { Pagination } from '../../shared/api/pagination.decorator';
 import { StopService } from '../../stop/service/stop.service';
 import { CreateLineDto, UpdateLineDto } from '../controller/line-create.dto';
 import { Line } from '../database/line.entity';
@@ -78,7 +78,7 @@ export class LineService {
     // simple, just mark as inactive and create a new one
     const line = await this.getLineById(lineId);
     return await this.em.transactional(async () => {
-      await this.lineRepository.nativeUpdate({ id: lineId }, { isActive: false });
+      await this.deleteLineById(lineId);
 
       return await this.createLine({
         ...line,
@@ -91,7 +91,7 @@ export class LineService {
   async deleteLineById(lineId: string): Promise<void> {
     // (as discussed with @tchojnacki)
     // simple, just mark as inactive
-    const updated = await this.lineRepository.nativeUpdate({ id: lineId }, { isActive: false });
+    const updated = await this.lineRepository.nativeUpdate({ id: lineId, isActive: true }, { isActive: false });
     if (!updated) throw new NotFoundException({ details: lineId });
   }
 }

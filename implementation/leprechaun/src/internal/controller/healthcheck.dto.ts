@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export type HealthcheckStatus = 'UP' | 'DOWN' | 'UNKNOWN' | 'OUT_OF_SERVICE';
+export const healthcheckValues = ['UP', 'DOWN', 'UNKNOWN', 'OUT_OF_SERVICE'] as const;
+export type HealthcheckStatus = (typeof healthcheckValues)[number];
 
 export class HealthcheckDto {
-  @ApiProperty({ enum: ['UP', 'DOWN', 'UNKNOWN', 'OUT_OF_SERVICE'], example: 'UP' })
+  @ApiProperty({ enum: healthcheckValues, example: 'UP' })
   status: HealthcheckStatus;
 
   // TODO: add more fields

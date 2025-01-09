@@ -1,7 +1,7 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Pagination } from 'src/shared/api/pagination.decorator';
+import { Pagination } from '../../shared/api/pagination.decorator';
 import { CreateVehicleDto, UpdateVehicleDto } from '../controller/vehicle-create.dto';
 import { Vehicle } from '../database/vehicle.entity';
 
@@ -39,7 +39,7 @@ export class VehicleService {
 
   async deleteVehicleById(vehicleId: string): Promise<void> {
     // As per the requirements, we don't delete, but rather set isActive to false
-    const updated = await this.vehicleRepository.nativeUpdate({ id: vehicleId }, { isActive: false });
+    const updated = await this.vehicleRepository.nativeUpdate({ id: vehicleId, isActive: true }, { isActive: false });
     if (!updated) throw new NotFoundException({ details: vehicleId });
   }
 

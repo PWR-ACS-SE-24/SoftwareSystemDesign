@@ -1,9 +1,9 @@
 import { EntityManager, EntityRepository, QueryFlag } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Pagination } from 'src/shared/api/pagination.decorator';
 import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
 import { LineService } from '../../line/service/line.service';
+import { Pagination } from '../../shared/api/pagination.decorator';
 import { CreateStopDto, UpdateStopDto } from '../controller/stop-create.dto';
 import { Stop } from '../database/stop.entity';
 
@@ -60,7 +60,7 @@ export class StopService {
     // if stop is being used by a line, we should create a new line without the stop
 
     await this.em.transactional(async () => {
-      const updated = await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
+      const updated = await this.stopRepository.nativeUpdate({ id: stopId, isActive: true }, { isActive: false });
       if (!updated) throw new NotFoundException({ details: stopId });
 
       const linesUsingStop = await this.lineService.getAllLinesForStop(stopId);
@@ -78,9 +78,9 @@ export class StopService {
     // (as discussed with @tchojnacki)
     // if stop is being used by a line, we should create a new line with changed stop
 
+    const stop = await this.findStopById(stopId);
     return await this.em.transactional(async () => {
-      const stop = await this.findStopById(stopId);
-      await this.stopRepository.nativeUpdate({ id: stopId }, { isActive: false });
+      await this.stopRepository.nativeUpdate({ id: stopId, isActive: true }, { isActive: false });
 
       const newStop = await this.createStop({ ...stop, ...updateStop });
 
