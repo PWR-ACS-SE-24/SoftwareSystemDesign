@@ -8,5 +8,5 @@ export const testConfig: Options = {
   allowGlobalContext: true,
   disableIdentityMap: true,
   debug: [],
-  dbName: 'test_leprechaun',
+  dbName: `test_${defaultConfig.dbName}`,
 };

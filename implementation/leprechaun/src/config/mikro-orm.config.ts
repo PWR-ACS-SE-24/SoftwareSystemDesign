@@ -6,6 +6,4 @@ export default defineConfig({
   entities: ['./dist/**/database/*.entity.js'],
   entitiesTs: ['./src/**/database/*.entity.ts'],
   clientUrl: 'postgresql://postgres:test@localhost:5432/leprechaun',
-
-  debug: true,
 });

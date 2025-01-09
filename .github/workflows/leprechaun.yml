@@ -1,0 +1,59 @@
+name: leprechaun-ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "implementation/leprechaun/**"
+      - ".github/workflows/leprechaun.yml"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+    branches:
+      - main
+    paths:
+      - "implementation/leprechaun/**"
+      - ".github/workflows/leprechaun.yml"
+
+jobs:
+  build:
+    if: github.event.pull_request.draft == false
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: implementation/leprechaun
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+
+      - name: Install and test
+        run: pnpm it
