@@ -61,5 +61,5 @@
 
 ## TODOs
 
-- Ultimately, we will HAVE to implement some kind AWS secret-manager support.
+- Ultimately, we will HAVE to implement some kind of secret-manager support.
 - Make E2E tests for all endpoints.
