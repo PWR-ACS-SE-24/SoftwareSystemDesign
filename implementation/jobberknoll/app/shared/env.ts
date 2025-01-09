@@ -1,11 +1,14 @@
 import { z } from "zod";
 import type { Logger } from "~/interfaces/mod.ts";
 
-type Reader<T> = () => T;
+const defaultGetter = Deno.env.get;
 
-function envReader<S extends z.ZodType>(key: string, schema: S): () => z.infer<S> {
-  return () => {
-    const value = Deno.env.get(key);
+type Getter = typeof defaultGetter;
+type Reader<T> = (getter?: Getter) => T;
+
+export function envReader<S extends z.ZodType>(key: string, schema: S): Reader<z.infer<S>> {
+  return (getter = defaultGetter) => {
+    const value = getter(key);
     const result = schema.safeParse(value);
     if (!result.success) {
       throw new Error(`${key}: ${result.error.issues.map((i) => `${i.code} - ${i.message}`).join(", ")}`);
@@ -24,13 +27,13 @@ export const envDatabaseUrl: Reader<string> = envReader("DATABASE_URL", Database
 
 const envDatabaseUrlOpt = envReader("DATABASE_URL", DatabaseUrlSchema.optional());
 
-export function logEnvironment(logger: Logger) {
-  const prod = envProd();
+export function logEnvironment(logger: Logger, getter = defaultGetter) {
+  const prod = envProd(getter);
 
   logger.info(null, "env", {
     prod,
-    serverPort: envServerPort(),
-    databaseUrl: envDatabaseUrlOpt(),
+    serverPort: envServerPort(getter),
+    databaseUrl: envDatabaseUrlOpt(getter),
   });
 
   if (!prod) {

@@ -45,7 +45,7 @@
 | ------------------------------- | ---------- |
 | Account Repository (PostgreSQL) | 🟩         |
 | Email Sending Service (AWS SQS) | 🟥         |
-| Logging                         | 🟨         |
+| Logging                         | 🟩         |
 
 ## ADRs
 

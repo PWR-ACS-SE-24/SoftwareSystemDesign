@@ -8,10 +8,10 @@ export type Service = {
   getHealth: c.GetHealthUseCase;
 };
 
-export function buildService(accountRepo: AccountRepo, logger: Logger): Service {
-  const createAccount = new c.CreateAccountUseCase(accountRepo, logger);
-  const deleteAccount = new c.DeleteAccountUseCase(accountRepo, logger);
-  const getAccountById = new c.GetAccountByIdUseCase(accountRepo, logger);
+export function buildService(logger: Logger, accountRepo: AccountRepo): Service {
+  const createAccount = new c.CreateAccountUseCase(logger, accountRepo);
+  const deleteAccount = new c.DeleteAccountUseCase(logger, accountRepo);
+  const getAccountById = new c.GetAccountByIdUseCase(logger, accountRepo);
   const getHealth = new c.GetHealthUseCase(logger);
 
   return {

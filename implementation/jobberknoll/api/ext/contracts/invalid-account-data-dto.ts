@@ -1,5 +1,7 @@
 import type { z } from "@hono/zod-openapi";
-import { errorDto } from "~/shared/openapi.ts";
+import { errorDto, jsonRes } from "~/shared/openapi.ts";
+
+const DESCRIPTION = "Some of the provided account data is invalid.";
 
 export const InvalidAccountDataDto = errorDto(
   "InvalidAccountDataDto",
@@ -8,4 +10,6 @@ export const InvalidAccountDataDto = errorDto(
   "Some of the provided account data is invalid.",
 );
 
-export type InvalidUserDataDto = z.infer<typeof InvalidAccountDataDto>;
+export const InvalidAccountDataResponse = jsonRes(InvalidAccountDataDto, DESCRIPTION);
+
+export type InvalidAccountDataDto = z.infer<typeof InvalidAccountDataDto>;
