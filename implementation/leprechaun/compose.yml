@@ -9,8 +9,8 @@ services:
       LEPRECHAUN_DATABASE_HOST: 'postgres://postgres:password@database:5432/'
       LEPRECHAUN_DATABASE_DBNAME: 'leprechaun'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8000/int/v1/health']
-      interval: 1m
+      test: ['CMD-SHELL', 'curl -f http://localhost:$$LEPRECHAUN_APP_PORT/int/v1/health']
+      interval: 10s
       timeout: 5s
       start_period: 10s
       start_interval: 1s

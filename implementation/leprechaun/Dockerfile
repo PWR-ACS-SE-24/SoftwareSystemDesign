@@ -9,6 +9,7 @@ RUN corepack enable && pnpm fetch --prod && pnpm run build
 
 FROM base AS runner
 WORKDIR /app
+RUN apk add --no-cache curl
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/dist /app/dist
 
