@@ -1,26 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
+import { GenericIdDto } from '../../shared/api/generic.dto';
 import { Stop } from '../database/stop.entity';
 
 // TODO: add Lines to StopDto
-export class StopDto {
-  @ApiProperty({
-    description: 'Stop ID',
-    nullable: false,
-    format: 'uuid',
-    maxLength: 36,
-    minLength: 36,
-    examples: ['b4e9b1c1-9f7d-7b9b-8e9d-1c9f7d4b9b8e'],
-  })
-  readonly id: string;
-
-  @ApiProperty({
-    description: 'Stop status',
-    nullable: false,
-    examples: [true, false],
-  })
-  readonly isActive: boolean;
-
+export class StopDto extends GenericIdDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
@@ -52,8 +36,7 @@ export class StopDto {
   readonly longitude: number;
 
   constructor(id: string, name: string, latitude: number, longitude: number, isActive: boolean) {
-    this.id = id;
-    this.isActive = isActive;
+    super(id, isActive);
     this.name = name;
     this.latitude = latitude;
     this.longitude = longitude;
