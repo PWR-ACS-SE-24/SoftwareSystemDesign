@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AccidentModule } from './accident/accident.module';
 import { AppModule } from './app.module';
+import config from './config/config';
 import { InternalModule } from './internal/internal.module';
 import { LineModule } from './line/line.module';
 import { RouteModule } from './route/route.module';
@@ -45,6 +46,6 @@ async function bootstrap() {
     jsonDocumentUrl: '/ext/v1/docs/openapi.json',
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(config.LEPRECHAUN_APP_PORT);
 }
 bootstrap();

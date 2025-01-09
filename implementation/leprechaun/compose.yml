@@ -1,0 +1,31 @@
+services:
+  app:
+    build: '.'
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: 'production'
+      LEPRECHAUN_APP_PORT: '3000'
+      LEPRECHAUN_DATABASE_HOST: 'postgres://postgres:password@database:5432/'
+      LEPRECHAUN_DATABASE_DBNAME: 'leprechaun'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/int/v1/health']
+      interval: 1m
+      timeout: 5s
+      start_period: 10s
+      start_interval: 1s
+    depends_on:
+      database:
+        condition: 'service_healthy'
+  database:
+    image: 'postgres:17-alpine'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'leprechaun'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d leprechaun']
+      interval: 1m
+      timeout: 5s
+      start_period: 10s
+      start_interval: 1s

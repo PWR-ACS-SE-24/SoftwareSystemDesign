@@ -61,5 +61,5 @@
 
 ## TODOs
 
-- Set up CI/CD
+- Ultimately, we will HAVE to implement some kind AWS secret-manager support.
 - Make E2E tests for all endpoints.
