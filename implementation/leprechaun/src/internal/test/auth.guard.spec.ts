@@ -1,4 +1,4 @@
-import { Controller, ForbiddenException, Get, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Get, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { DiscoveryModule, Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SharedModule } from '../../shared/shared.module';
@@ -63,8 +63,8 @@ describe('AuthGuard', () => {
     const inspectorContext = mockContext({ 'jp-user-role': 'inspector' });
 
     // then
-    expect(() => guard.canActivate(guestContext as any)).toThrow(ForbiddenException);
-    expect(() => guard.canActivate(inspectorContext as any)).toThrow(ForbiddenException);
+    expect(guard.canActivate(guestContext as any)).toBeFalsy();
+    expect(guard.canActivate(inspectorContext as any)).toBeFalsy();
   });
 
   it('should deny access to the route without header', () => {

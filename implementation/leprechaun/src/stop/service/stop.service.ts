@@ -1,9 +1,9 @@
 import { EntityManager, EntityRepository, QueryFlag } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Pagination } from 'src/shared/api/pagination.decorator';
 import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
 import { LineService } from '../../line/service/line.service';
+import { Pagination } from '../../shared/api/pagination.decorator';
 import { CreateStopDto, UpdateStopDto } from '../controller/stop-create.dto';
 import { Stop } from '../database/stop.entity';
 

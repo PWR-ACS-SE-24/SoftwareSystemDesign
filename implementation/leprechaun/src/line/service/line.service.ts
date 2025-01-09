@@ -1,8 +1,8 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Pagination } from 'src/shared/api/pagination.decorator';
 import { v7 } from 'uuid';
+import { Pagination } from '../../shared/api/pagination.decorator';
 import { StopService } from '../../stop/service/stop.service';
 import { CreateLineDto, UpdateLineDto } from '../controller/line-create.dto';
 import { Line } from '../database/line.entity';

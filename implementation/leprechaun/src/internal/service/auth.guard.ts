@@ -26,7 +26,7 @@ function isRoutePermissions(role: string): role is RoutePermission {
 
 export const RequiredPermissions = (role: RoutePermission, ...roles: RoutePermission[]) => {
   return applyDecorators(
-    SetMetadata(ROLES_METADATA, roles),
+    SetMetadata(ROLES_METADATA, [role, ...roles]),
     UseGuards(AuthGuard),
     ApiHeader({
       name: USER_ROLE_HEADER,
