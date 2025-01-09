@@ -1,13 +1,13 @@
+import { testConfig } from '@app/config/mikro-orm.test.config';
+import { HttpExceptionFilter, InternalExceptionFilter } from '@app/shared/api/http-exception.filter';
+import { SharedModule } from '@app/shared/shared.module';
+import { Stop } from '@app/stop/database/stop.entity';
+import { StopService } from '@app/stop/service/stop.service';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { v7 } from 'uuid';
-import { testConfig } from '../../config/mikro-orm.test.config';
-import { HttpExceptionFilter, InternalExceptionFilter } from '../../shared/api/http-exception.filter';
-import { SharedModule } from '../../shared/shared.module';
-import { Stop } from '../../stop/database/stop.entity';
-import { StopService } from '../../stop/service/stop.service';
 import { CreateLineDto } from '../controller/line-create.dto';
 import { LineController } from '../controller/line.controller';
 import { Line } from '../database/line.entity';

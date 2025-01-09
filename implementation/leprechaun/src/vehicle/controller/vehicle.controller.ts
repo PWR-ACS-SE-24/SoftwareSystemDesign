@@ -1,3 +1,9 @@
+import { RequiredPermissions } from '@app/internal/service/auth.guard';
+import { ApiPaginatedResponse } from '@app/shared/api/generic-paginated';
+import { PaginatedDto } from '@app/shared/api/generic-paginated.dto';
+import { HttpExceptionDto } from '@app/shared/api/http-exceptions';
+import { Paginated, Pagination } from '@app/shared/api/pagination.decorator';
+import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '@app/shared/api/pipes';
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -6,12 +12,6 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { RequiredPermissions } from '../../internal/service/auth.guard';
-import { ApiPaginatedResponse } from '../../shared/api/generic-paginated';
-import { PaginatedDto } from '../../shared/api/generic-paginated.dto';
-import { HttpExceptionDto } from '../../shared/api/http-exceptions';
-import { Paginated, Pagination } from '../../shared/api/pagination.decorator';
-import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '../../shared/api/pipes';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
 import { VehicleDto } from './vehicle.dto';

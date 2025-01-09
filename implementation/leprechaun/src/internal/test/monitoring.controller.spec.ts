@@ -1,6 +1,6 @@
+import { SharedModule } from '@app/shared/shared.module';
 import { DiscoveryModule } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SharedModule } from '../../shared/shared.module';
 import { MonitoringController } from '../controller/monitoring.controller';
 import { MonitoringService } from '../service/monitoring.service';
 

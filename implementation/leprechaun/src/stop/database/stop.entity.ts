@@ -1,6 +1,6 @@
+import { StopLineMapping } from '@app/line/database/stop-line-mapping.entity';
 import { Collection, Entity, Filter, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
-import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
 
 @Entity()
 @Filter({ name: 'active', cond: { isActive: true }, default: true })

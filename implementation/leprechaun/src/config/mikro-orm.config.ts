@@ -1,11 +1,10 @@
 import { defineConfig } from '@mikro-orm/postgresql';
+import config from './config';
 
 export default defineConfig({
-  dbName: 'leprechaun',
+  dbName: config.LEPRECHAUN_DATABASE_DBNAME,
+  clientUrl: config.LEPRECHAUN_DATABASE_HOST,
 
   entities: ['./dist/**/database/*.entity.js'],
   entitiesTs: ['./src/**/database/*.entity.ts'],
-  clientUrl: 'postgresql://postgres:test@localhost:5432/leprechaun',
-  baseDir: process.cwd(),
-  debug: true,
 });

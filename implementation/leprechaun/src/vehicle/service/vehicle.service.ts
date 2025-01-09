@@ -1,7 +1,7 @@
+import { Pagination } from '@app/shared/api/pagination.decorator';
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Pagination } from '../../shared/api/pagination.decorator';
 import { CreateVehicleDto, UpdateVehicleDto } from '../controller/vehicle-create.dto';
 import { Vehicle } from '../database/vehicle.entity';
 

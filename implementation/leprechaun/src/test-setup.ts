@@ -1,4 +1,5 @@
 import { MetadataStorage, MikroORM } from '@mikro-orm/core';
+import 'tsconfig-paths/register';
 import { testConfig } from './config/mikro-orm.test.config';
 
 declare global {

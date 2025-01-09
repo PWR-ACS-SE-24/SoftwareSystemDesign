@@ -1,6 +1,6 @@
+import { Stop } from '@app/stop/database/stop.entity';
 import { Entity, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
-import { Stop } from '../../stop/database/stop.entity';
 import { Line } from './line.entity';
 
 @Entity()
