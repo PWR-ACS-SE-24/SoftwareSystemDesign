@@ -1,8 +1,8 @@
+import { testConfig } from '@app/config/mikro-orm.test.config';
+import { SharedModule } from '@app/shared/shared.module';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { testConfig } from '../../config/mikro-orm.test.config';
-import { SharedModule } from '../../shared/shared.module';
 import { CreateVehicleDto } from '../controller/vehicle-create.dto';
 import { VehicleController } from '../controller/vehicle.controller';
 import { Vehicle } from '../database/vehicle.entity';

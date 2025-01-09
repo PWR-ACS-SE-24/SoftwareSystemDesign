@@ -1,5 +1,5 @@
+import { Pagination } from '@app/shared/api/pagination.decorator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Pagination } from '../../shared/api/pagination.decorator';
 
 export class PaginatedDto<TDto> {
   readonly data: TDto[];

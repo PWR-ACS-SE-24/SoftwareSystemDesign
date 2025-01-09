@@ -1,6 +1,6 @@
+import { GenericIdDto } from '@app/shared/api/generic.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { GenericIdDto } from '../../shared/api/generic.dto';
 import { Vehicle } from '../database/vehicle.entity';
 
 export class VehicleDto extends GenericIdDto {

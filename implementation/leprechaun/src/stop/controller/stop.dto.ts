@@ -1,6 +1,6 @@
+import { GenericIdDto } from '@app/shared/api/generic.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
-import { GenericIdDto } from '../../shared/api/generic.dto';
 import { Stop } from '../database/stop.entity';
 
 // TODO: add Lines to StopDto

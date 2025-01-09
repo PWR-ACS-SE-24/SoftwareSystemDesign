@@ -1,11 +1,11 @@
+import { testConfig } from '@app/config/mikro-orm.test.config';
+import { Line } from '@app/line/database/line.entity';
+import { StopLineMapping } from '@app/line/database/stop-line-mapping.entity';
+import { LineService } from '@app/line/service/line.service';
+import { SharedModule } from '@app/shared/shared.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
-import { testConfig } from '../../config/mikro-orm.test.config';
-import { Line } from '../../line/database/line.entity';
-import { StopLineMapping } from '../../line/database/stop-line-mapping.entity';
-import { LineService } from '../../line/service/line.service';
-import { SharedModule } from '../../shared/shared.module';
 import { CreateStopDto } from '../controller/stop-create.dto';
 import { StopController } from '../controller/stop.controller';
 import { Stop } from '../database/stop.entity';

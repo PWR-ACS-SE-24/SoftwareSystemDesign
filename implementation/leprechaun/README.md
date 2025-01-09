@@ -62,5 +62,4 @@
 ## TODOs
 
 - Set up CI/CD
-- We probably need explicit transactins in some places when doing more than single operation.
 - Make E2E tests for all endpoints.

@@ -1,6 +1,6 @@
+import { SharedModule } from '@app/shared/shared.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { SharedModule } from '../shared/shared.module';
 import { VehicleController } from './controller/vehicle.controller';
 import { Vehicle } from './database/vehicle.entity';
 import { VehicleService } from './service/vehicle.service';

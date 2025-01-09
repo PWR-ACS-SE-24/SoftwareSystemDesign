@@ -1,8 +1,8 @@
+import { SharedModule } from '@app/shared/shared.module';
+import { Stop } from '@app/stop/database/stop.entity';
+import { StopModule } from '@app/stop/stop.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { SharedModule } from '../shared/shared.module';
-import { Stop } from '../stop/database/stop.entity';
-import { StopModule } from '../stop/stop.module';
 import { LineController } from './controller/line.controller';
 import { Line } from './database/line.entity';
 import { StopLineMapping } from './database/stop-line-mapping.entity';

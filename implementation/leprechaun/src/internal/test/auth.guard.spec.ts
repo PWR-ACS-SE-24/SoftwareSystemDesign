@@ -1,7 +1,7 @@
+import { SharedModule } from '@app/shared/shared.module';
 import { Controller, Get, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { DiscoveryModule, Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SharedModule } from '../../shared/shared.module';
 import { MonitoringController } from '../controller/monitoring.controller';
 import { AuthGuard, RequiredPermissions } from '../service/auth.guard';
 import { MonitoringService } from '../service/monitoring.service';

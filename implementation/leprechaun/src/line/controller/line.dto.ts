@@ -1,7 +1,7 @@
+import { GenericIdDto } from '@app/shared/api/generic.dto';
+import { StopDto } from '@app/stop/controller/stop.dto';
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { GenericIdDto } from '../../shared/api/generic.dto';
-import { StopDto } from '../../stop/controller/stop.dto';
 import { Line } from '../database/line.entity';
 
 export class LineDto extends GenericIdDto {

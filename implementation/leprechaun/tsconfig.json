@@ -1,4 +1,5 @@
 {
+  "include": ["src/**/*.ts"],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -6,6 +7,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
@@ -13,5 +15,8 @@
     "incremental": true,
     "skipLibCheck": true,
     "strict": true,
+    "paths": {
+      "@app/*": ["./src/*"]
+    }
   }
 }
