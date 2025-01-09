@@ -63,5 +63,5 @@
 
 - Set up CI/CD
 - Most DTOs contain repeating fields like `id`, `isActive`. Create a base class that contains these fields and extend it in all DTOs.
-- We propably need explicit transactins in some places when doing more than single operation.
+- We probably need explicit transactins in some places when doing more than single operation.
 - Make E2E tests for all endpoints.

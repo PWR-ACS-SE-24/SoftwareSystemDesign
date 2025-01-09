@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
 import { MonitoringService } from '../service/monitoring.service';
 import { HealthcheckDto } from './healthcheck.dto';
-import { RouteDto } from './routes.dto';
+import { EndpointDto } from './routes.dto';
 
 @Controller('/int/v1/')
 export class MonitoringController {
@@ -23,8 +23,8 @@ export class MonitoringController {
   }
 
   @Get('/endpoints')
-  @ApiOkResponse({ type: RouteDto, description: 'List of available endpoints', isArray: true })
-  async getEndpoints(): Promise<RouteDto[]> {
+  @ApiOkResponse({ type: EndpointDto, description: 'List of available endpoints', isArray: true })
+  async getEndpoints(): Promise<EndpointDto[]> {
     return this.monitoringService.getAllEndpoints();
   }
 }

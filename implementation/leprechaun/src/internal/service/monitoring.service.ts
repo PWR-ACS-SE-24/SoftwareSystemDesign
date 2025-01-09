@@ -1,8 +1,8 @@
 import { Injectable, RequestMethod } from '@nestjs/common';
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { DiscoveryService, Reflector } from '@nestjs/core';
-import { RouteDto } from '../controller/routes.dto';
-import { RoutePermissions } from './auth.guard';
+import { EndpointDto } from '../controller/routes.dto';
+import { RoutePermission } from './auth.guard';
 
 @Injectable()
 export class MonitoringService {
@@ -11,8 +11,8 @@ export class MonitoringService {
     private discovery: DiscoveryService,
   ) {}
 
-  async getAllEndpoints(): Promise<RouteDto[]> {
-    const routes = new Array<RouteDto>();
+  async getAllEndpoints(): Promise<EndpointDto[]> {
+    const routes = new Array<EndpointDto>();
     const controllers = this.discovery.getControllers();
 
     for (const { instance } of controllers) {
@@ -26,9 +26,9 @@ export class MonitoringService {
 
         const methodPath = this.reflector.get<string>(PATH_METADATA, methodHandler);
         const httpMethod = this.reflector.get<number>(METHOD_METADATA, methodHandler);
-        const roles = this.reflector.get<RoutePermissions[]>('roles', methodHandler) ?? [];
+        const roles = this.reflector.get<RoutePermission[]>('roles', methodHandler) ?? [];
 
-        routes.push(new RouteDto(RequestMethod[httpMethod], controllerPath + methodPath, roles));
+        routes.push(new EndpointDto(RequestMethod[httpMethod], controllerPath + methodPath, roles));
       }
     }
     return routes;

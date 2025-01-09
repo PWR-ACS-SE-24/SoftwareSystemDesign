@@ -2,7 +2,6 @@ import {
   applyDecorators,
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   Injectable,
   Logger,
   RequestMethod,
@@ -18,14 +17,14 @@ const USER_ROLE_HEADER = 'jp-user-role';
 const ROLES_METADATA = 'roles';
 
 // Could do this as binary enum flags, but this is more readable
-export const Permissions = ['guest', 'passenger', 'driver', 'admin', 'inspector'] as const;
-export type RoutePermissions = (typeof Permissions)[number];
+export const permissions = ['guest', 'passenger', 'driver', 'admin', 'inspector'] as const;
+export type RoutePermission = (typeof permissions)[number];
 
-function isRoutePermissions(role: string): role is RoutePermissions {
-  return Permissions.includes(role as RoutePermissions);
+function isRoutePermissions(role: string): role is RoutePermission {
+  return permissions.includes(role as RoutePermission);
 }
 
-export const RequiredPermissions = (...roles: RoutePermissions[]) => {
+export const RequiredPermissions = (role: RoutePermission, ...roles: RoutePermission[]) => {
   return applyDecorators(
     SetMetadata(ROLES_METADATA, roles),
     UseGuards(AuthGuard),
@@ -34,7 +33,7 @@ export const RequiredPermissions = (...roles: RoutePermissions[]) => {
       description: 'User role header',
       required: true,
       // show required roles instead of all
-      enum: roles,
+      enum: [role, ...roles],
     }),
     ApiUnauthorizedResponse({ description: 'Unauthorized' }),
     ApiForbiddenResponse({ description: 'Access forbidden' }),
@@ -49,7 +48,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const roles: RoutePermissions[] = this.reflector.get(ROLES_METADATA, context.getHandler());
+    const roles: RoutePermission[] = this.reflector.get(ROLES_METADATA, context.getHandler());
     const role: string | undefined = request.headers[USER_ROLE_HEADER];
     if (!role || !isRoutePermissions(role)) {
       // If no role is defined in the request, assume that the user is not authenticated
@@ -64,12 +63,12 @@ export class AuthGuard implements CanActivate {
       const controllerPath = this.reflector.get<string>(PATH_METADATA, context.getClass());
       const methodPath = this.reflector.get<string>(PATH_METADATA, methodHandler);
       this.logger.warn(`No roles defined for ${RequestMethod[httpMethod]} ${controllerPath + methodPath}`);
-      throw new ForbiddenException();
+      return false;
     }
 
     // If the role is not in the list of roles, throw a ForbiddenException
     if (!roles.includes(role)) {
-      throw new ForbiddenException();
+      return false;
     }
 
     return true;

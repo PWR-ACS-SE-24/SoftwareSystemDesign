@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 // prettier-ignore
 export const ErrorKind = {
-  SchemaMismatchException: ['schema-mismatch-exception',    HttpStatus.UNPROCESSABLE_ENTITY],
+  SchemaMismatchException: ['schema-mismatch',              HttpStatus.UNPROCESSABLE_ENTITY],
   NotFoundException:       ['resource-not-found-exception', HttpStatus.NOT_FOUND],
-  InternalServerError:     ['internal-server-error',        HttpStatus.INTERNAL_SERVER_ERROR],
-  UnauthorizedException:   ['unauthorized-exception',       HttpStatus.UNAUTHORIZED],
-  ForbiddenException:      ['forbidden-exception',          HttpStatus.FORBIDDEN],
+  InternalServerError:     ['server-failure',               HttpStatus.INTERNAL_SERVER_ERROR],
+  UnauthorizedException:   ['user-unauthorized',            HttpStatus.UNAUTHORIZED],
+  ForbiddenException:      ['user-forbidden',               HttpStatus.FORBIDDEN],
 } as const satisfies Record<string, [string, number]>;
 
 function isKnownErrorType(key: string): key is keyof typeof ErrorKind {
