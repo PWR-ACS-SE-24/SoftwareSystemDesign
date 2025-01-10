@@ -2,7 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
-    id("com.diffplug.spotless") version "7.0.0.BETA4"
+    id 'com.diffplug.spotless' version '7.0.0.BETA4'
+    id 'jacoco'
 }
 
 group = 'pwr.jakprzyjade'
@@ -43,6 +44,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+    implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
 
@@ -77,6 +79,19 @@ tasks.register('integrationTest', Test) {
 }
 
 check.dependsOn integrationTest
+test.finalizedBy jacocoTestReport
+integrationTest.finalizedBy jacocoTestReport
+
+bootJar {
+    doFirst {
+        manifest {
+            attributes(
+                    'Implementation-Version': "${version}"
+            )
+        }
+    }
+}
+
 
 spotless {
     format 'misc', {
@@ -87,7 +102,6 @@ spotless {
     }
     java {
         googleJavaFormat('1.21.0').aosp().reflowLongStrings().skipJavadocFormatting()
-        formatAnnotations()
 
         licenseHeader '/* @jakubzehner (C) $YEAR */'
 
@@ -97,4 +111,8 @@ spotless {
             target 'src/*/java/**/*.java'
         }
     }
+}
+
+jacoco {
+    toolVersion = "0.8.12"
 }

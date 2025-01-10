@@ -16,7 +16,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(AbstractException.class)
     public ResponseEntity<ErrorDto> handleAbstractException(
             AbstractException exception, WebRequest request) {
-        var kind =
+        final var kind =
                 exception
                         .getClass()
                         .getSimpleName()
@@ -24,7 +24,7 @@ public class ApiExceptionHandler {
                         .toLowerCase()
                         .replace("-exception", "");
 
-        var body =
+        final var body =
                 ErrorDto.builder()
                         .code(exception.getStatus().value())
                         .kind(kind)
@@ -38,7 +38,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorDto> handleNoHandlerFoundException(
             NoHandlerFoundException exception, WebRequest request) {
-        var body =
+        final var body =
                 ErrorDto.builder()
                         .code(HttpStatus.NOT_FOUND.value())
                         .kind("not-found")
@@ -51,7 +51,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleAll(Exception exception, WebRequest request) {
-        var body =
+        final var body =
                 ErrorDto.builder()
                         .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .kind("server-failure")
