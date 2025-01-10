@@ -20,7 +20,7 @@ Deno.test("GET /int/v1/health should return the service health", async () => {
 
 Deno.test("GET /int/v1/health should react to a failing component", async () => {
   const { api, accountRepo } = await setupTest();
-  (accountRepo as MemoryAccountRepo).isHealthy = false;
+  (accountRepo as MemoryAccountRepo).isHealthy = false; // SAFETY: if this cast fails, the test will fail, which is good
 
   const response = await api.request("/int/v1/health");
   const body = await response.json();
