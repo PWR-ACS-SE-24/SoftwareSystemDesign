@@ -29,6 +29,9 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
 
         response.setHeader("jp-request-id", requestIdUUID.toString());
 
+        // This piece of code is not required to fulfill our contract, but it's a nice touch
+        // User-Agent header according to our contract is only required to be set when we call other
+        // services
         final var version = getClass().getPackage().getImplementationVersion();
         response.setHeader("user-agent", "Clabbert/" + version);
 
