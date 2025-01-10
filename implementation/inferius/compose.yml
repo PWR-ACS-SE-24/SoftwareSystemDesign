@@ -25,6 +25,9 @@ services:
       inferius-db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://inferius-db:5432/inferius
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      - DATABASE_HOST=inferius-db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=inferius
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - SERVER_PORT=8080
