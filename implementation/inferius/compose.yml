@@ -1,0 +1,33 @@
+services:
+  inferius-db:
+    image: "postgres:17"
+    container_name: inferius-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inferius
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d inferius"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  inferius-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inferius-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      inferius-db:
+        condition: service_healthy
+    environment:
+      - DATABASE_HOST=inferius-db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=inferius
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - SERVER_PORT=8080

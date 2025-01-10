@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: inferius
+  config:
+    import: classpath:env.properties
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+  web:
+    resources:
+      add-mappings: false
+
+management:
+  endpoints:
+    web:
+      base-path: /int/v1/
+      exposure:
+        include: "health"
+  endpoint:
+    health:
+      access: read_only
+      show-details: always
+  health:
+    defaults:
+      enabled: false
+    db:
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /int/v1/docs/openapi
+  swagger-ui:
+    path: /int/v1/docs/swagger
