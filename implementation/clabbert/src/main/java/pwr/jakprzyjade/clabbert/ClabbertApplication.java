@@ -12,7 +12,7 @@ import pwr.jakprzyjade.clabbert.infrastructure.seeders.DataSeeder;
 @RequiredArgsConstructor
 public class ClabbertApplication {
 
-    @Value(value = "${clabbert.seeder.ticket-offer}")
+    @Value(value = "${clabbert.seeder}")
     private boolean enableDataSeeder;
 
     private final DataSeeder dataSeeder;

@@ -1,25 +1,19 @@
 /* @jakubzehner (C) 2024 */
 package pwr.jakprzyjade.clabbert.api.middlewares;
 
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.impl.TimeBasedEpochRandomGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
-import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import pwr.jakprzyjade.clabbert.application.common.UUIDv7Service;
 
 @Component
+@RequiredArgsConstructor
 public class InfoHeaderInterceptor implements HandlerInterceptor {
-
-    private static final Pattern UUID_REGEX =
-            Pattern.compile(
-                    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-
-    private static final TimeBasedEpochRandomGenerator UUID_GENERATOR =
-            Generators.timeBasedEpochRandomGenerator(); // UUIDv7 generator
+    private final UUIDv7Service uuidv7Service;
 
     @Override
     public boolean preHandle(
@@ -29,8 +23,8 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
             throws Exception {
         final var requestId = request.getHeader("jp-request-id");
         final var requestIdUUID =
-                requestId == null || !UUID_REGEX.matcher(requestId).matches()
-                        ? UUID_GENERATOR.generate()
+                requestId == null || !uuidv7Service.isStringValidUUID(requestId)
+                        ? uuidv7Service.generate()
                         : UUID.fromString(requestId);
 
         response.setHeader("jp-request-id", requestIdUUID.toString());

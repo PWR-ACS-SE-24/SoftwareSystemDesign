@@ -50,18 +50,4 @@ public class Ticket {
     @JoinColumn(name = "validation_id")
     @OneToOne
     private Validation validation;
-
-    public boolean getIsValid(Instant now, String vehicleSideNumber) {
-        // This method probably should no longer exist since it depends on external service
-        // and also methods below on which this method originaly depended are no longer useful here
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Instant getValidFrom() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Instant getValidUntilTime() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 }

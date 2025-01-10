@@ -1,6 +1,5 @@
 clabbert:
-  seeder:
-    ticket-offer: true
+  seeder: true
   internal-services:
     leprechaun: ${LEPRECHAUN_IP}:${LEPRECHAUN_PORT}
     inferius: ${INFERIUS_IP}:${INFERIUS_PORT}
