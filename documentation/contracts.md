@@ -317,3 +317,5 @@ The Feather sidecar SHOULD NOT require the `jp-user-id` and `jp-user-role` heade
 ## Environment variables
 
 The `SERVER_PORT` environment variable SHOULD be supported by all services. The default value for the port SHOULD be defined by the service itself. The service SHOULD listen on the configured port.
+
+The `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD` environment variables SHOULD be supported by all services. The service SHOULD connect to the configured database.

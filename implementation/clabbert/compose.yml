@@ -25,6 +25,13 @@ services:
       clabbert-db:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://clabbert-db:5432/clabbert
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - DATABASE_HOST=clabbert-db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=clabbert
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - SERVER_PORT=8080 # If not set, the default port is 8080
+      - LEPRECHAUN_SERVICE_HOST=leprechaun
+      - LEPRECHAUN_SERVICE_PORT=8080
+      - INFERIUS_SERVICE_HOST=inferius
+      - INFERIUS_SERVICE_PORT=8080

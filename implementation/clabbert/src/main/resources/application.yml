@@ -1,8 +1,17 @@
+clabbert:
+  seeder: true
+  internal-services:
+    leprechaun: ${LEPRECHAUN_SERVICE_HOST}:${LEPRECHAUN_SERVICE_PORT}
+    inferius: ${INFERIUS_SERVICE_HOST}:${INFERIUS_SERVICE_PORT}
+
 spring:
   application:
     name: clabbert
   datasource:
     driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create
@@ -16,8 +25,6 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 100
-  mvc:
-    throw-exception-if-no-handler-found: true
   web:
     resources:
       add-mappings: false
@@ -30,6 +37,12 @@ management:
         include: "health"
   endpoint:
     health:
+      access: "READ_ONLY"
+      show-details: "ALWAYS"
+  health:
+    defaults:
+      enabled: false
+    db:
       enabled: true
 
 springdoc:
