@@ -1,13 +1,15 @@
-import { envProd, envServerPort } from "./app/mod.ts";
+import { envProd, envServerPort, logEnvironment } from "./app/mod.ts";
 import { setupDev, setupProd } from "./setup.ts";
 
 if (import.meta.main) {
-  const { api, logger } = envProd() ? await setupProd() : setupDev();
+  const { api, logger } = envProd() ? await setupProd() : await setupDev();
+
+  logEnvironment(logger);
 
   Deno.serve(
     {
       port: envServerPort(),
-      onListen: (addr) => logger.info(null, "listen", { addr: `http://${addr.hostname}:${addr.port}` }),
+      onListen: (addr) => logger.info(null, "listen", { host: `http://${addr.hostname}:${addr.port}` }),
     },
     api.fetch,
   );

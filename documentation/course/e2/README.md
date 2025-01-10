@@ -59,6 +59,18 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
   4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
 - `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników (zgodnie z poprzednimi [wyliczeniami](../e1/README.md#wydajność)).
 
+**Strategie testowania:**
+
+Jako narzędzie do testów obciążeniowych wybrano [**Grafana k6**](https://k6.io/). Grafana k6 to oprogramowanie open-source do przeprowadzania testów obciążeniowych i wydajnościowych aplikacji. Pozwala ono na symulację zachowań użytkowników oraz ocenę wydajności systemu w różnych scenariuszach. Integruje się z ekosystemem Grafana, co umożliwia wizualizację i analizę wyników testów. Testy będą wykonane w języku JavaScript, na obciążeniu wyspecyfikowanym w wymaganiach niefunkcjonalnych. W szczególności, spośród oferowanych przez k6 typów testów obciążeniowych, w projekcie wykorzystane zostają:
+
+- **smoke test** - małe testy weryfikujące, że skrypt testowy nie zawiera błędów, a aplikacja działa poprawnie;
+- **average-load test** - testy sprawdzające zachowanie systemu w warunkach średniego obciążenia, w zależności od scenariusza odpowiednio `p(90)<1000`, `p(90)<2000` lub `p(90)<10000` (zgodnie z `NF/PRF/01`) dla 5000 VU (wirtualnych użytkowników, zgodnie z `NF/PRF/02`);
+- **stress test** - testy sprawdzające zachowanie systemu przy nagłych skokach obciążenia, przykładowo w godzinach szczytu.
+
+Do przeprowadzenia testów bezpieczeństwa zostanie wynajęta firma zewnętrzna, specjalizująca się w testach penetracyjnych. Testy będą przeprowadzone w środowisku produkcyjnym, zgodnie z wymaganiami dotyczącymi bezpieczeństwa systemu. Wyniki testów zostaną przedstawione w formie raportu, który posłuży do identyfikacji i naprawy potencjalnych luk w zabezpieczeniach systemu. Ponadto, wykorzystany zostanie [**OWASP ZAP**](https://www.zaproxy.org/), który jest darmowym i otwartoźródłowym skanerem bezpieczeństwa aplikacji webowych. Narzędzie to będzie zintegrowane z procesem CI/CD, w celu automatycznego wykrywania podatności w aplikacji, w tym w szczególności pod względem podatności z listy [**OWASP Top 10**](https://owasp.org/www-project-top-ten/).
+
+Testy interfejsów użytkownika zostaną przeprowadzone z wykorzystaniem narzędzia **Cypress**. Cypress to narzędzie typu open-source do testowania interfejsów użytkownika. Pozwala na pisanie testów w języku JavaScript, a także na ich uruchamianie w przeglądarce. Cypress pozwala na testowanie różnych aspektów interfejsu użytkownika, takich jak nawigacja, interakcje z użytkownikiem czy wygląd strony.
+
 # Decyzje i ich uzasadnienie
 
 | **Cele (wymagania + poprzednie decyzje)**                  | **Mechanizmy (taktyki)**                                                              |
@@ -77,6 +89,7 @@ Wyróżnione zostały wśród wymagań z etapu 1 następujące cele, mające wp�
 | `NF/PRF/01`, `NF/PRF/02`, `M/11`                           | [`M/12`: Wzorzec sidecar dla autoryzacji](#m12-wzorzec-sidecar-dla-autoryzacji)       |
 | `NF/SYS/01`, `NF/SYS/02`, `NF/SYS/03`                      | [`M/13`: Responsywna aplikacja webowa SPA](#m13-responsywna-aplikacja-webowa-spa)     |
 | `TIC/09`, `TIC/12`, `M/13`                                 | [`M/14`: Kod QR dla biletów](#m14-kod-qr-dla-biletów)                                 |
+| `NF/REL/01`, `NF/REL/02`                                   | [`M/15`: Disaster prevention and recovery](#m15-disaster-prevention-and-recovery)     |
 
 # Mechanizmy architektoniczne
 
@@ -1125,6 +1138,30 @@ Z uwagi na logiczne powiązanie sidecar z Account Service, będą one przedstawi
 
 - [pl.wikipedia.org - kod QR](https://pl.wikipedia.org/wiki/Kod_QR)
 
+## `M/15`: Disaster prevention and recovery
+
+**Problem:** System musi zapewnić ciągłość działania w przypadku wystąpienia awarii, katastrofy naturalnej lub ataku cybernetycznego.
+
+**Rozwiązania:**
+
+- **Backup danych** - regularne tworzenie kopii zapasowych danych systemu, przechowywanie ich w bezpiecznym miejscu i regularne testowanie procesu przywracania danych. Kopie zapasowe będą tworzone raz dziennie i utrzymywane przez liczbę dni zależną od podsystemu, szczegółowe informacje znajdują się w sekcji [Projekt bazy danych](#projekt-bazy-danych).
+- **Zastosowanie wielu stref dostępności** - rozmieszczenie systemu w różnych [strefach dostępności AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones) w celu zapewnienia redundancji i odporności na awarie (Amazon obliguje się do dostępności na poziomie 99.99% i wypłaca odszkodowania w przypadku gorszego wyniku). Każdy region AWS składa się z co najmniej dwóch stref dostępności, umieszczonych w odseparowanych geograficznie lokalizacjach w obrębie jednego regionu. W przypadku awarii (lub wręcz klęski żywiołowej w zakresie) jednej strefy dostępności, druga strefa dostępności w tym samym regionie zapewnia ciągłość działania systemu. Projektowany system zostanie wdrożony na regionie AWS `eu-central-1` (Frankfurt), w celu zapewnienia możliwie niskiego opóźnienia dla użytkowników z Polski. Region ten wspiera 3 strefy dostępności.
+- **Zastosowanie rozproszonej architektury** - zastosowanie architektury mikroserwisów (`M/01`), która zapewnia większą odporność na awarie i łatwiejsze zarządzanie systemem. Istnieje możliwość wykorzystania rozwiązań typu [Chaos Monkey](https://netflix.github.io/chaosmonkey/) w celu ciągłego testowania odporności systemu na awarie.
+- **Wiele instancji każdego mikroserwisu** - uruchomienie wielu instancji każdego mikroserwisu w celu zapewnienia ciągłości działania w przypadku awarii jednej z nich. Umożliwia to również horyzontalne skalowanie systemu w przypadku wzrostu obciążenia.
+- **Monitorowanie systemu** - ciągłe monitorowanie systemu w celu wczesnego wykrywania problemów i szybkiego reagowania na nie. Realizowane poprzez [AWS CloudWatch](https://aws.amazon.com/cloudwatch/), który pozwala na zbieranie i monitorowanie metryk, logów i alarmów z różnych usług AWS. W przypadku projektowanego systemu monitorowane będzie m.in. obciążenie poszczególnych serwerów, liczba błędów w odpowiedziach serwisów, stan baz danych i kolejek, itp. W przypadku wykrycia nadzwyczajnego obciążenia, system potrafi automatycznie uruchomić dodatkowe instancje serwisów, aby zniwelować problem ([target tracking scaling policies](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html)), natomiast przy krytycznych błędach wykorzystane będą [alarmy](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html), powiadamiające odpowiedzialne osoby.
+- **On-call** - zespół odpowiedzialny za system powinien być dostępny 24/7 w formie dyżurów w celu szybkiego reagowania na awarie.
+
+Plan awaryjny to kluczowy dokument, który opisuje kroki niezbędne do przywrócenia działania systemu po awarii. Powinien on zostać opracowany na etapie implementacji systemu i przetestowany w realistycznych warunkach, aby zapewnić jego skuteczność. Plan powinien być regularnie aktualizowany, uwzględniając zmieniające się wymagania i infrastrukturę.
+
+W przypadku awarii plan awaryjny powinien być wdrażany przez zespół odpowiedzialny za system. W skład planu powinny wchodzić następujące elementy:
+
+- Szczegółowy opis procedur przywracania działania kluczowych komponentów systemu.
+- Wykaz osób odpowiedzialnych za poszczególne działania i ich dane kontaktowe.
+- Lista zasobów niezbędnych do wdrożenia planu awaryjnego.
+- Procedury komunikacyjne, w tym informowanie użytkowników o stanie awarii i przewidywanym czasie przywrócenia działania systemu.
+
+Wdrażanie planu awaryjnego powinno być regularnie ćwiczone, np. w formie testów odpornościowych (disaster recovery tests), aby zapewnić pełną gotowość zespołu i skuteczność procedur. Dzięki temu możliwe jest zminimalizowanie strat oraz zapewnienie ciągłości działania systemu nawet w obliczu najpoważniejszych zagrożeń.
+
 # Widoki architektoniczne
 
 W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpowiednikami z modelu C4:
@@ -1216,21 +1253,35 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
   <tr>
     <th>Nazwa aplikacji</th>
     <td>JakPrzyjade</td>
-    <td>Tpay</td>
+    <td><a href="https://tpay.com/">Tpay</a></td>
   </tr>
   <tr>
     <th>Technika integracji</th>
-    <td>REST API / HTTPS</td>
-    <td>REST API / HTTPS</td>
+    <td colspan="2">
+    <a href="https://openapi.tpay.com/#/">REST API</a><br/>
+    Aplikacja będzie korzystać z endpointów związanych z transakcjami <code>/transactions</code>.
+    </td>
   </tr>
   <tr>
     <th>Mechanizm autentykacji</th>
-    <td>OAuth 2.0</td>
-    <td>OAuth 2.0</td>
+    <td colspan="2">
+    <a href="https://docs-api.tpay.com/pl/first-steps/authorization/">OAuth 2.0</a><br/>
+    Aplikacja będzie korzystać z następujących endpointów:
+      <ul>
+        <li>
+          Autoryzacja: <code>POST https://api.tpay.com/oauth/auth</code><br/>
+          Wymagane parametry: <code>client_id</code>, <code>client_secret</code>
+        </li>
+      </ul>
+    </td>
   </tr>
   <tr>
     <th>Kontrakt danych</th>
-    <td colspan="2">Dane pasażera, kwota, opis transakcji, status transakcji</td>
+    <td colspan="2">
+      <ul>
+        <li>Wymagane dane: <code>amount</code>, <code>description</code>, <code>email</code>, <code>name</code>, <code>phone</code>, <code>address</code>, <code>code</code>, <code>city</code>, <code>country</code></li>
+        <li>Odpowiedź: <code>status</code>, <code>method</code>, <code>amountPaid</code>, <code>transactionId</code>, <code>title</code>, <code>currency</code>, <code>errorCode?</code>, <code>errorMessage?</code></li>
+    </td>
   </tr>
   <tr>
     <th>Czy interfejs manipuluje na danych wrażliwych (RODO)?</th>
@@ -1246,7 +1297,15 @@ W dokumencie wykorzystano następujące widoki architektoniczne, wraz z ich odpo
   </tr>
   <tr>
     <th>Model komunikacji</th>
-    <td colspan="2">Synchroniczny na żądanie użytkownika (tworzenie transakcji), asynchroniczny wyzwalany zdarzeniem (powiadomienie o statusie płatności).</td>
+    <td colspan="2">
+    <ul>
+      <li>
+        <code>HTTPS</code> Synchroniczny na żądanie użytkownika (tworzenie transakcji)
+      </li>
+      <li>
+        <code>Webhook</code> Asynchroniczny wyzwalany zdarzeniem (powiadomienie o statusie płatności)
+      </li>
+    </td>
   </tr>
   <tr>
     <th>Wydajność</th>

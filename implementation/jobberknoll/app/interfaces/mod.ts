@@ -1,2 +1,2 @@
 export * from "./account-repo.ts";
-export * from "./logging.ts";
+export * from "./logger.ts";

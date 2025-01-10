@@ -1,27 +1,30 @@
 import { buildApi } from "@jobberknoll/api";
 import { AccountRepo, buildService, envDatabaseUrl, Logger } from "@jobberknoll/app";
-import { MemoryAccountRepo, PostgresAccountRepo, prettyLogTransport } from "@jobberknoll/infra";
+import { DevLogger, MemoryAccountRepo, PostgresAccountRepo, ProdLogger, TestLogger } from "@jobberknoll/infra";
 
-function setup(accountRepo: AccountRepo, logger: Logger) {
-  const service = buildService(accountRepo, logger);
-  const api = buildApi(service, logger);
+type Factory<T> = (logger: Logger) => T | Promise<T>;
+
+async function setup(logger: Logger, accountRepoFactory: Factory<AccountRepo>) {
+  const accountRepo = await accountRepoFactory(logger);
+  const service = buildService(logger, accountRepo);
+  const api = buildApi(logger, service);
   return { api, accountRepo, logger };
 }
 
 export const setupDev = () =>
   setup(
-    new MemoryAccountRepo(),
-    new Logger([prettyLogTransport()]),
+    new DevLogger(),
+    (l) => new MemoryAccountRepo(l),
   );
 
-export const setupProd = async () =>
+export const setupProd = () =>
   setup(
-    await PostgresAccountRepo.setup(envDatabaseUrl()),
-    new Logger([prettyLogTransport()]),
+    new ProdLogger(),
+    async (l) => await PostgresAccountRepo.setup(l, envDatabaseUrl()),
   );
 
 export const setupTest = () =>
   setup(
-    new MemoryAccountRepo(),
-    new Logger(),
+    new TestLogger(),
+    (l) => new MemoryAccountRepo(l),
   );

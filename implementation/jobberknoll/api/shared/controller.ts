@@ -1,6 +1,6 @@
-import type { OpenAPIHono } from "@hono/zod-openapi";
+import type { JkApp } from "~/shared/hooks.ts";
 
 export type Controller = {
   prefix: string;
-  routes: OpenAPIHono;
+  routes: JkApp;
 };

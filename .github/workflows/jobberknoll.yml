@@ -36,9 +36,11 @@ jobs:
           deno-version: "~2.1"
       - name: Format code
         run: deno fmt --check
+      - name: Typecheck code
+        run: deno check .
       - name: Lint code
         run: deno lint
       - name: Test code
-        run: deno test
+        run: deno run test
       - name: Compile code
         run: deno task compile

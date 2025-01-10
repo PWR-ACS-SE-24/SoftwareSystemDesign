@@ -29,7 +29,7 @@ Deno.test("uuid should accept its own output", () => {
   fuzz(() => {
     const id = uuid();
 
-    const option = uuid(id as string);
+    const option = uuid(id as string); // SAFETY: UUIDs coerce to strings, so this is safe
 
     assert(isSome(option));
   });

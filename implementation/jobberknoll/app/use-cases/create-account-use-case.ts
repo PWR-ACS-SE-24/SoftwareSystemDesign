@@ -1,7 +1,7 @@
 import { type Account, invalidAccountData, type InvalidAccountDataError } from "@jobberknoll/core/domain";
 import { err, ok, type Result, uuid } from "@jobberknoll/core/shared";
-import type { AccountRepo } from "~/interfaces/mod.ts";
-import type { Logger } from "~/shared/mod.ts";
+import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
+import type { Ctx } from "~/shared/ctx.ts";
 import { UseCase } from "./use-case.ts";
 
 type CreateAccountReq = {
@@ -12,12 +12,12 @@ type CreateAccountReq = {
 };
 
 export class CreateAccountUseCase extends UseCase<CreateAccountReq, Account, InvalidAccountDataError> {
-  public constructor(private readonly accountRepo: AccountRepo, logger: Logger) {
+  public constructor(logger: Logger, private readonly accountRepo: AccountRepo) {
     super(logger);
   }
 
-  protected async handle(req: CreateAccountReq): Promise<Result<Account, InvalidAccountDataError>> {
-    if (await this.accountRepo.isEmailTaken(req.email)) {
+  protected async handle(ctx: Ctx, req: CreateAccountReq): Promise<Result<Account, InvalidAccountDataError>> {
+    if (await this.accountRepo.isEmailTaken(ctx, req.email)) {
       return err(invalidAccountData("email"));
     }
 
@@ -30,7 +30,8 @@ export class CreateAccountUseCase extends UseCase<CreateAccountReq, Account, Inv
       lastModified: Math.floor(Date.now() / 1000),
     };
 
-    await this.accountRepo.createAccount(account);
+    await this.accountRepo.createAccount(ctx, account);
+    this.audit("AccountCreated", account.id);
 
     return ok(account);
   }

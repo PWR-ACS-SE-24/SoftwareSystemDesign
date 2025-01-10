@@ -1,12 +1,12 @@
-import type { AccountRepo } from "@jobberknoll/app";
+import { AccountRepo } from "@jobberknoll/app";
 import { type Account, type AccountNotFoundError, accountNotFoundError } from "@jobberknoll/core/domain";
 import { err, none, ok, type Option, type Result, some, type UUID } from "@jobberknoll/core/shared";
 
-export class MemoryAccountRepo implements AccountRepo {
+export class MemoryAccountRepo extends AccountRepo {
   private readonly accounts: Record<UUID, Account> = {};
   private readonly emails: Set<string> = new Set();
 
-  public createAccount(account: Account): Promise<void> {
+  protected handleCreateAccount(account: Account): Promise<void> {
     if (account.id in this.accounts || this.emails.has(account.email)) {
       return Promise.reject();
     }
@@ -15,15 +15,15 @@ export class MemoryAccountRepo implements AccountRepo {
     return Promise.resolve();
   }
 
-  public isEmailTaken(email: string): Promise<boolean> {
+  protected handleIsEmailTaken(email: string): Promise<boolean> {
     return Promise.resolve(this.emails.has(email));
   }
 
-  public getAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>> {
+  protected handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>> {
     return Promise.resolve((id in this.accounts) ? ok(this.accounts[id]) : err(accountNotFoundError(id)));
   }
 
-  public deleteAccount(id: UUID): Promise<Option<AccountNotFoundError>> {
+  protected handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>> {
     if (id in this.accounts) {
       this.emails.delete(this.accounts[id].email);
       delete this.accounts[id];

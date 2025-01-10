@@ -1,20 +1,17 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Logger, Service } from "@jobberknoll/app";
 import { SERVICE_VERSION } from "@jobberknoll/core/shared";
 import type { Controller } from "~/shared/controller.ts";
 import { configureDocs } from "~/shared/docs.ts";
-import { configureErrorHandler, defaultHook } from "~/shared/hooks.ts";
+import { createJkApp, type JkApp } from "~/shared/hooks.ts";
 import * as r from "./routes/mod.ts";
 
 export class IntController implements Controller {
-  public constructor(private readonly service: Service, private readonly logger: Logger) {}
+  public constructor(private readonly logger: Logger, private readonly service: Service) {}
 
-  public get prefix(): string {
-    return "/int/v1";
-  }
+  public readonly prefix = "/int/v1";
 
-  public get routes(): OpenAPIHono {
-    const app = new OpenAPIHono({ defaultHook })
+  public get routes(): JkApp {
+    const app = createJkApp(this.logger)
       .openapi(
         r.getHealthRoute,
         r.getHealthHandler(this.service.getHealth),
@@ -23,8 +20,6 @@ export class IntController implements Controller {
         r.getAccountByIdRoute,
         r.getAccountByIdHandler(this.service.getAccountById),
       );
-
-    configureErrorHandler(app, this.logger);
 
     configureDocs(app, {
       path: this.prefix,

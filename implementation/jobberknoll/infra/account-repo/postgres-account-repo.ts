@@ -1,14 +1,16 @@
-import type { AccountRepo } from "@jobberknoll/app";
+import { AccountRepo, type Logger } from "@jobberknoll/app";
 import { type Account, type AccountNotFoundError, accountNotFoundError } from "@jobberknoll/core/domain";
 import { err, none, ok, type Option, type Result, some, type UUID } from "@jobberknoll/core/shared";
 import { Pool } from "postgres";
 
 const POOL_SIZE = 8;
 
-export class PostgresAccountRepo implements AccountRepo {
-  private constructor(private readonly pool: Pool) {}
+export class PostgresAccountRepo extends AccountRepo {
+  private constructor(logger: Logger, private readonly pool: Pool) {
+    super(logger);
+  }
 
-  public static async setup(connectionString: string): Promise<AccountRepo> {
+  public static async setup(logger: Logger, connectionString: string): Promise<AccountRepo> {
     const pool = new Pool(connectionString, POOL_SIZE, true);
 
     using client = await pool.connect();
@@ -30,10 +32,10 @@ export class PostgresAccountRepo implements AccountRepo {
         CHECK (phone_number IS NULL OR type = 'passenger')
       )`;
 
-    return new PostgresAccountRepo(pool);
+    return new PostgresAccountRepo(logger, pool);
   }
 
-  public async createAccount(account: Account): Promise<void> {
+  protected async handleCreateAccount(account: Account): Promise<void> {
     using client = await this.pool.connect();
     await client.queryObject`
       INSERT INTO account (id, type, full_name, email, hashed_password, last_modified, phone_number)
@@ -48,16 +50,13 @@ export class PostgresAccountRepo implements AccountRepo {
       )`;
   }
 
-  public async isEmailTaken(email: string): Promise<boolean> {
+  protected async handleIsEmailTaken(email: string): Promise<boolean> {
     using client = await this.pool.connect();
-    const { rows } = await client.queryObject`
-      SELECT 1 FROM account WHERE email = ${email}`;
+    const { rows } = await client.queryObject`SELECT 1 FROM account WHERE email = ${email}`;
     return rows.length > 0;
   }
 
-  public async getAccountById(
-    id: UUID,
-  ): Promise<Result<Account, AccountNotFoundError>> {
+  protected async handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>> {
     using client = await this.pool.connect();
     const { rows } = await client.queryObject<Account>({
       text: `
@@ -69,10 +68,9 @@ export class PostgresAccountRepo implements AccountRepo {
     return rows.length > 0 ? ok(rows[0]) : err(accountNotFoundError(id));
   }
 
-  public async deleteAccount(id: UUID): Promise<Option<AccountNotFoundError>> {
+  protected async handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>> {
     using client = await this.pool.connect();
-    const { rows } = await client.queryObject`
-      DELETE FROM account WHERE id = ${id} RETURNING 1`;
+    const { rows } = await client.queryObject`DELETE FROM account WHERE id = ${id} RETURNING 1`;
     return rows.length > 0 ? none() : some(accountNotFoundError(id));
   }
 }
