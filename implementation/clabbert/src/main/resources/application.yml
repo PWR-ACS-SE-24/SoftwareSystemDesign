@@ -1,8 +1,8 @@
 clabbert:
   seeder: true
   internal-services:
-    leprechaun: ${LEPRECHAUN_IP}:${LEPRECHAUN_PORT}
-    inferius: ${INFERIUS_IP}:${INFERIUS_PORT}
+    leprechaun: ${LEPRECHAUN_SERVICE_HOST}:${LEPRECHAUN_SERVICE_PORT}
+    inferius: ${INFERIUS_SERVICE_HOST}:${INFERIUS_SERVICE_PORT}
 
 spring:
   application:
