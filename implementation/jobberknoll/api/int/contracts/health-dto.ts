@@ -1,10 +1,10 @@
 import { z } from "@hono/zod-openapi";
 
-// https://docs.spring.io/spring-boot/api/rest/actuator/health.html
+// NOTE: subset of https://docs.spring.io/spring-boot/api/rest/actuator/health.html
 
-const Status = z.enum(["DOWN", "OUT_OF_SERVICE", "UNKNOWN", "UP"]).openapi({
-  description: "Status, one of: DOWN, OUT_OF_SERVICE, UNKNOWN, UP.",
-  examples: ["UP"],
+const Status = z.enum(["UP", "DOWN"]).openapi({
+  description: "Status, one of: UP, DOWN.",
+  examples: ["UP", "DOWN"],
 });
 
 const Component = z.object({
@@ -14,7 +14,11 @@ const Component = z.object({
     .optional()
     .openapi({
       description: "Details of the health of a specific part of the application.",
-      examples: [{ version: "1.0.0", database: "H2" }],
+      examples: [{
+        implementation: "PostgresAccountRepo",
+        version:
+          "PostgreSQL 17.0 on x86_64-pc-linux-musl, compiled by gcc (Alpine 13.2.1_git20240309) 13.2.1 20240309, 64-bit",
+      }],
     }),
 });
 
@@ -26,7 +30,7 @@ export const HealthDto = z
       .optional()
       .openapi({
         description: "The components that make up the health.",
-        examples: [{ db: { status: "DOWN" } }],
+        examples: [{ accountRepo: { status: "DOWN" } }],
       }),
   })
   .openapi("HealthDto", {
@@ -34,7 +38,7 @@ export const HealthDto = z
     examples: [
       {
         status: "UP",
-        components: { db: { status: "UP", details: { database: "postgres" } } },
+        components: { accountRepo: { status: "UP", details: { implementation: "PostgresAccountRepo" } } },
       },
     ],
   });

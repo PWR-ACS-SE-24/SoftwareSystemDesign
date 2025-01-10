@@ -1,6 +1,7 @@
 import type { UUID } from "@jobberknoll/core/shared";
 import { SERVICE_AGENT } from "@jobberknoll/core/shared";
-import type { Ctx } from "../shared/ctx.ts";
+import type { Monitorable } from "~/interfaces/mod.ts";
+import type { ComponentHealth, Ctx } from "~/shared/mod.ts";
 
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
@@ -29,7 +30,17 @@ const LEVELS = {
   error: 50,
 };
 
-export abstract class Logger {
+export abstract class Logger implements Monitorable {
+  public health(): Promise<ComponentHealth> {
+    return Promise.resolve({
+      status: "UP",
+      details: {
+        implementation: this.constructor.name,
+        level: this.level,
+      },
+    });
+  }
+
   protected abstract get level(): LogLevel;
 
   protected abstract handle(data: LogData): void | Promise<void>;
