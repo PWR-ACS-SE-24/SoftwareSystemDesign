@@ -1,4 +1,4 @@
-import { AccountRepo, type Logger } from "@jobberknoll/app";
+import { AccountRepo, type ComponentHealth, type Logger } from "@jobberknoll/app";
 import { type Account, type AccountNotFoundError, accountNotFoundError } from "@jobberknoll/core/domain";
 import { err, none, ok, type Option, type Result, some, type UUID } from "@jobberknoll/core/shared";
 import { Pool } from "postgres";
@@ -8,6 +8,22 @@ const POOL_SIZE = 8;
 export class PostgresAccountRepo extends AccountRepo {
   private constructor(logger: Logger, private readonly pool: Pool) {
     super(logger);
+  }
+
+  public async health(): Promise<ComponentHealth> {
+    try {
+      using client = await this.pool.connect();
+      const { rows } = await client.queryObject<{ version: string }>`SELECT version()`;
+      return {
+        status: "UP",
+        details: {
+          implementation: this.constructor.name,
+          version: rows[0].version,
+        },
+      };
+    } catch {
+      return { status: "DOWN" };
+    }
   }
 
   public static async setup(logger: Logger, connectionString: string): Promise<AccountRepo> {

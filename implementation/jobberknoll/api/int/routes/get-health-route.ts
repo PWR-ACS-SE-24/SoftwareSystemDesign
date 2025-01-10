@@ -1,10 +1,10 @@
 import { createRoute } from "@hono/zod-openapi";
 import type { GetHealthUseCase } from "@jobberknoll/app";
 import { expect } from "@jobberknoll/core/shared";
+import { HealthDto } from "~/int/contracts/mod.ts";
 import { IntHeadersSchema } from "~/int/openapi.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
 import { jsonRes } from "~/shared/openapi.ts";
-import { HealthDto } from "../contracts/mod.ts";
 
 export const getHealthRoute = createRoute({
   method: "get",
@@ -25,7 +25,7 @@ export const getHealthRoute = createRoute({
 export function getHealthHandler(getHealth: GetHealthUseCase): JkHandler<typeof getHealthRoute> {
   return async (c) => {
     const serviceHealth = expect(await getHealth.invoke(c.get("ctx"), null), "getHealth request should never fail");
-    const code = ["UP", "UNKNOWN"].includes(serviceHealth.status) ? 200 : 503;
+    const code = serviceHealth.status === "UP" ? 200 : 503;
     return c.json(serviceHealth, code);
   };
 }

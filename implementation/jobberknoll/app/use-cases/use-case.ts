@@ -3,7 +3,7 @@ import type { Logger } from "~/interfaces/mod.ts";
 import type { Ctx } from "~/shared/ctx.ts";
 
 export abstract class UseCase<Req, Res, Err> {
-  protected constructor(private readonly logger: Logger) {
+  protected constructor(protected readonly logger: Logger) {
     this.invoke = logger.propagate(this, this.handle);
   }
 

@@ -17,6 +17,10 @@ export class IntController implements Controller {
         r.getHealthHandler(this.service.getHealth),
       )
       .openapi(
+        r.getEndpointsRoute,
+        r.getEndpointsHandler(),
+      )
+      .openapi(
         r.getAccountByIdRoute,
         r.getAccountByIdHandler(this.service.getAccountById),
       );

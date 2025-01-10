@@ -1,6 +1,6 @@
 import { newCtx } from "@jobberknoll/app";
 import { accountMock, isErr, isNone, ok, uuid } from "@jobberknoll/core/shared";
-import { assert, assertEquals, assertRejects } from "@std/assert";
+import { assert, assertEquals, assertObjectMatch, assertRejects } from "@std/assert";
 import { TestLogger } from "../logger/mod.ts";
 import { MemoryAccountRepo } from "./memory-account-repo.ts";
 
@@ -86,4 +86,25 @@ Deno.test("deleteAccount should return some account-not-found if the account doe
   const option = await accountRepo.deleteAccount(newCtx(), uuid());
 
   assert(!isNone(option));
+});
+
+for (const [status, isHealthy] of [["UP", true], ["DOWN", false]] as const) {
+  Deno.test(`health should return ${status} if the repo is healthy=${isHealthy}`, async () => {
+    const accountRepo = new MemoryAccountRepo(new TestLogger());
+    accountRepo.isHealthy = isHealthy;
+
+    const health = await accountRepo.health();
+
+    assertObjectMatch(health, { status });
+  });
+}
+
+Deno.test("all methods should fail if the repo is unhealthy", () => {
+  const accountRepo = new MemoryAccountRepo(new TestLogger());
+  accountRepo.isHealthy = false;
+
+  assertRejects(() => accountRepo.createAccount(newCtx(), accountMock));
+  assertRejects(() => accountRepo.isEmailTaken(newCtx(), accountMock.email));
+  assertRejects(() => accountRepo.getAccountById(newCtx(), accountMock.id));
+  assertRejects(() => accountRepo.deleteAccount(newCtx(), accountMock.id));
 });

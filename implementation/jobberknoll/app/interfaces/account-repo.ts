@@ -1,15 +1,18 @@
 import type { Account, AccountNotFoundError } from "@jobberknoll/core/domain";
 import type { Option, Result, UUID } from "@jobberknoll/core/shared";
-import type { Ctx } from "../shared/ctx.ts";
+import type { Monitorable } from "~/interfaces/mod.ts";
+import type { ComponentHealth, Ctx } from "~/shared/mod.ts";
 import type { Logger } from "./logger.ts";
 
-export abstract class AccountRepo {
+export abstract class AccountRepo implements Monitorable {
   public constructor(logger: Logger) {
     this.createAccount = logger.instrument(this, this.handleCreateAccount);
     this.isEmailTaken = logger.instrument(this, this.handleIsEmailTaken);
     this.getAccountById = logger.instrument(this, this.handleGetAccountById);
     this.deleteAccount = logger.instrument(this, this.handleDeleteAccount);
   }
+
+  public abstract health(): Promise<ComponentHealth>;
 
   protected abstract handleCreateAccount(account: Account): Promise<void>;
   public readonly createAccount: (ctx: Ctx, account: Account) => Promise<void>;

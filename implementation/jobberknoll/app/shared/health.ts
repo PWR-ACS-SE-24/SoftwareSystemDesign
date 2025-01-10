@@ -1,5 +1,11 @@
-type HealthStatus = "DOWN" | "OUT_OF_SERVICE" | "UNKNOWN" | "UP";
+export type HealthStatus = "UP" | "DOWN";
 
-export type ServiceHealth = {
+export type ComponentHealth = {
   status: HealthStatus;
+  details?: Record<string, string>;
+};
+
+export type SystemHealth = {
+  status: HealthStatus;
+  components?: Record<string, ComponentHealth>;
 };
