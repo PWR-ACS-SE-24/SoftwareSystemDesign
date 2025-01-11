@@ -18,7 +18,7 @@ export const AccountDto = z.object({
     description: "Email address of the account owner.",
     examples: ["john.smith@example.com"],
   }),
-  phoneNumber: z.string().nullable().optional().openapi({
+  phoneNumber: z.string().regex(/^[0-9+ ]{1,16}$/).nullable().optional().openapi({
     description: "Phone number of the passenger.",
     examples: ["+48 123 456 789"],
   }),

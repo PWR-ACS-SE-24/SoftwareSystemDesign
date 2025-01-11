@@ -62,19 +62,6 @@ Deno.test("getAccountById should return account-not-found if the account does no
   assertEquals(result.value.kind, "account-not-found");
 });
 
-Deno.test("editAccount should return none option if the account exists", async () => {
-  const accountRepo = new MemoryAccountRepo(new TestLogger());
-  await accountRepo.createAccount(newCtx(), accountMock);
-
-  const option = await accountRepo.editAccount(newCtx(), {
-    ...accountMock,
-    fullName: "New Name",
-    lastModified: Math.floor(Date.now() / 1000),
-  });
-
-  assert(isNone(option));
-});
-
 Deno.test("editAccount should update the account in the repo if it exists", async () => {
   const accountRepo = new MemoryAccountRepo(new TestLogger());
   await accountRepo.createAccount(newCtx(), accountMock);
@@ -89,13 +76,10 @@ Deno.test("editAccount should update the account in the repo if it exists", asyn
   assertObjectMatch(result.value, { fullName: "New Name" });
 });
 
-Deno.test("editAccount should return some account-not-found if the account does not exist", async () => {
+Deno.test("editAccount should not throw if the account does not exist", async () => {
   const accountRepo = new MemoryAccountRepo(new TestLogger());
 
-  const option = await accountRepo.editAccount(newCtx(), accountMock);
-
-  assert(isSome(option));
-  assertEquals(option.value.kind, "account-not-found");
+  await accountRepo.editAccount(newCtx(), accountMock);
 });
 
 Deno.test("deleteAccount should return none option if the account exists", async () => {

@@ -15,7 +15,7 @@
 | `ACC/13`        | 🟥         |
 | `ACC/14`        | 🟩         |
 | `ACC/15`        | 🟩         |
-| `ACC/16`        | 🟥         |
+| `ACC/16`        | 🟩         |
 
 ## API
 
@@ -28,7 +28,7 @@
 | `GET    /ext/v1/self`          | 🟩         |
 | `PUT    /ext/v1/self/name`     | 🟩         |
 | `PUT    /ext/v1/self/password` | 🟥         |
-| `PUT    /ext/v1/self/phone`    | 🟥         |
+| `PUT    /ext/v1/self/phone`    | 🟩         |
 | `DELETE /ext/v1/self`          | 🟥         |
 | `POST   /ext/v1/accounts`      | 🟨         |
 | `GET    /ext/v1/accounts`      | 🟥         |

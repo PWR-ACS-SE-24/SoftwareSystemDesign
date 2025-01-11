@@ -40,7 +40,6 @@ Deno.test("PUT /ext/v1/self/name should be reflected in GET /ext/v1/self", async
 
   const response = await api.request("/ext/v1/self", { headers: headers(accountMock.id, "passenger") });
   const body = await response.json();
-
   assertEquals(body.fullName, "New Name");
 });
 
@@ -59,21 +58,14 @@ Deno.test("PUT /ext/v1/self/name should return user-unauthorized if the user is 
 });
 
 Deno.test("PUT /ext/v1/self/name should return schema-mismatch if the body is invalid", async () => {
-  for (
-    const reqBody of [
-      JSON.stringify({}),
-      JSON.stringify({ name: "XYZ" }),
-      JSON.stringify({ fullName: 15 }),
-      JSON.stringify({ fullName: "" }),
-    ]
-  ) {
+  for (const reqBody of [{}, { name: "XYZ" }, { fullName: 15 }, { fullName: "" }]) {
     const { api, accountRepo } = await setupTest();
     await accountRepo.createAccount(newCtx(), accountMock);
 
     const response = await api.request("/ext/v1/self/name", {
       method: "PUT",
       headers: headers(accountMock.id, "passenger"),
-      body: reqBody,
+      body: JSON.stringify(reqBody),
     });
     const resBody = await response.json();
 

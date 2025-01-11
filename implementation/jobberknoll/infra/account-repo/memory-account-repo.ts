@@ -41,13 +41,12 @@ export class MemoryAccountRepo extends AccountRepo {
     return Promise.resolve((id in this.accounts) ? ok(this.accounts[id]) : err(accountNotFoundError(id)));
   }
 
-  protected handleEditAccount(account: Account): Promise<Option<AccountNotFoundError>> {
+  protected handleEditAccount(account: Account): Promise<void> {
     this.ensureHealthy();
-    if (!(account.id in this.accounts)) {
-      return Promise.resolve(some(accountNotFoundError(account.id)));
+    if (account.id in this.accounts) {
+      this.accounts[account.id] = account;
     }
-    this.accounts[account.id] = account;
-    return Promise.resolve(none());
+    return Promise.resolve();
   }
 
   protected handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>> {

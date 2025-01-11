@@ -6,6 +6,7 @@ export type Service = {
   deleteAccount: c.DeleteAccountUseCase;
   getAccountById: c.GetAccountByIdUseCase;
   editAccountName: c.EditAccountNameUseCase;
+  editAccountPhone: c.EditAccountPhoneUseCase;
   getHealth: c.GetHealthUseCase;
 };
 
@@ -14,6 +15,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo): Service 
   const deleteAccount = new c.DeleteAccountUseCase(logger, accountRepo);
   const getAccountById = new c.GetAccountByIdUseCase(logger, accountRepo);
   const editAccountName = new c.EditAccountNameUseCase(logger, accountRepo, getAccountById);
+  const editAccountPhone = new c.EditAccountPhoneUseCase(logger, accountRepo, getAccountById);
   const getHealth = new c.GetHealthUseCase(logger, accountRepo);
 
   return {
@@ -21,6 +23,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo): Service 
     deleteAccount,
     getAccountById,
     editAccountName,
+    editAccountPhone,
     getHealth,
   };
 }
