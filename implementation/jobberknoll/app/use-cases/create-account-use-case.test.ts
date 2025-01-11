@@ -30,18 +30,17 @@ Deno.test("CreateAccountUseCase should return a new account in the happy path", 
   assertEquals(created.fullName, createAccountReq.fullName);
   assertEquals(created.email, createAccountReq.email);
   assert("hashedPassword" in created);
+  assert("lastModified" in created);
 });
 
 Deno.test("CreateAccountUseCase should add the account to the database in the happy path", async () => {
   const { accountRepo, createAccount } = setup();
 
   const result = await createAccount.invoke(newCtx(), createAccountReq);
-
   assert(isOk(result));
 
   const created = result.value;
   const found = await accountRepo.getAccountById(newCtx(), created.id);
-
   assert(isOk(found));
   assertEquals(found.value, created);
 });

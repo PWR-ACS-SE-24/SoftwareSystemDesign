@@ -2,6 +2,7 @@ import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import * as c from "~/use-cases/mod.ts";
 
 export type Service = {
+  register: c.RegisterUseCase;
   createAccount: c.CreateAccountUseCase;
   deleteAccount: c.DeleteAccountUseCase;
   getAccountById: c.GetAccountByIdUseCase;
@@ -12,6 +13,7 @@ export type Service = {
 };
 
 export function buildService(logger: Logger, accountRepo: AccountRepo): Service {
+  const register = new c.RegisterUseCase(logger, accountRepo);
   const createAccount = new c.CreateAccountUseCase(logger, accountRepo);
   const deleteAccount = new c.DeleteAccountUseCase(logger, accountRepo);
   const getAccountById = new c.GetAccountByIdUseCase(logger, accountRepo);
@@ -21,6 +23,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo): Service 
   const getHealth = new c.GetHealthUseCase(logger, accountRepo);
 
   return {
+    register,
     createAccount,
     deleteAccount,
     getAccountById,

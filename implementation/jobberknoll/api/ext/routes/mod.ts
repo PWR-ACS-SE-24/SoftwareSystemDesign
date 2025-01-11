@@ -6,3 +6,4 @@ export * from "./edit-self-password-route.ts";
 export * from "./edit-self-phone-route.ts";
 export * from "./get-account-by-id-route.ts";
 export * from "./get-self-route.ts";
+export * from "./register-route.ts";
