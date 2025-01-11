@@ -41,6 +41,7 @@ export function configureDocs(
     "/docs/scalar",
     apiReference({
       spec: { url: `${path}/docs/openapi.json` },
+      pageTitle: title,
       theme: "kepler",
       defaultHttpClient: { targetKey: "js", clientKey: "fetch" },
       hideClientButton: true,

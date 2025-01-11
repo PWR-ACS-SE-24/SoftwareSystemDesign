@@ -17,6 +17,10 @@ export class ExtController implements Controller {
         r.getSelfHandler(this.service.getAccountById),
       )
       .openapi(
+        r.editSelfNameRoute,
+        r.editSelfNameHandler(this.service.editAccountName),
+      )
+      .openapi(
         r.createAccountRoute,
         r.createAccountHandler(this.service.createAccount),
       )

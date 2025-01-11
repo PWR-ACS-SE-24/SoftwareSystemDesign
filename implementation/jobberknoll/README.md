@@ -7,7 +7,7 @@
 | `ACC/01`        | 🟥         |
 | `ACC/02`        | 🟥         |
 | `ACC/04`        | 🟩         |
-| `ACC/05`        | 🟥         |
+| `ACC/05`        | 🟩         |
 | `ACC/06`        | 🟥         |
 | `ACC/10`        | 🟥         |
 | `ACC/11`        | 🟨         |
@@ -26,7 +26,7 @@
 | `POST   /ext/v1/refresh`       | 🟥         |
 | `POST   /ext/v1/revoke`        | 🟥         |
 | `GET    /ext/v1/self`          | 🟩         |
-| `PUT    /ext/v1/self/name`     | 🟥         |
+| `PUT    /ext/v1/self/name`     | 🟩         |
 | `PUT    /ext/v1/self/password` | 🟥         |
 | `PUT    /ext/v1/self/phone`    | 🟥         |
 | `DELETE /ext/v1/self`          | 🟥         |
@@ -35,7 +35,7 @@
 | `GET    /ext/v1/accounts/:id`  | 🟩         |
 | `DELETE /ext/v1/accounts/:id`  | 🟩         |
 | `GET    /int/v1/health`        | 🟩         |
-| `GET    /int/v1/endpoints`     | 🟥         |
+| `GET    /int/v1/endpoints`     | 🟩         |
 | `GET    /int/v1/accounts/:id`  | 🟩         |
 | `GET    /int/v1/jwks`          | 🟥         |
 

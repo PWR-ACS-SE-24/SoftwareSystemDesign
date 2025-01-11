@@ -26,4 +26,5 @@ Deno.test("GetAccountByIdUseCase should return account-not-found if the account 
   const result = await getAccountById.invoke(newCtx(), { accountId: uuid() });
 
   assert(isErr(result));
+  assertEquals(result.value.kind, "account-not-found");
 });

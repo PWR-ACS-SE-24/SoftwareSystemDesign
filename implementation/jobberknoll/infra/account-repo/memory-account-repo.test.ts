@@ -1,5 +1,5 @@
 import { newCtx } from "@jobberknoll/app";
-import { accountMock, isErr, isNone, ok, uuid } from "@jobberknoll/core/shared";
+import { accountMock, isErr, isNone, isSome, ok, uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertObjectMatch, assertRejects } from "@std/assert";
 import { TestLogger } from "../logger/mod.ts";
 import { MemoryAccountRepo } from "./memory-account-repo.ts";
@@ -59,6 +59,43 @@ Deno.test("getAccountById should return account-not-found if the account does no
   const result = await accountRepo.getAccountById(newCtx(), uuid());
 
   assert(isErr(result));
+  assertEquals(result.value.kind, "account-not-found");
+});
+
+Deno.test("editAccount should return none option if the account exists", async () => {
+  const accountRepo = new MemoryAccountRepo(new TestLogger());
+  await accountRepo.createAccount(newCtx(), accountMock);
+
+  const option = await accountRepo.editAccount(newCtx(), {
+    ...accountMock,
+    fullName: "New Name",
+    lastModified: Math.floor(Date.now() / 1000),
+  });
+
+  assert(isNone(option));
+});
+
+Deno.test("editAccount should update the account in the repo if it exists", async () => {
+  const accountRepo = new MemoryAccountRepo(new TestLogger());
+  await accountRepo.createAccount(newCtx(), accountMock);
+
+  await accountRepo.editAccount(newCtx(), {
+    ...accountMock,
+    fullName: "New Name",
+    lastModified: Math.floor(Date.now() / 1000),
+  });
+
+  const result = await accountRepo.getAccountById(newCtx(), accountMock.id);
+  assertObjectMatch(result.value, { fullName: "New Name" });
+});
+
+Deno.test("editAccount should return some account-not-found if the account does not exist", async () => {
+  const accountRepo = new MemoryAccountRepo(new TestLogger());
+
+  const option = await accountRepo.editAccount(newCtx(), accountMock);
+
+  assert(isSome(option));
+  assertEquals(option.value.kind, "account-not-found");
 });
 
 Deno.test("deleteAccount should return none option if the account exists", async () => {
@@ -85,7 +122,8 @@ Deno.test("deleteAccount should return some account-not-found if the account doe
 
   const option = await accountRepo.deleteAccount(newCtx(), uuid());
 
-  assert(!isNone(option));
+  assert(isSome(option));
+  assertEquals(option.value.kind, "account-not-found");
 });
 
 for (const [status, isHealthy] of [["UP", true], ["DOWN", false]] as const) {
@@ -106,5 +144,6 @@ Deno.test("all methods should fail if the repo is unhealthy", () => {
   assertRejects(() => accountRepo.createAccount(newCtx(), accountMock));
   assertRejects(() => accountRepo.isEmailTaken(newCtx(), accountMock.email));
   assertRejects(() => accountRepo.getAccountById(newCtx(), accountMock.id));
+  assertRejects(() => accountRepo.editAccount(newCtx(), accountMock));
   assertRejects(() => accountRepo.deleteAccount(newCtx(), accountMock.id));
 });

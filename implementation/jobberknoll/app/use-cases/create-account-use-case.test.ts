@@ -61,6 +61,7 @@ Deno.test("CreateAccountUseCase should return invalid-account-data if the email 
   const result = await createAccount.invoke(newCtx(), createAccountReq);
 
   assert(isErr(result));
+  assertEquals(result.value.kind, "invalid-account-data");
 });
 
 Deno.test("CreateAccountUseCase should not audit the account creation if the email is taken", async () => {

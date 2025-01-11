@@ -27,7 +27,7 @@ Deno.test("GET /ext/v1/self should return the account if it exists", async () =>
   }
 });
 
-Deno.test("GET /ext/v1/self should return user-unauthorized if user is a guest", async () => {
+Deno.test("GET /ext/v1/self should return user-unauthorized if the user is a guest", async () => {
   const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/self", {

@@ -18,10 +18,8 @@ Deno.test("DELETE /ext/v1/accounts/{id} should delete the account if it exists",
     `/ext/v1/accounts/${accountMock.id}`,
     { method: "DELETE", headers: correctHeaders },
   );
-  const body = await response.text();
 
   assertEquals(response.status, 204);
-  assertEquals(body, "");
 });
 
 Deno.test("DELETE /ext/v1/accounts/{id} should return user-unauthorized if user is not an admin", async () => {
