@@ -1,3 +1,4 @@
+import { Route } from '@app/route/database/route.entity';
 import { Collection, Entity, Filter, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 import { StopLineMapping } from './stop-line-mapping.entity';
@@ -20,6 +21,12 @@ export class Line {
     orderBy: { order: 'ASC' },
   })
   mappings = new Collection<StopLineMapping>(this);
+
+  @OneToMany({
+    entity: () => Route,
+    mappedBy: (Route) => Route.line,
+  })
+  routes = new Collection<Route>(this);
 
   constructor(name: string) {
     this.name = name;

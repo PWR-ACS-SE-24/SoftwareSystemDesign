@@ -9,5 +9,6 @@ import { VehicleService } from './service/vehicle.service';
   imports: [MikroOrmModule.forFeature([Vehicle]), SharedModule],
   controllers: [VehicleController],
   providers: [VehicleService],
+  exports: [VehicleService],
 })
 export class VehicleModule {}
