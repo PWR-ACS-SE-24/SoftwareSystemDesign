@@ -33,18 +33,6 @@ Deno.test("POST /ext/v1/accounts should create an account if data is valid", asy
   assertEquals(body.type, "driver");
   assertEquals(body.fullName, "John Smith");
   assertEquals(body.email, "john.smith@example.com");
-});
-
-Deno.test("POST /ext/v1/accounts not leak private fields", async () => {
-  const { api } = await setupTest();
-
-  const response = await api.request("/ext/v1/accounts", {
-    method: "POST",
-    headers: correctHeaders,
-    body: JSON.stringify(correctBody),
-  });
-  const body = await response.json();
-
   assert(!("hashedPassword" in body));
   assert(!("lastModified" in body));
 });

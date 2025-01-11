@@ -12,15 +12,6 @@ Deno.test("GET /int/v1/accounts/{id} should return an account if it exists", asy
 
   assertEquals(response.status, 200);
   assertObjectMatch(accountMock, body);
-});
-
-Deno.test("GET /int/v1/accounts/{id} should not leak private fields", async () => {
-  const { api, accountRepo } = await setupTest();
-  await accountRepo.createAccount(newCtx(), accountMock);
-
-  const response = await api.request(`/int/v1/accounts/${accountMock.id}`);
-  const body = await response.json();
-
   assert(!("hashedPassword" in body));
   assert(!("lastModified" in body));
 });
@@ -52,19 +43,6 @@ const correctHeaders = {
   "user-agent": "Phoenix/1.0.0",
 };
 
-Deno.test("GET /ext/v1/accounts/{id} should return user-unauthorized if user is not an admin", async () => {
-  const { api, accountRepo } = await setupTest();
-  await accountRepo.createAccount(newCtx(), accountMock);
-
-  const response = await api.request(`/ext/v1/accounts/${accountMock.id}`, {
-    headers: { ...correctHeaders, "jp-user-role": "passenger" },
-  });
-  const body = await response.json();
-
-  assertEquals(response.status, 401);
-  assertEquals(body.kind, "user-unauthorized");
-});
-
 Deno.test(
   "GET /ext/v1/accounts/{id} should return an account if it exists",
   async () => {
@@ -79,18 +57,22 @@ Deno.test(
     assertEquals(body.type, accountMock.type);
     assertEquals(body.fullName, accountMock.fullName);
     assertEquals(body.email, accountMock.email);
+    assert(!("hashedPassword" in body));
+    assert(!("lastModified" in body));
   },
 );
 
-Deno.test("GET /ext/v1/accounts/{id} should not leak private fields", async () => {
+Deno.test("GET /ext/v1/accounts/{id} should return user-unauthorized if user is not an admin", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 
-  const response = await api.request(`/ext/v1/accounts/${accountMock.id}`, { headers: correctHeaders });
+  const response = await api.request(`/ext/v1/accounts/${accountMock.id}`, {
+    headers: { ...correctHeaders, "jp-user-role": "passenger" },
+  });
   const body = await response.json();
 
-  assert(!("hashedPassword" in body));
-  assert(!("lastModified" in body));
+  assertEquals(response.status, 401);
+  assertEquals(body.kind, "user-unauthorized");
 });
 
 Deno.test("GET /ext/v1/accounts/{id} should return account-not-found if the account does not exist", async () => {

@@ -13,6 +13,10 @@ export class ExtController implements Controller {
   public get routes(): JkApp {
     const app = createJkApp(this.logger)
       .openapi(
+        r.getSelfRoute,
+        r.getSelfHandler(this.service.getAccountById),
+      )
+      .openapi(
         r.createAccountRoute,
         r.createAccountHandler(this.service.createAccount),
       )

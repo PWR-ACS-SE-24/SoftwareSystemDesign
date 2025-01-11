@@ -22,7 +22,7 @@ type LogMethod = (
   tags?: LogTags,
 ) => void;
 
-// NOTE: Taken from https://github.com/pinojs/pino/blob/main/docs/api.md#levels
+// NOTE: taken from https://github.com/pinojs/pino/blob/main/docs/api.md#levels
 const LEVELS = {
   debug: 20,
   info: 30,

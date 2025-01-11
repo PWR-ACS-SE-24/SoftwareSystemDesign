@@ -13,7 +13,7 @@ export const CreateAccountDto = z.object({
     description: "Email address of the account owner.",
     examples: ["john.smith@example.com"],
   }),
-  password: z.string().min(8).max(64).openapi({ // TODO: What are our password requirements?
+  password: z.string().min(8).max(64).openapi({ // TODO: what are our password requirements?
     description: "Account password (8-64 characters).",
     examples: ["password"],
   }),
