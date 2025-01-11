@@ -8,7 +8,7 @@
 | `ACC/02`        | 🟥         |
 | `ACC/04`        | 🟩         |
 | `ACC/05`        | 🟩         |
-| `ACC/06`        | 🟥         |
+| `ACC/06`        | 🟨         |
 | `ACC/10`        | 🟩         |
 | `ACC/11`        | 🟨         |
 | `ACC/12`        | 🟨         |
@@ -27,7 +27,7 @@
 | `POST   /ext/v1/revoke`        | 🟥         |
 | `GET    /ext/v1/self`          | 🟩         |
 | `PUT    /ext/v1/self/name`     | 🟩         |
-| `PUT    /ext/v1/self/password` | 🟥         |
+| `PUT    /ext/v1/self/password` | 🟨         |
 | `PUT    /ext/v1/self/phone`    | 🟩         |
 | `DELETE /ext/v1/self`          | 🟩         |
 | `POST   /ext/v1/accounts`      | 🟨         |

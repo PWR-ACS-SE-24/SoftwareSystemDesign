@@ -6,6 +6,7 @@ export type Service = {
   deleteAccount: c.DeleteAccountUseCase;
   getAccountById: c.GetAccountByIdUseCase;
   editAccountName: c.EditAccountNameUseCase;
+  editAccountPassword: c.EditAccountPasswordUseCase;
   editAccountPhone: c.EditAccountPhoneUseCase;
   getHealth: c.GetHealthUseCase;
 };
@@ -15,6 +16,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo): Service 
   const deleteAccount = new c.DeleteAccountUseCase(logger, accountRepo);
   const getAccountById = new c.GetAccountByIdUseCase(logger, accountRepo);
   const editAccountName = new c.EditAccountNameUseCase(logger, accountRepo, getAccountById);
+  const editAccountPassword = new c.EditAccountPasswordUseCase(logger, accountRepo, getAccountById);
   const editAccountPhone = new c.EditAccountPhoneUseCase(logger, accountRepo, getAccountById);
   const getHealth = new c.GetHealthUseCase(logger, accountRepo);
 
@@ -23,6 +25,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo): Service 
     deleteAccount,
     getAccountById,
     editAccountName,
+    editAccountPassword,
     editAccountPhone,
     getHealth,
   };

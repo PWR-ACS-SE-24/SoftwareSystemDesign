@@ -13,7 +13,7 @@ function headers(userId: UUID, role: UserRole) {
   };
 }
 
-Deno.test("PUT /ext/v1/self/phone should edit the account phone if it exists", async () => {
+Deno.test("PUT /ext/v1/self/phone should edit the account phone in the happy path", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 

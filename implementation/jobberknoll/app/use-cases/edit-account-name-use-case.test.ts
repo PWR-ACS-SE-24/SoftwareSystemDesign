@@ -13,7 +13,7 @@ function setup() {
   return { logger, accountRepo, editAccountName };
 }
 
-Deno.test("EditAccountNameUseCase should return an ok result if the account exists", async () => {
+Deno.test("EditAccountNameUseCase should return an ok result in the happy path", async () => {
   const { accountRepo, editAccountName } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -22,7 +22,7 @@ Deno.test("EditAccountNameUseCase should return an ok result if the account exis
   assert(isOk(result));
 });
 
-Deno.test("EditAccountNameUseCase should update the account name in the database if it exists", async () => {
+Deno.test("EditAccountNameUseCase should update the account name in the database in the happy path", async () => {
   const { accountRepo, editAccountName } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -33,7 +33,7 @@ Deno.test("EditAccountNameUseCase should update the account name in the database
   assertEquals(result.value.fullName, "New Name");
 });
 
-Deno.test("EditAccountNameUseCase should audit the name change if the account exists", async () => {
+Deno.test("EditAccountNameUseCase should audit the name change in the happy path", async () => {
   const { logger, accountRepo, editAccountName } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 

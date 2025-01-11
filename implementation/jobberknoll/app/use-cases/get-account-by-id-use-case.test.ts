@@ -11,7 +11,7 @@ function setup() {
   return { logger, accountRepo, getAccountById };
 }
 
-Deno.test("GetAccountByIdUseCase should return an account if it exists", async () => {
+Deno.test("GetAccountByIdUseCase should return an account in the happy path", async () => {
   const { accountRepo, getAccountById } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 

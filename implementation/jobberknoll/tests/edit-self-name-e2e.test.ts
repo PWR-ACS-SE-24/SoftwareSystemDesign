@@ -13,7 +13,7 @@ function headers(userId: UUID, role: UserRole) {
   };
 }
 
-Deno.test("PUT /ext/v1/self/name should edit the account name if it exists", async () => {
+Deno.test("PUT /ext/v1/self/name should edit the account name in the happy path", async () => {
   for (const role of ["admin", "driver", "inspector", "passenger"] as const) {
     const { api, accountRepo } = await setupTest();
     await accountRepo.createAccount(newCtx(), accountMock);

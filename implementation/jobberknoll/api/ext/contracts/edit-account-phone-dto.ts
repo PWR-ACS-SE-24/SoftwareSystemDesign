@@ -6,7 +6,7 @@ export const EditAccountPhoneDto = z.object({
     description: "Phone number of the account owner.",
     examples: ["+48 123 456 789", null],
   }),
-}).openapi({
+}).openapi("EditAccountPhoneDto", {
   description: "Information about the phone edit.",
   examples: [{
     phoneNumber: "+48 123 456 789",

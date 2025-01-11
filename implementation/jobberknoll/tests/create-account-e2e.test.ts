@@ -18,7 +18,7 @@ const correctBody = {
   password: "password",
 };
 
-Deno.test("POST /ext/v1/accounts should create an account if data is valid", async () => {
+Deno.test("POST /ext/v1/accounts should create an account in the happy path", async () => {
   const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts", {

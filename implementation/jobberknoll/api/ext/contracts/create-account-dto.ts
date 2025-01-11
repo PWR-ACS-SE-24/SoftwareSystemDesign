@@ -18,7 +18,7 @@ export const CreateAccountDto = z.object({
     description: "Account password (8-64 characters).",
     examples: ["password"],
   }),
-}).openapi({
+}).openapi("CreateAccountDto", {
   description: "Information about the created account.",
   examples: [{
     type: "driver",

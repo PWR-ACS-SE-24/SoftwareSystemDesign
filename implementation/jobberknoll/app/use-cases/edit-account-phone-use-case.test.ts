@@ -14,7 +14,7 @@ function setup() {
   return { logger, accountRepo, editAccountPhone };
 }
 
-Deno.test("EditAccountPhoneUseCase should return an ok result if the account exists", async () => {
+Deno.test("EditAccountPhoneUseCase should return an ok result in the happy path", async () => {
   const { accountRepo, editAccountPhone } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -23,7 +23,7 @@ Deno.test("EditAccountPhoneUseCase should return an ok result if the account exi
   assert(isOk(result));
 });
 
-Deno.test("EditAccountPhoneUseCase should update the account phone in the database if it exists", async () => {
+Deno.test("EditAccountPhoneUseCase should update the account phone in the database in the happy path", async () => {
   for (const phoneNumber of [null, "", "333 333 333"]) {
     const { accountRepo, editAccountPhone } = setup();
     await accountRepo.createAccount(newCtx(), accountMock);
@@ -36,7 +36,7 @@ Deno.test("EditAccountPhoneUseCase should update the account phone in the databa
   }
 });
 
-Deno.test("EditAccountPhoneUseCase should audit the phone change if the account exists", async () => {
+Deno.test("EditAccountPhoneUseCase should audit the phone change in the happy path", async () => {
   const { logger, accountRepo, editAccountPhone } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 

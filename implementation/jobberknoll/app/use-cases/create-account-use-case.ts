@@ -26,7 +26,7 @@ export class CreateAccountUseCase extends UseCase<CreateAccountReq, Account, Inv
       type: req.type,
       fullName: req.fullName,
       email: req.email.toLowerCase(),
-      hashedPassword: req.password, // TODO: hash password
+      hashedPassword: req.password, // TODO: hash the password
       lastModified: Math.floor(Date.now() / 1000),
     };
 

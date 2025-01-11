@@ -6,7 +6,7 @@ export const EditAccountNameDto = z.object({
     description: "Full name of the account owner.",
     examples: ["John Smith"],
   }),
-}).openapi({
+}).openapi("EditAccountNameDto", {
   description: "Information about the name edit.",
   examples: [{
     fullName: "John Smith",

@@ -3,7 +3,7 @@ import { accountMock, uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertObjectMatch } from "@std/assert";
 import { setupTest } from "../setup.ts";
 
-Deno.test("GET /int/v1/accounts/{id} should return an account if it exists", async () => {
+Deno.test("GET /int/v1/accounts/{id} should return an account in the happy path", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 

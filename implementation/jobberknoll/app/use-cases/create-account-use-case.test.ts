@@ -18,7 +18,7 @@ const createAccountReq = {
   password: "password",
 };
 
-Deno.test("CreateAccountUseCase should return a new account if the email is valid", async () => {
+Deno.test("CreateAccountUseCase should return a new account in the happy path", async () => {
   const { createAccount } = setup();
 
   const result = await createAccount.invoke(newCtx(), createAccountReq);
@@ -32,7 +32,7 @@ Deno.test("CreateAccountUseCase should return a new account if the email is vali
   assert("hashedPassword" in created);
 });
 
-Deno.test("CreateAccountUseCase should add the account to the database if the email is valid", async () => {
+Deno.test("CreateAccountUseCase should add the account to the database in the happy path", async () => {
   const { accountRepo, createAccount } = setup();
 
   const result = await createAccount.invoke(newCtx(), createAccountReq);
@@ -46,7 +46,7 @@ Deno.test("CreateAccountUseCase should add the account to the database if the em
   assertEquals(found.value, created);
 });
 
-Deno.test("CreateAccountUseCase should audit the account creation if the email is valid", async () => {
+Deno.test("CreateAccountUseCase should audit the account creation in the happy path", async () => {
   const { logger, createAccount } = setup();
 
   await createAccount.invoke(newCtx(), createAccountReq);
@@ -74,7 +74,7 @@ Deno.test("CreateAccountUseCase should not audit the account creation if the ema
 });
 
 Deno.test.ignore("CreateAccountUseCase should hash the password", async () => {
-  // TODO: hash password
+  // TODO: hash the password
 });
 
 Deno.test.ignore("CreateAccountUseCase should send the welcome email", async () => {

@@ -10,7 +10,7 @@ const correctHeaders = {
   "user-agent": "Phoenix/1.0.0",
 };
 
-Deno.test("DELETE /ext/v1/accounts/{id} should delete the account if it exists", async () => {
+Deno.test("DELETE /ext/v1/accounts/{id} should delete the account in the happy path", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 

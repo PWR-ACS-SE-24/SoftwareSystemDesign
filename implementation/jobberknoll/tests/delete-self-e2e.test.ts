@@ -12,7 +12,7 @@ function headers(userId: UUID, role: UserRole) {
   };
 }
 
-Deno.test("DELETE /ext/v1/self should delete the account if it exists", async () => {
+Deno.test("DELETE /ext/v1/self should delete the account in the happy path", async () => {
   for (const role of ["admin", "driver", "inspector", "passenger"] as const) {
     const { api, accountRepo } = await setupTest();
     await accountRepo.createAccount(newCtx(), accountMock);
