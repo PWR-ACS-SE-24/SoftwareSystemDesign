@@ -11,7 +11,7 @@ export const RegisterDto = z.object({
     examples: ["john.smith@example.com"],
   }),
   password: PasswordSchema.openapi({
-    description: "Account password (8-64 characters).",
+    description: "Account password.",
     examples: ["password"],
   }),
   phoneNumber: PhoneNumberSchema.openapi({
