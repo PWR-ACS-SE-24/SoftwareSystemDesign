@@ -1,6 +1,6 @@
 import { IsLaterThan } from '@app/shared/api/date-larger.validator';
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, IsRFC3339, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsRFC3339, IsUUID } from 'class-validator';
 import { RouteDto } from './route.dto';
 
 export class CreateRouteDto extends PickType(RouteDto, ['startTime', 'endTime']) {
@@ -46,14 +46,14 @@ export class CreateRouteDto extends PickType(RouteDto, ['startTime', 'endTime'])
 
 export class UpdateRouteDto extends PartialType(PickType(CreateRouteDto, ['line', 'vehicle'])) {
   @IsRFC3339()
-  @IsNotEmpty()
-  readonly startTime: string;
+  @IsOptional()
+  readonly startTime?: string;
 
   @IsRFC3339()
-  @IsNotEmpty()
-  readonly endTime: string;
+  @IsOptional()
+  readonly endTime?: string;
 
-  constructor(startTime: string, endTime: string, line: string, vehicle: string) {
+  constructor(line: string, vehicle: string, startTime?: string, endTime?: string) {
     super(line, vehicle);
     this.startTime = startTime;
     this.endTime = endTime;

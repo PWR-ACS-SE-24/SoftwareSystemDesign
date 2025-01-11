@@ -146,6 +146,36 @@ describe('RouteService', () => {
     expect(response.vehicle.id).toBe(newVehicle.id);
   });
 
+  it('should properly validate dates when updating', async () => {
+    // given
+    const line = new Line('145');
+    const vehicle = new Vehicle('2222');
+    const route1 = new Route(createTime(1), createTime(2), line, vehicle);
+    const route2 = new Route(createTime(4), createTime(5), line, vehicle);
+    const route3 = new Route(createTime(7), createTime(8), line, vehicle);
+    await em.persistAndFlush([line, vehicle, route1, route2, route3]);
+
+    // then
+    await expect(
+      controller.updateRoute(route1.id, {
+        endTime: createTime(1.5).toISOString(),
+      }),
+    ).resolves.toBeDefined();
+
+    await expect(
+      controller.updateRoute(route2.id, {
+        startTime: createTime(3).toISOString(),
+      }),
+    ).resolves.toBeDefined();
+
+    await expect(
+      controller.updateRoute(route3.id, {
+        startTime: createTime(10).toISOString(),
+        endTime: createTime(12).toISOString(),
+      }),
+    ).resolves.toBeDefined();
+  });
+
   it('should update isActive instead of deleting', async () => {
     // given
     const line = new Line('145');
