@@ -1,6 +1,6 @@
+import { newCtx } from "@jobberknoll/app";
 import { accountMock, uuid } from "@jobberknoll/core/shared";
 import { assertEquals } from "@std/assert/equals";
-import { newCtx } from "../app/shared/ctx.ts";
 import { setupTest } from "../setup.ts";
 
 const correctHeaders = {
@@ -56,7 +56,7 @@ Deno.test("DELETE /ext/v1/accounts/{id} should return account-not-found if the a
   assertEquals(body.kind, "account-not-found");
 });
 
-Deno.test("DELETE /ext/v1/accounts/{id} should make the account unfetchable from GET /ext/v1/accounts/{id}", async () => {
+Deno.test("DELETE /ext/v1/accounts/{id} should make GET /ext/v1/accounts/{id} return account-not-found", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 

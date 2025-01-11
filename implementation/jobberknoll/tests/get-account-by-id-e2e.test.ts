@@ -1,6 +1,6 @@
+import { newCtx } from "@jobberknoll/app";
 import { accountMock, uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertObjectMatch } from "@std/assert";
-import { newCtx } from "../app/shared/ctx.ts";
 import { setupTest } from "../setup.ts";
 
 Deno.test("GET /int/v1/accounts/{id} should return an account if it exists", async () => {

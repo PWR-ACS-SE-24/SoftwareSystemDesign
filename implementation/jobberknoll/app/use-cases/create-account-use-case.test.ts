@@ -76,3 +76,7 @@ Deno.test("CreateAccountUseCase should not audit the account creation if the ema
 Deno.test.ignore("CreateAccountUseCase should hash the password", async () => {
   // TODO: hash password
 });
+
+Deno.test.ignore("CreateAccountUseCase should send the welcome email", async () => {
+  // TODO: send the welcome email
+});

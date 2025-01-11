@@ -1,7 +1,8 @@
 import { z } from "@hono/zod-openapi";
+import { FullNameSchema } from "@jobberknoll/app";
 
 export const EditAccountNameDto = z.object({
-  fullName: z.string().min(1).max(255).openapi({
+  fullName: FullNameSchema.openapi({
     description: "Full name of the account owner.",
     examples: ["John Smith"],
   }),

@@ -1,19 +1,20 @@
 import { z } from "@hono/zod-openapi";
+import { EmailSchema, FullNameSchema, PasswordSchema } from "@jobberknoll/app";
 
 export const CreateAccountDto = z.object({
   type: z.enum(["driver", "inspector"]).openapi({
     description: "Type of the account.",
     examples: ["driver"],
   }),
-  fullName: z.string().min(1).max(255).openapi({
+  fullName: FullNameSchema.openapi({
     description: "Full name of the account owner.",
     examples: ["John Smith"],
   }),
-  email: z.string().email().max(255).openapi({
+  email: EmailSchema.openapi({
     description: "Email address of the account owner.",
     examples: ["john.smith@example.com"],
   }),
-  password: z.string().min(8).max(64).openapi({ // TODO: what are our password requirements?
+  password: PasswordSchema.openapi({
     description: "Account password (8-64 characters).",
     examples: ["password"],
   }),

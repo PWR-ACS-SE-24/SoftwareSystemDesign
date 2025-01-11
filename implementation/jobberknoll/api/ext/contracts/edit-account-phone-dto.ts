@@ -1,7 +1,8 @@
 import { z } from "@hono/zod-openapi";
+import { PhoneNumberSchema } from "@jobberknoll/app";
 
 export const EditAccountPhoneDto = z.object({
-  phoneNumber: z.string().regex(/^[0-9+ ]{1,16}$/).nullable().openapi({ // TODO: what are our phone number constraints?
+  phoneNumber: PhoneNumberSchema.openapi({
     description: "Phone number of the account owner.",
     examples: ["+48 123 456 789", null],
   }),
