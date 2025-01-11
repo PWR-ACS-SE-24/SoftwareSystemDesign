@@ -14,12 +14,12 @@
 | `LOG/08`        | 🟩         |
 | `LOG/09`        | 🟩         |
 | `LOG/10`        | 🟩         |
-| `LOG/11`        | 🟥         |
-| `LOG/12`        | 🟥         |
-| `LOG/13`        | 🟥         |
-| `LOG/14`        | 🟥         |
-| `LOG/15`        | 🟥         |
-| `LOG/16`        | 🟩         |
+| `LOG/11`        | 🟨         |
+| `LOG/12`        | 🟨         |
+| `LOG/13`        | 🟩         |
+| `LOG/14`        | 🟩         |
+| `LOG/15`        | 🟩         |
+| `LOG/16`        | 🟨         |
 | `LOG/17`        | 🟩         |
 | `LOG/18`        | 🟩         |
 | `LOG/19`        | 🟩         |
@@ -44,11 +44,11 @@
 | `POST   /ext/v1/stops`         | 🟩         |
 | `PATCH  /ext/v1/stops/:id`     | 🟩         |
 | `DELETE /ext/v1/stops/:id`     | 🟩         |
-| `GET    /ext/v1/routes`        | 🟥         |
-| `GET    /ext/v1/routes/:id`    | 🟥         |
-| `POST   /ext/v1/routes`        | 🟥         |
-| `PATCH  /ext/v1/routes/:id`    | 🟥         |
-| `DELETE /ext/v1/routes/:id`    | 🟥         |
+| `GET    /ext/v1/routes`        | 🟨         |
+| `GET    /ext/v1/routes/:id`    | 🟩         |
+| `POST   /ext/v1/routes`        | 🟩         |
+| `PATCH  /ext/v1/routes/:id`    | 🟩         |
+| `DELETE /ext/v1/routes/:id`    | 🟩         |
 | `GET    /ext/v1/vehicles`      | 🟨         |
 | `GET    /ext/v1/vehicles/:id`  | 🟩         |
 | `POST   /ext/v1/vehicles`      | 🟩         |
@@ -63,3 +63,4 @@
 
 - Ultimately, we will HAVE to implement some kind of secret-manager support.
 - Make E2E tests for all endpoints.
+- Add all database constraints.

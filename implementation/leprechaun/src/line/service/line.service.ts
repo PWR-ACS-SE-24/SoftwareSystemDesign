@@ -35,11 +35,10 @@ export class LineService {
   }
 
   async getLineById(lineId: string, filters: boolean = true): Promise<Line> {
-    const line = await this.lineRepository.findOneOrFail(
+    return await this.lineRepository.findOneOrFail(
       { id: lineId },
       { failHandler: () => new NotFoundException({ details: lineId }), populate: ['mappings.stop'], filters },
     );
-    return line;
   }
 
   async getAllLinesForStop(stopId: string): Promise<Line[]> {
@@ -54,7 +53,7 @@ export class LineService {
   async createLine(lineCreateDto: CreateLineDto): Promise<Line> {
     return await this.em.transactional(async () => {
       const line = new Line(lineCreateDto.name);
-      this.em.persistAndFlush(line);
+      await this.em.persistAndFlush(line);
 
       // If lines were defined, check if they exist
       if (lineCreateDto.stops) {

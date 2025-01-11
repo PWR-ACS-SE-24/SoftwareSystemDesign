@@ -4,13 +4,14 @@ import { PaginatedDto } from '@app/shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '@app/shared/api/http-exceptions';
 import { Paginated, Pagination } from '@app/shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '@app/shared/api/pipes';
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
@@ -37,12 +38,13 @@ export class VehicleController {
   @ApiOkResponse({ type: VehicleDto, description: 'Vehicle details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async getVehicleById(@Param('id', UUIDPipe) id: string): Promise<VehicleDto> {
-    const vehicle = await this.vehicleService.findVehicleById(id, false);
+    const vehicle = await this.vehicleService.getVehicleById(id, false);
     return VehicleDto.fromEntity(vehicle);
   }
 
   @Post('/')
   @RequiredPermissions('admin')
+  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY, type: HttpExceptionDto, description: 'Invalid vehicle data' })
   @ApiCreatedResponse({ type: VehicleDto, description: 'Created vehicle' })
   async createVehicle(@Body(ValidateCreatePipe) createVehicle: CreateVehicleDto): Promise<VehicleDto> {
     const vehicle = await this.vehicleService.createVehicle(createVehicle);
@@ -61,6 +63,7 @@ export class VehicleController {
   @Patch('/:id')
   @RequiredPermissions('admin')
   @ApiOkResponse({ type: VehicleDto, description: 'Updated vehicle' })
+  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY, type: HttpExceptionDto, description: 'Invalid vehicle data' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Vehicle not found' })
   async updateVehicleById(
     @Param('id', UUIDPipe) id: string,

@@ -9,6 +9,7 @@ const jestConfig: JestConfigWithTsJest = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   globalSetup: './src/test-setup.ts',
   globalTeardown: './src/test-teardown.ts',
+  slowTestThreshold: 10,
   testRegex: '.*\\.spec\\.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',

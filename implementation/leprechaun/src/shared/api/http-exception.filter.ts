@@ -22,7 +22,7 @@ export class InternalExceptionFilter<T extends Error> implements ExceptionFilter
 
     this.logger.fatal(exception.message, exception.stack);
 
-    const exceptionObject = exceptionMap.InternalServerError('');
+    const exceptionObject = exceptionMap.InternalServerErrorException('');
     response.status(exceptionObject.code).json(exceptionObject);
   }
 }

@@ -5,8 +5,15 @@ import { HttpExceptionDto } from '@app/shared/api/http-exceptions';
 import { Paginated, Pagination } from '@app/shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '@app/shared/api/pipes';
 import { StopDto } from '@app/stop/controller/stop.dto';
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
-import { ApiCreatedResponse, ApiExtraModels, ApiNoContentResponse, ApiNotFoundResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiExtraModels,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { LineService } from '../service/line.service';
 import { CreateLineDto, UpdateLineDto } from './line-create.dto';
 import { LineDto } from './line.dto';
@@ -30,7 +37,7 @@ export class LineController {
 
   @Get('/:id')
   @RequiredPermissions('admin', 'passenger')
-  @ApiCreatedResponse({ type: LineDto, description: 'Line details' })
+  @ApiOkResponse({ type: LineDto, description: 'Line details' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Line not found' })
   async getLineById(@Param('id', UUIDPipe) id: string): Promise<LineDto> {
     const line = await this.lineService.getLineById(id, false);
@@ -40,9 +47,10 @@ export class LineController {
   @Post('/')
   @RequiredPermissions('admin')
   @ApiCreatedResponse({ type: LineDto, description: 'Created line' })
+  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY, type: HttpExceptionDto, description: 'Invalid line data' })
   async createLine(@Body(ValidateCreatePipe) createLine: CreateLineDto): Promise<LineDto> {
-    const stop = await this.lineService.createLine(createLine);
-    return LineDto.fromEntity(stop);
+    const line = await this.lineService.createLine(createLine);
+    return LineDto.fromEntity(line);
   }
 
   @Delete('/:id')
@@ -56,13 +64,14 @@ export class LineController {
 
   @Patch('/:id')
   @RequiredPermissions('admin')
-  @ApiCreatedResponse({ type: LineDto, description: 'Update line' })
+  @ApiOkResponse({ type: LineDto, description: 'Update line' })
+  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY, type: HttpExceptionDto, description: 'Invalid line data' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Line not found' })
   async updateLine(
     @Param('id', UUIDPipe) id: string,
     @Body(ValidateUpdatePipe) updateLine: UpdateLineDto,
   ): Promise<LineDto> {
-    const stop = await this.lineService.updateLine(updateLine, id);
-    return LineDto.fromEntity(stop);
+    const line = await this.lineService.updateLine(updateLine, id);
+    return LineDto.fromEntity(line);
   }
 }
