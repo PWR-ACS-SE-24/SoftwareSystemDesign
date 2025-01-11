@@ -2,11 +2,11 @@ import { LineDto } from '@app/line/controller/line.dto';
 import { GenericIdDto } from '@app/shared/api/generic.dto';
 import { VehicleDto } from '@app/vehicle/controller/vehicle.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsRFC3339 } from 'class-validator';
+import { IsISO8601, IsNotEmpty } from 'class-validator';
 import { Route } from '../database/route.entity';
 
 export class RouteDto extends GenericIdDto {
-  @IsRFC3339()
+  @IsISO8601()
   @IsNotEmpty()
   @ApiProperty({
     description: 'Start time of the route',
@@ -17,7 +17,7 @@ export class RouteDto extends GenericIdDto {
   })
   readonly startTime: string;
 
-  @IsRFC3339()
+  @IsISO8601()
   @IsNotEmpty()
   @ApiProperty({
     description: 'End time of the route',

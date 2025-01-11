@@ -63,3 +63,4 @@
 
 - Ultimately, we will HAVE to implement some kind of secret-manager support.
 - Make E2E tests for all endpoints.
+- Add all database constraints.

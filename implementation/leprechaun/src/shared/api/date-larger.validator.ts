@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 
-export function IsLaterThan(property: string, validationOptions?: ValidationOptions) {
+export function IsLaterThan<T>(property: T[keyof T], validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: 'isLaterThan',

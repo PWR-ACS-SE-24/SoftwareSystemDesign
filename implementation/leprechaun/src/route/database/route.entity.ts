@@ -1,10 +1,11 @@
 import { Line } from '@app/line/database/line.entity';
 import { Vehicle } from '@app/vehicle/database/vehicle.entity';
-import { Entity, Filter, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Check, Entity, Filter, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 
 @Entity()
 @Filter({ name: 'active', cond: { isActive: true }, default: true })
+@Check<Route>({ name: 'route_time_check', expression: (columns) => `${columns.startTime} < ${columns.endTime}` })
 export class Route {
   @PrimaryKey({ type: 'uuid' })
   id = uuidv7(); // TODO: redo as a custom type

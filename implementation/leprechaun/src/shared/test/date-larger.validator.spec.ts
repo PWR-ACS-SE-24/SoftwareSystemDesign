@@ -1,14 +1,14 @@
-import { IsRFC3339 } from 'class-validator';
+import { IsISO8601 } from 'class-validator';
 import { IsLaterThan } from '../api/date-larger.validator';
 import { ValidateCreatePipe } from '../api/pipes';
 import { getTestMetadata } from './validation.service.spec';
 
 class TestDto {
-  @IsRFC3339()
+  @IsISO8601()
   startTime: string;
 
-  @IsRFC3339()
-  @IsLaterThan('startTime')
+  @IsISO8601()
+  @IsLaterThan<TestDto>('startTime')
   endTime: string;
 
   constructor(startTime: string, endTime: string) {

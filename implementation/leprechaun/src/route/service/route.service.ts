@@ -1,9 +1,10 @@
 import { LineService } from '@app/line/service/line.service';
 import { Pagination } from '@app/shared/api/pagination.decorator';
 import { VehicleService } from '@app/vehicle/service/vehicle.service';
-import { EntityManager, EntityRepository } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateRouteDto, UpdateRouteDto } from '../controller/route-create.dto';
 import { Route } from '../database/route.entity';
 
@@ -32,36 +33,19 @@ export class RouteService {
   private async findRoutesInTimeRangeForVehicle(
     vehicleId: string,
     newStartTime: Date,
-    newOldTime: Date,
+    newEndTime: Date,
   ): Promise<Route[]> {
-    /*
-     * We have three cases to consider:
-     * 1) New route starts before the other route and ends in the middle
-     * 2) New route starts before the other route and ends after
-     * 3) New route starts in the middle of the other route and ends after
+    /* https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap/325964#325964
+     * assumptions:
+     * 1) route.startTime < route.endTime <- guaranteed by the database
+     * 2) newStartTime < newEndTime       <- have to be guaranteed by the caller
      *
-     * Old route is between <start> and <end>, all three cases are betweem (1), (2) and (3)
-     *
-     * ===(1)=(2)==<start>====(1)===(3)====<end>==(2)=(3)=====>
-     *
-     * 1) startTime < start < endTime < end
-     *    ===sql===> startTime > newStartTime AND startTime < newOldTime AND endTime > newOldTime
-     *
-     * 2) startTime < start < end < endTime
-     *    ===sql===> startTime > newStartTime AND endTime < newOldTime
-     *
-     * 3) start < startTime < end < endTime
-     *    ===sql===> startTime < newStartTime AND endTime > newStartTime AND endTime < newOldTime
+     * --> (route.startTime <= newEndTime) AND (route.endTime >= newStartTime)
      */
 
-    // prettier-ignore
     return await this.routeRepository.find({
       vehicle: vehicleId,
-      $or: [
-        /* 1) */ { startTime: { $gte: newStartTime, $lte: newOldTime }, endTime: {$gte: newOldTime} },
-        /* 2) */ { startTime: { $gte: newStartTime }, endTime: { $lte: newOldTime } },
-        /* 3) */ { startTime: { $lte: newStartTime }, endTime: { $gte: newStartTime, $lte: newOldTime } },
-      ],
+      $and: [{ startTime: { $lte: newEndTime } }, { endTime: { $gte: newStartTime } }],
       isActive: true,
     });
   }
@@ -86,19 +70,22 @@ export class RouteService {
 
     // this is very much redundant here because of validator, but good sanity check
     if (new Date() > startTime || startTime > endTime) {
-      // TODO: move me to a common function for use with updateRoute
-      throw new BadRequestException({ details: 'Start time invalid' });
+      // this should be a 400, but the validator should catch it thus 500
+      throw new InternalServerErrorException({ details: 'Start time invalid' });
     }
 
-    // find all routes for the vehicle in the time range, if there are any, throw an error
-    if ((await this.findRoutesInTimeRangeForVehicle(vehicle.id, startTime, endTime)).length > 0) {
-      throw new BadRequestException({ details: 'Vehicle is already being used in this time range' });
-    }
+    const newRoute = await this.em.transactional(async () => {
+      // find all routes for the vehicle in the time range, if there are any, throw an error
+      if ((await this.findRoutesInTimeRangeForVehicle(vehicle.id, startTime, endTime)).length > 0) {
+        throw new BadRequestException({ details: 'Vehicle is already being used in this time range' });
+      }
 
-    // all good, create the route
-    const newRoute = new Route(startTime, endTime, line, vehicle);
-    await this.em.persistAndFlush(newRoute);
-    this.em.populate(newRoute, ['line.mappings.stop', 'vehicle']);
+      // all good, create the route
+      const newRoute = new Route(startTime, endTime, line, vehicle);
+      await this.em.persistAndFlush(newRoute);
+      return newRoute;
+    });
+
     return newRoute;
   }
 
@@ -120,21 +107,18 @@ export class RouteService {
     }
 
     // find all routes for the vehicle in the time range
-    const plannedRoutes = await this.findRoutesInTimeRangeForVehicle(vehicle.id, startTime, endTime);
+    return await this.em.transactional(async () => {
+      const plannedRoutes = await this.findRoutesInTimeRangeForVehicle(vehicle.id, startTime, endTime);
 
-    // if there are more than one route in the time range check whether its the same we are updating from
-    plannedRoutes
-      .filter((route) => route.id !== oldRoute.id)
-      .map((_) => {
+      // if there are more than one route in the time range check whether its the same we are updating from
+      if (plannedRoutes.some((route) => route.id !== oldRoute.id)) {
         throw new BadRequestException({ details: 'Vehicle is already being used in this time range' });
-      });
+      }
 
-    // set isActive to false and create a new one
-    return this.em.transactional(async () => {
+      // set isActive to false and create a new one
       await this.deleteRoute(routeId);
       const newRoute = new Route(startTime, endTime, line, vehicle);
       await this.em.persistAndFlush(newRoute);
-      this.em.populate(newRoute, ['line.mappings.stop', 'vehicle']);
       return newRoute;
     });
   }

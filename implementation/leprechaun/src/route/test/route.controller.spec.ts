@@ -14,8 +14,8 @@ import { RouteController } from '../controller/route.controller';
 import { Route } from '../database/route.entity';
 import { RouteService } from '../service/route.service';
 
-function createTime(hours: number): Date {
-  return new Date(new Date().valueOf() + Math.floor(hours * 3600 * 1000));
+function createTimeHoursInTheFuture(hours: number): Date {
+  return new Date(new Date().valueOf() + hours * 3600 * 1000);
 }
 
 describe('RouteService', () => {
@@ -57,7 +57,7 @@ describe('RouteService', () => {
     const vehicle = new Vehicle('2222');
     const stop = new Stop('stop1', 1, 1);
     const stopMapping = new StopLineMapping(line, stop, 1);
-    const newRoute = new Route(createTime(1), createTime(2), line, vehicle);
+    const newRoute = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     await em.persistAndFlush([line, vehicle, newRoute, stopMapping]);
 
     // when
@@ -76,7 +76,7 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTime(1), createTime(2), line, vehicle);
+    const newRoute = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     await em.persistAndFlush([line, vehicle, newRoute]);
 
     // when
@@ -97,8 +97,8 @@ describe('RouteService', () => {
     const response = await controller.createRoute({
       line: line.id,
       vehicle: vehicle.id,
-      startTime: createTime(1).toISOString(),
-      endTime: createTime(2).toISOString(),
+      startTime: createTimeHoursInTheFuture(1).toISOString(),
+      endTime: createTimeHoursInTheFuture(2).toISOString(),
     });
 
     // then
@@ -111,7 +111,7 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTime(1), createTime(2), line, vehicle);
+    const newRoute = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     newRoute.isActive = false;
     await em.persistAndFlush([line, vehicle, newRoute]);
 
@@ -126,7 +126,7 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const route = new Route(createTime(1), createTime(2), line, vehicle);
+    const route = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     const newLine = new Line('146');
     const newVehicle = new Vehicle('3333');
 
@@ -136,8 +136,8 @@ describe('RouteService', () => {
     const response = await controller.updateRoute(route.id, {
       line: newLine.id,
       vehicle: newVehicle.id,
-      startTime: createTime(1.5).toISOString(),
-      endTime: createTime(2.5).toISOString(),
+      startTime: createTimeHoursInTheFuture(1.5).toISOString(),
+      endTime: createTimeHoursInTheFuture(2.5).toISOString(),
     });
 
     // then
@@ -150,37 +150,39 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const route1 = new Route(createTime(1), createTime(2), line, vehicle);
-    const route2 = new Route(createTime(4), createTime(5), line, vehicle);
-    const route3 = new Route(createTime(7), createTime(8), line, vehicle);
+    const route1 = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
+    const route2 = new Route(createTimeHoursInTheFuture(4), createTimeHoursInTheFuture(5), line, vehicle);
+    const route3 = new Route(createTimeHoursInTheFuture(7), createTimeHoursInTheFuture(8), line, vehicle);
     await em.persistAndFlush([line, vehicle, route1, route2, route3]);
 
     // then
-    await expect(
-      controller.updateRoute(route1.id, {
-        endTime: createTime(1.5).toISOString(),
-      }),
-    ).resolves.toBeDefined();
+    await Promise.all([
+      expect(
+        controller.updateRoute(route1.id, {
+          endTime: createTimeHoursInTheFuture(1.5).toISOString(),
+        }),
+      ).resolves.toBeDefined(),
 
-    await expect(
-      controller.updateRoute(route2.id, {
-        startTime: createTime(3).toISOString(),
-      }),
-    ).resolves.toBeDefined();
+      expect(
+        controller.updateRoute(route2.id, {
+          startTime: createTimeHoursInTheFuture(3).toISOString(),
+        }),
+      ).resolves.toBeDefined(),
 
-    await expect(
-      controller.updateRoute(route3.id, {
-        startTime: createTime(10).toISOString(),
-        endTime: createTime(12).toISOString(),
-      }),
-    ).resolves.toBeDefined();
+      expect(
+        controller.updateRoute(route3.id, {
+          startTime: createTimeHoursInTheFuture(10).toISOString(),
+          endTime: createTimeHoursInTheFuture(12).toISOString(),
+        }),
+      ).resolves.toBeDefined(),
+    ]);
   });
 
   it('should update isActive instead of deleting', async () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTime(1), createTime(2), line, vehicle);
+    const newRoute = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     await em.persistAndFlush([line, vehicle, newRoute]);
 
     // when
@@ -197,7 +199,7 @@ describe('RouteService', () => {
     const line = new Line('145');
     const otherLine = new Line('134');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTime(1), createTime(2), line, vehicle);
+    const newRoute = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     await em.persistAndFlush([line, otherLine, vehicle, newRoute]);
 
     // then
@@ -205,8 +207,8 @@ describe('RouteService', () => {
       controller.createRoute({
         line: otherLine.id,
         vehicle: vehicle.id,
-        startTime: createTime(1.5).toISOString(),
-        endTime: createTime(2.5).toISOString(),
+        startTime: createTimeHoursInTheFuture(1.5).toISOString(),
+        endTime: createTimeHoursInTheFuture(2.5).toISOString(),
       }),
     ).rejects.toThrow(BadRequestException);
 
@@ -214,8 +216,8 @@ describe('RouteService', () => {
       controller.createRoute({
         line: otherLine.id,
         vehicle: vehicle.id,
-        startTime: createTime(0.5).toISOString(),
-        endTime: createTime(1.5).toISOString(),
+        startTime: createTimeHoursInTheFuture(0.5).toISOString(),
+        endTime: createTimeHoursInTheFuture(1.5).toISOString(),
       }),
     ).rejects.toThrow(BadRequestException);
   });
@@ -226,7 +228,7 @@ describe('RouteService', () => {
     const otherLine = new Line('134');
     const vehicle = new Vehicle('2222');
     const otherVehicle = new Vehicle('3333');
-    const route = new Route(createTime(1), createTime(2), line, vehicle);
+    const route = new Route(createTimeHoursInTheFuture(1), createTimeHoursInTheFuture(2), line, vehicle);
     await em.persistAndFlush([line, otherLine, vehicle, otherVehicle, route]);
 
     // then
@@ -234,24 +236,35 @@ describe('RouteService', () => {
       controller.createRoute({
         line: otherLine.id,
         vehicle: otherVehicle.id,
-        startTime: createTime(0.5).toISOString(),
-        endTime: createTime(2.5).toISOString(),
+        startTime: createTimeHoursInTheFuture(0.5).toISOString(),
+        endTime: createTimeHoursInTheFuture(2.5).toISOString(),
       }),
     ).resolves.toBeDefined();
   });
 
   it('should not create route with invalid time (three cases)', async () => {
-    // see comment in RouteService.findRoutesInTimeRangeForVehicle for explanation
+    /*
+     * ===(1)=(2)==<start>====(1)===(3)====<end>==(2)=(3)=====>
+     *
+     * 1) startTime < start < endTime < end
+     *    ===sql===> startTime > newStartTime AND startTime < newOldTime AND endTime > newOldTime
+     *
+     * 2) startTime < start < end < endTime
+     *    ===sql===> startTime > newStartTime AND endTime < newOldTime
+     *
+     * 3) start < startTime < end < endTime
+     *    ===sql===> startTime < newStartTime AND endTime > newStartTime AND endTime < newOldTime
+     */
 
     // given
-    const c1s = createTime(1);
-    const c2s = createTime(2);
-    const start = createTime(3);
-    const c1e = createTime(4);
-    const c3s = createTime(5);
-    const end = createTime(6);
-    const c2e = createTime(7);
-    const c3e = createTime(8);
+    const c1s = createTimeHoursInTheFuture(1);
+    const c2s = createTimeHoursInTheFuture(2);
+    const start = createTimeHoursInTheFuture(3);
+    const c1e = createTimeHoursInTheFuture(4);
+    const c3s = createTimeHoursInTheFuture(5);
+    const end = createTimeHoursInTheFuture(6);
+    const c2e = createTimeHoursInTheFuture(7);
+    const c3e = createTimeHoursInTheFuture(8);
 
     const line = new Line('145');
     const newLine = new Line('134');
