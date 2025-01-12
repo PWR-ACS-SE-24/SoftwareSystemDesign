@@ -15,7 +15,7 @@ const createAccountReq = {
   type: "driver" as const,
   fullName: "John Doe",
   email: "john.doe@example.com",
-  password: "password",
+  password: "Password",
 };
 
 Deno.test("CreateAccountUseCase should return a new account in the happy path", async () => {

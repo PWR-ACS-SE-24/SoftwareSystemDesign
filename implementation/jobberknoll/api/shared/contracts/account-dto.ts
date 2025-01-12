@@ -21,7 +21,7 @@ export const AccountDto = z.object({
   }),
   phoneNumber: PhoneNumberSchema.optional().openapi({
     description: "Phone number of the passenger.",
-    examples: ["+48 123 456 789"],
+    examples: ["+48123456789"],
   }),
 }).openapi("AccountDto", {
   description: "Account details.",
@@ -30,7 +30,7 @@ export const AccountDto = z.object({
     type: "passenger",
     fullName: "John Smith",
     email: "john.smith@example.com",
-    phoneNumber: "+48 123 456 789",
+    phoneNumber: "+48123456789",
   }],
 });
 

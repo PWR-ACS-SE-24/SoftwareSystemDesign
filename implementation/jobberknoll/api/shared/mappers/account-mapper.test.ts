@@ -40,10 +40,10 @@ Deno.test("mapAccountToDto should return phoneNumber for non-null passenger phon
   const result = mapAccountToDto({
     ...accountMock,
     type: "passenger",
-    phoneNumber: "123-456-7890",
+    phoneNumber: "123456789",
   });
 
-  assertEquals(result.phoneNumber, "123-456-7890");
+  assertEquals(result.phoneNumber, "123456789");
 });
 
 Deno.test("mapAccountToDto should return a new object instead of mutating the input", () => {

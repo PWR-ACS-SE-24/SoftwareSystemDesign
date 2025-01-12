@@ -15,7 +15,7 @@ const correctBody = {
   type: "driver",
   fullName: "John Smith",
   email: "john.smith@example.com",
-  password: "password",
+  password: "Password",
 };
 
 Deno.test("POST /ext/v1/accounts should create an account in the happy path", async () => {

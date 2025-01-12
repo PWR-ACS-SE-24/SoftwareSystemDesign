@@ -16,7 +16,7 @@ export const CreateAccountDto = z.object({
   }),
   password: PasswordSchema.openapi({
     description: "Account password.",
-    examples: ["password"],
+    examples: ["Password"],
   }),
 }).openapi("CreateAccountDto", {
   description: "Information about the created account.",
@@ -24,7 +24,7 @@ export const CreateAccountDto = z.object({
     type: "driver",
     fullName: "John Smith",
     email: "john.smith@example.com",
-    password: "password",
+    password: "Password",
   }],
 });
 

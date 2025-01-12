@@ -12,19 +12,19 @@ export const RegisterDto = z.object({
   }),
   password: PasswordSchema.openapi({
     description: "Account password.",
-    examples: ["password"],
+    examples: ["Password"],
   }),
   phoneNumber: PhoneNumberSchema.openapi({
     description: "Phone number of the passenger.",
-    examples: ["+48 123 456 789"],
+    examples: ["+48123456789"],
   }),
 }).openapi("RegisterDto", {
   description: "Information about the registered account.",
   examples: [{
     fullName: "John Smith",
     email: "john.smith@example.com",
-    password: "password",
-    phoneNumber: "+48 123 456 789",
+    password: "Password",
+    phoneNumber: "+48123456789",
   }],
 });
 

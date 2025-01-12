@@ -21,7 +21,7 @@ Deno.test("PUT /ext/v1/self/password should edit the account password in the hap
     const response = await api.request("/ext/v1/self/password", {
       method: "PUT",
       headers: headers(accountMock.id, role),
-      body: JSON.stringify({ oldPassword: accountMock.hashedPassword, newPassword: "new-password" }),
+      body: JSON.stringify({ oldPassword: accountMock.hashedPassword, newPassword: "New-Password" }),
     });
 
     assertEquals(response.status, 204);
@@ -34,7 +34,7 @@ Deno.test("PUT /ext/v1/self/password should return user-unauthorized if the user
   const response = await api.request("/ext/v1/self/password", {
     method: "PUT",
     headers: headers(uuid(), "guest"),
-    body: JSON.stringify({ oldPassword: "password", newPassword: "new-password" }),
+    body: JSON.stringify({ oldPassword: "Password", newPassword: "New-Password" }),
   });
   const body = await response.json();
 
@@ -43,7 +43,7 @@ Deno.test("PUT /ext/v1/self/password should return user-unauthorized if the user
 });
 
 Deno.test("PUT /ext/v1/self/password should return schema-mismatch if the body is invalid", async () => {
-  for (const reqBody of [{ oldPassword: "password" }, { newPassword: "password" }, { test: "invalid" }]) {
+  for (const reqBody of [{ oldPassword: "Password" }, { newPassword: "Password" }, { test: "invalid" }]) {
     const { api, accountRepo } = await setupTest();
     await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -65,7 +65,7 @@ Deno.test("PUT /ext/v1/self/password should return account-not-found if the acco
   const response = await api.request("/ext/v1/self/password", {
     method: "PUT",
     headers: headers(uuid(), "passenger"),
-    body: JSON.stringify({ oldPassword: "password", newPassword: "new-password" }),
+    body: JSON.stringify({ oldPassword: "Password", newPassword: "New-Password" }),
   });
   const body = await response.json();
 
@@ -80,7 +80,7 @@ Deno.test("PUT /ext/v1/self/password should return invalid-account-data if the o
   const response = await api.request("/ext/v1/self/password", {
     method: "PUT",
     headers: headers(accountMock.id, "passenger"),
-    body: JSON.stringify({ oldPassword: "incorrect-password", newPassword: "new-password" }),
+    body: JSON.stringify({ oldPassword: "Incorrect-Password", newPassword: "New-Password" }),
   });
   const body = await response.json();
 

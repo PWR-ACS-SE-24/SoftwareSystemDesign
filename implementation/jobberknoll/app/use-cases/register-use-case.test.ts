@@ -14,7 +14,7 @@ function setup() {
 const registerReq = {
   fullName: "John Doe",
   email: "john.doe@example.com",
-  password: "password",
+  password: "Password",
   phoneNumber: null,
 };
 

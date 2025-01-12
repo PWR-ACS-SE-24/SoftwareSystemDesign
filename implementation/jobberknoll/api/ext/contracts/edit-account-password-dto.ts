@@ -4,17 +4,17 @@ import { PasswordSchema } from "@jobberknoll/app";
 export const EditAccountPasswordDto = z.object({
   oldPassword: PasswordSchema.openapi({
     description: "Current password of the account owner.",
-    examples: ["password123"],
+    examples: ["Password123"],
   }),
   newPassword: PasswordSchema.openapi({
     description: "New password for the account owner.",
-    examples: ["supersecretpassword"],
+    examples: ["SuperSecretPassword"],
   }),
 }).openapi("EditAccountPasswordDto", {
   description: "Information about the password edit.",
   examples: [{
-    oldPassword: "old-password",
-    newPassword: "new-password",
+    oldPassword: "Old-Password",
+    newPassword: "New-Password",
   }],
 });
 

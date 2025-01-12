@@ -14,7 +14,7 @@ const correctHeaders = {
 const correctBody = {
   fullName: "John Smith",
   email: "john.smith@example.com",
-  password: "password",
+  password: "Password",
   phoneNumber: null,
 };
 

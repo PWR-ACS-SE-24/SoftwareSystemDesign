@@ -20,7 +20,7 @@ Deno.test("PUT /ext/v1/self/phone should edit the account phone in the happy pat
   const response = await api.request("/ext/v1/self/phone", {
     method: "PUT",
     headers: headers(accountMock.id, "passenger"),
-    body: JSON.stringify({ phoneNumber: "123 456 789" }),
+    body: JSON.stringify({ phoneNumber: "123456789" }),
   });
 
   assertEquals(response.status, 204);
@@ -33,12 +33,12 @@ Deno.test("PUT /ext/v1/self/phone should be reflected in GET /ext/v1/self", asyn
   await api.request("/ext/v1/self/phone", {
     method: "PUT",
     headers: headers(accountMock.id, "passenger"),
-    body: JSON.stringify({ phoneNumber: "123 456 789" }),
+    body: JSON.stringify({ phoneNumber: "123456789" }),
   });
 
   const response = await api.request("/ext/v1/self", { headers: headers(accountMock.id, "passenger") });
   const body = await response.json();
-  assertEquals(body.phoneNumber, "123 456 789");
+  assertEquals(body.phoneNumber, "123456789");
 });
 
 for (const role of ["guest", "admin", "driver", "inspector"] as const) {
@@ -48,7 +48,7 @@ for (const role of ["guest", "admin", "driver", "inspector"] as const) {
     const response = await api.request("/ext/v1/self/phone", {
       method: "PUT",
       headers: headers(uuid(), role),
-      body: JSON.stringify({ phoneNumber: "123 456 789" }),
+      body: JSON.stringify({ phoneNumber: "123456789" }),
     });
     const body = await response.json();
 
@@ -80,7 +80,7 @@ Deno.test("PUT /ext/v1/self/phone should return account-not-found if the account
   const response = await api.request("/ext/v1/self/phone", {
     method: "PUT",
     headers: headers(uuid(), "passenger"),
-    body: JSON.stringify({ phoneNumber: "123 456 789" }),
+    body: JSON.stringify({ phoneNumber: "123456789" }),
   });
   const body = await response.json();
 
