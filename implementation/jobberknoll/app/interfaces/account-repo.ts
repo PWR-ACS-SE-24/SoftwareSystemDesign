@@ -9,6 +9,7 @@ export abstract class AccountRepo implements Monitorable {
     this.createAccount = logger.instrument(this, this.handleCreateAccount);
     this.isEmailTaken = logger.instrument(this, this.handleIsEmailTaken);
     this.getAccountById = logger.instrument(this, this.handleGetAccountById);
+    this.editAccount = logger.instrument(this, this.handleEditAccount);
     this.deleteAccount = logger.instrument(this, this.handleDeleteAccount);
   }
 
@@ -22,6 +23,9 @@ export abstract class AccountRepo implements Monitorable {
 
   protected abstract handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>>;
   public readonly getAccountById: (ctx: Ctx, id: UUID) => Promise<Result<Account, AccountNotFoundError>>;
+
+  protected abstract handleEditAccount(account: Account): Promise<void>;
+  public readonly editAccount: (ctx: Ctx, account: Account) => Promise<void>;
 
   protected abstract handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>>;
   public readonly deleteAccount: (ctx: Ctx, id: UUID) => Promise<Option<AccountNotFoundError>>;

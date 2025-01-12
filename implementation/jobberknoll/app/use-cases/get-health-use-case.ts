@@ -1,7 +1,7 @@
 import { ok, type Result } from "@jobberknoll/core/shared";
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import type { Ctx } from "~/shared/ctx.ts";
-import type { ComponentHealth, SystemHealth } from "~/shared/mod.ts";
+import type { ComponentHealth, HealthStatus, SystemHealth } from "~/shared/mod.ts";
 import { UseCase } from "./use-case.ts";
 
 export class GetHealthUseCase extends UseCase<null, ComponentHealth, never> {
@@ -10,15 +10,15 @@ export class GetHealthUseCase extends UseCase<null, ComponentHealth, never> {
   }
 
   protected async handle(_ctx: Ctx, _req: null): Promise<Result<ComponentHealth, never>> {
-    const health: SystemHealth = {
-      status: "UP",
+    const health = {
+      status: "UP" as HealthStatus,
       components: {
         logger: await this.logger.health(),
         accountRepo: await this.accountRepo.health(),
       },
-    };
+    } satisfies SystemHealth;
 
-    for (const component of Object.values(health.components ?? {})) {
+    for (const component of Object.values(health.components)) {
       if (component.status === "DOWN") {
         health.status = "DOWN";
         break;

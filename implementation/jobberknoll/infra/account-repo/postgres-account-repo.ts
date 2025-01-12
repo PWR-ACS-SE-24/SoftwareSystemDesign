@@ -84,6 +84,19 @@ export class PostgresAccountRepo extends AccountRepo {
     return rows.length > 0 ? ok(rows[0]) : err(accountNotFoundError(id));
   }
 
+  protected async handleEditAccount(account: Account): Promise<void> {
+    using client = await this.pool.connect();
+    await client.queryObject`
+      UPDATE account SET
+        type = ${account.type},
+        full_name = ${account.fullName},
+        email = ${account.email},
+        hashed_password = ${account.hashedPassword},
+        last_modified = ${account.lastModified},
+        phone_number = ${"phoneNumber" in account ? account.phoneNumber : null}
+      WHERE id = ${account.id}`;
+  }
+
   protected async handleDeleteAccount(id: UUID): Promise<Option<AccountNotFoundError>> {
     using client = await this.pool.connect();
     const { rows } = await client.queryObject`DELETE FROM account WHERE id = ${id} RETURNING 1`;

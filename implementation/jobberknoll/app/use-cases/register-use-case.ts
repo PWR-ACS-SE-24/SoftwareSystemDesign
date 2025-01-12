@@ -4,30 +4,31 @@ import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import type { Ctx } from "~/shared/ctx.ts";
 import { UseCase } from "./use-case.ts";
 
-type CreateAccountReq = {
-  type: "driver" | "inspector";
+type RegisterReq = {
   fullName: string;
   email: string;
   password: string;
+  phoneNumber: string | null;
 };
 
-export class CreateAccountUseCase extends UseCase<CreateAccountReq, Account, InvalidAccountDataError> {
+export class RegisterUseCase extends UseCase<RegisterReq, Account, InvalidAccountDataError> {
   public constructor(logger: Logger, private readonly accountRepo: AccountRepo) {
     super(logger);
   }
 
-  protected async handle(ctx: Ctx, req: CreateAccountReq): Promise<Result<Account, InvalidAccountDataError>> {
+  protected async handle(ctx: Ctx, req: RegisterReq): Promise<Result<Account, InvalidAccountDataError>> {
     if (await this.accountRepo.isEmailTaken(ctx, req.email)) {
       return err(invalidAccountData("email"));
     }
 
     const account = {
       id: uuid(),
-      type: req.type,
+      type: "passenger" as const,
       fullName: req.fullName,
       email: req.email.toLowerCase(),
       hashedPassword: req.password, // TODO: hash the password
       lastModified: Math.floor(Date.now() / 1000),
+      phoneNumber: req.phoneNumber,
     };
 
     await this.accountRepo.createAccount(ctx, account);

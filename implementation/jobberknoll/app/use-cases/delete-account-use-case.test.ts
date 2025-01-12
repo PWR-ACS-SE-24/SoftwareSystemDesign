@@ -1,6 +1,6 @@
 import { accountMock, isErr, isOk } from "@jobberknoll/core/shared";
 import { MemoryAccountRepo, TestLogger } from "@jobberknoll/infra";
-import { assert } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { newCtx } from "~/shared/mod.ts";
 import { DeleteAccountUseCase } from "./delete-account-use-case.ts";
 
@@ -11,7 +11,7 @@ function setup() {
   return { logger, accountRepo, deleteAccount };
 }
 
-Deno.test("DeleteAccountUseCase should return an ok result if the account existed", async () => {
+Deno.test("DeleteAccountUseCase should return an ok result in the happy path", async () => {
   const { accountRepo, deleteAccount } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -20,7 +20,7 @@ Deno.test("DeleteAccountUseCase should return an ok result if the account existe
   assert(isOk(result));
 });
 
-Deno.test("DeleteAccountUseCase should delete the account from the repository if it existed", async () => {
+Deno.test("DeleteAccountUseCase should delete the account from the repository in the happy path", async () => {
   const { accountRepo, deleteAccount } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -30,7 +30,7 @@ Deno.test("DeleteAccountUseCase should delete the account from the repository if
   assert(isErr(found));
 });
 
-Deno.test("DeleteAccountUseCase should audit the deletion if the account existed", async () => {
+Deno.test("DeleteAccountUseCase should audit the deletion in the happy path", async () => {
   const { logger, accountRepo, deleteAccount } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -45,6 +45,7 @@ Deno.test("DeleteAccountUseCase should return account-not-found if the account d
   const result = await deleteAccount.invoke(newCtx(), { accountId: accountMock.id });
 
   assert(isErr(result));
+  assertEquals(result.value.kind, "account-not-found");
 });
 
 Deno.test("DeleteAccountUseCase should not audit the deletion if the account did not exist", async () => {

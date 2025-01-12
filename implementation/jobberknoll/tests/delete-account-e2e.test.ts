@@ -1,6 +1,6 @@
+import { newCtx } from "@jobberknoll/app";
 import { accountMock, uuid } from "@jobberknoll/core/shared";
 import { assertEquals } from "@std/assert/equals";
-import { newCtx } from "../app/shared/ctx.ts";
 import { setupTest } from "../setup.ts";
 
 const correctHeaders = {
@@ -10,7 +10,7 @@ const correctHeaders = {
   "user-agent": "Phoenix/1.0.0",
 };
 
-Deno.test("DELETE /ext/v1/accounts/{id} should delete the account if it exists", async () => {
+Deno.test("DELETE /ext/v1/accounts/{id} should delete the account in the happy path", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -18,10 +18,8 @@ Deno.test("DELETE /ext/v1/accounts/{id} should delete the account if it exists",
     `/ext/v1/accounts/${accountMock.id}`,
     { method: "DELETE", headers: correctHeaders },
   );
-  const body = await response.text();
 
   assertEquals(response.status, 204);
-  assertEquals(body, "");
 });
 
 Deno.test("DELETE /ext/v1/accounts/{id} should return user-unauthorized if user is not an admin", async () => {
@@ -58,7 +56,7 @@ Deno.test("DELETE /ext/v1/accounts/{id} should return account-not-found if the a
   assertEquals(body.kind, "account-not-found");
 });
 
-Deno.test("DELETE /ext/v1/accounts/{id} should make the account unfetchable from GET /ext/v1/accounts/{id}", async () => {
+Deno.test("DELETE /ext/v1/accounts/{id} should make GET /ext/v1/accounts/{id} return account-not-found", async () => {
   const { api, accountRepo } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 

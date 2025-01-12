@@ -1,6 +1,6 @@
+import { newCtx } from "@jobberknoll/app";
 import { accountMock, isSome, uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertObjectMatch } from "@std/assert";
-import { newCtx } from "../app/shared/ctx.ts";
 import { setupTest } from "../setup.ts";
 
 const correctHeaders = {
@@ -15,10 +15,10 @@ const correctBody = {
   type: "driver",
   fullName: "John Smith",
   email: "john.smith@example.com",
-  password: "password",
+  password: "Password",
 };
 
-Deno.test("POST /ext/v1/accounts should create an account if data is valid", async () => {
+Deno.test("POST /ext/v1/accounts should create an account in the happy path", async () => {
   const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/accounts", {
@@ -30,21 +30,9 @@ Deno.test("POST /ext/v1/accounts should create an account if data is valid", asy
 
   assertEquals(response.status, 201);
   assert(isSome(uuid(body.id)));
-  assertEquals(body.type, "driver");
-  assertEquals(body.fullName, "John Smith");
-  assertEquals(body.email, "john.smith@example.com");
-});
-
-Deno.test("POST /ext/v1/accounts not leak private fields", async () => {
-  const { api } = await setupTest();
-
-  const response = await api.request("/ext/v1/accounts", {
-    method: "POST",
-    headers: correctHeaders,
-    body: JSON.stringify(correctBody),
-  });
-  const body = await response.json();
-
+  assertEquals(body.type, correctBody.type);
+  assertEquals(body.fullName, correctBody.fullName);
+  assertEquals(body.email, correctBody.email);
   assert(!("hashedPassword" in body));
   assert(!("lastModified" in body));
 });
@@ -63,15 +51,15 @@ Deno.test("POST /ext/v1/accounts should return user-unauthorized if user is not 
   assertEquals(body.kind, "user-unauthorized");
 });
 
-for (
-  const [field, value] of [
-    ["type", "passenger"],
-    ["fullName", ""],
-    ["email", "john.smith"],
-    ["password", "pass"],
-  ]
-) {
-  Deno.test(`POST /ext/v1/accounts should return schema-mismatch if ${field} is invalid`, async () => {
+Deno.test(`POST /ext/v1/accounts should return schema-mismatch if the body is invalid`, async () => {
+  for (
+    const [field, value] of [
+      ["type", "passenger"],
+      ["fullName", ""],
+      ["email", "john.smith"],
+      ["password", "pass"],
+    ]
+  ) {
     const { api } = await setupTest();
 
     const response = await api.request("/ext/v1/accounts", {
@@ -83,8 +71,8 @@ for (
 
     assertEquals(response.status, 422);
     assertEquals(body.kind, "schema-mismatch");
-  });
-}
+  }
+});
 
 Deno.test("POST /ext/v1/accounts should return schema-mismatch if body has wrong content-type", async () => {
   const { api } = await setupTest();
@@ -124,7 +112,6 @@ Deno.test("POST /ext/v1/accounts should create an account fetchable from GET /ex
     body: JSON.stringify(correctBody),
   });
   const createBody = await createResponse.json();
-
   assertEquals(createResponse.status, 201);
 
   const getResponse = await api.request(`/ext/v1/accounts/${createBody.id}`, { headers: correctHeaders });

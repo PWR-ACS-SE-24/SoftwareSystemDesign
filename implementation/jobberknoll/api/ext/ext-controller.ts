@@ -13,6 +13,30 @@ export class ExtController implements Controller {
   public get routes(): JkApp {
     const app = createJkApp(this.logger)
       .openapi(
+        r.registerRoute,
+        r.registerHandler(this.service.register),
+      )
+      .openapi(
+        r.getSelfRoute,
+        r.getSelfHandler(this.service.getAccountById),
+      )
+      .openapi(
+        r.editSelfNameRoute,
+        r.editSelfNameHandler(this.service.editAccountName),
+      )
+      .openapi(
+        r.editSelfPasswordRoute,
+        r.editSelfPasswordHandler(this.service.editAccountPassword),
+      )
+      .openapi(
+        r.editSelfPhoneRoute,
+        r.editSelfPhoneHandler(this.service.editAccountPhone),
+      )
+      .openapi(
+        r.deleteSelfRoute,
+        r.deleteSelfHandler(this.service.deleteAccount),
+      )
+      .openapi(
         r.createAccountRoute,
         r.createAccountHandler(this.service.createAccount),
       )

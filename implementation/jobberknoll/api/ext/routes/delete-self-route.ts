@@ -1,0 +1,33 @@
+import { createRoute } from "@hono/zod-openapi";
+import type { DeleteAccountUseCase } from "@jobberknoll/app";
+import { isOk } from "@jobberknoll/core/shared";
+import { authorize } from "~/ext/authorization.ts";
+import { UserUnauthorizedResponse } from "~/ext/contracts/mod.ts";
+import { extHeadersSchema } from "~/ext/openapi.ts";
+import { AccountNotFoundResponse, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
+import type { JkHandler } from "~/shared/hooks.ts";
+
+export const deleteSelfRoute = createRoute({
+  method: "delete",
+  path: "/self",
+  summary: "Delete your own account",
+  tags: ["Self"],
+  description: "Only for authenticated users.",
+  request: {
+    headers: extHeadersSchema("passenger"),
+  },
+  responses: {
+    204: { description: "Own account deleted successfully." },
+    401: UserUnauthorizedResponse,
+    404: AccountNotFoundResponse, // NOTE: can be returned if the user deleted their account, but the token is still valid, or the gateway provided an invalid header
+    422: SchemaMismatchResponse,
+  },
+});
+
+export function deleteSelfHandler(deleteAccount: DeleteAccountUseCase): JkHandler<typeof deleteSelfRoute> {
+  return authorize("member", async (c) => {
+    const { "jp-user-id": accountId } = c.req.valid("header");
+    const res = await deleteAccount.invoke(c.get("ctx"), { accountId });
+    return isOk(res) ? c.body(null, 204) : c.json(res.value, res.value.code);
+  });
+}

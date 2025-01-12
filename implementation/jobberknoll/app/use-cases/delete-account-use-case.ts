@@ -6,15 +6,15 @@ import { UseCase } from "./use-case.ts";
 
 type DeleteAccountReq = { accountId: UUID };
 
-export class DeleteAccountUseCase extends UseCase<DeleteAccountReq, null, AccountNotFoundError> {
+export class DeleteAccountUseCase extends UseCase<DeleteAccountReq, void, AccountNotFoundError> {
   public constructor(logger: Logger, private readonly accountRepo: AccountRepo) {
     super(logger);
   }
 
-  protected async handle(ctx: Ctx, req: DeleteAccountReq): Promise<Result<null, AccountNotFoundError>> {
+  protected async handle(ctx: Ctx, req: DeleteAccountReq): Promise<Result<void, AccountNotFoundError>> {
     const error = await this.accountRepo.deleteAccount(ctx, req.accountId);
     if (isSome(error)) return err(error.value);
     this.audit("AccountDeleted", req.accountId);
-    return ok(null);
+    return ok(undefined);
   }
 }
