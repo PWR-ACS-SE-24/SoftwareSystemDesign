@@ -1,5 +1,5 @@
 import { ArgumentMetadata, Type } from '@nestjs/common';
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, PickType } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import { SchemaMismatchException } from '../api/http-exceptions';
 import { ValidateCreatePipe, ValidateUpdatePipe } from '../api/pipes';
@@ -32,8 +32,17 @@ class TestInheritanceDto extends TestDto {
 }
 
 class UpdateTestInheritanceDto extends PartialType(TestInheritanceDto) {}
+class PickTypeTestInheritanceDto extends PickType(TestInheritanceDto, ['bool'] as const) {
+  @IsString()
+  readonly newText: string;
 
-function getTestMetadata(type: Type<unknown>): ArgumentMetadata {
+  constructor(bool: boolean, newText: string) {
+    super(bool);
+    this.newText = newText;
+  }
+}
+
+export function getTestMetadata(type: Type<unknown>): ArgumentMetadata {
   return {
     type: 'body',
     metatype: type,
@@ -86,5 +95,45 @@ describe('ValidationService', () => {
 
     // then
     await expect(ValidateUpdatePipe.transform(data, getTestMetadata(UpdateTestInheritanceDto))).resolves.toBeDefined();
+  });
+
+  it('should validate inheritance with pick', async () => {
+    // given
+    const data = <PickTypeTestInheritanceDto>{ bool: true, newText: 'oe' };
+
+    // then
+    await expect(
+      ValidateCreatePipe.transform(data, getTestMetadata(PickTypeTestInheritanceDto)),
+    ).resolves.toBeDefined();
+    await expect(
+      ValidateUpdatePipe.transform(data, getTestMetadata(PickTypeTestInheritanceDto)),
+    ).resolves.toBeDefined();
+  });
+
+  it('should reject inheritance with pick', async () => {
+    // given
+    const data1 = <PickTypeTestInheritanceDto>{ bool: true, newText: 'oe', number: 1 };
+    const data2 = <PickTypeTestInheritanceDto>{
+      bool: true,
+      newText: 'o e o ah ah ting tang walla walla bing bang',
+      number: 1,
+    };
+
+    // then
+    await expect(ValidateCreatePipe.transform(data1, getTestMetadata(PickTypeTestInheritanceDto))).rejects.toThrow(
+      SchemaMismatchException,
+    );
+
+    await expect(ValidateUpdatePipe.transform(data1, getTestMetadata(PickTypeTestInheritanceDto))).rejects.toThrow(
+      SchemaMismatchException,
+    );
+
+    await expect(ValidateCreatePipe.transform(data2, getTestMetadata(PickTypeTestInheritanceDto))).rejects.toThrow(
+      SchemaMismatchException,
+    );
+
+    await expect(ValidateUpdatePipe.transform(data2, getTestMetadata(PickTypeTestInheritanceDto))).rejects.toThrow(
+      SchemaMismatchException,
+    );
   });
 });

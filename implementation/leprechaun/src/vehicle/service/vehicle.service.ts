@@ -24,7 +24,7 @@ export class VehicleService {
     return { vehicles, total };
   }
 
-  async findVehicleById(vehicleId: string, filters: boolean = true): Promise<Vehicle> {
+  async getVehicleById(vehicleId: string, filters: boolean = true): Promise<Vehicle> {
     return await this.vehicleRepository.findOneOrFail(
       { id: vehicleId },
       { failHandler: () => new NotFoundException({ details: vehicleId }), filters: filters },
@@ -45,7 +45,7 @@ export class VehicleService {
 
   async updateVehicleById(vehicleId: string, updateVehicle: UpdateVehicleDto): Promise<Vehicle> {
     // As per the requirements, we don't update in place, but rather set isActive to false and create a new one
-    const vehicle = await this.findVehicleById(vehicleId);
+    const vehicle = await this.getVehicleById(vehicleId);
     await this.deleteVehicleById(vehicleId);
 
     // Create new one in place
