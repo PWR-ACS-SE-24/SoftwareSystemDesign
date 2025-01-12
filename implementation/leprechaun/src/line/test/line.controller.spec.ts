@@ -1,11 +1,9 @@
 import { testConfig } from '@app/config/mikro-orm.test.config';
-import { HttpExceptionFilter, InternalExceptionFilter } from '@app/shared/api/http-exception.filter';
 import { SharedModule } from '@app/shared/shared.module';
 import { Stop } from '@app/stop/database/stop.entity';
 import { StopService } from '@app/stop/service/stop.service';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { v7 } from 'uuid';
 import { CreateLineDto } from '../controller/line-create.dto';
@@ -15,7 +13,6 @@ import { StopLineMapping } from '../database/stop-line-mapping.entity';
 import { LineService } from '../service/line.service';
 
 describe('LineController', () => {
-  let app: INestApplication;
   let controller: LineController;
   let em: EntityManager;
   let orm: MikroORM;
@@ -30,10 +27,6 @@ describe('LineController', () => {
       controllers: [LineController],
       providers: [LineService, StopService],
     }).compile();
-
-    app = module.createNestApplication();
-    app.useGlobalFilters(new InternalExceptionFilter());
-    app.useGlobalFilters(new HttpExceptionFilter());
 
     controller = module.get<LineController>(LineController);
     em = module.get<EntityManager>(EntityManager);

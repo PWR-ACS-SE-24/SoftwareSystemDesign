@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 // prettier-ignore
 export const ErrorKind = {
-  SchemaMismatchException: ['schema-mismatch',              HttpStatus.UNPROCESSABLE_ENTITY],
-  NotFoundException:       ['resource-not-found-exception', HttpStatus.NOT_FOUND],
-  InternalServerError:     ['server-failure',               HttpStatus.INTERNAL_SERVER_ERROR],
-  UnauthorizedException:   ['user-unauthorized',            HttpStatus.UNAUTHORIZED],
-  ForbiddenException:      ['user-forbidden',               HttpStatus.FORBIDDEN],
+  SchemaMismatchException:      ['schema-mismatch',              HttpStatus.UNPROCESSABLE_ENTITY],
+  NotFoundException:            ['resource-not-found-exception', HttpStatus.NOT_FOUND],
+  InternalServerErrorException: ['server-failure',               HttpStatus.INTERNAL_SERVER_ERROR],
+  UnauthorizedException:        ['user-unauthorized',            HttpStatus.UNAUTHORIZED],
+  ForbiddenException:           ['user-forbidden',               HttpStatus.FORBIDDEN],
 } as const satisfies Record<string, [string, number]>;
 
 function isKnownErrorType(key: string): key is keyof typeof ErrorKind {
@@ -64,8 +64,8 @@ export const exceptionMap: Record<
     return new HttpExceptionDto(ErrorKind.NotFoundException, messageEn, messagePl);
   },
 
-  InternalServerError: (_) =>
-    new HttpExceptionDto(ErrorKind.InternalServerError, 'Internal server error', 'Wewnętrzny błąd serwera'),
+  InternalServerErrorException: (_) =>
+    new HttpExceptionDto(ErrorKind.InternalServerErrorException, 'Internal server error', 'Wewnętrzny błąd serwera'),
 
   UnauthorizedException: (_) =>
     new HttpExceptionDto(ErrorKind.UnauthorizedException, 'Unauthorized exception', 'Nieautoryzowany dostęp'),
@@ -78,5 +78,5 @@ export function mapException(error: HttpException): AppError {
   const name = error.constructor.name;
   if (isKnownErrorType(name)) {
     return exceptionMap[name](error.getResponse());
-  } else return exceptionMap.InternalServerError('');
+  } else return exceptionMap.InternalServerErrorException('');
 }
