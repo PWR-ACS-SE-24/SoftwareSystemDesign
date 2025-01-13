@@ -8,7 +8,7 @@ public class UUIDv7Generator {
     private static final TimeBasedEpochRandomGenerator UUID_GENERATOR =
             Generators.timeBasedEpochRandomGenerator();
 
-    public String generate() {
+    public static String generate() {
         return UUID_GENERATOR.generate().toString();
     }
 }
