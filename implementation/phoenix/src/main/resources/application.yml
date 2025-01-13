@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+spring:
+  config:
+    import: classpath:env.properties
+  cloud:
+    gateway:
+      routes:
+        - id: accounts_route
+          uri: ${JOBBERKNOLL_IP}
+          predicates:
+            - Path=/phoenix/account/**
+          filters:
+            - RewritePath=/phoenix/account/(?<remaining>.*), /ext/${remaining}
+            - AddRequestIdFilter
+            - AddRequestHeader=user-agent, Phoenix/1.0.0
+
+        - id: tickets_route
+          uri: ${CLABBERT_IP}
+          predicates:
+            - Path=/phoenix/ticket/**
+          filters:
+            - RewritePath=/phoenix/ticket/(?<remaining>.*), /ext/${remaining}
+            - AddRequestIdFilter
+            - AddRequestHeader=user-agent, Phoenix/1.0.0
+
+        - id: payments_route
+          uri: ${INFERIUS_IP}
+          predicates:
+            - Path=/phoenix/payment/**
+          filters:
+            - RewritePath=/phoenix/payment/(?<remaining>.*), /ext/${remaining}
+            - AddRequestIdFilter
+            - AddRequestHeader=user-agent, Phoenix/1.0.0
+
+        - id: logistics_route
+          uri: ${LEPRECHAUN_IP}
+          predicates:
+            - Path=/phoenix/logistics/**
+          filters:
+            - RewritePath=/phoenix/logistics/(?<remaining>.*), /ext/${remaining}
+            - AddRequestIdFilter
+            - AddRequestHeader=user-agent, Phoenix/1.0.0
