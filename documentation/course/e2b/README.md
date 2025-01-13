@@ -26,14 +26,71 @@ Skład zespołu <b>oceniającego</b>:
 > Zgodnie z [Architecture Review Checklist - System Engineering / Overall Architecture](http://www.opengroup.org/public/arch/p4/comp/clists/syseng.htm) - wykład 7, slajd 15.
 
 **Legenda:**
+
 - 🟩 - element listy opisany w pełni,
 - 🟨 - element listy opisany częściowo,
-- 🟥 - element listy nieopisany.
+- 🟥 - element listy nieopisany,
+- 🟫 - nie dotyczy.
 
 <!--
 TODO, niewymagane, ale najłatwiejsze ze wszystkiego także moim zdaniem warto zrobić
 -->
 
+| **Element opisu**                                                                                                                                                                                                 | **Status** |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1. What other applications and/or systems require integration with yours?                                                                                                                                         |            |
+| 2. Describe the integration level and strategy with each.                                                                                                                                                         |            |
+| 3. How geographically distributed is the user base?                                                                                                                                                               |            |
+| 4. What is the strategic importance of this system to other user communities inside or outside the enterprise?                                                                                                    |            |
+| 5. What computing resources are needed to provide system service to users inside the enterprise? Outside the enterprise and using enterprise computing assets? Outside the enterprise and using their own assets? |            |
+| 6. How can users outside the native delivery environment access your applications and data?                                                                                                                       |            |
+| 7. What is the life expectancy of this application?                                                                                                                                                               |            |
+| 8. Describe the design that accommodates changes in the user base, stored data, and delivery system technology.                                                                                                   |            |
+| 9. What is the size of the user base and their expected performance level?                                                                                                                                        |            |
+| 10. What performance and stress test techniques do you use?                                                                                                                                                       |            |
+| 11. What is the overall organization of the software and data components?                                                                                                                                         |            |
+| 12. What is the overall service and system configuration?                                                                                                                                                         |            |
+| 13. How are software and data configured mapped to the service and system configuration?                                                                                                                          |            |
+| 14. What proprietary technology (hardware and software) is needed for this system?                                                                                                                                |            |
+| 15. Describe how each and every version of the software can be reproduced and re-deployed over time.                                                                                                              |            |
+| 16. Describe the current user base and how that base is expected to change over the next 3 to 5 years.                                                                                                            |            |
+| 17. Describe the current geographic distribution of the user base and how that base is expected to change over the next 3 to 5 years.                                                                             |            |
+| 18. Describe the how many current or future users need to use the application in a mobile capacity or who need to work off-line.                                                                                  |            |
+| 19. Describe what the application generally does, the major components of the application and the major data flows.                                                                                               |            |
+| 20. Describe the instrumentation included in the application that allows for the health and performance of the application to be monitored.                                                                       |            |
+| 21. Describe the business justification for the system.                                                                                                                                                           |            |
+| 22. Describe the rationale for picking the system development language over other options in terms of initial development cost versus long term maintenance cost.                                                 |            |
+| 23. Describe the systems analysis process that was used to come up with the system architecture and product selection phase of the system architecture.                                                           |            |
+| 24. Who besides the original customer might have a use for or benefit from using this system?                                                                                                                     |            |
+| 25. What percentage of the users use the system in browse mode versus update mode?                                                                                                                                |            |
+| 26. What is the typical length of requests that are transactional?                                                                                                                                                |            |
+| 27. Do you need guaranteed data delivery or update, or the system tolerate failure?                                                                                                                               |            |
+| 28. What are the up-time requirements of the system?                                                                                                                                                              |            |
+| 29. Describe where the system architecture adheres or does not adhere to standards.                                                                                                                               |            |
+| 30. Describe the project planning and analysis approach used on the project.                                                                                                                                      |            |
+| 1. Describe the Client/Server application architecture.                                                                                                                                                           |            |
+| 2. Annotate the pictorial to illustrate where application functionality is executed.                                                                                                                              |            |
+| 1. Are functions other than presentation performed on the user device?                                                                                                                                            |            |
+| 2. Describe the data and process help facility being provided.                                                                                                                                                   |            |
+| 3. Describe the screen to screen navigation technique.                                                                                                                                                            |            |
+| 4. Describe how the user navigates between this and other applications.                                                                                                                                          |            |
+| 5. How is this and other applications launched from the user device?                                                                                                                                             |            |
+| 6. Are there any inter-application data and process sharing capabilities? If so, describe what is being shared and by what technique / technology.                                                               |            |
+| 7. Describe data volumes being transferred to the client.                                                                                                                                                        |            |
+| 8. What are the additional requirements for local data storage to support the application?                                                                                                                        |            |
+| 9. What are the additional requirements for local software storage/memory to support the application?                                                                                                              |            |
+| 10. Are there any known hardware / software conflicts or capacity limitations caused by other application requirements or situations, which would affect the application users?                                    |            |
+| 11. Describe how the look and feel of your presentation layer compares to the look and feel of the other existing applications.                                                                                 |            |
+| 12. Describe to what extent the client needs to support asynchronous and / or synchronous communication.                                                                                                          |            |
+| 13. Describe how the presentation layer of the system is separated from other computational or data transfer layers of the system.                                                                              |            |
+| 1. Can/does the presentation layer and application layers run on separate processors?                                                                                                                              |            |
+| 2. Can/does the application layer and data access layer run on separate processors?                                                                                                                                |            |
+| 3. Can this application be placed on an application server independent of all other applications? If not, explain the dependencies.                                                                            |            |
+| 4. Can additional parallel application servers be easily added? If so, what is the load balancing mechanism?                                                                                                      |            |
+| 5. Has the resource demand generated by the application been measured and what is the value? If so, has the capacity of the planned server been confirmed at the application and aggregate levels?               |            |
+| 1. Are there other applications, which must share the data server? If so, please identify them and describe the data and data access requirements.                                                               |            |
+| 2. Has the resource demand generated by the application been measured and what is the value? If so, has the capacity of the planned server been confirmed at the application and aggregate levels?               |            |
+ 
 # Przegląd podejść architektonicznych
 
 > [!NOTE]
@@ -46,9 +103,10 @@ TODO, w przykładowym dokumencie jest źle, powinno to zawrzeć wszystkie style,
 # Drzewo użyteczności
 
 > [!NOTE]
-> Lista charakterystyk jakościowych jest zgodna z normą ISO/IEC 25010.
+> Lista wykorzystanych charakterystyk jakościowych jest zgodna z normą ISO/IEC 25010.
 
 **Legenda dla priorytetów:** `(<business-gain>, <difficulty>)`, gdzie:
+
 - `<business-gain>`: korzyść biznesowa wg klienta: `H` (high), `M` (medium) lub `L` (low),
 - `<difficulty>`: trudność implementacji wg architekta: `H` (high), `M` (medium) lub `L` (low).
 
@@ -150,8 +208,8 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 # Inne problemy
 
-<!-- TODO -->
+- ...
 
 # Wnioski
 
-<!-- TODO -->
+TODO
