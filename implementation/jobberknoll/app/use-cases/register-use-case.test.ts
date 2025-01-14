@@ -72,7 +72,7 @@ Deno.test("RegisterUseCase should not audit the account creation if the email is
   assert(!logger.matches("audit log - AccountCreated"));
 });
 
-Deno.test.ignore("RegisterUseCase should hash the password", async () => {
+Deno.test("RegisterUseCase should hash the password", async () => {
   const { register } = setup();
 
   const result = await register.invoke(newCtx(), registerReq);

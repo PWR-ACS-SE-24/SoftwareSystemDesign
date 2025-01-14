@@ -134,7 +134,7 @@ Deno.test("EditAccountPasswordUseCase should not audit the password change if th
   assert(!logger.matches("audit log - AccountPasswordEdited"));
 });
 
-Deno.test.ignore("EditAccountPasswordUseCase should hash the password", async () => {
+Deno.test("EditAccountPasswordUseCase should hash the password", async () => {
   const { accountRepo, editAccountPassword } = setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
