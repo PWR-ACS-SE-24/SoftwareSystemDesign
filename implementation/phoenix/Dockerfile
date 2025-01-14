@@ -6,7 +6,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 COPY --from=build /app/target/phoenix-0.0.1-SNAPSHOT.jar phoenix.jar
