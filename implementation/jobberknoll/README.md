@@ -51,6 +51,7 @@
 
 - [ADR/001: Vertical partitioning of the Jobberknoll API package structure](../../documentation/adrs/001-jobberknoll-api-structure.md)
 - [ADR/002: Domain model and database schema changes for Jobberknoll](../../documentation/adrs/002-jobberknoll-domain-model.md)
+- [ADR/003: Password hashing and storage requirements for Jobberknoll](../../documentation/adrs/003-password-hashing.md)
 
 ## Capabilities
 
