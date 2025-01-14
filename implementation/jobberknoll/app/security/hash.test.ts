@@ -1,6 +1,8 @@
 import { assertEquals } from "@std/assert";
 import { sha256 } from "./hash.ts";
 
+// NOTE: these tests act as regression tests in case the underlying implementation changes
+
 Deno.test("sha256 should return the correct hash", async () => {
   for (
     const [input, expected] of [

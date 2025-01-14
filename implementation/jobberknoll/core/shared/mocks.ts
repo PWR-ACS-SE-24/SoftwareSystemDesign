@@ -6,7 +6,7 @@ export const accountMock: Account = {
   type: "passenger",
   fullName: "John Smith",
   email: "john.smith@example.com",
-  hashedPassword: "$2a$12$9rnvHqxGPHRiMtBZlKwKluiQ.qDY3BkmAFN3prpZdkuRhtE9Zx0gy",
+  hashedPassword: "$argon2id$v=19$m=16,t=2,p=1$Y3FocFNsT2Q3VjQxaXFpNA$wqO5cqXN1/qEd7+/cHznfg", // "Password"
   lastModified: 1735558355,
   phoneNumber: null,
 };

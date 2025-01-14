@@ -1,6 +1,7 @@
 import { accountMock, isErr, isOk, isSome, uuid } from "@jobberknoll/core/shared";
 import { MemoryAccountRepo, TestLogger } from "@jobberknoll/infra";
 import { assert, assertEquals } from "@std/assert";
+import { isPasswordHashed } from "~/security/mod.ts";
 import { newCtx } from "~/shared/mod.ts";
 import { RegisterUseCase } from "./register-use-case.ts";
 
@@ -72,7 +73,12 @@ Deno.test("RegisterUseCase should not audit the account creation if the email is
 });
 
 Deno.test.ignore("RegisterUseCase should hash the password", async () => {
-  // TODO: hash the password
+  const { register } = setup();
+
+  const result = await register.invoke(newCtx(), registerReq);
+
+  assert(isOk(result));
+  assert(isPasswordHashed(result.value.hashedPassword));
 });
 
 Deno.test.ignore("RegisterUseCase should send a welcome email", async () => {

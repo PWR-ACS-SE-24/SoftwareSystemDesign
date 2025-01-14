@@ -1,6 +1,7 @@
 import { accountMock, isErr, isOk, isSome, uuid } from "@jobberknoll/core/shared";
 import { MemoryAccountRepo, TestLogger } from "@jobberknoll/infra";
 import { assert, assertEquals } from "@std/assert";
+import { isPasswordHashed } from "~/security/mod.ts";
 import { newCtx } from "~/shared/mod.ts";
 import { CreateAccountUseCase } from "./create-account-use-case.ts";
 
@@ -72,8 +73,13 @@ Deno.test("CreateAccountUseCase should not audit the account creation if the ema
   assert(!logger.matches("audit log - AccountCreated"));
 });
 
-Deno.test.ignore("CreateAccountUseCase should hash the password", async () => {
-  // TODO: hash the password
+Deno.test("CreateAccountUseCase should hash the password", async () => {
+  const { createAccount } = setup();
+
+  const result = await createAccount.invoke(newCtx(), createAccountReq);
+
+  assert(isOk(result));
+  assert(isPasswordHashed(result.value.hashedPassword));
 });
 
 Deno.test.ignore("CreateAccountUseCase should send the welcome email", async () => {
