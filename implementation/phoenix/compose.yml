@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  phoenix-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phoenix-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - JOBBERKNOLL_SERVICE_HOST=host.docker.internal
+      - JOBBERKNOLL_SERVICE_PORT=1080
+      - CLABBERT_SERVICE_HOST=host.docker.internal
+      - CLABBERT_SERVICE_PORT=1081
+      - INFERIUS_SERVICE_HOST=host.docker.internal
+      - INFERIUS_SERVICE_PORT=1082
+      - LEPRECHAUN_SERVICE_HOST=host.docker.internal
+      - LEPRECHAUN_SERVICE_PORT=1083
+      - PHOENIX_VERSION=1.0.0
