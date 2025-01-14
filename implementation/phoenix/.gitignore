@@ -4,7 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/env.properties
-src/main/java/com/example/phoenix/MockService.java
+src/main/java/com/example/phoenix/mock
 
 ### STS ###
 .apt_generated
