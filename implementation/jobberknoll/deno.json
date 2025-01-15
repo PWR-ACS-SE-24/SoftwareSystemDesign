@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0",
+  "version": "0.7.0",
   "workspace": ["api", "app", "core", "infra"],
   "tasks": {
     "start": "deno run --allow-read --allow-ffi --allow-net --allow-env main.ts",
