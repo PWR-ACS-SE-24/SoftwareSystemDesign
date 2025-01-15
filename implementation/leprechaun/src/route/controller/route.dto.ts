@@ -1,31 +1,35 @@
 import { LineDto } from '@app/line/controller/line.dto';
-import { GenericIdDto } from '@app/shared/api/generic.dto';
+import { GenericIdActiveDto, GenericIdDto, UUIDApiProperty } from '@app/shared/api/generic.dto';
 import { VehicleDto } from '@app/vehicle/controller/vehicle.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { IsISO8601, IsNotEmpty } from 'class-validator';
 import { Route } from '../database/route.entity';
 
-export class RouteDto extends GenericIdDto {
+const startTimeProperty: ApiPropertyOptions = {
+  description: 'Start time of the route',
+  type: 'string',
+  format: 'date-time',
+  nullable: false,
+  example: '2021-07-29T08:00:00.000Z',
+};
+
+const endTimeProperty: ApiPropertyOptions = {
+  description: 'End time of the route',
+  type: 'string',
+  format: 'date-time',
+  nullable: false,
+  example: '2021-07-29T08:00:00.000Z',
+};
+
+export class RouteDto extends GenericIdActiveDto {
   @IsISO8601()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'Start time of the route',
-    type: 'string',
-    format: 'date-time',
-    nullable: false,
-    example: '2021-07-29T08:00:00.000Z',
-  })
+  @ApiProperty(startTimeProperty)
   readonly startTime: string;
 
   @IsISO8601()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'End time of the route',
-    type: 'string',
-    format: 'date-time',
-    nullable: false,
-    example: '2021-07-29T08:00:00.000Z',
-  })
+  @ApiProperty(endTimeProperty)
   readonly endTime: string;
 
   @IsNotEmpty()
@@ -55,5 +59,60 @@ export class RouteDto extends GenericIdDto {
 
   public static fromEntities(entities: Route[]): RouteDto[] {
     return entities.map(RouteDto.fromEntity);
+  }
+}
+export class AccidentRouteDto extends GenericIdDto {
+  @IsISO8601()
+  @ApiProperty(startTimeProperty)
+  readonly startTime: string;
+
+  @IsISO8601()
+  @ApiProperty(endTimeProperty)
+  readonly endTime: string;
+
+  @ApiProperty({ description: 'Name of the line', type: 'string', nullable: false, example: '141' })
+  readonly lineName: string;
+
+  @ApiProperty({ ...UUIDApiProperty, description: 'ID of the line' })
+  readonly line: string;
+
+  @ApiProperty({ description: 'Side number of the vehicle', type: 'string', nullable: false, example: '2137' })
+  readonly vehicleSideNumber: string;
+
+  @ApiProperty({ ...UUIDApiProperty, description: 'ID of the vehicle' })
+  readonly vehicle: string;
+
+  constructor(
+    id: string,
+    startTime: Date,
+    endTime: Date,
+    lineName: string,
+    line: string,
+    vehicleSideNumber: string,
+    vehicle: string,
+  ) {
+    super(id);
+    this.startTime = startTime.toISOString();
+    this.endTime = endTime.toISOString();
+    this.lineName = lineName;
+    this.line = line;
+    this.vehicleSideNumber = vehicleSideNumber;
+    this.vehicle = vehicle;
+  }
+
+  public static fromEntity(entity: Route): AccidentRouteDto {
+    return new AccidentRouteDto(
+      entity.id,
+      entity.startTime,
+      entity.endTime,
+      entity.line.name,
+      entity.line.id,
+      entity.vehicle.sideNumber,
+      entity.vehicle.id,
+    );
+  }
+
+  public static fromEntities(entities: Route[]): AccidentRouteDto[] {
+    return entities.map(AccidentRouteDto.fromEntity);
   }
 }
