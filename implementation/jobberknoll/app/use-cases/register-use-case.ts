@@ -1,6 +1,7 @@
 import { type Account, invalidAccountData, type InvalidAccountDataError } from "@jobberknoll/core/domain";
 import { err, ok, type Result, uuid } from "@jobberknoll/core/shared";
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
+import { hashPassword } from "~/security/mod.ts";
 import type { Ctx } from "~/shared/ctx.ts";
 import { UseCase } from "./use-case.ts";
 
@@ -26,7 +27,7 @@ export class RegisterUseCase extends UseCase<RegisterReq, Account, InvalidAccoun
       type: "passenger" as const,
       fullName: req.fullName,
       email: req.email.toLowerCase(),
-      hashedPassword: req.password, // TODO: hash the password
+      hashedPassword: await hashPassword(req.password),
       lastModified: Math.floor(Date.now() / 1000),
       phoneNumber: req.phoneNumber,
     };

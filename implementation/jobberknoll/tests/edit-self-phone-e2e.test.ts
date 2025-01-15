@@ -1,5 +1,5 @@
-import { newCtx, UserRole } from "@jobberknoll/app";
-import { accountMock, UUID, uuid } from "@jobberknoll/core/shared";
+import { newCtx, type UserRole } from "@jobberknoll/app";
+import { accountMock, type UUID, uuid } from "@jobberknoll/core/shared";
 import { assertEquals } from "@std/assert";
 import { setupTest } from "../setup.ts";
 

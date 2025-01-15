@@ -1,10 +1,10 @@
 {
-  "version": "0.6.0",
+  "version": "0.7.0",
   "workspace": ["api", "app", "core", "infra"],
   "tasks": {
-    "dev": "deno run --allow-net --allow-env main.ts",
-    "test": "deno test --coverage && deno coverage --html && deno coverage",
-    "compile": "deno compile --allow-net --allow-env --output jobberknoll main.ts"
+    "dev": "deno run --allow-net --allow-env --allow-ffi main.ts",
+    "test": "deno test --coverage --allow-ffi && deno coverage --html && deno coverage",
+    "compile": "deno compile --allow-net --allow-env --allow-ffi --output jobberknoll main.ts"
   },
   "fmt": {
     "lineWidth": 120
