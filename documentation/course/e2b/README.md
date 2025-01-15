@@ -267,9 +267,27 @@ Skład zespołu <b>oceniającego</b>:
 > [!NOTE]
 > Zgodnie z [ATAM: Method for Architecture Evaluation](https://insights.sei.cmu.edu/documents/629/2000_005_001_13706.pdf), strona 7, na tym etapie nie dokonuje się analizy ani opisu poszczególnych podejść - _Architectural approaches are identified by the architect, but are not analyzed._
 
-<!--
-TODO, w przykładowym dokumencie jest źle, powinno to zawrzeć wszystkie style, wzorce, taktyki i frameworki
--->
+- architektura mikroserwisów
+- AWS
+- AWS SQS
+- AWS Cognito
+- AWS S3
+- AWS RDS
+- AWS CloudWatch
+- AWS Lambda
+- AWS EKS
+- API Gateway
+- wzorzec fasady
+- brak cachingu
+- leniwe ładowanie modułów frontend
+- asynchroniczna komunikacja między serwisami
+- automatyczne skalowanie
+- JWT
+- Application Load Balancer
+- Kubernetes
+- PostgreSQL
+- Spring Boot
+- Angular
 
 # Drzewo użyteczności
 
