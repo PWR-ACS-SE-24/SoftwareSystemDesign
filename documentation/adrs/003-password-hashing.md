@@ -1,8 +1,8 @@
 ---
 scope: Jobberknoll
 date: 2025-01-14
-deciders: "@tchojnacki"
-informed: "@mlodybercik, @jakubzehner, @piterek130"
+deciders: "@tchojnacki, @mlodybercik"
+informed: "@jakubzehner, @piterek130"
 ---
 
 # Password hashing and storage requirements for Jobberknoll
