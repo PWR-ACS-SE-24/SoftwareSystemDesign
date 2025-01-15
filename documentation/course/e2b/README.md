@@ -32,10 +32,6 @@ Skład zespołu <b>oceniającego</b>:
 - 🟥 - element listy nieopisany,
 - 🟫 - nie dotyczy.
 
-<!--
-TODO, niewymagane, ale najłatwiejsze ze wszystkiego także moim zdaniem warto zrobić
--->
-
 <table>
   <tr>
     <th>Element opisu</th>
@@ -46,223 +42,223 @@ TODO, niewymagane, ale najłatwiejsze ze wszystkiego także moim zdaniem warto z
   </tr>
   <tr>
     <td>1. What other applications and/or systems require integration with yours?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>2. Describe the integration level and strategy with each.</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>3. How geographically distributed is the user base?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>4. What is the strategic importance of this system to other user communities inside or outside the enterprise?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>5. What computing resources are needed to provide system service to users inside the enterprise? Outside the enterprise and using enterprise computing assets? Outside the enterprise and using their own assets?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>6. How can users outside the native delivery environment access your applications and data?</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>7. What is the life expectancy of this application?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>8. Describe the design that accommodates changes in the user base, stored data, and delivery system technology.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>9. What is the size of the user base and their expected performance level?</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>10. What performance and stress test techniques do you use?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>11. What is the overall organization of the software and data components?</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>12. What is the overall service and system configuration?</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>13. How are software and data configured mapped to the service and system configuration?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>14. What proprietary technology (hardware and software) is needed for this system?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>15. Describe how each and every version of the software can be reproduced and re-deployed over time.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>16. Describe the current user base and how that base is expected to change over the next 3 to 5 years.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>17. Describe the current geographic distribution of the user base and how that base is expected to change over the next 3 to 5 years.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>18. Describe the how many current or future users need to use the application in a mobile capacity or who need to work off-line.</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>19. Describe what the application generally does, the major components of the application and the major data flows.</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>20. Describe the instrumentation included in the application that allows for the health and performance of the application to be monitored.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>21. Describe the business justification for the system.</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>22. Describe the rationale for picking the system development language over other options in terms of initial development cost versus long term maintenance cost.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>23. Describe the systems analysis process that was used to come up with the system architecture and product selection phase of the system architecture.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>24. Who besides the original customer might have a use for or benefit from using this system?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>25. What percentage of the users use the system in browse mode versus update mode?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>26. What is the typical length of requests that are transactional?</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>27. Do you need guaranteed data delivery or update, or the system tolerate failure?</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>28. What are the up-time requirements of the system?</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>29. Describe where the system architecture adheres or does not adhere to standards.</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>30. Describe the project planning and analysis approach used on the project.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <th colspan="2">Processors/Servers/Clients</th>
   </tr>
   <tr>
     <td>1. Describe the Client/Server application architecture.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>2. Annotate the pictorial to illustrate where application functionality is executed.</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <th colspan="2">Client</th>
   </tr>
   <tr>
     <td>1. Are functions other than presentation performed on the user device?</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>2. Describe the data and process help facility being provided.</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>3. Describe the screen to screen navigation technique.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>4. Describe how the user navigates between this and other applications.</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>5. How is this and other applications launched from the user device?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>6. Are there any inter-application data and process sharing capabilities? If so, describe what is being shared and by what technique / technology.</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>7. Describe data volumes being transferred to the client.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>8. What are the additional requirements for local data storage to support the application?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>9. What are the additional requirements for local software storage/memory to support the application?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>10. Are there any known hardware / software conflicts or capacity limitations caused by other application requirements or situations, which would affect the application users?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>11. Describe how the look and feel of your presentation layer compares to the look and feel of the other existing applications.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>12. Describe to what extent the client needs to support asynchronous and / or synchronous communication.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <td>13. Describe how the presentation layer of the system is separated from other computational or data transfer layers of the system.</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <th colspan="2">Application Server</th>
   </tr>
   <tr>
     <td>1. Can/does the presentation layer and application layers run on separate processors?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>2. Can/does the application layer and data access layer run on separate processors?</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>3. Can this application be placed on an application server independent of all other applications? If not, explain the dependencies.</td>
-    <td></td>
+    <td>🟥</td>
   </tr>
   <tr>
     <td>4. Can additional parallel application servers be easily added? If so, what is the load balancing mechanism?</td>
-    <td></td>
+    <td>🟩</td>
   </tr>
   <tr>
     <td>5. Has the resource demand generated by the application been measured and what is the value? If so, has the capacity of the planned server been confirmed at the application and aggregate levels?</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
   <tr>
     <th colspan="2">Data Server</th>
   </tr>
   <tr>
     <td>1. Are there other applications, which must share the data server? If so, please identify them and describe the data and data access requirements.</td>
-    <td></td>
+    <td>🟫</td>
   </tr>
   <tr>
     <td>2. Has the resource demand generated by the application been measured and what is the value? If so, has the capacity of the planned server been confirmed at the application and aggregate levels?</td>
-    <td></td>
+    <td>🟨</td>
   </tr>
 </table>
  
@@ -383,7 +379,17 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 # Inne problemy
 
-- ...
+- Liczne literówki.
+- Widok kontekstowy - AWS SQS, AWS Cognito i AWS S3 są wskazane jako systemy zewnętrzne, a w rzeczywistości stanowią część systemu Deskly.
+- Interfejsy integracyjne - powinny opisywać zależności z zewnętrznymi systemami, a nie między wewnętrznymi.
+- Interfejsy integracyjne - brak uzasadnienia dobranych wartości wydajności i wolumetrii.
+- Widok rozmieszczenia - wszystkie kolejki SQS są przedstawione jako wspólny węzeł, przez co nie widać które serwisy korzystają z których kolejek.
+- Widok rozmieszczenia - nie przedstawiono na diagramie frontendu.
+- Widok informacyjny - brak nazw asocjacji oraz pól klas.
+- Projekt bazy danych - nie zaznaczono w żaden sposób połączeń ani kluczy obcych między tabelami.
+- Widok wytwarzania - brak diagramu dla backendu.
+- Realizacja przypadku użycia - przykładowe zapytanie używa `GET` zamiast `POST`.
+- Realizacja przypadku użycia - Deskly Location komunikuje się z AWS Cognito, natomiast zgodnie z wyższymi diagramami robi to API Gateway.
 
 # Wnioski
 
