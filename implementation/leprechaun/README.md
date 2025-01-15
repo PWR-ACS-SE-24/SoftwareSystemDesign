@@ -59,6 +59,12 @@
 | `POST   /ext/v1/accidents`     | 🟩         |
 | `PATCH  /ext/v1/accidents/:id` | 🟩         |
 
+| **Endpoint**                     | **Status** |
+| -------------------------------- | ---------- |
+| `GET /int/v1/health`             | 🟨         |
+| `GET /int/v1/vehicles/:id/route` | 🟥         |
+| `GET /int/v1/endpoints`          | 🟩         |
+
 ## TODOs
 
 - Implement filters!
