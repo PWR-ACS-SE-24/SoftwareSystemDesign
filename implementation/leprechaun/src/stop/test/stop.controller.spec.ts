@@ -70,7 +70,7 @@ describe('StopController', () => {
 
   it('should create a stop', async () => {
     // given
-    const stop = new CreateStopDto('PWR', 21.37, 37.21);
+    const stop = <CreateStopDto>{ name: 'PWR', latitude: 21.37, longitude: 37.21 };
 
     // when
     const stopResponse = await controller.createStop(stop);

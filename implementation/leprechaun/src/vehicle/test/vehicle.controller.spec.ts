@@ -69,7 +69,7 @@ describe('VehicleController', () => {
 
   it('should create vehicle', async () => {
     // given
-    const newVehicle = new CreateVehicleDto('2139');
+    const newVehicle = <CreateVehicleDto>{ sideNumber: '2139' };
 
     // when
     const response = await controller.createVehicle(newVehicle);

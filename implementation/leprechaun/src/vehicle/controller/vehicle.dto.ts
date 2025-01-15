@@ -14,15 +14,16 @@ export class VehicleDto extends GenericIdActiveDto {
     nullable: false,
     examples: ['2137', '94102-3170150114'],
   })
-  readonly sideNumber: string;
-
-  constructor(id: string, sideNumber: string, isActive: boolean) {
-    super(id, isActive);
-    this.sideNumber = sideNumber;
-  }
+  readonly sideNumber!: string;
 
   static fromEntity(entity: Vehicle): VehicleDto {
-    return new VehicleDto(entity.id, entity.sideNumber, entity.isActive);
+    const dto = new VehicleDto();
+    Object.assign(dto, <VehicleDto>{
+      id: entity.id,
+      sideNumber: entity.sideNumber,
+      isActive: entity.isActive,
+    });
+    return dto;
   }
 
   static fromEntities(entities: Vehicle[]): VehicleDto[] {

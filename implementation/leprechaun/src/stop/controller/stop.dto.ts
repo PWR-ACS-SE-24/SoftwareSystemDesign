@@ -15,7 +15,7 @@ export class StopDto extends GenericIdActiveDto {
     nullable: false,
     examples: ['Zagony', 'pl. Grunwaldzki', 'Dworzec Główny'],
   })
-  readonly name: string;
+  readonly name!: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -24,7 +24,7 @@ export class StopDto extends GenericIdActiveDto {
     nullable: false,
     examples: [51.1079, 51.1079],
   })
-  readonly latitude: number;
+  readonly latitude!: number;
 
   @IsNotEmpty()
   @IsNumber()
@@ -33,17 +33,18 @@ export class StopDto extends GenericIdActiveDto {
     nullable: false,
     examples: [17.0385, 17.0385],
   })
-  readonly longitude: number;
-
-  constructor(id: string, name: string, latitude: number, longitude: number, isActive: boolean) {
-    super(id, isActive);
-    this.name = name;
-    this.latitude = latitude;
-    this.longitude = longitude;
-  }
+  readonly longitude!: number;
 
   static fromEntity(entity: Stop): StopDto {
-    return new StopDto(entity.id, entity.name, entity.latitude, entity.longitude, entity.isActive);
+    const dto = new StopDto();
+    Object.assign(dto, <StopDto>{
+      id: entity.id,
+      name: entity.name,
+      latitude: entity.latitude,
+      longitude: entity.longitude,
+      isActive: entity.isActive,
+    });
+    return dto;
   }
 
   static fromEntities(entities: Stop[]): StopDto[] {

@@ -4,11 +4,12 @@ export const healthcheckValues = ['UP', 'DOWN', 'UNKNOWN', 'OUT_OF_SERVICE'] as 
 export type HealthcheckStatus = (typeof healthcheckValues)[number];
 
 export class HealthcheckDto {
-  @ApiProperty({ enum: healthcheckValues, example: 'UP' })
-  status: HealthcheckStatus;
-
   // TODO: add more fields
-  constructor(status: HealthcheckStatus) {
-    this.status = status;
+  @ApiProperty({ enum: healthcheckValues, example: 'UP' })
+  status!: HealthcheckStatus;
+
+  // There is no HealthcheckEntity but to be in line with the other DTOs we will keep it named like this
+  static fromEntity(entity: { status: HealthcheckStatus }): HealthcheckDto {
+    return entity;
   }
 }

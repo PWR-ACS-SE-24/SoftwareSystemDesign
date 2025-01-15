@@ -64,4 +64,3 @@
 - Implement filters!
 - Ultimately, we will HAVE to implement some kind of secret-manager support.
 - Make E2E tests for all endpoints.
-- All DTOs (or at least all Update/Create) should not have constructors, but instead fields should be `!` (they should be treated as interfaces).

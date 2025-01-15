@@ -71,7 +71,7 @@ describe('LineController', () => {
 
   it('should create line', async () => {
     // given
-    const newLine = new CreateLineDto('1111', []);
+    const newLine = <CreateLineDto>{ name: '1111', stops: [] };
 
     // when
     const lineResponse = await controller.createLine(newLine);
@@ -221,7 +221,7 @@ describe('LineController', () => {
 
   it('should not allow to create line with non-existing stop', async () => {
     // given
-    const newLine = new CreateLineDto('1111', [v7()]);
+    const newLine = <CreateLineDto>{ name: '1111', stops: [v7()] };
 
     // then
     await expect(controller.createLine(newLine)).rejects.toThrow();

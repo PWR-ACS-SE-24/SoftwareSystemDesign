@@ -16,7 +16,7 @@ export class AccidentDto extends GenericIdDto {
     nullable: false,
     example: '2021-07-29T08:00:00.000Z',
   })
-  readonly time: string;
+  readonly time!: string;
 
   @IsOptional()
   @IsBoolean()
@@ -36,31 +36,25 @@ export class AccidentDto extends GenericIdDto {
     nullable: true,
     example: 'Styrta is on fire at the intersection of Wkoło Poczty and Łączna 43',
   })
-  readonly description: string;
+  readonly description!: string;
 
   @ApiProperty({
     description: 'Route of the accident',
     nullable: false,
     type: AccidentRouteDto,
   })
-  readonly route: AccidentRouteDto;
-
-  constructor(id: string, time: string, description: string, route: AccidentRouteDto, resolved: boolean = false) {
-    super(id);
-    this.time = time;
-    this.resolved = resolved;
-    this.description = description;
-    this.route = route;
-  }
+  readonly route!: AccidentRouteDto;
 
   public static fromEntity(entity: Accident): AccidentDto {
-    return new AccidentDto(
-      entity.id,
-      entity.time.toISOString(),
-      entity.description,
-      AccidentRouteDto.fromEntity(entity.route),
-      entity.resolved,
-    );
+    const dto = new AccidentDto();
+    Object.assign(dto, <AccidentDto>{
+      id: entity.id,
+      time: entity.time.toISOString(),
+      description: entity.description,
+      route: AccidentRouteDto.fromEntity(entity.route),
+      resolved: entity.resolved,
+    });
+    return dto;
   }
 
   public static fromEntities(entities: Accident[]): AccidentDto[] {
