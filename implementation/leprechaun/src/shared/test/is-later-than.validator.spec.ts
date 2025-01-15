@@ -5,16 +5,11 @@ import { getTestMetadata } from './validation.service.spec';
 
 class TestDto {
   @IsISO8601()
-  startTime: string;
+  startTime!: string;
 
   @IsISO8601()
   @IsLaterThan<TestDto>('startTime')
-  endTime: string;
-
-  constructor(startTime: string, endTime: string) {
-    this.startTime = startTime;
-    this.endTime = endTime;
-  }
+  endTime!: string;
 }
 
 describe('DateLargerValidator', () => {
