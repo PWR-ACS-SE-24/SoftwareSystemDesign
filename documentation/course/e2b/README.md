@@ -7,7 +7,7 @@
 </div>
 <div align="right">Prowadzący:<br/>dr inż. Marcin Kawalerowicz</div>
 <div>
-Skład zespołu <b>oceniającego</b>:
+Skład zespołu <b>analizującego</b>:
 <ul>
   <li>Przemysław Barcicki (260324)</li>
   <li>Tomasz Chojnacki (260365)</li>
@@ -18,7 +18,7 @@ Skład zespołu <b>oceniającego</b>:
 
 ---
 
-**Oceniany system:** [Deskly - system do zarządzania współdzielonymi przestrzeniami biurowymi](https://github.com/wrzchwc/software-system-design/tree/e874aa639524634d0ef89c67c0eda114bc6945f6) (stan na 11.01.2025 - commit `e874aa6`).
+**Analizowany system:** [Deskly - system do zarządzania współdzielonymi przestrzeniami biurowymi](https://github.com/wrzchwc/software-system-design/tree/e874aa639524634d0ef89c67c0eda114bc6945f6) (stan na 11.01.2025 - commit `e874aa6`).
 
 # Lista kontrola kompletności opisu architektury
 
@@ -299,17 +299,433 @@ Skład zespołu <b>oceniającego</b>:
 - `<business-gain>`: korzyść biznesowa wg klienta: `H` (high), `M` (medium) lub `L` (low),
 - `<difficulty>`: trudność implementacji wg architekta: `H` (high), `M` (medium) lub `L` (low).
 
-<!--
-TODO
-functional, performance, compatibility, usability, reliability, security, maintainability, portability
--->
+<table>
+  <tr>
+    <th>Charakterystyka jakościowa</th>
+    <th>Perspektywa oceny</th>
+    <th>Scenariusz</th>
+  </tr>
+  <tr>
+    <th rowspan="3">wydajność (<i>performance</i>)</th>
+    <th rowspan="2">wydajność czasowa (<i>time behaviour</i>)</th>
+    <td>Użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 2 sekund. <b>(H, M)</b></td>
+  </tr>
+  <tr>
+    <td>Użytkownik wysyła prośbę o generację raportu w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 3 sekund. <b>(M, M)</b></td>
+  </tr>
+  <tr>
+    <th>przepustowość (<i>capacity</i>)</th>
+    <td>Użytkownicy w liczbie 10000 otwierają system w ramach normalnej pracy systemu, transakcje są obsługiwane bez błędów. <b>(H, H)</b></td>
+  </tr>
+  <tr>
+    <th rowspan="2">niezawodność (<i>reliability</i>)</th>
+    <th>dostępność (<i>availability</i>)</th>
+    <td>Użytkownik próbuje skorzystać z systemu, niezależnie od stanu środowiska, system jest dostępny przez 99% czasu. <b>(H, L)</b></td>
+  </tr>
+  <tr>
+    <th>odzyskiwalność (<i>recoverability</i>)</th>
+    <td>Gdy w systemie wydarzy się awaria, system można przywrócić do działania w ciągu maksymalnie 1h. <b>(H, M)</b></td>
+  </tr>
+  <tr>
+    <th rowspan="3">bezpieczeństwo (<i>security</i>)</th>
+    <th rowspan="2">poufność (<i>confidentiality</i>)</th>
+    <td>Użytkownik dokonuje dowolną czynność, niezależnie od stanu środowiska, dane użytkownika są przetwarzane i przechowywane zgodnie z wytycznymi RODO. <b>(H, M)</b></td>
+  </tr>
+  <tr>
+    <td>Użytkownik dokonuje dowolną czynność, niezależnie od stanu środowiska, dane związane z rezerwacjami powinny być szyfrowane w bazie danych oraz podczas przesyłania. <b>(M, L)</b></td>
+  </tr>
+  <tr>
+    <th>odpowiedzialność (<i>accountability</i>)</th>
+    <td>Użytkownik negocjuje umowy lub edytuje rezerwacje, niezależnie od stanu środowiska, system prowadzi logi audytowe. <b>(L, L)</b></td>
+  </tr>
+</table>
+
+W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby ułożyć scenariusze dotyczące charakterystyk: **compatibility**, **usability**, **maintainability**, **portability**.
 
 # Analiza wybranych scenariuszy
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC1</code></th>
-    <td colspan="4">Nazwa scenariusza</td>
+    <th>Scenariusz <code>SC1</code> TODO @tchojnacki</th>
+    <td colspan="4">Użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 2 sekund.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC2</code> TODO @tchojnacki</th>
+    <td colspan="4">Użytkownik wysyła prośbę o generację raportu w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 3 sekund.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC3</code> TODO @piterek130</th>
+    <td colspan="4">Użytkownicy w liczbie 10000 otwierają system w ramach normalnej pracy systemu, transakcje są obsługiwane bez błędów.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC4</code> TODO @piterek130</th>
+    <td colspan="4">Użytkownik próbuje skorzystać z systemu, niezależnie od stanu środowiska, system jest dostępny przez 99% czasu.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC5</code> TODO @mlodybercik</th>
+    <td colspan="4">Gdy w systemie wydarzy się awaria, system można przywrócić do działania w ciągu maksymalnie 1h.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC6</code> TODO @mlodybercik</th>
+    <td colspan="4">Użytkownik dokonuje dowolną czynność, niezależnie od stanu środowiska, dane użytkownika są przetwarzane i przechowywane zgodnie z wytycznymi RODO.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC7</code> TODO @jakubzehner</th>
+    <td colspan="4">Użytkownik dokonuje dowolną czynność, niezależnie od stanu środowiska, dane związane z rezerwacjami powinny być szyfrowane w bazie danych oraz podczas przesyłania.</td>
+  </tr>
+  <tr>
+    <th>Atrybut(y)</th>
+    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+  </tr>
+  <tr>
+    <th>Środowisko</th>
+    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+  </tr>
+  <tr>
+    <th>Bodziec</th>
+    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+  </tr>
+  <tr>
+    <th>Odpowiedź</th>
+    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
+  </tr>
+  <tr>
+    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
+    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
+    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
+    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
+    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <th>Analiza</th>
+    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+  </tr>
+  <tr>
+    <th>Diagram architektoniczny</th>
+    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+  </tr>
+</table>
+
+- **`SC1.S1`:** ...
+- **`SC1.S2`:** ...
+- **`SC1.T1`:** ...
+- **`SC1.T2`:** ...
+- **`SC1.R1`:** ...
+- **`SC1.R2`:** ...
+- **`SC1.N1`:** ...
+- **`SC1.N2`:** ...
+
+<table>
+  <tr>
+    <th>Scenariusz <code>SC8</code> TODO @jakubzehner</th>
+    <td colspan="4">Użytkownik negocjuje umowy lub edytuje rezerwacje, niezależnie od stanu środowiska, system prowadzi logi audytowe.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
@@ -369,12 +785,16 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 > [!NOTE]
 > Wszystkie punkty wrażliwości są kandydatami na ryzyka. Na końcu wszystkie muszą być skategoryzowane albo jako ryzyka albo jako nie-ryzyka - wykład 7, slajd 42.
 
+TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
+
 - **`SC1.S1`:** ... - **ryzyko**.
 - **`SC1.S2`:** ... - **nie-ryzyko**.
 - **`SC2.S1`:** ... - **ryzyko**.
 - **`SC2.S2`:** ... - **nie-ryzyko**.
 
 ## Kompromisy
+
+TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 - **`SC1.T1`:** ...
 - **`SC1.T2`:** ...
@@ -383,12 +803,16 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 ## Ryzyka
 
+TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
+
 - **`SC1.R1`:** ...
 - **`SC1.R2`:** ...
 - **`SC2.R1`:** ...
 - **`SC2.R2`:** ...
 
 ## Nie-ryzyka
+
+TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 - **`SC1.N1`:** ...
 - **`SC1.N2`:** ...
@@ -398,6 +822,8 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 # Inne problemy
 
 - Liczne literówki.
+- Definicja wymagań niefunkcjonalnych - brak wymagań dotyczących użyteczności (_usability_).
+- Cele architektoniczne - wartość dostępności jest niespójna z poprzednim etapem (99.9% w E1, 99% w E2).
 - Widok kontekstowy - AWS SQS, AWS Cognito i AWS S3 są wskazane jako systemy zewnętrzne, a w rzeczywistości stanowią część systemu Deskly.
 - Interfejsy integracyjne - powinny opisywać zależności z zewnętrznymi systemami, a nie między wewnętrznymi.
 - Interfejsy integracyjne - brak uzasadnienia dobranych wartości wydajności i wolumetrii.
