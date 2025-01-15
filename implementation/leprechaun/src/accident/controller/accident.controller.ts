@@ -5,10 +5,11 @@ import { PaginatedDto } from '@app/shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '@app/shared/api/http-exceptions';
 import { Paginated, Pagination } from '@app/shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe } from '@app/shared/api/pipes';
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiExtraModels,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiResponse,
@@ -55,6 +56,16 @@ export class AccidentController {
   async createAccident(@Body(ValidateCreatePipe) createAccident: CreateAccidentDto): Promise<AccidentDto> {
     const accident = await this.accidentService.createAccident(createAccident);
     return AccidentDto.fromEntity(accident);
+  }
+
+  @Post('/:id/resolve')
+  @RequiredPermissions('driver', 'inspector')
+  @ApiNoContentResponse({ type: AccidentDto, description: 'Resolved accident' })
+  @ApiBadRequestResponse({ type: HttpExceptionDto, description: 'Cannot resolve already resolved accident' })
+  @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Accident not found' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async resolveAccident(@Param('id', UUIDPipe) id: string): Promise<void> {
+    await this.accidentService.resolveAccident(id);
   }
 
   @Patch('/:id')

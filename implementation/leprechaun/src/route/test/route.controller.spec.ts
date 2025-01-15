@@ -3,6 +3,7 @@ import { Line } from '@app/line/database/line.entity';
 import { StopLineMapping } from '@app/line/database/stop-line-mapping.entity';
 import { LineModule } from '@app/line/line.module';
 import { SharedModule } from '@app/shared/shared.module';
+import { createTimeOffsetFromNow } from '@app/shared/test/helpers';
 import { Stop } from '@app/stop/database/stop.entity';
 import { Vehicle } from '@app/vehicle/database/vehicle.entity';
 import { VehicleModule } from '@app/vehicle/vehicle.module';
@@ -13,10 +14,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RouteController } from '../controller/route.controller';
 import { Route } from '../database/route.entity';
 import { RouteService } from '../service/route.service';
-
-export function createTimeOffsetFromNow(hours: number, seconds: number = 0): Date {
-  return new Date(new Date().valueOf() + (3600 * hours + seconds) * 1000);
-}
 
 describe('RouteService', () => {
   let controller: RouteController;

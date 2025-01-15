@@ -1,32 +1,14 @@
 import { testConfig } from '@app/config/mikro-orm.test.config';
-import { Line } from '@app/line/database/line.entity';
-import { Route } from '@app/route/database/route.entity';
 import { RouteModule } from '@app/route/route.module';
-import { createTimeOffsetFromNow } from '@app/route/test/route.controller.spec';
 import { SharedModule } from '@app/shared/shared.module';
-import { Vehicle } from '@app/vehicle/database/vehicle.entity';
-import { EntityManager, MikroORM } from '@mikro-orm/core';
+import { createRoute, createTimeOffsetFromNow } from '@app/shared/test/helpers';
+import { DriverException, EntityManager, MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccidentController } from '../controller/accident.controller';
 import { Accident } from '../database/accident.entity';
 import { AccidentService } from '../service/accident.service';
-
-export function createRoute(lineName: string, sideNumber: string, routeStartHours: number, routeEndHours: number) {
-  const line = new Line(lineName);
-  const vehicle = new Vehicle(sideNumber);
-  return {
-    line,
-    vehicle,
-    route: new Route(
-      createTimeOffsetFromNow(routeStartHours, -1),
-      createTimeOffsetFromNow(routeEndHours, -1),
-      line,
-      vehicle,
-    ),
-  };
-}
 
 describe('AccidentController', () => {
   let controller: AccidentController;
@@ -70,6 +52,23 @@ describe('AccidentController', () => {
     expect(accidents.data[0].id).toEqual(newAccident.id);
   });
 
+  it('should return all accident ordered by time', async () => {
+    // given
+    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
+    const newAccident1 = new Accident(createTimeOffsetFromNow(0, -5), 'description', route, false);
+    const newAccident2 = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
+    await em.persistAndFlush([newAccident1, newAccident2, line, vehicle]);
+
+    // when
+    const accidents = await controller.getAllAccidents({ page: 0, size: 10 });
+
+    // then
+    expect(accidents).toBeDefined();
+    expect(accidents.data).toHaveLength(2);
+    expect(accidents.data[0].id).toEqual(newAccident2.id);
+    expect(accidents.data[1].id).toEqual(newAccident1.id);
+  });
+
   it('should return accident by id', async () => {
     // given
     const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
@@ -105,6 +104,15 @@ describe('AccidentController', () => {
     expect(newAccident.resolved).toEqual(false);
   });
 
+  it('should not accept future accident time', async () => {
+    // given
+    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
+    const accident = new Accident(createTimeOffsetFromNow(0, 10), 'description', route, false);
+
+    // then
+    await expect(() => em.persistAndFlush([line, vehicle])).rejects.toThrow(DriverException);
+  });
+
   it('should update accident', async () => {
     // given
     const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
@@ -124,26 +132,39 @@ describe('AccidentController', () => {
     expect(accident.description).toEqual('new description');
   });
 
-  it('should not update resolved accident', async () => {
+  it('should resolve accident', async () => {
     // given
     const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
     const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
+    // when
+    await controller.resolveAccident(newAccident.id);
+
     // then
-    const updated = await controller.updateAccident(newAccident.id, { description: 'new description', resolved: true });
-    expect(updated).toBeDefined();
-    expect(updated.id).toEqual(newAccident.id);
-    expect(updated.description).toEqual('new description');
-    expect(updated.resolved).toEqual(true);
-
     const accident = await em.findOneOrFail(Accident, { id: newAccident.id }, { filters: false });
-
     expect(accident.resolved).toEqual(true);
-    expect(accident.description).toEqual('new description');
+  });
 
-    await expect(async () =>
-      controller.updateAccident(newAccident.id, { description: 'even newer description', resolved: false }),
-    ).rejects.toThrow(BadRequestException);
+  it('should not resolve resolved accident', async () => {
+    // given
+    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
+    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, true);
+    await em.persistAndFlush([newAccident, line, vehicle]);
+
+    // then
+    await expect(controller.resolveAccident(newAccident.id)).rejects.toThrow(BadRequestException);
+  });
+
+  it('should not update resolved accident', async () => {
+    // given
+    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
+    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, true);
+    await em.persistAndFlush([newAccident, line, vehicle]);
+
+    // then
+    await expect(controller.updateAccident(newAccident.id, { description: 'new description' })).rejects.toThrow(
+      BadRequestException,
+    );
   });
 });

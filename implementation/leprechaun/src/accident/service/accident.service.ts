@@ -22,6 +22,7 @@ export class AccidentService {
       limit: pagination.size,
       offset: pagination.page * pagination.size,
       populate: ['route.line', 'route.vehicle'],
+      orderBy: [{ time: 'ASC' }],
     });
     const total = await this.accidentRepository.count();
 
@@ -40,13 +41,26 @@ export class AccidentService {
       const route = await this.routeService.getRouteById(newAccident.route);
       const accidentTime = new Date(newAccident.time);
 
-      const accident = new Accident(accidentTime, newAccident.description, route, newAccident.resolved);
+      const accident = new Accident(accidentTime, newAccident.description, route);
 
       // This can throw DriverException if the time is in the future because of database triggers
       // It's a caller responsibility to make sure the time is in the past
+      // For any calls from controller it's guaranteed by the ValidateCreatePipe
       await this.em.persistAndFlush(accident);
 
       return accident;
+    });
+  }
+
+  async resolveAccident(accidentId: string): Promise<void> {
+    await this.em.transactional(async () => {
+      const accident = await this.getAccidentById(accidentId);
+
+      if (accident.resolved) throw new BadRequestException({ details: 'Cannot resolve already resolved accident' });
+
+      accident.resolved = true;
+
+      await this.em.persistAndFlush(accident);
     });
   }
 
@@ -56,10 +70,8 @@ export class AccidentService {
 
       if (accident.resolved) throw new BadRequestException({ details: 'Cannot update resolved accident' });
 
-      // prettier-ignore
       this.accidentRepository.assign(accident, {
-        description: newAccident.description ? newAccident.description : accident.description,
-        resolved:    newAccident.resolved    ? newAccident.resolved    : accident.resolved,
+        description: newAccident.description ?? accident.description,
       });
 
       await this.em.persistAndFlush(accident);

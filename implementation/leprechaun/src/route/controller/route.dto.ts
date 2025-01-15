@@ -73,7 +73,7 @@ export class AccidentRouteDto extends GenericIdDto {
   @ApiProperty({ description: 'Name of the line', type: 'string', nullable: false, example: '141' })
   readonly lineName: string;
 
-  @ApiProperty({ ...UUIDApiProperty, description: 'ID of the vehicle' })
+  @ApiProperty({ ...UUIDApiProperty, description: 'ID of the line' })
   readonly line: string;
 
   @ApiProperty({ description: 'Side number of the vehicle', type: 'string', nullable: false, example: '2137' })

@@ -45,9 +45,9 @@ export class AccidentDto extends GenericIdDto {
   })
   readonly route: AccidentRouteDto;
 
-  constructor(id: string, time: Date, description: string, route: AccidentRouteDto, resolved: boolean = false) {
+  constructor(id: string, time: string, description: string, route: AccidentRouteDto, resolved: boolean = false) {
     super(id);
-    this.time = time.toISOString();
+    this.time = time;
     this.resolved = resolved;
     this.description = description;
     this.route = route;
@@ -56,7 +56,7 @@ export class AccidentDto extends GenericIdDto {
   public static fromEntity(entity: Accident): AccidentDto {
     return new AccidentDto(
       entity.id,
-      entity.time,
+      entity.time.toISOString(),
       entity.description,
       AccidentRouteDto.fromEntity(entity.route),
       entity.resolved,
