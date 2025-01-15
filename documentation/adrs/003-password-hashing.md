@@ -13,21 +13,21 @@ Passwords need to be securely stored in Jobberknoll's database. To achieve this,
 
 ## Considered Options
 
-- Using Argon2id with FFI
+- Using Argon2id with static FFI (`@node-rs/argon2`)
+- Using Argon2id with dynamic FFI (`libargon2`)
 - Using a less secure key derivation function (e.g. bcrypt)
 
 ## Decision Outcome
 
-Chosen option: **Using Argon2id with FFI**, because it heavily simplifies the service implementation while retaining almost indistinguishable functionality for the consumers.
+Chosen option: **Using Argon2id with dynamic FFI (`libargon2`)**, because it is the most secure and audited option.
 
-The backend must use Argon2id implemented in a native language (e.g. Rust, C, C++) and accessed via FFI. After auditing circa 10 libraries, it was decided to use [@node-rs/argon2](https://www.npmjs.com/package/@node-rs/argon2), which provides bindings for RustCrypto. It is the most popular library for Argon2id in the Node.js package registry. It is well supported in the Deno runtime and provides the `verify` function, which offloads the password verification from our service (and the process is not trivial, since it requires a constant-time comparison). The OWASP recommendations for algorithm parameters should be followed.
+The backend must use Argon2id implemented in a native language (e.g. Rust, C, C++) and accessed via FFI. The reference implementation of Argon2id was selected, which is available under the `libargon2.so.1` dynamic library. The OWASP recommendations for algorithm parameters should be followed.
 
-The password must be stored using the [modular PHC string format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md), to retain the ability to change the hashing algorithm in the future. Passwords should be rehashed on first login after the change of the hashing algorithm.
+The password must be stored using the [modular PHC string format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md), to retain the ability to change the hashing algorithm in the future. Passwords should be rehashed on first login after the change of the hashing algorithm. This is currently unimplemented, since only Argon2id is supported.
 
 ## Consequences
 
 - Good, because we use the algorithm recommended by OWASP.
 - Good, because the hashing and validation of passwords can be offloaded to an external library.
 - Good, because the modular PHC string format allows smooth algorithm changes in the future.
-- Bad, because the usage of FFI blocks us from using `deno compile` to produce standalone executables.
-- Bad, because despite being the most popular and most supported library, it was not externally audited.
+- Bad, because we require all service runners to have the `libargon2.so.1` library installed.
