@@ -670,24 +670,24 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC7</code> TODO @jakubzehner</th>
+    <th>Scenariusz <code>SC7</code></th>
     <td colspan="4">Użytkownik dokonuje dowolną czynność, niezależnie od stanu środowiska, dane związane z rezerwacjami powinny być szyfrowane w bazie danych oraz podczas przesyłania.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">poufność (<i>confidentiality</i>)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Niezależnie od stanu środowiska</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Dowolna czynność wykonywana przez użytkownika</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Zaszyfrowanie danych rezerwacji w bazie danych i podczas przesyłania</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -697,51 +697,108 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>PostgreSQL</b> z szyfrowaniem danych w spoczynku</td>
+    <td><code>SC7.S1</code></td>
+    <td><code>SC7.T1</code></td>
+    <td><code>SC7.R1</code></td>
+    <td><code>SC7.N1</code></td>
+  </tr>
+  <tr>
+    <td><b>AWS RDS</b> z aktywnym szyfrowaniem połączeń</td>
+    <td><code>SC7.S2</code></td>
+    <td><code>SC7.T2</code></td>
+    <td><code>SC7.R2</code></td>
+    <td><code>SC7.N2</code></td>
+  </tr>
+  <tr>
+    <td><b>JWT</b></td>
+    <td><code>SC7.S3</code></td>
+    <td><code>SC7.T3</code></td>
+    <td><code>SC7.R3</code></td>
+    <td><code>SC7.N3</code></td>
+  </tr>
+  <tr>
+    <td><b>AWS Cognito</b></td>
+    <td><code>SC7.S4</code></td>
+    <td><code>SC7.T4</code></td>
+    <td><code>SC7.R4</code></td>
+    <td><code>SC7.N4</code></td>
+  </tr>
+  <tr>
+    <td><b>API Gateway</b> z aktywnym szyfrowaniem TLS</td>
+    <td><code>SC7.S5</code></td>
+    <td><code>SC7.T5</code></td>
+    <td><code>SC7.R5</code></td>
+    <td><code>SC7.N5</code></td>
+  </tr>
+  <tr>
+    <td><b>AWS SQS</b></td>
+    <td><code>SC7.S6</code></td>
+    <td><code>SC7.T6</code></td>
+    <td><code>SC7.R6</code></td>
+    <td><code>SC7.N6</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Lista decyzji architektonicznych jest ściśle związana z atrybutem poufności (confidentiality) w scenariuszu. Każda decyzja jest podporządkowana celowi szyfrowania danych w spoczynku i w trakcie przesyłania, co zapewnia ochronę wrażliwych informacji.
+    <ul>
+      <li> PostgreSQL z szyfrowaniem danych w spoczynku - kluczowy komponent bazy danych, która obsługuje rezerwacje, wykorzystuje szyfrowanie TDE, zapewniając, że dane są chronione nawet w przypadku naruszenia zabezpieczeń dysku lub backupu. </li>
+      <li> Szyfrowanie połączeń TLS (AWS RDS i API Gateway) - bezpieczeństwo przesyłania danych zapewniane jest przez wymuszenie szyfrowania TLS, co jest standardem w transmisji wrażliwych informacji. </li>
+      <li> Zastosowanie AWS Cognito i JWT - AWS Cognito zapewnia odpowiednie mechanizmy autoryzacji, podczas gdy JWT umożliwia zarządzanie sesjami w sposób bezpieczny i wydajny dzięki szyfrowaniu. </li>
+      <li> Asynchroniczna komunikacja (AWS SQS) - Kolejki SQS są szyfrowane przy użyciu AWS KMS, co chroni dane nawet podczas wymiany komunikatów między mikroserwisami.</li>
+    </ul></td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"> <img src="images/SC7.png"> </td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu.
+- **`SC7.T1`:** Szyfrowanie zwiększa bezpieczeństwo, ale obniża wydajność zapytań przy dużym obciążeniu.
+- **`SC7.R1`:** Nieodpowiednia konfiguracja algorytmu szyfrowania może spowodować trudności w odzyskaniu danych.
+- **`SC7.N1`:** PostgreSQL natywnie wspiera TDE, co zmniejsza ryzyko błędów konfiguracji i zapewnia spójność szyfrowania danych.
+- **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych.
+- **`SC7.T2`:** TLS zapewnia poufność, ale wydłuża czas negocjacji połączenia.
+- **`SC7.R2`:** Nieprawidłowa konfiguracja certyfikatów TLS może prowadzić do odrzucania połączeń przez klientów bazy danych.
+- **`SC7.N2`:** AWS RDS automatycznie zarządza szyfrowaniem połączeń TLS, co redukuje ryzyko błędów konfiguracyjnych.
+- **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów.
+- **`SC7.T3`:** JWT zwiększa bezpieczeństwo sesji, ale wymaga większych zasobów obliczeniowych na podpis i weryfikację.
+- **`SC7.R3`:** Brak możliwości wygaszania tokenów może prowadzić do naruszenia poufności danych.
+- **`SC7.N3`:** Algorytmy RSA i AES-256 gwarantują wysoki poziom zabezpieczenia tokenów.
+- **`SC7.S4`:** Polityki bezpieczeństwa haseł - zbyt słabe polityki mogą narazić użytkowników na nieautoryzowany dostęp.
+- **`SC7.T4`:** Cognito zapewnia łatwe zarządzanie uwierzytelnianiem, ale zwiększa zależność od infrastruktury AWS.
+- **`SC7.R4`:** Problemy z integracją Cognito z aplikacją mogą opóźnić wdrożenie lub spowodować luki w uwierzytelnianiu.
+- **`SC7.N4`:** Cognito obsługuje zaawansowane funkcje, takie jak MFA (Multi-factor authentication), co dodatkowo wzmacnia bezpieczeństwo użytkowników.
+- **`SC7.S5`:** Aktualność certyfikatów SSL/TLS - nieaktualne certyfikaty mogą uniemożliwić połączenia między klientem a API.
+- **`SC7.T5`:** Szyfrowanie TLS poprawia poufność danych, ale zwiększa narzut na zasoby serwera.
+- **`SC7.R5`:** Źle skonfigurowane certyfikaty mogą prowadzić do odrzucenia żądań przez klientów.
+- **`SC7.N5`:** AWS Certificate Manager automatycznie odnawia certyfikaty, zapewniając spójność i minimalizując ryzyko nieaktualności.
+- **`SC7.S6`:** Szyfrowanie wiadomości - brak szyfrowania w SQS może prowadzić do wycieku danych przesyłanych między mikroserwisami.
+- **`SC7.T6`:** Szyfrowanie w SQS zapewnia bezpieczeństwo, ale może zwiększyć opóźnienia w komunikacji.
+- **`SC7.R6`:** Niepoprawne użycie AWS KMS może powodować przesyłanie niezaszyfrowanych danych.
+- **`SC7.N6`:** AWS SQS wspiera szyfrowanie wiadomości za pomocą AWS KMS, co minimalizuje ryzyko nieautoryzowanego dostępu.
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC8</code> TODO @jakubzehner</th>
+    <th>Scenariusz <code>SC8</code></th>
     <td colspan="4">Użytkownik negocjuje umowy lub edytuje rezerwacje, niezależnie od stanu środowiska, system prowadzi logi audytowe.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">odpowiedzialność (<i>accountability</i>)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Niezależnie od stanu środowiska</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Użytkownik negocjuje umowy lub użytkownik edytuje rezerwacje</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">System prowadzi logi audytowe</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -751,30 +808,65 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>AWS CloudWatch</b> dla logów audytowych</td>
+    <td><code>SC8.S1</code></td>
+    <td><code>SC8.T1</code></td>
+    <td><code>SC8.R1</code></td>
+    <td><code>SC8.N1</code></td>
+  </tr>
+  <tr>
+    <td><b>API Gateway</b> z rejestrowaniem żądań</td>
+    <td><code>SC8.S2</code></td>
+    <td><code>SC8.T2</code></td>
+    <td><code>SC8.R2</code></td>
+    <td><code>SC8.N2</code></td>
+  </tr>
+  <tr>
+    <td><b>AWS S3</b> do przechowywania logów audytowych</td>
+    <td><code>SC8.S3</code></td>
+    <td><code>SC8.T3</code></td>
+    <td><code>SC8.R3</code></td>
+    <td><code>SC8.N3</code></td>
+  </tr>
+  <tr>
+    <td><b>Spring Boot</b> z filtrem audytowym</td>
+    <td><code>SC8.S4</code></td>
+    <td><code>SC8.T4</code></td>
+    <td><code>SC8.R4</code></td>
+    <td><code>SC8.N4</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Lista decyzji architektonicznych została tak dobrana, aby wspierać spełnienie wymagań odpowiedzialności określonych w scenariuszu.
+    <ul>
+      <li> AWS CloudWatch dla logów audytowych - CloudWatch umożliwia centralne gromadzenie logów, co ułatwia monitorowanie działań użytkowników oraz identyfikację potencjalnych naruszeń. Funkcja alarmów i automatycznego raportowania pozwala szybko reagować na incydenty. Zwiększa to odpowiedzialność, zapewniając pełną widoczność w systemie. </li>
+      <li> API Gateway z rejestrowaniem żądań - rejestrowanie żądań przy pomocy API Gateway pozwala na szczegółową analizę interakcji użytkownika z systemem. Pozwala to na łatwe mapowanie działań użytkowników w logach audytowych, co jest kluczowe dla spełnienia atrybutu accountability. </li>
+      <li> AWS S3 do przechowywania logów audytowych - dane audytowe są przechowywane w AWS S3 z polityką szyfrowania i wersjonowania, co zapewnia integralność i bezpieczeństwo logów. Możliwość stosowania polityk dostępu ułatwia zarządzanie dostępem do krytycznych danych. </li>
+      <li> Spring Boot z filtrem audytowym - wbudowane mechanizmy audytowe w Spring Boot ułatwiają rejestrowanie działań użytkownika na poziomie aplikacji. Filtr pozwala na selektywne logowanie ważnych informacji bez potrzeby ręcznej implementacji, co zmniejsza ryzyko błędów. </li>
+    </ul></td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"> <img src="images/SC8.png"> </td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC8.S1`:** Granularność logowania - zbyt szczegółowe logi mogą zwiększyć koszty przechowywania i przetwarzania danych.
+- **`SC8.T1`:** Szczegółowe logi zwiększają odpowiedzialność, ale mogą prowadzić do wyższych kosztów operacyjnych w AWS.
+- **`SC8.R1`:** Niewystarczające logowanie może uniemożliwić identyfikację naruszeń bezpieczeństwa lub błędów operacyjnych.
+- **`SC8.N1`:** AWS CloudWatch zapewnia automatyczne zbieranie logów w ustrukturyzowany sposób, minimalizując ryzyko utraty danych audytowych.
+- **`SC8.S2`:** Włączone logowanie żądań - brak rejestrowania żądań w API Gateway może uniemożliwić śledzenie działań użytkowników.
+- **`SC8.T2`:** Logowanie żądań zwiększa odpowiedzialność, ale może obniżyć wydajność przetwarzania API przy dużym ruchu.
+- **`SC8.R2`:** Przeciążenie API Gateway w wyniku nadmiarowego logowania może skutkować błędami w obsłudze ruchu.
+- **`SC8.N2`:** API Gateway integruje się bezpośrednio z AWS CloudWatch, co ułatwia analizę audytową i zarządzanie danymi logów.
+- **`SC8.S3`:** Polityka przechowywania danych - zbyt długie przechowywanie logów może generować niepotrzebne koszty.
+- **`SC8.T3`:** Przechowywanie logów w S3 jest tanie, ale wymaga skonfigurowania polityk dostępu i archiwizacji, co zwiększa złożoność.
+- **`SC8.R3`:** Brak zabezpieczenia logów audytowych w S3 może prowadzić do ich nieautoryzowanego dostępu lub modyfikacji.
+- **`SC8.N3`:** AWS S3 obsługuje szyfrowanie danych w spoczynku i wersjonowanie, co gwarantuje ich integralność i bezpieczeństwo.
+- **`SC8.S4`:** Konfiguracja audytu w Spring Boot - niewłaściwe wdrożenie mechanizmu filtrowania może pomijać kluczowe dane logów.
+- **`SC8.T4`:** Wbudowany filtr audytowy w Spring Boot ułatwia centralizację logowania, ale zwiększa złożoność konfiguracji aplikacji.
+- **`SC8.R4`:** Nieprawidłowa implementacja filtrów audytowych może powodować brak zgodności z wymaganiami dotyczącymi odpowiedzialności.
+- **`SC8.N4`:** Wykorzystanie gotowych bibliotek w Spring Boot minimalizuje ryzyko błędów implementacyjnych przy logowaniu działań użytkownika.
 
 # Wyniki
 
@@ -787,37 +879,61 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC1.S1`:** ... - **ryzyko**.
-- **`SC1.S2`:** ... - **nie-ryzyko**.
-- **`SC2.S1`:** ... - **ryzyko**.
-- **`SC2.S2`:** ... - **nie-ryzyko**.
+- **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu - **ryzyko**.
+- **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych - **nie-ryzyko**.
+- **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów - **ryzyko**.
+- **`SC7.S4`:** Polityki bezpieczeństwa haseł - zbyt słabe polityki mogą narazić użytkowników na nieautoryzowany dostęp - **ryzyko**.
+- **`SC7.S5`:** Aktualność certyfikatów SSL/TLS - nieaktualne certyfikaty mogą uniemożliwić połączenia między klientem a API - **nie-ryzyko**.
+- **`SC7.S6`:** Szyfrowanie wiadomości - brak szyfrowania w SQS może prowadzić do wycieku danych przesyłanych między mikroserwisami - **ryzyko**.
+- **`SC8.S1`:** Granularność logowania - zbyt szczegółowe logi mogą zwiększyć koszty przechowywania i przetwarzania danych - **ryzyko**.
+- **`SC8.S2`:** Włączone logowanie żądań - brak rejestrowania żądań w API Gateway może uniemożliwić śledzenie działań użytkowników - **ryzyko**.
+- **`SC8.S3`:** Polityka przechowywania danych - zbyt długie przechowywanie logów może generować niepotrzebne koszty - **ryzyko**.
+- **`SC8.S4`:** Konfiguracja audytu w Spring Boot - niewłaściwe wdrożenie mechanizmu filtrowania może pomijać kluczowe dane logów - **ryzyko**.
 
 ## Kompromisy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC2.T1`:** ...
-- **`SC2.T2`:** ...
+- **`SC7.T1`:** Szyfrowanie zwiększa bezpieczeństwo, ale obniża wydajność zapytań przy dużym obciążeniu.
+- **`SC7.T2`:** TLS zapewnia poufność, ale wydłuża czas negocjacji połączenia.
+- **`SC7.T3`:** JWT zwiększa bezpieczeństwo sesji, ale wymaga większych zasobów obliczeniowych na podpis i weryfikację.
+- **`SC7.T4`:** Cognito zapewnia łatwe zarządzanie uwierzytelnianiem, ale zwiększa zależność od infrastruktury AWS.
+- **`SC7.T5`:** Szyfrowanie TLS poprawia poufność danych, ale zwiększa narzut na zasoby serwera.
+- **`SC7.T6`:** Szyfrowanie w SQS zapewnia bezpieczeństwo, ale może zwiększyć opóźnienia w komunikacji.
+- **`SC8.T1`:** Szczegółowe logi zwiększają odpowiedzialność, ale mogą prowadzić do wyższych kosztów operacyjnych w AWS.
+- **`SC8.T2`:** Logowanie żądań zwiększa odpowiedzialność, ale może obniżyć wydajność przetwarzania API przy dużym ruchu.
+- **`SC8.T3`:** Przechowywanie logów w S3 jest tanie, ale wymaga skonfigurowania polityk dostępu i archiwizacji, co zwiększa złożoność.
+- **`SC8.T4`:** Wbudowany filtr audytowy w Spring Boot ułatwia centralizację logowania, ale zwiększa złożoność konfiguracji aplikacji.
 
 ## Ryzyka
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC2.R1`:** ...
-- **`SC2.R2`:** ...
+- **`SC7.R1`:** Nieodpowiednia konfiguracja algorytmu szyfrowania może spowodować trudności w odzyskaniu danych.
+- **`SC7.R2`:** Nieprawidłowa konfiguracja certyfikatów TLS może prowadzić do odrzucania połączeń przez klientów bazy danych.
+- **`SC7.R3`:** Brak możliwości wygaszania tokenów może prowadzić do naruszenia poufności danych.
+- **`SC7.R4`:** Problemy z integracją Cognito z aplikacją mogą opóźnić wdrożenie lub spowodować luki w uwierzytelnianiu.
+- **`SC7.R5`:** Źle skonfigurowane certyfikaty mogą prowadzić do odrzucenia żądań przez klientów.
+- **`SC7.R6`:** Niepoprawne użycie AWS KMS może powodować przesyłanie niezaszyfrowanych danych.
+- **`SC8.R1`:** Niewystarczające logowanie może uniemożliwić identyfikację naruszeń bezpieczeństwa lub błędów operacyjnych.
+- **`SC8.R2`:** Przeciążenie API Gateway w wyniku nadmiarowego logowania może skutkować błędami w obsłudze ruchu.
+- **`SC8.R3`:** Brak zabezpieczenia logów audytowych w S3 może prowadzić do ich nieautoryzowanego dostępu lub modyfikacji.
+- **`SC8.R4`:** Nieprawidłowa implementacja filtrów audytowych może powodować brak zgodności z wymaganiami dotyczącymi odpowiedzialności.
 
 ## Nie-ryzyka
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
-- **`SC2.N1`:** ...
-- **`SC2.N2`:** ...
+- **`SC7.N1`:** PostgreSQL natywnie wspiera TDE, co zmniejsza ryzyko błędów konfiguracji i zapewnia spójność szyfrowania danych.
+- **`SC7.N2`:** AWS RDS automatycznie zarządza szyfrowaniem połączeń TLS, co redukuje ryzyko błędów konfiguracyjnych.
+- **`SC7.N3`:** Algorytmy RSA i AES-256 gwarantują wysoki poziom zabezpieczenia tokenów.
+- **`SC7.N4`:** Cognito obsługuje zaawansowane funkcje, takie jak MFA (Multi-factor authentication), co dodatkowo wzmacnia bezpieczeństwo użytkowników.
+- **`SC7.N5`:** AWS Certificate Manager automatycznie odnawia certyfikaty, zapewniając spójność i minimalizując ryzyko nieaktualności.
+- **`SC7.N6`:** AWS SQS wspiera szyfrowanie wiadomości za pomocą AWS KMS, co minimalizuje ryzyko nieautoryzowanego dostępu.
+- **`SC8.N1`:** AWS CloudWatch zapewnia automatyczne zbieranie logów w ustrukturyzowany sposób, minimalizując ryzyko utraty danych audytowych.
+- **`SC8.N2`:** API Gateway integruje się bezpośrednio z AWS CloudWatch, co ułatwia analizę audytową i zarządzanie danymi logów.
+- **`SC8.N3`:** AWS S3 obsługuje szyfrowanie danych w spoczynku i wersjonowanie, co gwarantuje ich integralność i bezpieczeństwo.
+- **`SC8.N4`:** Wykorzystanie gotowych bibliotek w Spring Boot minimalizuje ryzyko błędów implementacyjnych przy logowaniu działań użytkownika.
 
 # Inne problemy
 
