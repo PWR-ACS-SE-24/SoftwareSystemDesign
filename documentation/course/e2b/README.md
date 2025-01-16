@@ -1116,8 +1116,6 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 > [!NOTE]
 > Wszystkie punkty wrażliwości są kandydatami na ryzyka. Na końcu wszystkie muszą być skategoryzowane albo jako ryzyka albo jako nie-ryzyka - wykład 7, slajd 42.
 
-TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
-
 - **`SC1.S1`:** Poprawny projekt i implementacja architektury mikroserwisowej jest bardziej skomplikowany niż monolitycznej - **ryzyko**.
 - **`SC1.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby - **nie-ryzyko**.
 - **`SC2.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów - **nie-ryzyko**.
@@ -1149,8 +1147,6 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 ## Kompromisy
 
-TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
-
 - **`SC1.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
 - **`SC2.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
 - **`SC3.T1`:** Automatyczne skalowanie zwiększa koszty operacyjne w okresach dużego obciążenia, ale zapewnia stabilność i dostępność systemu.
@@ -1180,8 +1176,6 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 ## Ryzyka
 
-TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
-
 - **`SC1.R1`:** Architektura mikroserwisów spowalnia zapytania o rezerwacje i zasoby z powodu konieczności komunikacji między serwisami.
 - **`SC1.R2`:** Brak cachingu spowalnia zapytania o rezerwacje i zasoby z powodu konieczności pobierania danych z bazy danych.
 - **`SC1.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać implementację akcji na rezerwacjach i zasobach, które wymagają odpowiedzi zwrotnej.
@@ -1210,8 +1204,6 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 - **`SC8.R4`:** Nieprawidłowa implementacja filtrów audytowych może powodować brak zgodności z wymaganiami dotyczącymi odpowiedzialności.
 
 ## Nie-ryzyka
-
-TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 - **`SC1.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
 - **`SC1.N4`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
