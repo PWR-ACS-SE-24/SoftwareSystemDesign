@@ -346,24 +346,24 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC1</code> TODO @tchojnacki</th>
+    <th>Scenariusz <code>SC1</code></th>
     <td colspan="4">Użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 2 sekund.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">wydajność (<i>performance</i>)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">czas odpowiedzi nie przekracza 2 sekund</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -373,51 +373,82 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>architektura mikroserwisów</b></td>
+    <td><code>SC1.S1</code></td>
+    <td>-</td>
+    <td><code>SC1.R1</code></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><b>brak cachingu</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC1.R2</code></td>
+    <td><code>SC1.N1</code></td>
+  </tr>
+  <tr>
+    <td><b>asynchroniczna komunikacja między serwisami</b></td>
+    <td>-</td>
+    <td><code>SC1.T1</code></td>
+    <td><code>SC1.R3</code></td>
+    <td>-</td> 
+  </tr>
+  <tr>
+    <td><b>automatyczne skalowanie</b></td>
+    <td><code>SC1.S2</code></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC1.N2</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Podjęte decyzje architektoniczne wpływają na wydajność systemu. Zastosowanie architektury mikroserwisów jest ryzykowne z perspektywy wydajności, natomiast przy wzięciu pod uwagę innych atrybutów jakościowych jest dobrą decyzją dla systemu. Brak cachingu wpływa negatywnie na wydajność systemu, ale zapewnia większą pewność co do aktualności danych. Asynchroniczna komunikacja między serwisami zwiększa niezawodność, ale wprowadza dodatkowe opóźnienia. Automatyczne skalowanie może prowadzić do problemów z wydajnością, ale zapewnia większą wydajność w przypadku wzrostu liczby użytkowników. Generalnie, podjęte decyzje architektoniczne nie wspierają dobrej wydajności systemu, ale pomagają w utrzymaniu wysokiej niezawodności.</td>
+    </td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"><img src="./images/SC1+2.png" /></td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC1.S1`:** Poprawny projekt i implementacja architektury mikroserwisowej jest bardziej skomplikowany niż monolitycznej.
+- **`SC1.R1`:** Architektura mikroserwisów spowalnia zapytania o rezerwacje i zasoby z powodu konieczności komunikacji między serwisami.
+
+---
+
+- **`SC1.R2`:** Brak cachingu spowalnia zapytania o rezerwacje i zasoby z powodu konieczności pobierania danych z bazy danych.
+- **`SC1.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
+
+---
+
+- **`SC1.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
+- **`SC1.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać implementację akcji na rezerwacjach i zasobach, które wymagają odpowiedzi zwrotnej.
+
+---
+
+- **`SC1.S2`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby.
+- **`SC1.N2`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC2</code> TODO @tchojnacki</th>
+    <th>Scenariusz <code>SC2</code></th>
     <td colspan="4">Użytkownik wysyła prośbę o generację raportu w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 3 sekund.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">wydajność (<i>performance</i>)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">użytkownik wysyła prośbę o generację raportu</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">czas odpowiedzi nie przekracza 3 sekund</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -427,30 +458,59 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>architektura mikroserwisów</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC2.R1</code></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><b>brak cachingu</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC2.R2</code></td>
+    <td><code>SC2.N1</code></td>
+  </tr>
+  <tr>
+    <td><b>asynchroniczna komunikacja między serwisami</b></td>
+    <td>-</td>
+    <td><code>SC2.T1</code></td>
+    <td><code>SC2.R3</code></td>
+    <td>-</td> 
+  </tr>
+  <tr>
+    <td><b>automatyczne skalowanie</b></td>
+    <td><code>SC2.S2</code></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC2.N2</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Podjęte decyzje architektoniczne wpływają na wydajność systemu. Zastosowanie architektury mikroserwisów jest ryzykowne z perspektywy wydajności, natomiast przy wzięciu pod uwagę innych atrybutów jakościowych jest dobrą decyzją dla systemu. Brak cachingu wpływa negatywnie na wydajność systemu, ale zapewnia większą pewność co do aktualności danych. Asynchroniczna komunikacja między serwisami zwiększa niezawodność, ale wprowadza dodatkowe opóźnienia. Automatyczne skalowanie może prowadzić do problemów z wydajnością, ale zapewnia większą wydajność w przypadku wzrostu liczby użytkowników. Generalnie, podjęte decyzje architektoniczne nie wspierają dobrej wydajności systemu, ale pomagają w utrzymaniu wysokiej niezawodności.</td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"><img src="./images/SC1+2.png" /></td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC2.R1`:** Architektura mikroserwisów spowalnia generację raportów z powodu konieczności komunikacji między serwisami.
+
+---
+
+- **`SC2.R2`:** Brak cachingu spowalnia generację raportów z powodu konieczności pobierania danych z bazy danych.
+- **`SC2.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
+
+---
+
+- **`SC2.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
+- **`SC2.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać generację raportów, tam gdzie potrzebna jest informacja zwrotna.
+
+---
+
+- **`SC2.S1`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów.
+- **`SC2.N2`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
 
 <table>
   <tr>
@@ -879,6 +939,9 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.S1`:** Poprawny projekt i implementacja architektury mikroserwisowej jest bardziej skomplikowany niż monolitycznej - **ryzyko**.
+- **`SC1.S2`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby - **nie-ryzyko**.
+- **`SC2.S1`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów - **nie-ryzyko**.
 - **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu - **ryzyko**.
 - **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych - **nie-ryzyko**.
 - **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów - **ryzyko**.
@@ -894,6 +957,8 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
+- **`SC2.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
 - **`SC7.T1`:** Szyfrowanie zwiększa bezpieczeństwo, ale obniża wydajność zapytań przy dużym obciążeniu.
 - **`SC7.T2`:** TLS zapewnia poufność, ale wydłuża czas negocjacji połączenia.
 - **`SC7.T3`:** JWT zwiększa bezpieczeństwo sesji, ale wymaga większych zasobów obliczeniowych na podpis i weryfikację.
@@ -909,6 +974,12 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.R1`:** Architektura mikroserwisów spowalnia zapytania o rezerwacje i zasoby z powodu konieczności komunikacji między serwisami.
+- **`SC1.R2`:** Brak cachingu spowalnia zapytania o rezerwacje i zasoby z powodu konieczności pobierania danych z bazy danych.
+- **`SC1.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać implementację akcji na rezerwacjach i zasobach, które wymagają odpowiedzi zwrotnej.
+- **`SC2.R1`:** Architektura mikroserwisów spowalnia generację raportów z powodu konieczności komunikacji między serwisami.
+- **`SC2.R2`:** Brak cachingu spowalnia generację raportów z powodu konieczności pobierania danych z bazy danych.
+- **`SC2.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać generację raportów, tam gdzie potrzebna jest informacja zwrotna.
 - **`SC7.R1`:** Nieodpowiednia konfiguracja algorytmu szyfrowania może spowodować trudności w odzyskaniu danych.
 - **`SC7.R2`:** Nieprawidłowa konfiguracja certyfikatów TLS może prowadzić do odrzucania połączeń przez klientów bazy danych.
 - **`SC7.R3`:** Brak możliwości wygaszania tokenów może prowadzić do naruszenia poufności danych.
@@ -924,6 +995,10 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
+- **`SC1.N2`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
+- **`SC2.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
+- **`SC2.N2`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
 - **`SC7.N1`:** PostgreSQL natywnie wspiera TDE, co zmniejsza ryzyko błędów konfiguracji i zapewnia spójność szyfrowania danych.
 - **`SC7.N2`:** AWS RDS automatycznie zarządza szyfrowaniem połączeń TLS, co redukuje ryzyko błędów konfiguracyjnych.
 - **`SC7.N3`:** Algorytmy RSA i AES-256 gwarantują wysoki poziom zabezpieczenia tokenów.
