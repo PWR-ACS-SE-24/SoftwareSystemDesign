@@ -588,7 +588,7 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Ryzyko</th>
     <th>Nie-ryzyko</th>
   </tr>
-    <tr>
+  <tr>
     <td>architektura mikroserwisów</td>
     <td><code>SC5.S1</code></td>
     <td><code>SC5.T1</code></td>
@@ -606,15 +606,15 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <td>AWS</td>
     <td><code>SC5.S3</code></td>
     <td><code>SC5.T3</code></td>
-    <td>-</td>
-    <td>-</td>
+    <td><code>-</code></td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <td>AWS Cloudwatch</td>
     <td><code>SC5.S4</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
     <td><code>SC5.R4</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
@@ -636,15 +636,15 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   </tr>
 </table>
 
-- **`SC5.S1`:** Większa ilość niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego.
-- **`SC5.T1`:** Zwiekszenie ilości mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
+- **`SC5.S1`:** Większa liczba niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego.
+- **`SC5.T1`:** Zwiekszenie liczby mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
 - **`SC5.R1`:** Błędny podział aplikacji na mikroserwisy może prowadzić do sytuacji, w której awaria jednego z nich wpłynie na działanie całego systemu.
 - **`SC5.N1`:** Architektura mikroserwisów wspiera odporność systemu na awarie poprzez niezależne działanie poszczególnych komponentów systemu.
 
 ---
 
 - **`SC5.S2`:** Wykorzystanie Kubernetesa pozwala na automatyczne zarządzanie instancjami, co pozwala na szybkie przywrócenie systemu do stanu nieawaryjnego.
-- **`SC5.T2`:** Ilość replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
+- **`SC5.T2`:** Liczba replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
 - **`SC5.R2`:** Wdrożenie systemu Kubernetes (AWS EKS) może prowadzić do sytuacji, w której automatyczne wyłączanie wadliwych instancji może prowadzić do nieprzewidywalnych skutków.
 - **`SC5.N2`:** Wykorzystanie Kubernetesa do zarządzania mikroserwisami jest zgodne ze sztuką.
 
@@ -698,14 +698,14 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <td><code>SC6.S1</code></td>
     <td><code>SC6.T1</code></td>
     <td><code>SC6.R1</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <td>AWS RDS</td>
     <td><code>SC6.S1</code></td>
     <td><code>SC6.T1</code></td>
     <td><code>SC6.R1</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
@@ -975,7 +975,7 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC5.S1`:** Większa ilość niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego - **nie-ryzyko**.
+- **`SC5.S1`:** Większa liczba niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego - **nie-ryzyko**.
 - **`SC5.S2`:** Wykorzystanie Kubernetesa pozwala na automatyczne zarządzanie instancjami, co pozwala na szybkie przywrócenie systemu do stanu nieawaryjnego - **nie-ryzyko**.
 - **`SC5.S3`:** Wykorzystanie usług AWS pozwala na wykorzystanie wbudowanych systemów monitorowania, alarmowania i przywracania, które pozwalają na szybkie wykrycie stanu awaryjnego i jego naprawę - **nie-ryzyko**.
 - **`SC6.S1`:** Wykorzystanie różnych usług AWS pozwala na przechowywanie i przetwarzanie danych wrażliwych zgodnie z RODO - **ryzyko**.
@@ -997,8 +997,8 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC5.T1`:** Zwiekszenie ilości mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
-- **`SC5.T2`:** Ilość replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
+- **`SC5.T1`:** Zwiekszenie liczby mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
+- **`SC5.T2`:** Liczba replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
 - **`SC5.T3`:** Użycie usług AWS może prowadzić do sytuacji, w której zbyt duża ilość monitorowanych metryk może prowadzić do nadmiernego obciążenia systemu co będzie skutkować wzrostem kosztów utrzymania aplikacji.
 - **`SC6.T1`:** Ziarnistość ustawień AWS mocno wpływa na dodatkowe koszty utrzymania systemu.
 - **`SC6.T2`:** Kontrola dostępu AWS S3 mocno wpływa na dodatkowe koszty utrzymania systemu.
