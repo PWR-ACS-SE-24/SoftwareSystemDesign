@@ -1,7 +1,11 @@
 {
   "version": "0.1.0",
   "tasks": {
-    "start": "deno run --allow-net main.ts"
+    "dev": "deno run --allow-net main.ts",
+    "compile": "deno compile --allow-net --output feather main.ts"
+  },
+  "fmt": {
+    "lineWidth": 120
   },
   "imports": {
     "@jobberknoll": "../jobberknoll/",
