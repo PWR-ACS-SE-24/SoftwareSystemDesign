@@ -355,15 +355,15 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">normalna praca systemu</td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów</td>
+    <td colspan="4">Użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">czas odpowiedzi nie przekracza 2 sekund</td>
+    <td colspan="4">Czas odpowiedzi nie przekracza 2 sekund</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -384,21 +384,21 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <td>-</td>
     <td>-</td>
     <td><code>SC1.R2</code></td>
-    <td><code>SC1.N1</code></td>
+    <td><code>SC1.N2</code></td>
   </tr>
   <tr>
     <td><b>asynchroniczna komunikacja między serwisami</b></td>
     <td>-</td>
-    <td><code>SC1.T1</code></td>
+    <td><code>SC1.T3</code></td>
     <td><code>SC1.R3</code></td>
     <td>-</td> 
   </tr>
   <tr>
     <td><b>automatyczne skalowanie</b></td>
-    <td><code>SC1.S2</code></td>
+    <td><code>SC1.S4</code></td>
     <td>-</td>
     <td>-</td>
-    <td><code>SC1.N2</code></td>
+    <td><code>SC1.N4</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
@@ -417,17 +417,17 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 ---
 
 - **`SC1.R2`:** Brak cachingu spowalnia zapytania o rezerwacje i zasoby z powodu konieczności pobierania danych z bazy danych.
-- **`SC1.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
+- **`SC1.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
 
 ---
 
-- **`SC1.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
+- **`SC1.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
 - **`SC1.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać implementację akcji na rezerwacjach i zasobach, które wymagają odpowiedzi zwrotnej.
 
 ---
 
-- **`SC1.S2`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby.
-- **`SC1.N2`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
+- **`SC1.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby.
+- **`SC1.N4`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
 
 <table>
   <tr>
@@ -440,15 +440,15 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">normalna praca systemu</td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">użytkownik wysyła prośbę o generację raportu</td>
+    <td colspan="4">Użytkownik wysyła prośbę o generację raportu</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">czas odpowiedzi nie przekracza 3 sekund</td>
+    <td colspan="4">Czas odpowiedzi nie przekracza 3 sekund</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -469,21 +469,21 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <td>-</td>
     <td>-</td>
     <td><code>SC2.R2</code></td>
-    <td><code>SC2.N1</code></td>
+    <td><code>SC2.N2</code></td>
   </tr>
   <tr>
     <td><b>asynchroniczna komunikacja między serwisami</b></td>
     <td>-</td>
-    <td><code>SC2.T1</code></td>
+    <td><code>SC2.T3</code></td>
     <td><code>SC2.R3</code></td>
     <td>-</td> 
   </tr>
   <tr>
     <td><b>automatyczne skalowanie</b></td>
-    <td><code>SC2.S2</code></td>
+    <td><code>SC2.S4</code></td>
     <td>-</td>
     <td>-</td>
-    <td><code>SC2.N2</code></td>
+    <td><code>SC2.N4</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
@@ -500,17 +500,17 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 ---
 
 - **`SC2.R2`:** Brak cachingu spowalnia generację raportów z powodu konieczności pobierania danych z bazy danych.
-- **`SC2.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
+- **`SC2.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
 
 ---
 
-- **`SC2.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
+- **`SC2.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
 - **`SC2.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać generację raportów, tam gdzie potrzebna jest informacja zwrotna.
 
 ---
 
-- **`SC2.S1`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów.
-- **`SC2.N2`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
+- **`SC2.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów.
+- **`SC2.N4`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
 
 <table>
   <tr>
@@ -1023,8 +1023,8 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 - **`SC1.S1`:** Poprawny projekt i implementacja architektury mikroserwisowej jest bardziej skomplikowany niż monolitycznej - **ryzyko**.
-- **`SC1.S2`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby - **nie-ryzyko**.
-- **`SC2.S1`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów - **nie-ryzyko**.
+- **`SC1.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby - **nie-ryzyko**.
+- **`SC2.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów - **nie-ryzyko**.
 - **`SC3.S1`:** Czas reakcji systemu skalowania - jeśli mechanizm skalowania działa z opóźnieniem, może wystąpić przeciążenie systemu przed przydzieleniem dodatkowych zasobów - **ryzyko**.
 - **`SC3.S2`:** Algorytm rozdzielania ruchu - jeśli Load Balancer nie rozdzieli ruchu równomiernie, to niektóre instancje aplikacji mogą być przeciążone, co prowadzi do spadku wydajności systemu - **ryzyko**.
 - **`SC3.S3`:** Strategia skalowania - wybranie odpowiedzniej strategii czyli skalowania poziomego (dowanie nowych podów) lub pionowego (zwiększanie zasobów istniejących podów) może wpłynąć na wydajność systemu - **nie-ryzyko**.
@@ -1048,8 +1048,8 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC1.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
-- **`SC2.T1`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
+- **`SC1.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
+- **`SC2.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
 - **`SC3.T1`:** Automatyczne skalowanie zwiększa koszty operacyjne w okresach dużego obciążenia, ale zapewnia stabilność i dostępność systemu.
 - **`SC3.T2`:** Równoważenie ruchu między serwerami zwiększa odporność na przeciążenie i poprawia dostępność systemu, ale jako dodatkowa warstwa przetwarzania może wpłynąć na czas odpowiedzi systemu.
 - **`SC3.T3`:** Kubernetes minimalizuje ryzyko przeciążenia, lecz może zwiększyć koszty operacyjne poprzez zwiększającą się liczbę instancji które wymagają więcej mocy obliczeniowej i pamięci.
@@ -1098,10 +1098,10 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC1.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
-- **`SC1.N2`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
-- **`SC2.N1`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
-- **`SC2.N2`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
+- **`SC1.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
+- **`SC1.N4`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
+- **`SC2.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
+- **`SC2.N4`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
 - **`SC3.N3`:** Kubernetes umożliwia zautomatyzowane skalowanie zasobów oraz ich redundancję, co znacząco zmniejsza ryzyko przestojów wynikających z awarii pojedynczych instancji.
 - **`SC4.N1`:** Architektura mikroserwisów zwiększa niezawodność poprzez izolację usług, co minimalizuje wpływ awarii jednej usługi na cały system.
 - **`SC4.N2`:** AWS zapewnia wysoką dostępność i niezawodność dzięki wielostrefowym centrom danych i globalnej infrastrukturze chmurowej.
