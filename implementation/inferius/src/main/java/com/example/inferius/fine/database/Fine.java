@@ -1,5 +1,6 @@
 package com.example.inferius.fine.database;
 
+import com.example.inferius.internal.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -19,8 +21,8 @@ import java.time.Instant;
 public class Fine {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UUIDv7
+    private UUID id;
 
     @Column(nullable = false, updatable = false)
     @NotNull(message = "passengerId cannot be null")

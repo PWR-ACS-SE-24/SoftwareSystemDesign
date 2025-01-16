@@ -1,5 +1,6 @@
 package com.example.inferius.creditcardinfo.database;
 
+import com.example.inferius.internal.UUIDv7;
 import com.example.inferius.wallet.database.Wallet;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,8 +19,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class CreditCardInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UUIDv7
+    private UUID id;
 
     @Size(max = 255, message = "label max length is 255 characters")
     private String label;

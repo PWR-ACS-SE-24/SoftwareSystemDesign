@@ -1,5 +1,6 @@
 package com.example.inferius.wallet.database;
 
+import com.example.inferius.internal.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,8 +19,8 @@ import java.math.BigDecimal;
 public class Wallet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UUIDv7
+    private UUID id;
 
     @Column(nullable = false, updatable = false)
     @NotNull(message = "passengerId cannot be null")
