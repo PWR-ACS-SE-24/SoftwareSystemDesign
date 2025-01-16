@@ -1,6 +1,6 @@
 package com.example.inferius.creditcardinfo.database;
 
-import com.example.inferius.internal.UUIDv7;
+import com.example.inferius.shared.UUIDv7;
 import com.example.inferius.wallet.database.Wallet;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

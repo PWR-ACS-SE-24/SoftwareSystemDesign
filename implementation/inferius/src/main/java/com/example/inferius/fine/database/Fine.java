@@ -1,6 +1,6 @@
 package com.example.inferius.fine.database;
 
-import com.example.inferius.internal.UUIDv7;
+import com.example.inferius.shared.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

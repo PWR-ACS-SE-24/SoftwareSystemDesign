@@ -1,4 +1,4 @@
-package com.example.inferius.internal;
+package com.example.inferius.shared;
 
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedEpochRandomGenerator;
@@ -8,7 +8,7 @@ import org.hibernate.id.IdentifierGenerator;
 public class UUIDv7Generator implements IdentifierGenerator {
 
     private static final TimeBasedEpochRandomGenerator UUID_GENERATOR =
-            Generators.timeBasedEpochRandomGenerator(); // UUIDv7 generator
+            Generators.timeBasedEpochRandomGenerator();
 
     @Override
     public Object generate(SharedSessionContractImplementor session, Object object) {
