@@ -8,6 +8,6 @@ if (import.meta.main) {
       port: 8001,
       onListen: (addr) => console.log(`http://${addr.hostname}:${addr.port}`),
     },
-    api.fetch
+    api.fetch,
   );
 }
