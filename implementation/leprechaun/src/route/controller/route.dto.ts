@@ -55,7 +55,7 @@ export class RouteDto extends GenericIdActiveDto {
     return entities.map(RouteDto.fromEntity);
   }
 }
-export class AccidentRouteDto extends GenericIdDto {
+export class MinimalRouteDto extends GenericIdDto {
   @IsISO8601()
   @ApiProperty(startTimeProperty)
   readonly startTime!: string;
@@ -76,9 +76,9 @@ export class AccidentRouteDto extends GenericIdDto {
   @ApiProperty({ ...UUIDApiProperty, description: 'ID of the vehicle' })
   readonly vehicle!: string;
 
-  public static fromEntity(entity: Route): AccidentRouteDto {
-    const dto = new AccidentRouteDto();
-    Object.assign(dto, <AccidentRouteDto>{
+  public static fromEntity(entity: Route): MinimalRouteDto {
+    const dto = new MinimalRouteDto();
+    Object.assign(dto, <MinimalRouteDto>{
       id: entity.id,
       startTime: entity.startTime.toISOString(),
       endTime: entity.endTime.toISOString(),
@@ -90,7 +90,7 @@ export class AccidentRouteDto extends GenericIdDto {
     return dto;
   }
 
-  public static fromEntities(entities: Route[]): AccidentRouteDto[] {
-    return entities.map(AccidentRouteDto.fromEntity);
+  public static fromEntities(entities: Route[]): MinimalRouteDto[] {
+    return entities.map(MinimalRouteDto.fromEntity);
   }
 }

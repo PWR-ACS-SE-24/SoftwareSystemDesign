@@ -54,7 +54,12 @@ describe('RouteService', () => {
     const vehicle = new Vehicle('2222');
     const stop = new Stop('stop1', 1, 1);
     const stopMapping = new StopLineMapping(line, stop, 1);
-    const newRoute = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const newRoute = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     await em.persistAndFlush([line, vehicle, newRoute, stopMapping]);
 
     // when
@@ -73,7 +78,12 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const newRoute = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     await em.persistAndFlush([line, vehicle, newRoute]);
 
     // when
@@ -94,8 +104,8 @@ describe('RouteService', () => {
     const response = await controller.createRoute({
       line: line.id,
       vehicle: vehicle.id,
-      startTime: createTimeOffsetFromNow(1).toISOString(),
-      endTime: createTimeOffsetFromNow(2).toISOString(),
+      startTime: createTimeOffsetFromNow({ hours: 1, seconds: 0 }).toISOString(),
+      endTime: createTimeOffsetFromNow({ hours: 2, seconds: 0 }).toISOString(),
     });
 
     // then
@@ -108,7 +118,12 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const newRoute = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     newRoute.isActive = false;
     await em.persistAndFlush([line, vehicle, newRoute]);
 
@@ -123,7 +138,12 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const route = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const route = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     const newLine = new Line('146');
     const newVehicle = new Vehicle('3333');
 
@@ -133,8 +153,8 @@ describe('RouteService', () => {
     const response = await controller.updateRoute(route.id, {
       line: newLine.id,
       vehicle: newVehicle.id,
-      startTime: createTimeOffsetFromNow(1.5).toISOString(),
-      endTime: createTimeOffsetFromNow(2.5).toISOString(),
+      startTime: createTimeOffsetFromNow({ hours: 1.5, seconds: 0 }).toISOString(),
+      endTime: createTimeOffsetFromNow({ hours: 2.5, seconds: 0 }).toISOString(),
     });
 
     // then
@@ -147,29 +167,44 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const route1 = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
-    const route2 = new Route(createTimeOffsetFromNow(4), createTimeOffsetFromNow(5), line, vehicle);
-    const route3 = new Route(createTimeOffsetFromNow(7), createTimeOffsetFromNow(8), line, vehicle);
+    const route1 = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
+    const route2 = new Route(
+      createTimeOffsetFromNow({ hours: 4, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 5, seconds: 0 }),
+      line,
+      vehicle,
+    );
+    const route3 = new Route(
+      createTimeOffsetFromNow({ hours: 7, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 8, seconds: 0 }),
+      line,
+      vehicle,
+    );
     await em.persistAndFlush([line, vehicle, route1, route2, route3]);
 
     // then
     await Promise.all([
       expect(
         controller.updateRoute(route1.id, {
-          endTime: createTimeOffsetFromNow(1.5).toISOString(),
+          endTime: createTimeOffsetFromNow({ hours: 1.5, seconds: 0 }).toISOString(),
         }),
       ).resolves.toBeDefined(),
 
       expect(
         controller.updateRoute(route2.id, {
-          startTime: createTimeOffsetFromNow(3).toISOString(),
+          startTime: createTimeOffsetFromNow({ hours: 3, seconds: 0 }).toISOString(),
         }),
       ).resolves.toBeDefined(),
 
       expect(
         controller.updateRoute(route3.id, {
-          startTime: createTimeOffsetFromNow(10).toISOString(),
-          endTime: createTimeOffsetFromNow(12).toISOString(),
+          startTime: createTimeOffsetFromNow({ hours: 10, seconds: 0 }).toISOString(),
+          endTime: createTimeOffsetFromNow({ hours: 12, seconds: 0 }).toISOString(),
         }),
       ).resolves.toBeDefined(),
     ]);
@@ -179,7 +214,12 @@ describe('RouteService', () => {
     // given
     const line = new Line('145');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const newRoute = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     await em.persistAndFlush([line, vehicle, newRoute]);
 
     // when
@@ -196,7 +236,12 @@ describe('RouteService', () => {
     const line = new Line('145');
     const otherLine = new Line('134');
     const vehicle = new Vehicle('2222');
-    const newRoute = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const newRoute = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     await em.persistAndFlush([line, otherLine, vehicle, newRoute]);
 
     // then
@@ -204,8 +249,8 @@ describe('RouteService', () => {
       controller.createRoute({
         line: otherLine.id,
         vehicle: vehicle.id,
-        startTime: createTimeOffsetFromNow(1.5).toISOString(),
-        endTime: createTimeOffsetFromNow(2.5).toISOString(),
+        startTime: createTimeOffsetFromNow({ hours: 1.5, seconds: 0 }).toISOString(),
+        endTime: createTimeOffsetFromNow({ hours: 2.5, seconds: 0 }).toISOString(),
       }),
     ).rejects.toThrow(BadRequestException);
 
@@ -213,8 +258,8 @@ describe('RouteService', () => {
       controller.createRoute({
         line: otherLine.id,
         vehicle: vehicle.id,
-        startTime: createTimeOffsetFromNow(0.5).toISOString(),
-        endTime: createTimeOffsetFromNow(1.5).toISOString(),
+        startTime: createTimeOffsetFromNow({ hours: 0.5, seconds: 0 }).toISOString(),
+        endTime: createTimeOffsetFromNow({ hours: 1.5, seconds: 0 }).toISOString(),
       }),
     ).rejects.toThrow(BadRequestException);
   });
@@ -225,7 +270,12 @@ describe('RouteService', () => {
     const otherLine = new Line('134');
     const vehicle = new Vehicle('2222');
     const otherVehicle = new Vehicle('3333');
-    const route = new Route(createTimeOffsetFromNow(1), createTimeOffsetFromNow(2), line, vehicle);
+    const route = new Route(
+      createTimeOffsetFromNow({ hours: 1, seconds: 0 }),
+      createTimeOffsetFromNow({ hours: 2, seconds: 0 }),
+      line,
+      vehicle,
+    );
     await em.persistAndFlush([line, otherLine, vehicle, otherVehicle, route]);
 
     // then
@@ -233,8 +283,8 @@ describe('RouteService', () => {
       controller.createRoute({
         line: otherLine.id,
         vehicle: otherVehicle.id,
-        startTime: createTimeOffsetFromNow(0.5).toISOString(),
-        endTime: createTimeOffsetFromNow(2.5).toISOString(),
+        startTime: createTimeOffsetFromNow({ hours: 0.5, seconds: 0 }).toISOString(),
+        endTime: createTimeOffsetFromNow({ hours: 2.5, seconds: 0 }).toISOString(),
       }),
     ).resolves.toBeDefined();
   });
@@ -254,14 +304,14 @@ describe('RouteService', () => {
      */
 
     // given
-    const c1s = createTimeOffsetFromNow(1);
-    const c2s = createTimeOffsetFromNow(2);
-    const start = createTimeOffsetFromNow(3);
-    const c1e = createTimeOffsetFromNow(4);
-    const c3s = createTimeOffsetFromNow(5);
-    const end = createTimeOffsetFromNow(6);
-    const c2e = createTimeOffsetFromNow(7);
-    const c3e = createTimeOffsetFromNow(8);
+    const c1s = createTimeOffsetFromNow({ hours: 1, seconds: 0 });
+    const c2s = createTimeOffsetFromNow({ hours: 2, seconds: 0 });
+    const start = createTimeOffsetFromNow({ hours: 3, seconds: 0 });
+    const c1e = createTimeOffsetFromNow({ hours: 4, seconds: 0 });
+    const c3s = createTimeOffsetFromNow({ hours: 5, seconds: 0 });
+    const end = createTimeOffsetFromNow({ hours: 6, seconds: 0 });
+    const c2e = createTimeOffsetFromNow({ hours: 7, seconds: 0 });
+    const c3e = createTimeOffsetFromNow({ hours: 8, seconds: 0 });
 
     const line = new Line('145');
     const newLine = new Line('134');

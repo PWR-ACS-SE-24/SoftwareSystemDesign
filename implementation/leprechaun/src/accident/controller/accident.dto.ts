@@ -1,4 +1,4 @@
-import { AccidentRouteDto } from '@app/route/controller/route.dto';
+import { MinimalRouteDto } from '@app/route/controller/route.dto';
 import { GenericIdDto } from '@app/shared/api/generic.dto';
 import { IsNotInFuture } from '@app/shared/api/not-in-future.validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -41,9 +41,9 @@ export class AccidentDto extends GenericIdDto {
   @ApiProperty({
     description: 'Route of the accident',
     nullable: false,
-    type: AccidentRouteDto,
+    type: MinimalRouteDto,
   })
-  readonly route!: AccidentRouteDto;
+  readonly route!: MinimalRouteDto;
 
   public static fromEntity(entity: Accident): AccidentDto {
     const dto = new AccidentDto();
@@ -51,7 +51,7 @@ export class AccidentDto extends GenericIdDto {
       id: entity.id,
       time: entity.time.toISOString(),
       description: entity.description,
-      route: AccidentRouteDto.fromEntity(entity.route),
+      route: MinimalRouteDto.fromEntity(entity.route),
       resolved: entity.resolved,
     });
     return dto;

@@ -39,8 +39,13 @@ describe('AccidentController', () => {
 
   it('should return all accidents', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, false);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
     // when
@@ -54,9 +59,14 @@ describe('AccidentController', () => {
 
   it('should return all accident ordered by time', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident1 = new Accident(createTimeOffsetFromNow(0, -5), 'description', route, false);
-    const newAccident2 = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident1 = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -5 }), 'description', route, false);
+    const newAccident2 = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, false);
     await em.persistAndFlush([newAccident1, newAccident2, line, vehicle]);
 
     // when
@@ -71,8 +81,13 @@ describe('AccidentController', () => {
 
   it('should return accident by id', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, false);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
     // when
@@ -86,13 +101,18 @@ describe('AccidentController', () => {
   it('should create accident', async () => {
     // given
     const vehicleSideNumber = '2222';
-    const { route, line, vehicle } = createRoute('145', vehicleSideNumber, 1, 2);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: vehicleSideNumber,
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
     await em.persistAndFlush([line, vehicle]);
 
     // when
     const newAccident = await controller.createAccident({
       route: route.id,
-      time: createTimeOffsetFromNow(0, -1).toISOString(),
+      time: createTimeOffsetFromNow({ hours: 0, seconds: -1 }).toISOString(),
       description: 'description',
     });
 
@@ -106,8 +126,13 @@ describe('AccidentController', () => {
 
   it('should not accept future accident time', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const accident = new Accident(createTimeOffsetFromNow(0, 10), 'description', route, false);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const accident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: 10 }), 'description', route, false);
 
     // then
     await expect(() => em.persistAndFlush([line, vehicle])).rejects.toThrow(DriverException);
@@ -115,8 +140,13 @@ describe('AccidentController', () => {
 
   it('should update accident', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, false);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
     // when
@@ -134,8 +164,13 @@ describe('AccidentController', () => {
 
   it('should resolve accident', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, false);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, false);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
     // when
@@ -148,8 +183,13 @@ describe('AccidentController', () => {
 
   it('should not resolve resolved accident', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, true);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, true);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
     // then
@@ -158,8 +198,13 @@ describe('AccidentController', () => {
 
   it('should not update resolved accident', async () => {
     // given
-    const { route, line, vehicle } = createRoute('145', '2222', 1, 2);
-    const newAccident = new Accident(createTimeOffsetFromNow(0, -10), 'description', route, true);
+    const { route, line, vehicle } = createRoute({
+      lineName: '145',
+      sideNumber: '2222',
+      routeStartTime: { hours: 1 },
+      routeEndTime: { hours: 2 },
+    });
+    const newAccident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: -10 }), 'description', route, true);
     await em.persistAndFlush([newAccident, line, vehicle]);
 
     // then

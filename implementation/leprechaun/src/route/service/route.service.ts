@@ -61,6 +61,22 @@ export class RouteService {
     );
   }
 
+  async getRouteByVehicleSideNumber(vehicleSideNumber: string, filters: boolean = true): Promise<Route> {
+    const now = new Date();
+
+    return await this.routeRepository.findOneOrFail(
+      {
+        vehicle: { sideNumber: vehicleSideNumber },
+        $and: [{ startTime: { $lte: now } }, { endTime: { $gte: now } }],
+      },
+      {
+        failHandler: () => new NotFoundException({ details: vehicleSideNumber }),
+        populate: ['vehicle', 'line'],
+        filters, // filters in both route and vehicle should be set
+      },
+    );
+  }
+
   async createRoute(route: CreateRouteDto): Promise<Route> {
     const line = await this.lineService.getLineById(route.line);
     const vehicle = await this.vehicleService.getVehicleById(route.vehicle);
