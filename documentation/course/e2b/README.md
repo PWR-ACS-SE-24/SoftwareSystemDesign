@@ -375,29 +375,29 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   <tr>
     <td><b>architektura mikroserwisów</b></td>
     <td><code>SC1.S1</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
     <td><code>SC1.R1</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <td><b>brak cachingu</b></td>
-    <td>-</td>
-    <td>-</td>
+    <td><code>-</code></td>
+    <td><code>-</code></td>
     <td><code>SC1.R2</code></td>
     <td><code>SC1.N2</code></td>
   </tr>
   <tr>
     <td><b>asynchroniczna komunikacja między serwisami</b></td>
-    <td>-</td>
+    <td><code>-</code></td>
     <td><code>SC1.T3</code></td>
     <td><code>SC1.R3</code></td>
-    <td>-</td> 
+    <td><code>-</code></td> 
   </tr>
   <tr>
     <td><b>automatyczne skalowanie</b></td>
     <td><code>SC1.S4</code></td>
-    <td>-</td>
-    <td>-</td>
+    <td><code>-</code></td>
+    <td><code>-</code></td>
     <td><code>SC1.N4</code></td>
   </tr>
   <tr>
@@ -459,30 +459,30 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   </tr>
   <tr>
     <td><b>architektura mikroserwisów</b></td>
-    <td>-</td>
-    <td>-</td>
+    <td><code>-</code></td>
+    <td><code>-</code></td>
     <td><code>SC2.R1</code></td>
-    <td>-</td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <td><b>brak cachingu</b></td>
-    <td>-</td>
-    <td>-</td>
+    <td><code>-</code></td>
+    <td><code>-</code></td>
     <td><code>SC2.R2</code></td>
     <td><code>SC2.N2</code></td>
   </tr>
   <tr>
     <td><b>asynchroniczna komunikacja między serwisami</b></td>
-    <td>-</td>
+    <td><code>-</code></td>
     <td><code>SC2.T3</code></td>
     <td><code>SC2.R3</code></td>
-    <td>-</td> 
+    <td><code>-</code></td> 
   </tr>
   <tr>
     <td><b>automatyczne skalowanie</b></td>
     <td><code>SC2.S4</code></td>
-    <td>-</td>
-    <td>-</td>
+    <td><code>-</code></td>
+    <td><code>-</code></td>
     <td><code>SC2.N4</code></td>
   </tr>
   <tr>
@@ -598,7 +598,7 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 
 - **`SC3.S3`:** Strategia skalowania - wybranie odpowiedzniej strategii czyli skalowania poziomego (dowanie nowych podów) lub pionowego (zwiększanie zasobów istniejących podów) może wpłynąć na wydajność systemu.
 - **`SC3.T3`:** Kubernetes minimalizuje ryzyko przeciążenia, lecz może zwiększyć koszty operacyjne poprzez zwiększającą się liczbę instancji które wymagają więcej mocy obliczeniowej i pamięci.
-- **`SC3.N3`:** Kubernetes umożliwia zautomatyzowane skalowanie zasobów oraz ich redundancję, co znacząco zmniejsza ryzyko przestojów wynikających z awarii pojedynczych instancji. 
+- **`SC3.N3`:** Kubernetes umożliwia zautomatyzowane skalowanie zasobów oraz ich redundancję, co znacząco zmniejsza ryzyko przestojów wynikających z awarii pojedynczych instancji.
 
 ---
 
