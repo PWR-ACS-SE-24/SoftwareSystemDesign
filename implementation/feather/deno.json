@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "tasks": {
+    "dev": "deno run --allow-net main.ts",
+    "compile": "deno compile --allow-net --output feather main.ts"
+  },
+  "fmt": {
+    "lineWidth": 120
+  },
+  "imports": {
+    "@jobberknoll": "../jobberknoll/",
+    "@hono/zod-openapi": "npm:@hono/zod-openapi@^0.18.3",
+    "hono": "npm:hono@^4.6.16",
+    "zod": "npm:zod@^3.24.1"
+  }
+}
