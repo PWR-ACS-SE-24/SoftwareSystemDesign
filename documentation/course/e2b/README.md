@@ -562,24 +562,24 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC5</code> TODO @mlodybercik</th>
+    <th>Scenariusz <code>SC5</code></th>
     <td colspan="4">Gdy w systemie wydarzy się awaria, system można przywrócić do działania w ciągu maksymalnie 1h.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">odzyskiwalność <i>(recoverability)</i></td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Awaria aplikacji bądź jego części znaczenie wpływająca na pracę reszty systemu</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Czas wymagany na przywrócenie aplikacji do stanu sprzed awarii powinien wynosić mniej niż 60 minut</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -588,52 +588,96 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Ryzyko</th>
     <th>Nie-ryzyko</th>
   </tr>
+    <tr>
+    <td>architektura mikroserwisów</td>
+    <td><code>SC5.S1</code></td>
+    <td><code>SC5.T1</code></td>
+    <td><code>SC5.R1</code></td>
+    <td><code>SC5.N1</code></td>
+  </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td>AWS EKS/Kubernetes</td>
+    <td><code>SC5.S2</code></td>
+    <td><code>SC5.T2</code></td>
+    <td><code>SC5.R2</code></td>
+    <td><code>SC5.N2</code></td>
+  </tr>
+  <tr>
+    <td>AWS</td>
+    <td><code>SC5.S3</code></td>
+    <td><code>SC5.T3</code></td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>AWS Cloudwatch</td>
+    <td><code>SC5.S4</code></td>
+    <td>-</td>
+    <td><code>SC5.R4</code></td>
+    <td>-</td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Wybrane na liście decyzje architektoniczne wspierają lub dotyczą elementu odzyskiwalności systemu. Są to elementy, które jawnie wspierają przywracanie systemu do stanu nieawaryjnego, pozwalają na ograniczenie skutków awarii oraz wspomagają we wczesnym wykrywaniu stanu awaryjnego.
+    <ul>
+      <li>Architektura mikroserwisów pozwala na niezależne działanie poszczególnych komponentów systemu, co pozwala na ograniczenie skutków awarii jednego z nich co wprost wpływa na czas przywracania systemu do stanu nieawaryjnego.</li>
+      <li>Użycie systemu Kubernetes (AWS EKS) pozwala na automatyczną mitigację skutków częściowych awarii (ale nie przyczyn) poprzez wyłączanie wadliwych instancji.</li>
+      <li>Zastosowanie usług AWS pozwala na wykorzystanie wbudowanych systemów monitorowania, alarmowania i przywracania, które pozwalają na szybkie wykrycie stanu awaryjnego i jego naprawę.</li>
+      <li>Użycie AWS Cloudwatch pozwala na monitorowanie stanu systemu i wykrywanie stanów awaryjnych.</li>
+    </ul>
+    </td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4">
+      <img src="./images/SC5-1.png"></img>
+      <img src="./images/SC5-2.png"></img>
+    </td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC5.S1`:** Większa ilość niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego.
+- **`SC5.T1`:** Zwiekszenie ilości mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
+- **`SC5.R1`:** Błędny podział aplikacji na mikroserwisy może prowadzić do sytuacji, w której awaria jednego z nich wpłynie na działanie całego systemu.
+- **`SC5.N1`:** Architektura mikroserwisów wspiera odporność systemu na awarie poprzez niezależne działanie poszczególnych komponentów systemu.
+
+---
+
+- **`SC5.S2`:** Wykorzystanie Kubernetesa pozwala na automatyczne zarządzanie instancjami, co pozwala na szybkie przywrócenie systemu do stanu nieawaryjnego.
+- **`SC5.T2`:** Ilość replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
+- **`SC5.R2`:** Wdrożenie systemu Kubernetes (AWS EKS) może prowadzić do sytuacji, w której automatyczne wyłączanie wadliwych instancji może prowadzić do nieprzewidywalnych skutków.
+- **`SC5.N2`:** Wykorzystanie Kubernetesa do zarządzania mikroserwisami jest zgodne ze sztuką.
+
+---
+
+- **`SC5.S3`:** Wykorzystanie usług AWS pozwala na wykorzystanie wbudowanych systemów monitorowania, alarmowania i przywracania, które pozwalają na szybkie wykrycie stanu awaryjnego i jego naprawę.
+- **`SC5.T3`:** Użycie usług AWS może prowadzić do sytuacji, w której zbyt duża ilość monitorowanych metryk może prowadzić do nadmiernego obciążenia systemu co będzie skutkować wzrostem kosztów utrzymania aplikacji.
+
+---
+
+- **`SC5.S4`:** Użycie AWS Cloudwatch pozwala na monitorowanie stanu systemu i alarmowanie o stanach awaryjnych.
+- **`SC5.R4`:** Błędna konfiguracja logów aplikacji może prowadzić do sytuacji, w której nie będzie możliwe wykrycie stanu awaryjnego.
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC6</code> TODO @mlodybercik</th>
+    <th>Scenariusz <code>SC6</code></th>
     <td colspan="4">Użytkownik dokonuje dowolną czynność, niezależnie od stanu środowiska, dane użytkownika są przetwarzane i przechowywane zgodnie z wytycznymi RODO.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">poufność <i>(confidentiality)</i></td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Niezależnie od stanu środowiska</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Dowolna czynność wykonywana przez użytkownika</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Dane poufne przechowywane są z GDPR (RODO)</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -643,30 +687,58 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td>AWS</td>
+    <td><code>SC6.S1</code></td>
+    <td><code>SC6.T1</code></td>
+    <td><code>SC6.R1</code></td>
+    <td><code>SC6.N1</code></td>
+  </tr>
+    <tr>
+    <td>AWS S3</td>
+    <td><code>SC6.S1</code></td>
+    <td><code>SC6.T1</code></td>
+    <td><code>SC6.R1</code></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>AWS RDS</td>
+    <td><code>SC6.S1</code></td>
+    <td><code>SC6.T1</code></td>
+    <td><code>SC6.R1</code></td>
+    <td>-</td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Wybrane decyzje architektoniczne są ściśle związane z atrybutem poufności. Każda z nich jest ściśle powiązana ze scenariuszem w kontekście przetwarzania danych wrażliwych.
+    <ul>
+      <li>Wybranie AWS jako dostawcy usług chmurowych pozwala na korzystanie z usług zgodnych z RODO, co pozwala na przechowywanie i przetwarzanie danych wrażliwych zgodnie z wytycznymi.</li>
+      <li>Ziarnistość ustawień AWS S3 pozwala na przechowywanie danych wrażliwych w sposób zgodny z RODO.</li>
+      <li>Użycie AWS RDS pozwala na przechowywanie danych wrażliwych w sposób zgodny z RODO.</li>
+    </ul>
+    </td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"><img src="./images/SC6.png"></img></td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC6.S1`:** Wykorzystanie różnych usług AWS pozwala na przechowywanie i przetwarzanie danych wrażliwych zgodnie z RODO.
+- **`SC6.T1`:** Ziarnistość ustawień AWS mocno wpływa na dodatkowe koszty utrzymania systemu.
+- **`SC6.R1`:** Nieprawidłowa konfiguracja usług AWS może prowadzić do sytuacji, w której dane wrażliwe zostaną ujawnione.
+- **`SC6.N1`:** AWS oferuje _Shared Responsibility Model_, które zapewnia bezpieczeństwo danych wrażliwych po stronie dostawcy usług chmurowych.
+
+---
+
+- **`SC6.S2`:** Wykorzystanie S3 do przechowywania danych wrażliwych pozwala na przechowywanie danych w sposób zgodny z RODO.
+- **`SC6.T2`:** Kontrola dostępu AWS S3 mocno wpływa na dodatkowe koszty utrzymania systemu.
+- **`SC6.R2`:** Nieprawidłowa konfiguracja AWS S3 może prowadzić do sytuacji, w której dane wrażliwe zostaną ujawnione.
+
+---
+
+- **`SC6.S3`:** Wykorzystanie RDS do przechowywania danych wrażliwych pozwala na przechowywanie i przetwarzanie danych w sposób zgodny z RODO.
+- **`SC6.T3`:** Dodatkowe szyfrowanie danych może wpływać negatywnie na prędkość operacji na danych.
+- **`SC6.R3`:** Nieprawidłowa konfiguracja AWS RDS może prowadzić do sytuacji, w której dane wrażliwe zostaną ujawnione.
 
 <table>
   <tr>
@@ -758,22 +830,37 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 - **`SC7.T1`:** Szyfrowanie zwiększa bezpieczeństwo, ale obniża wydajność zapytań przy dużym obciążeniu.
 - **`SC7.R1`:** Nieodpowiednia konfiguracja algorytmu szyfrowania może spowodować trudności w odzyskaniu danych.
 - **`SC7.N1`:** PostgreSQL natywnie wspiera TDE, co zmniejsza ryzyko błędów konfiguracji i zapewnia spójność szyfrowania danych.
+
+---
+
 - **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych.
 - **`SC7.T2`:** TLS zapewnia poufność, ale wydłuża czas negocjacji połączenia.
 - **`SC7.R2`:** Nieprawidłowa konfiguracja certyfikatów TLS może prowadzić do odrzucania połączeń przez klientów bazy danych.
 - **`SC7.N2`:** AWS RDS automatycznie zarządza szyfrowaniem połączeń TLS, co redukuje ryzyko błędów konfiguracyjnych.
+
+---
+
 - **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów.
 - **`SC7.T3`:** JWT zwiększa bezpieczeństwo sesji, ale wymaga większych zasobów obliczeniowych na podpis i weryfikację.
 - **`SC7.R3`:** Brak możliwości wygaszania tokenów może prowadzić do naruszenia poufności danych.
 - **`SC7.N3`:** Algorytmy RSA i AES-256 gwarantują wysoki poziom zabezpieczenia tokenów.
+
+---
+
 - **`SC7.S4`:** Polityki bezpieczeństwa haseł - zbyt słabe polityki mogą narazić użytkowników na nieautoryzowany dostęp.
 - **`SC7.T4`:** Cognito zapewnia łatwe zarządzanie uwierzytelnianiem, ale zwiększa zależność od infrastruktury AWS.
 - **`SC7.R4`:** Problemy z integracją Cognito z aplikacją mogą opóźnić wdrożenie lub spowodować luki w uwierzytelnianiu.
 - **`SC7.N4`:** Cognito obsługuje zaawansowane funkcje, takie jak MFA (Multi-factor authentication), co dodatkowo wzmacnia bezpieczeństwo użytkowników.
+
+---
+
 - **`SC7.S5`:** Aktualność certyfikatów SSL/TLS - nieaktualne certyfikaty mogą uniemożliwić połączenia między klientem a API.
 - **`SC7.T5`:** Szyfrowanie TLS poprawia poufność danych, ale zwiększa narzut na zasoby serwera.
 - **`SC7.R5`:** Źle skonfigurowane certyfikaty mogą prowadzić do odrzucenia żądań przez klientów.
 - **`SC7.N5`:** AWS Certificate Manager automatycznie odnawia certyfikaty, zapewniając spójność i minimalizując ryzyko nieaktualności.
+
+---
+
 - **`SC7.S6`:** Szyfrowanie wiadomości - brak szyfrowania w SQS może prowadzić do wycieku danych przesyłanych między mikroserwisami.
 - **`SC7.T6`:** Szyfrowanie w SQS zapewnia bezpieczeństwo, ale może zwiększyć opóźnienia w komunikacji.
 - **`SC7.R6`:** Niepoprawne użycie AWS KMS może powodować przesyłanie niezaszyfrowanych danych.
@@ -855,14 +942,23 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 - **`SC8.T1`:** Szczegółowe logi zwiększają odpowiedzialność, ale mogą prowadzić do wyższych kosztów operacyjnych w AWS.
 - **`SC8.R1`:** Niewystarczające logowanie może uniemożliwić identyfikację naruszeń bezpieczeństwa lub błędów operacyjnych.
 - **`SC8.N1`:** AWS CloudWatch zapewnia automatyczne zbieranie logów w ustrukturyzowany sposób, minimalizując ryzyko utraty danych audytowych.
+
+---
+
 - **`SC8.S2`:** Włączone logowanie żądań - brak rejestrowania żądań w API Gateway może uniemożliwić śledzenie działań użytkowników.
 - **`SC8.T2`:** Logowanie żądań zwiększa odpowiedzialność, ale może obniżyć wydajność przetwarzania API przy dużym ruchu.
 - **`SC8.R2`:** Przeciążenie API Gateway w wyniku nadmiarowego logowania może skutkować błędami w obsłudze ruchu.
 - **`SC8.N2`:** API Gateway integruje się bezpośrednio z AWS CloudWatch, co ułatwia analizę audytową i zarządzanie danymi logów.
+
+---
+
 - **`SC8.S3`:** Polityka przechowywania danych - zbyt długie przechowywanie logów może generować niepotrzebne koszty.
 - **`SC8.T3`:** Przechowywanie logów w S3 jest tanie, ale wymaga skonfigurowania polityk dostępu i archiwizacji, co zwiększa złożoność.
 - **`SC8.R3`:** Brak zabezpieczenia logów audytowych w S3 może prowadzić do ich nieautoryzowanego dostępu lub modyfikacji.
 - **`SC8.N3`:** AWS S3 obsługuje szyfrowanie danych w spoczynku i wersjonowanie, co gwarantuje ich integralność i bezpieczeństwo.
+
+---
+
 - **`SC8.S4`:** Konfiguracja audytu w Spring Boot - niewłaściwe wdrożenie mechanizmu filtrowania może pomijać kluczowe dane logów.
 - **`SC8.T4`:** Wbudowany filtr audytowy w Spring Boot ułatwia centralizację logowania, ale zwiększa złożoność konfiguracji aplikacji.
 - **`SC8.R4`:** Nieprawidłowa implementacja filtrów audytowych może powodować brak zgodności z wymaganiami dotyczącymi odpowiedzialności.
@@ -879,6 +975,13 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC5.S1`:** Większa ilość niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego - **nie-ryzyko**.
+- **`SC5.S2`:** Wykorzystanie Kubernetesa pozwala na automatyczne zarządzanie instancjami, co pozwala na szybkie przywrócenie systemu do stanu nieawaryjnego - **nie-ryzyko**.
+- **`SC5.S3`:** Wykorzystanie usług AWS pozwala na wykorzystanie wbudowanych systemów monitorowania, alarmowania i przywracania, które pozwalają na szybkie wykrycie stanu awaryjnego i jego naprawę - **nie-ryzyko**.
+- **`SC6.S1`:** Wykorzystanie różnych usług AWS pozwala na przechowywanie i przetwarzanie danych wrażliwych zgodnie z RODO - **ryzyko**.
+- **`SC6.S2`:** Wykorzystanie S3 do przechowywania danych wrażliwych pozwala na przechowywanie danych w sposób zgodny z RODO - **ryzyko**.
+- **`SC6.S3`:** Wykorzystanie RDS do przechowywania danych wrażliwych pozwala na przechowywanie i przetwarzanie danych w sposób zgodny z RODO - **ryzyko**.
+- **`SC5.S4`:** Użycie AWS Cloudwatch pozwala na monitorowanie stanu systemu i alarmowanie o stanach awaryjnych - **nie-ryzyko**.
 - **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu - **ryzyko**.
 - **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych - **nie-ryzyko**.
 - **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów - **ryzyko**.
@@ -894,6 +997,12 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC5.T1`:** Zwiekszenie ilości mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
+- **`SC5.T2`:** Ilość replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
+- **`SC5.T3`:** Użycie usług AWS może prowadzić do sytuacji, w której zbyt duża ilość monitorowanych metryk może prowadzić do nadmiernego obciążenia systemu co będzie skutkować wzrostem kosztów utrzymania aplikacji.
+- **`SC6.T1`:** Ziarnistość ustawień AWS mocno wpływa na dodatkowe koszty utrzymania systemu.
+- **`SC6.T2`:** Kontrola dostępu AWS S3 mocno wpływa na dodatkowe koszty utrzymania systemu.
+- **`SC6.T3`:** Dodatkowe szyfrowanie danych może wpływać negatywnie na prędkość operacji na danych.
 - **`SC7.T1`:** Szyfrowanie zwiększa bezpieczeństwo, ale obniża wydajność zapytań przy dużym obciążeniu.
 - **`SC7.T2`:** TLS zapewnia poufność, ale wydłuża czas negocjacji połączenia.
 - **`SC7.T3`:** JWT zwiększa bezpieczeństwo sesji, ale wymaga większych zasobów obliczeniowych na podpis i weryfikację.
@@ -909,6 +1018,12 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC5.R1`:** Błędny podział aplikacji na mikroserwisy może prowadzić do sytuacji, w której awaria jednego z nich wpłynie na działanie całego systemu.
+- **`SC5.R2`:** Wdrożenie systemu Kubernetes (AWS EKS) może prowadzić do sytuacji, w której automatyczne wyłączanie wadliwych instancji może prowadzić do nieprzewidywalnych skutków.
+- **`SC5.R4`:** Błędna konfiguracja logów aplikacji może prowadzić do sytuacji, w której nie będzie możliwe wykrycie stanu awaryjnego.
+- **`SC6.R1`:** Nieprawidłowa konfiguracja usług AWS może prowadzić do sytuacji, w której dane wrażliwe zostaną ujawnione.
+- **`SC6.R2`:** Nieprawidłowa konfiguracja AWS S3 może prowadzić do sytuacji, w której dane wrażliwe zostaną ujawnione.
+- **`SC6.R3`:** Nieprawidłowa konfiguracja AWS RDS może prowadzić do sytuacji, w której dane wrażliwe zostaną ujawnione.
 - **`SC7.R1`:** Nieodpowiednia konfiguracja algorytmu szyfrowania może spowodować trudności w odzyskaniu danych.
 - **`SC7.R2`:** Nieprawidłowa konfiguracja certyfikatów TLS może prowadzić do odrzucania połączeń przez klientów bazy danych.
 - **`SC7.R3`:** Brak możliwości wygaszania tokenów może prowadzić do naruszenia poufności danych.
@@ -924,6 +1039,9 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC5.N1`:** Architektura mikroserwisów wspiera odporność systemu na awarie poprzez niezależne działanie poszczególnych komponentów systemu.
+- **`SC5.N2`:** Wykorzystanie Kubernetesa do zarządzania mikroserwisami jest zgodne ze sztuką.
+- **`SC6.N1`:** AWS oferuje _Shared Responsibility Model_, które zapewnia bezpieczeństwo danych wrażliwych po stronie dostawcy usług chmurowych.
 - **`SC7.N1`:** PostgreSQL natywnie wspiera TDE, co zmniejsza ryzyko błędów konfiguracji i zapewnia spójność szyfrowania danych.
 - **`SC7.N2`:** AWS RDS automatycznie zarządza szyfrowaniem połączeń TLS, co redukuje ryzyko błędów konfiguracyjnych.
 - **`SC7.N3`:** Algorytmy RSA i AES-256 gwarantują wysoki poziom zabezpieczenia tokenów.
