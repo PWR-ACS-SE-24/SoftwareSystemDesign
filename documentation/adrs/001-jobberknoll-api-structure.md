@@ -29,6 +29,8 @@ The changes are as follows:
 - `middlewares` and `helpers` will be moved into `shared`
 - `mappers` will be temporarily removed with an option to reintroduce in `int/mappers` and `ext/mappers` if needed
 
+Changes to Jobberknoll's architecture also apply to Feather.
+
 ### Consequences
 
 - Good, because the codebase will be more maintainable and easier to expand.

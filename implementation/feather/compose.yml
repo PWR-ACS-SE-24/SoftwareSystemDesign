@@ -1,0 +1,5 @@
+services:
+  feather-app:
+    build: "."
+    ports:
+      - "8001:8001"

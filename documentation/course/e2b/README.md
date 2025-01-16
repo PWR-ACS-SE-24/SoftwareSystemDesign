@@ -346,24 +346,24 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC1</code> TODO @tchojnacki</th>
+    <th>Scenariusz <code>SC1</code></th>
     <td colspan="4">Użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 2 sekund.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">wydajność (<i>performance</i>)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Użytkownik wysyła zapytanie związane z rezerwacjami i dostępem do zasobów</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Czas odpowiedzi nie przekracza 2 sekund</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -373,51 +373,82 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>architektura mikroserwisów</b></td>
+    <td><code>SC1.S1</code></td>
+    <td>-</td>
+    <td><code>SC1.R1</code></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><b>brak cachingu</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC1.R2</code></td>
+    <td><code>SC1.N2</code></td>
+  </tr>
+  <tr>
+    <td><b>asynchroniczna komunikacja między serwisami</b></td>
+    <td>-</td>
+    <td><code>SC1.T3</code></td>
+    <td><code>SC1.R3</code></td>
+    <td>-</td> 
+  </tr>
+  <tr>
+    <td><b>automatyczne skalowanie</b></td>
+    <td><code>SC1.S4</code></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC1.N4</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Podjęte decyzje architektoniczne wpływają na wydajność systemu. Zastosowanie architektury mikroserwisów jest ryzykowne z perspektywy wydajności, natomiast przy wzięciu pod uwagę innych atrybutów jakościowych jest dobrą decyzją dla systemu. Brak cachingu wpływa negatywnie na wydajność systemu, ale zapewnia większą pewność co do aktualności danych. Asynchroniczna komunikacja między serwisami zwiększa niezawodność, ale wprowadza dodatkowe opóźnienia. Automatyczne skalowanie może prowadzić do problemów z wydajnością, ale zapewnia większą wydajność w przypadku wzrostu liczby użytkowników. Generalnie, podjęte decyzje architektoniczne nie wspierają dobrej wydajności systemu, ale pomagają w utrzymaniu wysokiej niezawodności.</td>
+    </td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"><img src="./images/SC1+2.png" /></td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC1.S1`:** Poprawny projekt i implementacja architektury mikroserwisowej jest bardziej skomplikowany niż monolitycznej.
+- **`SC1.R1`:** Architektura mikroserwisów spowalnia zapytania o rezerwacje i zasoby z powodu konieczności komunikacji między serwisami.
+
+---
+
+- **`SC1.R2`:** Brak cachingu spowalnia zapytania o rezerwacje i zasoby z powodu konieczności pobierania danych z bazy danych.
+- **`SC1.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
+
+---
+
+- **`SC1.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
+- **`SC1.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać implementację akcji na rezerwacjach i zasobach, które wymagają odpowiedzi zwrotnej.
+
+---
+
+- **`SC1.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby.
+- **`SC1.N4`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC2</code> TODO @tchojnacki</th>
+    <th>Scenariusz <code>SC2</code></th>
     <td colspan="4">Użytkownik wysyła prośbę o generację raportu w ramach normalnej pracy systemu, czas odpowiedzi nie przekracza 3 sekund.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">wydajność (<i>performance</i>)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Użytkownik wysyła prośbę o generację raportu</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Czas odpowiedzi nie przekracza 3 sekund</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -427,51 +458,80 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>architektura mikroserwisów</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC2.R1</code></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td><b>brak cachingu</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC2.R2</code></td>
+    <td><code>SC2.N2</code></td>
+  </tr>
+  <tr>
+    <td><b>asynchroniczna komunikacja między serwisami</b></td>
+    <td>-</td>
+    <td><code>SC2.T3</code></td>
+    <td><code>SC2.R3</code></td>
+    <td>-</td> 
+  </tr>
+  <tr>
+    <td><b>automatyczne skalowanie</b></td>
+    <td><code>SC2.S4</code></td>
+    <td>-</td>
+    <td>-</td>
+    <td><code>SC2.N4</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Podjęte decyzje architektoniczne wpływają na wydajność systemu. Zastosowanie architektury mikroserwisów jest ryzykowne z perspektywy wydajności, natomiast przy wzięciu pod uwagę innych atrybutów jakościowych jest dobrą decyzją dla systemu. Brak cachingu wpływa negatywnie na wydajność systemu, ale zapewnia większą pewność co do aktualności danych. Asynchroniczna komunikacja między serwisami zwiększa niezawodność, ale wprowadza dodatkowe opóźnienia. Automatyczne skalowanie może prowadzić do problemów z wydajnością, ale zapewnia większą wydajność w przypadku wzrostu liczby użytkowników. Generalnie, podjęte decyzje architektoniczne nie wspierają dobrej wydajności systemu, ale pomagają w utrzymaniu wysokiej niezawodności.</td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"><img src="./images/SC1+2.png" /></td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC2.R1`:** Architektura mikroserwisów spowalnia generację raportów z powodu konieczności komunikacji między serwisami.
+
+---
+
+- **`SC2.R2`:** Brak cachingu spowalnia generację raportów z powodu konieczności pobierania danych z bazy danych.
+- **`SC2.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
+
+---
+
+- **`SC2.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
+- **`SC2.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać generację raportów, tam gdzie potrzebna jest informacja zwrotna.
+
+---
+
+- **`SC2.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów.
+- **`SC2.N4`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC3</code> TODO @piterek130</th>
+    <th>Scenariusz <code>SC3</code></th>
     <td colspan="4">Użytkownicy w liczbie 10000 otwierają system w ramach normalnej pracy systemu, transakcje są obsługiwane bez błędów.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">przepustowość (capacity)	</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Użytkownicy w liczbie 10000 otwierają system</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Obsługiwanie transakcji bez błędów</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -481,51 +541,91 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>Automatyczne skalowanie</b></td>
+    <td><code>SC3.S1</code></td>
+    <td><code>SC3.T1</code></td>
+    <td><code>SC3.R1</code></td>
+    <td><code>-</code></td>
+  </tr>
+  <tr>
+    <td><b>Application Load Balancer</b></td>
+    <td><code>SC3.S2</code></td>
+    <td><code>SC3.T2</code></td>
+    <td><code>SC3.R2</code></td>
+    <td><code>-</code></td>
+  </tr>
+  <tr>
+    <td><b>Kubernetes</b> z mechanizmem skalowania</td>
+    <td><code>SC3.S3</code></td>
+    <td><code>SC3.T3</code></td>
+    <td><code>-</code></td>
+    <td><code>SC3.N3</code></td>
+  </tr>
+  <tr>
+    <td><b>PostgreSQL</b> z optymalizacją zapytań pod obciążenie</td>
+    <td><code>SC3.S4</code></td>
+    <td><code>SC3.T4</code></td>
+    <td><code>SC3.R4</code></td>
+    <td><code>-</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Lista decyzji architektonicznych w scenariuszu SC3 jest ściśle związana z atrybutem przepustowości (capacity). Każda decyzja ma na celu zapewnienie, obsłużenia 10000 jednoczesnych użytkowników w ramach normalnej pracy, bez błędów i przeciążenia.
+    <ul>
+      <li>Automatyczne skalowanie - mechanizm automatycznego skalowania dynamicznie dostosowuje liczbę instancji serwerowych do aktualnego obciążenia systemu. Pozwala to na eliminacje ryzyka przeciążenia systemu przy dużej liczbie użytkowników.</li>
+      <li>Load Balancer - rozdziela ruch użytkowników pomiędzy wiele instancji aplikacji, co pozwala uniknąć przeciążenia jednej z nich. Load Balancer zwiększa dostępność systemu oraz umożliwia równomierne wykorzystanie zasobów serwerowych, co jest kluczowe dla wydajnej obsługi wielu użytkowników jednocześnie.</li>
+      <li>Kubernetes - platforma Kubernetes pozwala na automatyczne skalowanie zasobów aplikacji w zależności od aktualnego obciążenia. Dzięki temu można uruchamiać dodatkowe pody lub redukować ich liczbę w czasie rzeczywistym. Zapewnia on również wysoką dostępność poprzez redundancję zasobów i ich automatyczne przełączanie w przypadku awarii.</li>
+      <li>PostgreSQL - baza danych PostgreSQL została zoptymalizowana pod kątem dużego ruchu, dzięki zastosowaniu indeksów i planowania zapytań. Zapewnia to szybki dostęp do danych i minimalizuje czas odpowiedzi na zapytania.</li>
+    </ul></td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4"><img src="./images/SC3.png"></td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC3.S1`:** Czas reakcji systemu skalowania - jeśli mechanizm skalowania działa z opóźnieniem, może wystąpić przeciążenie systemu przed przydzieleniem dodatkowych zasobów.
+- **`SC3.T1`:** Automatyczne skalowanie zwiększa koszty operacyjne w okresach dużego obciążenia, ale zapewnia stabilność i dostępność systemu.
+- **`SC3.R1`:** Nieodpowiednia konfiguracja automatycznego skalowania może prowadzić do przeciążenia systemu lub zwiększenia kosztów operacyjnych.
+
+---
+
+- **`SC3.S2`:** Algorytm rozdzielania ruchu - jeśli Load Balancer nie rozdzieli ruchu równomiernie, to niektóre instancje aplikacji mogą być przeciążone, co prowadzi do spadku wydajności systemu.
+- **`SC3.T2`:** Równoważenie ruchu między serwerami zwiększa odporność na przeciążenie i poprawia dostępność systemu, ale jako dodatkowa warstwa przetwarzania może wpłynąć na czas odpowiedzi systemu.
+- **`SC3.R2`:** Awaria Load Balancera może spowodować problemy w rozdzielaniu ruchu pomiędzy serwerami, co prowadzi do przeciążenia systemu.
+
+---
+
+- **`SC3.S3`:** Strategia skalowania - wybranie odpowiedzniej strategii czyli skalowania poziomego (dowanie nowych podów) lub pionowego (zwiększanie zasobów istniejących podów) może wpłynąć na wydajność systemu.
+- **`SC3.T3`:** Kubernetes minimalizuje ryzyko przeciążenia, lecz może zwiększyć koszty operacyjne poprzez zwiększającą się liczbę instancji które wymagają więcej mocy obliczeniowej i pamięci.
+- **`SC3.N3`:** Kubernetes umożliwia zautomatyzowane skalowanie zasobów oraz ich redundancję, co znacząco zmniejsza ryzyko przestojów wynikających z awarii pojedynczych instancji. 
+
+---
+
+- **`SC3.S4`:** Indeksy w bazie danych – brak odpowiednich indeksów może wydłużyć czas wykonywania zapytań przy dużych ilościach danych.
+- **`SC3.T4`:** Optymalizacja zapytań w bazie danych PostgreSQL może znacząco przyspieszyć dostęp do danych, ale może wymagać dodatkowego nakładu pracy przy projektowaniu i utrzymaniu bazy danych.
+- **`SC3.R4`:** Nieoptymalne zapytania SQL mogą powodować długie czasy odpowiedzi przy dużym obciążeniu, co negatywnie wpływa na doświadczenie użytkownika i stabilność aplikacji.
 
 <table>
   <tr>
-    <th>Scenariusz <code>SC4</code> TODO @piterek130</th>
+    <th>Scenariusz <code>SC4</code></th>
     <td colspan="4">Użytkownik próbuje skorzystać z systemu, niezależnie od stanu środowiska, system jest dostępny przez 99% czasu.</td>
   </tr>
   <tr>
     <th>Atrybut(y)</th>
-    <td colspan="4">Atrybuty jakościowe, których dotyczy ten scenariusz</td>
+    <td colspan="4">dostępność (availability)</td>
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Odpowiednie założenia dotyczące środowiska, w którym znajduje się </td>
+    <td colspan="4"> Niezależnie od stanu środowiska</td>
   </tr>
   <tr>
     <th>Bodziec</th>
-    <td colspan="4">Precyzyjne określenie bodźca atrybutu jakościowego (np. wywołana funkcja, awaria, zagrożenie, modyfikacja) związanego ze scenariuszem</td>
+    <td colspan="4">Skorzystanie z systemu przez użytkownika</td>
   </tr>
   <tr>
     <th>Odpowiedź</th>
-    <td colspan="4">Precyzyjne określenie odpowiedzi atrybutu jakościowego (np. czas odpowiedzi, miara trudności wprowadzenia modyfikacji)</td>
+    <td colspan="4">Dostępność systemu przez 99% czasu</td>
   </tr>
   <tr>
     <th>Decyzje architektoniczne</th>
@@ -535,30 +635,73 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Nie-ryzyko</th>
   </tr>
   <tr>
-    <td>Decyzja architektoniczna, związana z tym scenariuszem, która ma wpływ na odpowiedź atrybutu jakościowego</td>
-    <td><code>SC1.S1</code>, <code>SC1.S2</code></td>
-    <td><code>SC1.T1</code>, <code>SC1.T2</code></td>
-    <td><code>SC1.R1</code>, <code>SC1.R2</code></td>
-    <td><code>SC1.N1</code>, <code>SC1.N2</code></td>
+    <td><b>Architektura mikroserwisów</b></td>
+    <td><code>SC4.S1</code></td>
+    <td><code>SC4.T1</code></td>
+    <td><code>-</code></td>
+    <td><code>SC4.N1</code></td>
+  </tr>
+  <tr>
+    <td><b>AWS</b></td>
+    <td><code>SC4.S1</code></td>
+    <td><code>SC4.T1</code></td>
+    <td><code>-</code></td>
+    <td><code>SC4.N1</code></td>
+  </tr>
+  <tr>
+    <td><b>AWS CloudWatch</b> do monitorowania i alarmowania</td>
+    <td><code>SC4.S2</code></td>
+    <td><code>SC4.T2</code></td>
+    <td><code>SC4.R2</code></td>
+    <td><code>-</code></td>
+  </tr>
+  <tr>
+    <td><b>Kubernetes</b></td>
+    <td><code>SC4.S3</code></td>
+    <td><code>SC4.T3</code></td>
+    <td><code>-</code></td>
+    <td><code>SC4.N3</code></td>
   </tr>
   <tr>
     <th>Analiza</th>
-    <td colspan="4">Jakościowe i/lub ilościowe racjonalne wyjaśnienie tego, dlaczego posiadana lista decyzji architektoniczych przyczynia się do spełnienia wymagań każdego atrybutu jakościowego podanego w scenariuszu</td>
+    <td colspan="4">Lista decyzji architektonicznych została dobrana, aby wspierać wysoki poziom niezawodności i dostępności w systemie.
+    <ul>
+      <li>Architektura mikroserwisów - system zbudowany jako zestaw niezależnych mikroserwisów pozwala na izolację potencjalnych awarii. Jeśli jeden mikroserwis ulegnie uszkodzeniu, reszta systemu będzie działała bez zakłóceń. Dzięki temu w tworzonym projekcie minimalizowany zostaje wpływ awarii na użytkowników, a także można łatwiej skalować poszczególne komponenty w zależności od potrzeb, co bezpośrednio wspiera wysoką dostępność systemu.</li>    
+      <li>AWS - oferuje globalne centra danych oraz zautomatyzowane mechanizmy skalowania i monitorowania. Automatyczne skalowanie i elastyczne zarządzanie zasobami umożliwiają dynamiczne dostosowywanie systemu do wzrastających obciążeń. Mechanizmy te zwiększają dostępność systemu, nawet w sytuacjach zwiększonego ruchu lub awarii części infrastruktury.</li>
+      <li>AWS CloudWatch - zaawansowane monitorowanie stanu systemu pozwala na wykrywanie przeciążeń i błędów w czasie rzeczywistym. Za pomocą mechanizmu CloudWatch może zostać wygenerowany alarm co pomoże w zminimalizowaniu czasu przestoju i zapewni, że system pozostanie dostępny w 99% czasu, zgodnie z wymaganiami scenariusza.</li>
+      <li>Kubernetes - mechanizmy zarządzania wdrożeniami, takie jak liveness i readiness probes, umożliwiają automatyczne wykrywanie i naprawę uszkodzonych podów bez ręcznej interwencji. W przypadku awarii Kubernetes jest w stanie automatycznie stworzyć nowe instancje uszkodzonych mikroserwisów, zapewniając ciągłość działania systemu. Dzięki temu tworzony system może sprostać nagłym awariom lub obciążeniom bez wpływu na użytkowników końcowych.</li>
+    </ul></td>
   </tr>
   <tr>
     <th>Diagram architektoniczny</th>
-    <td colspan="4">Diagram lub diagramy perspektyw architektonicznych opatrzone informacjami na temat architektury, których celem jest wsparcie podanych wyżej uzasadnień, wraz z tekstem wyjaśnienia tam, gdzie jest to konieczne</td>
+    <td colspan="4">
+    <img src=./images/SC4-1.png>
+    <img src=./images/SC4-2.png>
+    </td>
   </tr>
 </table>
 
-- **`SC1.S1`:** ...
-- **`SC1.S2`:** ...
-- **`SC1.T1`:** ...
-- **`SC1.T2`:** ...
-- **`SC1.R1`:** ...
-- **`SC1.R2`:** ...
-- **`SC1.N1`:** ...
-- **`SC1.N2`:** ...
+- **`SC4.S1`:** Komunikacja między mikroserwisami – jeśli mikroserwisy są źle izolowane, awaria jednego z nich może wpływać na inne.
+- **`SC4.T1`:** Mikroserwisy zwiększają niezawodność, ale ich wdrożenie wprowadza większą złożoność operacyjną.
+- **`SC4.N1`:** Architektura mikroserwisów zwiększa niezawodność poprzez izolację usług, co minimalizuje wpływ awarii jednej usługi na cały system.
+
+---
+
+- **`SC4.S2`:** AWS - dostarcza wbudowane mechanizmy skalowania, monitorowania i alarmowania, które wspierają utrzymanie wysokiej dostępności systemu.
+- **`SC4.T2`:** AWS gwarantuje wysoką dostępność, ale korzystanie z dodatkowych mechanizmów, znacząco zwiększa koszty.
+- **`SC4.N2`:** AWS zapewnia wysoką dostępność i niezawodność dzięki wielostrefowym centrom danych i globalnej infrastrukturze chmurowej.
+
+---
+
+- **`SC4.S3`:** Monitorowanie zbyt małej liczby metryk może nie wykryć problemów w czasie rzeczywistym.
+- **`SC4.T3`:** Monitorowanie w AWS CloudWatch generuje dodatkowy narzut na koszty i zasoby, ale zapewnia szybkie wykrywanie problemów i reakcję na awarie.
+- **`SC4.R3`:** Niedokładne monitorowanie lub błędna konfiguracja alarmów w CloudWatch może wydłużyć czas reakcji na problemy.
+
+---
+
+- **`SC4.S4`:** Czas reakcji Kubernetes na awarię – proces przywracania podów może zająć kilka sekund, co wpłynie na dostępność.
+- **`SC4.T4`:** Kubernetes zapewnia skalowalność i wysoką dostępność, ale wymaga zaawansowanej konfiguracji i ciągłego monitorowania.
+- **`SC4.N4`:** Kubernetes automatycznie przywraca uszkodzone pody, zapewniając ciągłość działania systemu.
 
 <table>
   <tr>
@@ -975,13 +1118,24 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.S1`:** Poprawny projekt i implementacja architektury mikroserwisowej jest bardziej skomplikowany niż monolitycznej - **ryzyko**.
+- **`SC1.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością zapytań o rezerwacje i zasoby - **nie-ryzyko**.
+- **`SC2.S4`:** Automatyczne skalowanie może zostać błędnie skonfigurowane, prowadząc do problemów z wydajnością generacji raportów - **nie-ryzyko**.
+- **`SC3.S1`:** Czas reakcji systemu skalowania - jeśli mechanizm skalowania działa z opóźnieniem, może wystąpić przeciążenie systemu przed przydzieleniem dodatkowych zasobów - **ryzyko**.
+- **`SC3.S2`:** Algorytm rozdzielania ruchu - jeśli Load Balancer nie rozdzieli ruchu równomiernie, to niektóre instancje aplikacji mogą być przeciążone, co prowadzi do spadku wydajności systemu - **ryzyko**.
+- **`SC3.S3`:** Strategia skalowania - wybranie odpowiedzniej strategii czyli skalowania poziomego (dowanie nowych podów) lub pionowego (zwiększanie zasobów istniejących podów) może wpłynąć na wydajność systemu - **nie-ryzyko**.
+- **`SC3.S4`:** Indeksy w bazie danych – brak odpowiednich indeksów może wydłużyć czas wykonywania zapytań przy dużych ilościach danych - **nie-ryzyko**.
+- **`SC4.S1`:** Komunikacja między mikroserwisami – jeśli mikroserwisy są źle izolowane, awaria jednego z nich może wpływać na inne - **ryzyko**.
+- **`SC4.S2`:** AWS - dostarcza wbudowane mechanizmy skalowania, monitorowania i alarmowania, które wspierają utrzymanie wysokiej dostępności systemu - **nie-ryzyko**.
+- **`SC4.S3`:** Monitorowanie zbyt małej liczby metryk może nie wykryć problemów w czasie rzeczywistym - **ryzyko**.
+- **`SC4.S4`:** Czas reakcji Kubernetes na awarię – proces przywracania podów może zająć kilka sekund, co wpłynie na dostępność - **nie-ryzyko**.
 - **`SC5.S1`:** Większa liczba niezależnych komponentów systemu pozwala na ograniczenie skutków awarii jednego z nich, co wpływa na czas przywracania systemu do stanu nieawaryjnego - **nie-ryzyko**.
 - **`SC5.S2`:** Wykorzystanie Kubernetesa pozwala na automatyczne zarządzanie instancjami, co pozwala na szybkie przywrócenie systemu do stanu nieawaryjnego - **nie-ryzyko**.
+- **`SC5.S4`:** Użycie AWS Cloudwatch pozwala na monitorowanie stanu systemu i alarmowanie o stanach awaryjnych - **nie-ryzyko**.
 - **`SC5.S3`:** Wykorzystanie usług AWS pozwala na wykorzystanie wbudowanych systemów monitorowania, alarmowania i przywracania, które pozwalają na szybkie wykrycie stanu awaryjnego i jego naprawę - **nie-ryzyko**.
 - **`SC6.S1`:** Wykorzystanie różnych usług AWS pozwala na przechowywanie i przetwarzanie danych wrażliwych zgodnie z RODO - **ryzyko**.
 - **`SC6.S2`:** Wykorzystanie S3 do przechowywania danych wrażliwych pozwala na przechowywanie danych w sposób zgodny z RODO - **ryzyko**.
 - **`SC6.S3`:** Wykorzystanie RDS do przechowywania danych wrażliwych pozwala na przechowywanie i przetwarzanie danych w sposób zgodny z RODO - **ryzyko**.
-- **`SC5.S4`:** Użycie AWS Cloudwatch pozwala na monitorowanie stanu systemu i alarmowanie o stanach awaryjnych - **nie-ryzyko**.
 - **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu - **ryzyko**.
 - **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych - **nie-ryzyko**.
 - **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów - **ryzyko**.
@@ -997,6 +1151,16 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do zapytań o rezerwacje i zasoby.
+- **`SC2.T3`:** Asynchroniczna komunikacja zwiększa niezawodność ale wprowadza dodatkowe opóźnienia do generacji raportów.
+- **`SC3.T1`:** Automatyczne skalowanie zwiększa koszty operacyjne w okresach dużego obciążenia, ale zapewnia stabilność i dostępność systemu.
+- **`SC3.T2`:** Równoważenie ruchu między serwerami zwiększa odporność na przeciążenie i poprawia dostępność systemu, ale jako dodatkowa warstwa przetwarzania może wpłynąć na czas odpowiedzi systemu.
+- **`SC3.T3`:** Kubernetes minimalizuje ryzyko przeciążenia, lecz może zwiększyć koszty operacyjne poprzez zwiększającą się liczbę instancji które wymagają więcej mocy obliczeniowej i pamięci.
+- **`SC3.T4`:** Optymalizacja zapytań w bazie danych PostgreSQL może znacząco przyspieszyć dostęp do danych, ale może wymagać dodatkowego nakładu pracy przy projektowaniu i utrzymaniu bazy danych.
+- **`SC4.T1`:** Mikroserwisy zwiększają niezawodność, ale ich wdrożenie wprowadza większą złożoność operacyjną.
+- **`SC4.T2`:** AWS gwarantuje wysoką dostępność, ale korzystanie z dodatkowych mechanizmów, znacząco zwiększa koszty.
+- **`SC4.T3`:** Monitorowanie w AWS CloudWatch generuje dodatkowy narzut na koszty i zasoby, ale zapewnia szybkie wykrywanie problemów i reakcję na awarie.
+- **`SC4.T4`:** Kubernetes zapewnia skalowalność i wysoką dostępność, ale wymaga zaawansowanej konfiguracji i ciągłego monitorowania.
 - **`SC5.T1`:** Zwiekszenie liczby mikroserwisów wpływa na złożoność systemu, co może prowadzić do trudności w zarządzaniu systemem.
 - **`SC5.T2`:** Liczba replik danej usługi w klastrze Kubernetes może wpływać na odporność systemu na awarię, ale także na czas przywracania systemu do stanu nieawaryjnego.
 - **`SC5.T3`:** Użycie usług AWS może prowadzić do sytuacji, w której zbyt duża ilość monitorowanych metryk może prowadzić do nadmiernego obciążenia systemu co będzie skutkować wzrostem kosztów utrzymania aplikacji.
@@ -1018,6 +1182,16 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.R1`:** Architektura mikroserwisów spowalnia zapytania o rezerwacje i zasoby z powodu konieczności komunikacji między serwisami.
+- **`SC1.R2`:** Brak cachingu spowalnia zapytania o rezerwacje i zasoby z powodu konieczności pobierania danych z bazy danych.
+- **`SC1.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać implementację akcji na rezerwacjach i zasobach, które wymagają odpowiedzi zwrotnej.
+- **`SC2.R1`:** Architektura mikroserwisów spowalnia generację raportów z powodu konieczności komunikacji między serwisami.
+- **`SC2.R2`:** Brak cachingu spowalnia generację raportów z powodu konieczności pobierania danych z bazy danych.
+- **`SC2.R3`:** Asynchroniczna komunikacja między serwisami może utrudniać generację raportów, tam gdzie potrzebna jest informacja zwrotna.
+- **`SC3.R1`:** Nieodpowiednia konfiguracja automatycznego skalowania może prowadzić do przeciążenia systemu lub zwiększenia kosztów operacyjnych.
+- **`SC3.R2`:** Awaria Load Balancera może spowodować problemy w rozdzielaniu ruchu pomiędzy serwerami, co prowadzi do przeciążenia systemu.
+- **`SC3.R4`:** Nieoptymalne zapytania SQL mogą powodować długie czasy odpowiedzi przy dużym obciążeniu, co negatywnie wpływa na doświadczenie użytkownika i stabilność aplikacji.
+- **`SC4.R3`:** Niedokładne monitorowanie lub błędna konfiguracja alarmów w CloudWatch może wydłużyć czas reakcji na problemy.
 - **`SC5.R1`:** Błędny podział aplikacji na mikroserwisy może prowadzić do sytuacji, w której awaria jednego z nich wpłynie na działanie całego systemu.
 - **`SC5.R2`:** Wdrożenie systemu Kubernetes (AWS EKS) może prowadzić do sytuacji, w której automatyczne wyłączanie wadliwych instancji może prowadzić do nieprzewidywalnych skutków.
 - **`SC5.R4`:** Błędna konfiguracja logów aplikacji może prowadzić do sytuacji, w której nie będzie możliwe wykrycie stanu awaryjnego.
@@ -1039,6 +1213,14 @@ TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
+- **`SC1.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych dotyczących rezerwacji i zasobów.
+- **`SC1.N4`:** Automatyczne skalowanie zapewnia większą wydajność zapytań o rezerwacje i zasoby w przypadku wzrostu liczby użytkowników.
+- **`SC2.N2`:** Brak cachingu zapewnia większą pewność co do aktualności danych zawartych w raportach.
+- **`SC2.N4`:** Automatyczne skalowanie zapewnia większą wydajność generacji raportów w przypadku wzrostu liczby użytkowników.
+- **`SC3.N3`:** Kubernetes umożliwia zautomatyzowane skalowanie zasobów oraz ich redundancję, co znacząco zmniejsza ryzyko przestojów wynikających z awarii pojedynczych instancji.
+- **`SC4.N1`:** Architektura mikroserwisów zwiększa niezawodność poprzez izolację usług, co minimalizuje wpływ awarii jednej usługi na cały system.
+- **`SC4.N2`:** AWS zapewnia wysoką dostępność i niezawodność dzięki wielostrefowym centrom danych i globalnej infrastrukturze chmurowej.
+- **`SC4.N4`:** Kubernetes automatycznie przywraca uszkodzone pody, zapewniając ciągłość działania systemu.
 - **`SC5.N1`:** Architektura mikroserwisów wspiera odporność systemu na awarie poprzez niezależne działanie poszczególnych komponentów systemu.
 - **`SC5.N2`:** Wykorzystanie Kubernetesa do zarządzania mikroserwisami jest zgodne ze sztuką.
 - **`SC6.N1`:** AWS oferuje _Shared Responsibility Model_, które zapewnia bezpieczeństwo danych wrażliwych po stronie dostawcy usług chmurowych.
