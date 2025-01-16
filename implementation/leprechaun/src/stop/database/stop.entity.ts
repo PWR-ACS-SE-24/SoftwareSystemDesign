@@ -1,8 +1,9 @@
 import { StopLineMapping } from '@app/line/database/stop-line-mapping.entity';
-import { Collection, Entity, Filter, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
+import { Check, Collection, Entity, Filter, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 
 @Entity()
+@Check<Stop>({ name: 'stop_name_check', expression: (columns) => `${columns.name} <> ''` })
 @Filter({ name: 'active', cond: { isActive: true }, default: true })
 export class Stop {
   @PrimaryKey({ type: 'uuid' })

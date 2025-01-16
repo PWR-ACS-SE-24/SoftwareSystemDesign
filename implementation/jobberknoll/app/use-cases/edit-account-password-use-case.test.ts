@@ -1,6 +1,7 @@
 import { accountMock, isErr, isOk } from "@jobberknoll/core/shared";
 import { MemoryAccountRepo, TestLogger } from "@jobberknoll/infra";
 import { assert, assertEquals, assertNotEquals } from "@std/assert";
+import { isPasswordHashed } from "~/security/mod.ts";
 import { newCtx } from "~/shared/mod.ts";
 import { GetAccountByIdUseCase } from "~/use-cases/mod.ts";
 import { EditAccountPasswordUseCase } from "./edit-account-password-use-case.ts";
@@ -19,7 +20,7 @@ Deno.test("EditAccountPasswordUseCase should return an ok result in the happy pa
 
   const result = await editAccountPassword.invoke(newCtx(), {
     accountId: accountMock.id,
-    oldPassword: accountMock.hashedPassword,
+    oldPassword: "Password",
     newPassword: "new-password",
   });
 
@@ -32,7 +33,7 @@ Deno.test("EditAccountPasswordUseCase should update the account password in the 
 
   await editAccountPassword.invoke(newCtx(), {
     accountId: accountMock.id,
-    oldPassword: accountMock.hashedPassword,
+    oldPassword: "Password",
     newPassword: "new-password",
   });
 
@@ -47,7 +48,7 @@ Deno.test("EditAccountPasswordUseCase should audit the password change in the ha
 
   await editAccountPassword.invoke(newCtx(), {
     accountId: accountMock.id,
-    oldPassword: accountMock.hashedPassword,
+    oldPassword: "Password",
     newPassword: "new-password",
   });
 
@@ -133,8 +134,19 @@ Deno.test("EditAccountPasswordUseCase should not audit the password change if th
   assert(!logger.matches("audit log - AccountPasswordEdited"));
 });
 
-Deno.test.ignore("EditAccountPasswordUseCase should hash the password", async () => {
-  // TODO: hash the password
+Deno.test("EditAccountPasswordUseCase should hash the password", async () => {
+  const { accountRepo, editAccountPassword } = setup();
+  await accountRepo.createAccount(newCtx(), accountMock);
+
+  await editAccountPassword.invoke(newCtx(), {
+    accountId: accountMock.id,
+    oldPassword: accountMock.hashedPassword,
+    newPassword: "new-password",
+  });
+
+  const account = await accountRepo.getAccountById(newCtx(), accountMock.id);
+  assert(isOk(account));
+  assert(isPasswordHashed(account.value.hashedPassword));
 });
 
 Deno.test.ignore("EditAccountPasswordUseCase should send the password change email", async () => {

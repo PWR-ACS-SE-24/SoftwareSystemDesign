@@ -1,16 +1,19 @@
 import { Stop } from '@app/stop/database/stop.entity';
-import { Entity, ManyToOne, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core';
+import { Entity, Index, ManyToOne, PrimaryKey, PrimaryKeyProp, Property, Unique } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 import { Line } from './line.entity';
 
 @Entity()
+@Unique<StopLineMapping>({ properties: ['line', 'stop', 'order'] })
 export class StopLineMapping {
   @PrimaryKey({ type: 'uuid' })
   id = uuidv7();
 
+  @Index()
   @ManyToOne({ primary: false, entity: () => Line })
   line: Line;
 
+  @Index()
   @ManyToOne({ primary: false, entity: () => Stop })
   stop: Stop;
 

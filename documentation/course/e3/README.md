@@ -1,0 +1,1 @@
+TODO: Przygotować plik pokazujący wszystkie nasze wyniki pracy w etapie 3, tzn. pokrycie wymagań, testy, dokumentację, ADRy, CI/CD, konfigurację Dockera i Kubernetesa, Terraform, README serwisów, testy obciążeniowe, itd.

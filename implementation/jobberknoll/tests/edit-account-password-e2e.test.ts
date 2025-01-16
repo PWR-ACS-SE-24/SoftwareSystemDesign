@@ -1,5 +1,5 @@
-import { newCtx, UserRole } from "@jobberknoll/app";
-import { accountMock, UUID, uuid } from "@jobberknoll/core/shared";
+import { newCtx, type UserRole } from "@jobberknoll/app";
+import { accountMock, type UUID, uuid } from "@jobberknoll/core/shared";
 import { assertEquals } from "@std/assert";
 import { setupTest } from "../setup.ts";
 
@@ -21,7 +21,7 @@ Deno.test("PUT /ext/v1/self/password should edit the account password in the hap
     const response = await api.request("/ext/v1/self/password", {
       method: "PUT",
       headers: headers(accountMock.id, role),
-      body: JSON.stringify({ oldPassword: accountMock.hashedPassword, newPassword: "New-Password" }),
+      body: JSON.stringify({ oldPassword: "Password", newPassword: "New-Password" }),
     });
 
     assertEquals(response.status, 204);
