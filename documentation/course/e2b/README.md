@@ -463,7 +463,7 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">W ramach normalnej pracy systemu</td>
+    <td colspan="4">Normalna praca systemu</td>
   </tr>
   <tr>
     <th>Bodziec</th>
@@ -606,10 +606,10 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Analiza</th>
     <td colspan="4">Lista decyzji architektonicznych została dobrana, aby wspierać wysoki poziom niezawodności i dostępności w systemie.
     <ul>
-      <li>Architektura mikroserwisów - system zbudowany jako zestaw niezależnych mikroserwisów zwiększa odporność na awarie. Uszkodzenie jednego mikroserwisu nie wpływa na działanie innych funkcji systemu. W przypadku awarii, tylko część systemu staje się niedostępna, co minimalizuje wpływ na użytkowników.</li>    
-      <li>AWS - oferuje globalne centra danych oraz zautomatyzowane mechanizmy skalowania i monitorowania. Wybór AWS minimalizuje ryzyko awarii infrastruktury oraz pozwala na optymalne zarządzanie zasobami.</li>
-      <li>AWS CloudWatch - dostarcza bieżące dane o stanie systemu, wykrywając nieprawidłowości, takie jak przeciążenie zasobów czy awarie. Alarmy generowane przez CloudWatch uruchamiają akcje naprawcze, takie jak ponowne uruchomienie serwisów lub skalowanie zasobów.</li>
-      <li>Kubernetes - zarządza wdrożeniami mikroserwisów, zapewniając ich skalowalność i odporność na awarie. Mechanizmy takie jak liveness/readiness probes pozwalają na automatyczne wykrycie uszkodzonych podów i ich zastąpienie, minimalizując przerwy w działaniu systemu.</li>
+      <li>Architektura mikroserwisów - system zbudowany jako zestaw niezależnych mikroserwisów pozwala na izolację potencjalnych awarii. Jeśli jeden mikroserwis ulegnie uszkodzeniu, reszta systemu będzie działała bez zakłóceń. Dzięki temu w tworzonym projekcie minimalizowany zostaje wpływ awarii na użytkowników, a także można łatwiej skalować poszczególne komponenty w zależności od potrzeb, co bezpośrednio wspiera wysoką dostępność systemu.</li>    
+      <li>AWS - oferuje globalne centra danych oraz zautomatyzowane mechanizmy skalowania i monitorowania. Automatyczne skalowanie i elastyczne zarządzanie zasobami umożliwiają dynamiczne dostosowywanie systemu do wzrastających obciążeń. Mechanizmy te zwiększają dostępność systemu, nawet w sytuacjach zwiększonego ruchu lub awarii części infrastruktury.</li>
+      <li>AWS CloudWatch - zaawansowane monitorowanie stanu systemu pozwala na wykrywanie przeciążeń i błędów w czasie rzeczywistym. Za pomocą mechanizmu CloudWatch może zostać wygenerowany alarm co pomoże w zminimalizowaniu czasu przestoju i zapewni, że system pozostanie dostępny w 99% czasu, zgodnie z wymaganiami scenariusza.</li>
+      <li>Kubernetes - mechanizmy zarządzania wdrożeniami, takie jak liveness i readiness probes, umożliwiają automatyczne wykrywanie i naprawę uszkodzonych podów bez ręcznej interwencji. W przypadku awarii Kubernetes jest w stanie automatycznie stworzyć nowe instancje uszkodzonych mikroserwisów, zapewniając ciągłość działania systemu. Dzięki temu tworzony system może sprostać nagłym awariom lub obciążeniom bez wpływu na użytkowników końcowych.</li>
     </ul></td>
   </tr>
   <tr>
