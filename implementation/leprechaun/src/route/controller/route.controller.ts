@@ -19,7 +19,7 @@ import { RouteService } from '../service/route.service';
 import { CreateRouteDto, UpdateRouteDto } from './route-create.dto';
 import { RouteDto } from './route.dto';
 
-@Controller('route')
+@Controller('/ext/v1/routes')
 @ApiExtraModels(VehicleDto)
 @ApiExtraModels(LineDto)
 export class RouteController {

@@ -40,7 +40,7 @@ export class PostgresAccountRepo extends AccountRepo {
         type ACCOUNT_TYPE NOT NULL,
         full_name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
-        hashed_password CHAR(60) NOT NULL,
+        hashed_password VARCHAR(255) NOT NULL,
         last_modified INTEGER NOT NULL,
         phone_number VARCHAR(16),
         CHECK (full_name <> ''),

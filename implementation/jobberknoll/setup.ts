@@ -1,5 +1,5 @@
 import { buildApi } from "@jobberknoll/api";
-import { AccountRepo, buildService, envDatabaseUrl, Logger } from "@jobberknoll/app";
+import { type AccountRepo, buildService, envDatabaseUrl, type Logger } from "@jobberknoll/app";
 import { DevLogger, MemoryAccountRepo, PostgresAccountRepo, ProdLogger, TestLogger } from "@jobberknoll/infra";
 
 type Factory<T> = (logger: Logger) => T | Promise<T>;

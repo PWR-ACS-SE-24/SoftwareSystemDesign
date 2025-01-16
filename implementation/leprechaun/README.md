@@ -23,14 +23,14 @@
 | `LOG/17`        | 🟩         |
 | `LOG/18`        | 🟩         |
 | `LOG/19`        | 🟩         |
-| `LOG/20`        | 🟥         |
-| `LOG/21`        | 🟥         |
-| `LOG/22`        | 🟥         |
-| `LOG/23`        | 🟥         |
-| `LOG/24`        | 🟥         |
-| `LOG/25`        | 🟥         |
-| `LOG/26`        | 🟥         |
-| `LOG/27`        | 🟥         |
+| `LOG/20`        | 🟨         |
+| `LOG/21`        | 🟨         |
+| `LOG/22`        | 🟩         |
+| `LOG/23`        | 🟩         |
+| `LOG/24`        | 🟨         |
+| `LOG/25`        | 🟩         |
+| `LOG/26`        | 🟩         |
+| `LOG/27`        | 🟨         |
 
 | **Endpoint**                   | **Status** |
 | ------------------------------ | ---------- |
@@ -54,13 +54,14 @@
 | `POST   /ext/v1/vehicles`      | 🟩         |
 | `PATCH  /ext/v1/vehicles/:id`  | 🟩         |
 | `DELETE /ext/v1/vehicles/:id`  | 🟩         |
-| `GET    /ext/v1/accidents`     | 🟥         |
-| `GET    /ext/v1/accidents/:id` | 🟥         |
-| `POST   /ext/v1/accidents`     | 🟥         |
-| `PATCH  /ext/v1/accidents/:id` | 🟥         |
+| `GET    /ext/v1/accidents`     | 🟨         |
+| `GET    /ext/v1/accidents/:id` | 🟩         |
+| `POST   /ext/v1/accidents`     | 🟩         |
+| `PATCH  /ext/v1/accidents/:id` | 🟩         |
 
 ## TODOs
 
+- Implement filters!
 - Ultimately, we will HAVE to implement some kind of secret-manager support.
 - Make E2E tests for all endpoints.
-- Add all database constraints.
+- All DTOs (or at least all Update/Create) should not have constructors, but instead fields should be `!` (they should be treated as interfaces).

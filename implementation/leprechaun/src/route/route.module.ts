@@ -11,5 +11,6 @@ import { RouteService } from './service/route.service';
   imports: [MikroOrmModule.forFeature([Route]), SharedModule, LineModule, VehicleModule],
   providers: [RouteService],
   controllers: [RouteController],
+  exports: [RouteService],
 })
 export class RouteModule {}
