@@ -679,7 +679,7 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   </tr>
   <tr>
     <th>Środowisko</th>
-    <td colspan="4">Niezależne od stanu środowiska</td>
+    <td colspan="4">Niezależnie od stanu środowiska</td>
   </tr>
   <tr>
     <th>Bodziec</th>
@@ -688,6 +688,13 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
   <tr>
     <th>Odpowiedź</th>
     <td colspan="4">Zaszyfrowanie danych rezerwacji w bazie danych i podczas przesyłania</td>
+  </tr>
+  <tr>
+    <th>Decyzje architektoniczne</th>
+    <th>Wrażliwość</th>
+    <th>Kompromis</th>
+    <th>Ryzyko</th>
+    <th>Nie-ryzyko</th>
   </tr>
   <tr>
     <td><b>PostgreSQL</b> z szyfrowaniem danych w spoczynku</td>
@@ -735,10 +742,10 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Analiza</th>
     <td colspan="4">Lista decyzji architektonicznych jest ściśle związana z atrybutem poufności (confidentiality) w scenariuszu. Każda decyzja jest podporządkowana celowi szyfrowania danych w spoczynku i w trakcie przesyłania, co zapewnia ochronę wrażliwych informacji.
     <ul>
-      <li> PostgreSQL z szyfrowaniem danych w spoczynku - kluczowy komponent bazy danych, która obsługuje rezerwacje, wykorzystuje szyfrowanie TDE, zapewniając, że dane są chronione nawet w przypadku naruszenia zabezpieczeń dysku lub backupu.
-      <li> Szyfrowanie połączeń TLS (AWS RDS i API Gateway) - bezpieczeństwo przesyłania danych zapewniane jest przez wymuszenie szyfrowania TLS, co jest standardem w transmisji wrażliwych informacji.
-      <li> Zastosowanie AWS Cognito i JWT - AWS Cognito zapewnia odpowiednie mechanizmy autoryzacji, podczas gdy JWT umożliwia zarządzanie sesjami w sposób bezpieczny i wydajny dzięki szyfrowaniu.
-      <li> Asynchroniczna komunikacja (AWS SQS) - Kolejki SQS są szyfrowane przy użyciu AWS KMS, co chroni dane nawet podczas wymiany komunikatów między mikroserwisami.
+      <li> PostgreSQL z szyfrowaniem danych w spoczynku - kluczowy komponent bazy danych, która obsługuje rezerwacje, wykorzystuje szyfrowanie TDE, zapewniając, że dane są chronione nawet w przypadku naruszenia zabezpieczeń dysku lub backupu. </li>
+      <li> Szyfrowanie połączeń TLS (AWS RDS i API Gateway) - bezpieczeństwo przesyłania danych zapewniane jest przez wymuszenie szyfrowania TLS, co jest standardem w transmisji wrażliwych informacji. </li>
+      <li> Zastosowanie AWS Cognito i JWT - AWS Cognito zapewnia odpowiednie mechanizmy autoryzacji, podczas gdy JWT umożliwia zarządzanie sesjami w sposób bezpieczny i wydajny dzięki szyfrowaniu. </li>
+      <li> Asynchroniczna komunikacja (AWS SQS) - Kolejki SQS są szyfrowane przy użyciu AWS KMS, co chroni dane nawet podczas wymiany komunikatów między mikroserwisami.</li>
     </ul></td>
   </tr>
   <tr>
@@ -832,10 +839,10 @@ W analizowanym projekcie nie wskazano wymagań, na podstawie których możnaby u
     <th>Analiza</th>
     <td colspan="4">Lista decyzji architektonicznych została tak dobrana, aby wspierać spełnienie wymagań odpowiedzialności określonych w scenariuszu.
     <ul>
-      <li> AWS CloudWatch dla logów audytowych - CloudWatch umożliwia centralne gromadzenie logów, co ułatwia monitorowanie działań użytkowników oraz identyfikację potencjalnych naruszeń. Funkcja alarmów i automatycznego raportowania pozwala szybko reagować na incydenty. Zwiększa to odpowiedzialność, zapewniając pełną widoczność w systemie.
-      <li> API Gateway z rejestrowaniem żądań - rejestrowanie żądań przy pomocy API Gateway pozwala na szczegółową analizę interakcji użytkownika z systemem. Pozwala to na łatwe mapowanie działań użytkowników w logach audytowych, co jest kluczowe dla spełnienia atrybutu accountability.
-      <li> AWS S3 do przechowywania logów audytowych - dane audytowe są przechowywane w AWS S3 z polityką szyfrowania i wersjonowania, co zapewnia integralność i bezpieczeństwo logów. Możliwość stosowania polityk dostępu ułatwia zarządzanie dostępem do krytycznych danych.
-      <li> Spring Boot z filtrem audytowym - wbudowane mechanizmy audytowe w Spring Boot ułatwiają rejestrowanie działań użytkownika na poziomie aplikacji. Filtr pozwala na selektywne logowanie ważnych informacji bez potrzeby ręcznej implementacji, co zmniejsza ryzyko błędów.
+      <li> AWS CloudWatch dla logów audytowych - CloudWatch umożliwia centralne gromadzenie logów, co ułatwia monitorowanie działań użytkowników oraz identyfikację potencjalnych naruszeń. Funkcja alarmów i automatycznego raportowania pozwala szybko reagować na incydenty. Zwiększa to odpowiedzialność, zapewniając pełną widoczność w systemie. </li>
+      <li> API Gateway z rejestrowaniem żądań - rejestrowanie żądań przy pomocy API Gateway pozwala na szczegółową analizę interakcji użytkownika z systemem. Pozwala to na łatwe mapowanie działań użytkowników w logach audytowych, co jest kluczowe dla spełnienia atrybutu accountability. </li>
+      <li> AWS S3 do przechowywania logów audytowych - dane audytowe są przechowywane w AWS S3 z polityką szyfrowania i wersjonowania, co zapewnia integralność i bezpieczeństwo logów. Możliwość stosowania polityk dostępu ułatwia zarządzanie dostępem do krytycznych danych. </li>
+      <li> Spring Boot z filtrem audytowym - wbudowane mechanizmy audytowe w Spring Boot ułatwiają rejestrowanie działań użytkownika na poziomie aplikacji. Filtr pozwala na selektywne logowanie ważnych informacji bez potrzeby ręcznej implementacji, co zmniejsza ryzyko błędów. </li>
     </ul></td>
   </tr>
   <tr>
@@ -872,16 +879,16 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 TODO @everyone: zebrać wszystkie po skończeniu scenariuszy
 
-- **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu.
-- **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych.
-- **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów.
-- **`SC7.S4`:** Polityki bezpieczeństwa haseł - zbyt słabe polityki mogą narazić użytkowników na nieautoryzowany dostęp.
-- **`SC7.S5`:** Aktualność certyfikatów SSL/TLS - nieaktualne certyfikaty mogą uniemożliwić połączenia między klientem a API.
-- **`SC7.S6`:** Szyfrowanie wiadomości - brak szyfrowania w SQS może prowadzić do wycieku danych przesyłanych między mikroserwisami.
-- **`SC8.S1`:** Granularność logowania - zbyt szczegółowe logi mogą zwiększyć koszty przechowywania i przetwarzania danych.
-- **`SC8.S2`:** Włączone logowanie żądań - brak rejestrowania żądań w API Gateway może uniemożliwić śledzenie działań użytkowników.
-- **`SC8.S3`:** Polityka przechowywania danych - zbyt długie przechowywanie logów może generować niepotrzebne koszty.
-- **`SC8.S4`:** Konfiguracja audytu w Spring Boot - niewłaściwe wdrożenie mechanizmu filtrowania może pomijać kluczowe dane logów.
+- **`SC7.S1`:** Długość klucza szyfrowania - krótkie klucze zmniejszają bezpieczeństwo, a zbyt długie klucze mogą obniżyć wydajność odczytu/zapisu - **ryzyko**.
+- **`SC7.S2`:** Konfiguracja TLS - nieaktualne ustawienia TLS mogą uniemożliwić bezpieczne połączenie z bazą danych - **nie-ryzyko**.
+- **`SC7.S3`:** Zarządzanie cyklem życia kluczy - brak rotacji kluczy może narazić aplikację na przejęcie tokenów - **ryzyko**.
+- **`SC7.S4`:** Polityki bezpieczeństwa haseł - zbyt słabe polityki mogą narazić użytkowników na nieautoryzowany dostęp - **ryzyko**.
+- **`SC7.S5`:** Aktualność certyfikatów SSL/TLS - nieaktualne certyfikaty mogą uniemożliwić połączenia między klientem a API - **nie-ryzyko**.
+- **`SC7.S6`:** Szyfrowanie wiadomości - brak szyfrowania w SQS może prowadzić do wycieku danych przesyłanych między mikroserwisami - **ryzyko**.
+- **`SC8.S1`:** Granularność logowania - zbyt szczegółowe logi mogą zwiększyć koszty przechowywania i przetwarzania danych - **ryzyko**.
+- **`SC8.S2`:** Włączone logowanie żądań - brak rejestrowania żądań w API Gateway może uniemożliwić śledzenie działań użytkowników - **ryzyko**.
+- **`SC8.S3`:** Polityka przechowywania danych - zbyt długie przechowywanie logów może generować niepotrzebne koszty - **ryzyko**.
+- **`SC8.S4`:** Konfiguracja audytu w Spring Boot - niewłaściwe wdrożenie mechanizmu filtrowania może pomijać kluczowe dane logów - **ryzyko**.
 
 ## Kompromisy
 
