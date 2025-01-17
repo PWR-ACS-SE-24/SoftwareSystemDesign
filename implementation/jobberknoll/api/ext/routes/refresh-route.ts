@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import type { RefreshUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
-import { InvalidAccountDataResponse, RefreshTokenDto, TokensDto } from "~/ext/contracts/mod.ts";
+import { InvalidCredentialsResponse, RefreshTokenDto, TokensDto } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
 import { AccountNotFoundResponse, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
@@ -18,7 +18,7 @@ export const refreshRoute = createRoute({
   },
   responses: {
     200: jsonRes(TokensDto, "Refresh successful."),
-    400: InvalidAccountDataResponse,
+    403: InvalidCredentialsResponse,
     404: AccountNotFoundResponse, // NOTE: can be returned if the user deleted their account, but the token is still valid, or the gateway provided an invalid header
     422: SchemaMismatchResponse,
   },

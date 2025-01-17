@@ -32,16 +32,16 @@ Deno.test("RefreshUseCase should return tokens in the happy path", async () => {
   assertEquals(result.value.expiresIn, EXPIRES_IN_S_ACCESS);
 });
 
-Deno.test("RefreshUseCase should return invalid-account-data if the refresh token is invalid", async () => {
+Deno.test("RefreshUseCase should return invalid-credentials if the refresh token is invalid", async () => {
   const { refresh } = await setup();
 
   const result = await refresh.invoke(newCtx(), { refreshToken: "invalid" });
 
   assert(isErr(result));
-  assertEquals(result.value.kind, "invalid-account-data");
+  assertEquals(result.value.kind, "invalid-credentials");
 });
 
-Deno.test("RefreshUseCase should return invalid-account-data if the refresh token has expired", async () => {
+Deno.test("RefreshUseCase should return invalid-credentials if the refresh token has expired", async () => {
   using fakeTime = new FakeTime();
   const { accountRepo, jwtHandler, refresh } = await setup();
   await accountRepo.createAccount(newCtx(), accountMock);
@@ -51,20 +51,20 @@ Deno.test("RefreshUseCase should return invalid-account-data if the refresh toke
   const result = await refresh.invoke(newCtx(), { refreshToken });
 
   assert(isErr(result));
-  assertEquals(result.value.kind, "invalid-account-data");
+  assertEquals(result.value.kind, "invalid-credentials");
 });
 
-Deno.test("RefreshUseCase should return invalid-account-data if the account does not exist", async () => {
+Deno.test("RefreshUseCase should return invalid-credentials if the account does not exist", async () => {
   const { jwtHandler, refresh } = await setup();
   const refreshToken = await jwtHandler.createRefreshToken(uuid());
 
   const result = await refresh.invoke(newCtx(), { refreshToken });
 
   assert(isErr(result));
-  assertEquals(result.value.kind, "invalid-account-data");
+  assertEquals(result.value.kind, "invalid-credentials");
 });
 
-Deno.test("RefreshUseCase should return invalid-account-data if the refresh token was revoked", async () => {
+Deno.test("RefreshUseCase should return invalid-credentials if the refresh token was revoked", async () => {
   using fakeTime = new FakeTime();
   const { accountRepo, jwtHandler, revoke, refresh } = await setup();
   await accountRepo.createAccount(newCtx(), accountMock);
@@ -75,5 +75,5 @@ Deno.test("RefreshUseCase should return invalid-account-data if the refresh toke
   const result = await refresh.invoke(newCtx(), { refreshToken });
 
   assert(isErr(result));
-  assertEquals(result.value.kind, "invalid-account-data");
+  assertEquals(result.value.kind, "invalid-credentials");
 });

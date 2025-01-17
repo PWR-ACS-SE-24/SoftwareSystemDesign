@@ -7,7 +7,7 @@ export const InvalidAccountDataDto = errorDto(
   "InvalidAccountDataDto",
   400,
   "invalid-account-data",
-  "Some of the provided account data is invalid.",
+  DESCRIPTION,
 );
 
 export const InvalidAccountDataResponse = jsonRes(InvalidAccountDataDto, DESCRIPTION);

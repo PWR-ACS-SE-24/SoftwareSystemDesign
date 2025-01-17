@@ -7,7 +7,7 @@ export const UserUnauthorizedDto = errorDto(
   "UserUnauthorizedDto",
   401,
   "user-unauthorized",
-  "The user does not have access to the resource.",
+  DESCRIPTION,
 );
 
 export const UserUnauthorizedResponse = jsonRes(UserUnauthorizedDto, DESCRIPTION);

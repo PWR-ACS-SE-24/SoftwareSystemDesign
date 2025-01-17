@@ -64,7 +64,7 @@ Deno.test("POST /ext/v1/login should return schema-mismatch if body has wrong co
   assertEquals(body.kind, "schema-mismatch");
 });
 
-Deno.test("POST /ext/v1/login should return invalid-account-data if the email is invalid", async () => {
+Deno.test("POST /ext/v1/login should return invalid-credentials if the email is invalid", async () => {
   const { api } = await setupTest();
 
   const response = await api.request("/ext/v1/login", {
@@ -74,11 +74,11 @@ Deno.test("POST /ext/v1/login should return invalid-account-data if the email is
   });
   const body = await response.json();
 
-  assertEquals(response.status, 400);
-  assertEquals(body.kind, "invalid-account-data");
+  assertEquals(response.status, 403);
+  assertEquals(body.kind, "invalid-credentials");
 });
 
-Deno.test("POST /ext/v1/login should return invalid-account-data if the password is invalid", async () => {
+Deno.test("POST /ext/v1/login should return invalid-credentials if the password is invalid", async () => {
   const { accountRepo, api } = await setupTest();
   await accountRepo.createAccount(newCtx(), accountMock);
 
@@ -89,6 +89,6 @@ Deno.test("POST /ext/v1/login should return invalid-account-data if the password
   });
   const body = await response.json();
 
-  assertEquals(response.status, 400);
-  assertEquals(body.kind, "invalid-account-data");
+  assertEquals(response.status, 403);
+  assertEquals(body.kind, "invalid-credentials");
 });

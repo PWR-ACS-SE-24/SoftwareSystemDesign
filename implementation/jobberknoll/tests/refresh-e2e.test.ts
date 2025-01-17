@@ -39,6 +39,23 @@ Deno.test("POST /ext/v1/refresh should return tokens in the happy path", async (
   assertEquals(refreshBody.expiresIn, EXPIRES_IN_S_ACCESS);
 });
 
+Deno.test("POST /ext/v1/refresh should return invalid-credentials if the refresh token is invalid", async () => {
+  const { api } = await setupTest();
+
+  const response = await api.request("/ext/v1/refresh", {
+    method: "POST",
+    headers: correctHeaders,
+    body: JSON.stringify({
+      refreshToken:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    }),
+  });
+  const body = await response.json();
+
+  assertEquals(response.status, 403);
+  assertEquals(body.kind, "invalid-credentials");
+});
+
 Deno.test("POST /ext/v1/refresh should return schema-mismatch if the body is invalid", async () => {
   for (const reqBody of [{}, { accessToken: "123" }, { refreshToken: "123" }]) {
     const { api } = await setupTest();

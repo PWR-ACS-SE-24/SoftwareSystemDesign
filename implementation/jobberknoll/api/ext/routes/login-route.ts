@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import type { LoginUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
-import { InvalidAccountDataResponse, LoginDto, TokensDto } from "~/ext/contracts/mod.ts";
+import { InvalidCredentialsResponse, LoginDto, TokensDto } from "~/ext/contracts/mod.ts";
 import { extHeadersSchema } from "~/ext/openapi.ts";
 import { SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
@@ -18,7 +18,7 @@ export const loginRoute = createRoute({
   },
   responses: {
     200: jsonRes(TokensDto, "Login successful."),
-    400: InvalidAccountDataResponse,
+    403: InvalidCredentialsResponse,
     422: SchemaMismatchResponse,
   },
 });

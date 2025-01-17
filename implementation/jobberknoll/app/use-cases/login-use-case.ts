@@ -1,4 +1,4 @@
-import { invalidAccountData, type InvalidAccountDataError } from "@jobberknoll/core/domain";
+import { invalidCredentials, type InvalidCredentialsError } from "@jobberknoll/core/domain";
 import { err, isErr, ok, type Result } from "@jobberknoll/core/shared";
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import { type JwtHandler, type Tokens, verifyPassword } from "~/security/mod.ts";
@@ -7,7 +7,7 @@ import { UseCase } from "./use-case.ts";
 
 type LoginReq = { email: string; password: string };
 
-export class LoginUseCase extends UseCase<LoginReq, Tokens, InvalidAccountDataError> {
+export class LoginUseCase extends UseCase<LoginReq, Tokens, InvalidCredentialsError> {
   public constructor(
     logger: Logger,
     private readonly accountRepo: AccountRepo,
@@ -19,13 +19,13 @@ export class LoginUseCase extends UseCase<LoginReq, Tokens, InvalidAccountDataEr
   protected async handle(
     ctx: Ctx,
     req: LoginReq,
-  ): Promise<Result<Tokens, InvalidAccountDataError>> {
+  ): Promise<Result<Tokens, InvalidCredentialsError>> {
     const accountResult = await this.accountRepo.getAccountByEmail(ctx, req.email);
-    if (isErr(accountResult)) return accountResult;
+    if (isErr(accountResult)) return err(invalidCredentials("email"));
     const account = accountResult.value;
 
     if (!await verifyPassword(req.password, account.hashedPassword)) {
-      return err(invalidAccountData("password"));
+      return err(invalidCredentials("password"));
     }
 
     return ok(await this.jwtHandler.createTokens(account));

@@ -53,21 +53,21 @@ Deno.test("LoginUseCase should embed account type in the access token in the hap
   assertEquals(decodedAccessToken[JWT_TYPE_KEY], accountMock.type);
 });
 
-Deno.test("LoginUseCase should return invalid-account-data if the email is incorrect", async () => {
+Deno.test("LoginUseCase should return invalid-credentials if the email is incorrect", async () => {
   const { login } = await setup();
 
   const result = await login.invoke(newCtx(), { email: accountMock.email, password: "Password" });
 
   assert(isErr(result));
-  assertEquals(result.value.kind, "invalid-account-data");
+  assertEquals(result.value.kind, "invalid-credentials");
 });
 
-Deno.test("LoginUseCase should return invalid-account-data if the password is incorrect", async () => {
+Deno.test("LoginUseCase should return invalid-credentials if the password is incorrect", async () => {
   const { accountRepo, login } = await setup();
   await accountRepo.createAccount(newCtx(), accountMock);
 
   const result = await login.invoke(newCtx(), { email: accountMock.email, password: "Invalid-Password" });
 
   assert(isErr(result));
-  assertEquals(result.value.kind, "invalid-account-data");
+  assertEquals(result.value.kind, "invalid-credentials");
 });
