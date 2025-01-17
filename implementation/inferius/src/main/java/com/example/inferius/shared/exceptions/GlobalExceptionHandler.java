@@ -3,6 +3,7 @@ package com.example.inferius.shared.exceptions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -35,6 +36,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<AppError> handleGenericException(Exception ex) {
         return buildErrorResponse(500, "server-failure", "An unexpected error occurred.", "Wystąpił nieoczekiwany błąd serwera.");
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<AppError> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        return buildErrorResponse(404, "resource-not-found", "The requested resource was not found.", "Żądany zasób nie został znaleziony."
+        );
     }
 
     private ResponseEntity<AppError> buildErrorResponse(int code, String kind, String messageEn, String messagePl) {
