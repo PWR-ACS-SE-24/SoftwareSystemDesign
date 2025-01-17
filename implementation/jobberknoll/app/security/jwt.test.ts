@@ -1,5 +1,6 @@
 import { uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertRejects } from "@std/assert";
+import { FakeTime } from "@std/testing/time";
 import { createLocalJWKSet, decodeJwt, jwtVerify } from "jose";
 import { JwtHandler } from "./jwt.ts";
 
@@ -64,7 +65,15 @@ Deno.test("verifyRefreshToken should reject tokens created for other accounts", 
 });
 
 Deno.test.ignore("verifyRefreshToken should reject expired tokens", async () => {
-  // TODO: fake time
+  using fakeTime = new FakeTime();
+  const jwtHandler = await JwtHandler.setupMockForTesting("ES384");
+  const accountId = uuid();
+  const refreshToken = await jwtHandler.createRefreshToken(accountId);
+
+  await fakeTime.tickAsync(8 * 24 * 60 * 60 * 1000); // 8 days
+  const isValid = await jwtHandler.verifyRefreshToken(refreshToken, accountId);
+
+  assert(!isValid);
 });
 
 Deno.test("exportJWKS should export a key for veryfing access tokens", async () => {
