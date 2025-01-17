@@ -4,6 +4,7 @@ import * as c from "~/use-cases/mod.ts";
 
 export type Service = {
   register: c.RegisterUseCase;
+  login: c.LoginUseCase;
   createAccount: c.CreateAccountUseCase;
   deleteAccount: c.DeleteAccountUseCase;
   getAccountById: c.GetAccountByIdUseCase;
@@ -17,6 +18,7 @@ export type Service = {
 
 export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandler: JwtHandler): Service {
   const register = new c.RegisterUseCase(logger, accountRepo);
+  const login = new c.LoginUseCase(logger, accountRepo, jwtHandler);
   const createAccount = new c.CreateAccountUseCase(logger, accountRepo);
   const deleteAccount = new c.DeleteAccountUseCase(logger, accountRepo);
   const getAccountById = new c.GetAccountByIdUseCase(logger, accountRepo);
@@ -29,6 +31,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandle
 
   return {
     register,
+    login,
     createAccount,
     deleteAccount,
     getAccountById,

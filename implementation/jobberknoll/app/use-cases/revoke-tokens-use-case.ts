@@ -5,9 +5,9 @@ import type { Ctx } from "~/shared/mod.ts";
 import type { GetAccountByIdUseCase } from "./get-account-by-id-use-case.ts";
 import { UseCase } from "./use-case.ts";
 
-type RevokeTokensUseCaseReq = { accountId: UUID };
+type RevokeTokensReq = { accountId: UUID };
 
-export class RevokeTokensUseCase extends UseCase<RevokeTokensUseCaseReq, void, AccountNotFoundError> {
+export class RevokeTokensUseCase extends UseCase<RevokeTokensReq, void, AccountNotFoundError> {
   public constructor(
     logger: Logger,
     private readonly accountRepo: AccountRepo,
@@ -18,7 +18,7 @@ export class RevokeTokensUseCase extends UseCase<RevokeTokensUseCaseReq, void, A
 
   protected async handle(
     ctx: Ctx,
-    { accountId }: RevokeTokensUseCaseReq,
+    { accountId }: RevokeTokensReq,
   ): Promise<Result<void, AccountNotFoundError>> {
     const accountResult = await this.getAccountById.invoke(ctx, { accountId });
     if (isErr(accountResult)) return accountResult;

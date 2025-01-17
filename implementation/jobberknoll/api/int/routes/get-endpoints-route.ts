@@ -25,6 +25,7 @@ export function getEndpointsHandler(): JkHandler<typeof getEndpointsRoute> {
     // TODO: make sure it is up to date
     c.json([
       { method: "POST", path: "/ext/v1/register", roles: [] },
+      { method: "POST", path: "/ext/v1/login", roles: [] },
       { method: "POST", path: "/ext/v1/revoke", roles: MEMBER },
       { method: "GET", path: "/ext/v1/self", roles: MEMBER },
       { method: "PUT", path: "/ext/v1/self/name", roles: MEMBER },

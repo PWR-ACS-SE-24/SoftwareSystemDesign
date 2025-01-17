@@ -2,6 +2,7 @@ import { uuid } from "@jobberknoll/core/shared";
 import { assert, assertEquals, assertRejects } from "@std/assert";
 import { FakeTime } from "@std/testing/time";
 import { createLocalJWKSet, decodeJwt, jwtVerify } from "jose";
+import { EXPIRES_IN_S_REFRESH } from "~/security/mod.ts";
 import { JwtHandler } from "./jwt.ts";
 
 Deno.test("createAccessToken should embed account ID into the payload", async () => {
@@ -70,7 +71,7 @@ Deno.test.ignore("verifyRefreshToken should reject expired tokens", async () => 
   const accountId = uuid();
   const refreshToken = await jwtHandler.createRefreshToken(accountId);
 
-  await fakeTime.tickAsync(8 * 24 * 60 * 60 * 1000); // 8 days
+  await fakeTime.tickAsync(EXPIRES_IN_S_REFRESH + 60); // 7 days + 1 minute
   const isValid = await jwtHandler.verifyRefreshToken(refreshToken, accountId);
 
   assert(!isValid);

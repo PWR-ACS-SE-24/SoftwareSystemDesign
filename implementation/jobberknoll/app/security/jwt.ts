@@ -16,15 +16,24 @@ import {
 } from "jose";
 
 const ISSUER = "jakprzyjade:jobberknoll";
-const TYPE_KEY = "jakprzyjade:account:type";
+export const JWT_TYPE_KEY = "jakprzyjade:account:type";
 
 const AUDIENCE_ACCESS = "jakprzyjade:feather:access";
-const EXPIRATION_ACCESS = "1h";
+export const EXPIRES_IN_S_ACCESS = 60 * 60; // 1 hour
 
 const AUDIENCE_REFRESH = "jakprzyjade:jobberknoll:refresh";
-const EXPIRATION_REFRESH = "7d";
+export const EXPIRES_IN_S_REFRESH = 7 * 24 * 60 * 60; // 7 days
 
-type AccessTokenData = Pick<Account, "id" | "type">;
+type AccessTokenArgs = Pick<Account, "id" | "type">;
+
+export type Tokens = {
+  accessToken: string;
+  refreshToken: string;
+  tokenType: "Bearer";
+  expiresIn: number;
+};
+
+const expiration = (expiresInS: number): number => Math.floor(Date.now() / 1000) + expiresInS;
 
 export class JwtHandler {
   private constructor(
@@ -45,15 +54,15 @@ export class JwtHandler {
     return new JwtHandler(algorithm, privateKey, publicKey);
   }
 
-  public async createAccessToken({ id, type }: AccessTokenData): Promise<string> {
+  public async createAccessToken({ id, type }: AccessTokenArgs): Promise<string> {
     const { kid } = await this.getKeyedJWK();
-    return await new SignJWT({ [TYPE_KEY]: type })
+    return await new SignJWT({ [JWT_TYPE_KEY]: type })
       .setSubject(id)
       .setProtectedHeader({ alg: this.algorithm, kid })
       .setIssuedAt()
       .setIssuer(ISSUER)
       .setAudience(AUDIENCE_ACCESS)
-      .setExpirationTime(EXPIRATION_ACCESS)
+      .setExpirationTime(expiration(EXPIRES_IN_S_ACCESS))
       .sign(this.privateKey);
   }
 
@@ -65,8 +74,17 @@ export class JwtHandler {
       .setIssuedAt()
       .setIssuer(ISSUER)
       .setAudience(AUDIENCE_REFRESH)
-      .setExpirationTime(EXPIRATION_REFRESH)
+      .setExpirationTime(expiration(EXPIRES_IN_S_REFRESH))
       .sign(this.privateKey);
+  }
+
+  public async createTokens(account: Account): Promise<Tokens> {
+    return {
+      accessToken: await this.createAccessToken({ id: account.id, type: account.type }),
+      refreshToken: await this.createRefreshToken(account.id),
+      tokenType: "Bearer",
+      expiresIn: EXPIRES_IN_S_ACCESS,
+    };
   }
 
   public async verifyRefreshToken(refreshToken: string, accountId: UUID): Promise<boolean> {
