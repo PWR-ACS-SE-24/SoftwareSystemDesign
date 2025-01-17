@@ -22,9 +22,9 @@ public class Wallet {
     @UUIDv7
     private UUID id;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, unique = true)
     @NotNull(message = "passengerId cannot be null")
-    private Long passengerId;
+    private UUID passengerId;
 
     @Column(nullable = false, precision = 8, scale = 2)
     @NotNull(message = "passengerId cannot be null")

@@ -30,7 +30,7 @@ public class WalletHistory {
     @NotNull(message = "time cannot be null")
     private Instant time = Instant.now();
 
-    @JoinColumn(name = "wallet_id")
+    @JoinColumn(name = "wallet_id", nullable = false)
     @ManyToOne
     private Wallet wallet;
 }

@@ -26,11 +26,11 @@ public class Fine {
 
     @Column(nullable = false, updatable = false)
     @NotNull(message = "passengerId cannot be null")
-    private int passengerId;
+    private UUID passengerId;
 
     @Column(nullable = false, updatable = false)
     @NotNull(message = "inspectorId cannot be null")
-    private int inspectorId;
+    private UUID inspectorId;
 
     @Column(nullable = false, updatable = false)
     @NotNull(message = "recipient cannot be null")
@@ -45,11 +45,13 @@ public class Fine {
     @NotNull(message = "time cannot be null")
     private Instant time = Instant.now();
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "reason cannot be null")
     @Column(nullable = false, updatable = false, length = 32)
     private FineReason reason;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     @NotNull(message = "status cannot be null")
-    FineStatus status = FineStatus.UNPAID;
+    private FineStatus status = FineStatus.UNPAID;
 }

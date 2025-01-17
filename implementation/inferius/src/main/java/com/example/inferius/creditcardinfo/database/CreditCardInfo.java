@@ -40,6 +40,6 @@ public class CreditCardInfo {
     private String expirationDate;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_id")
+    @JoinColumn(name = "wallet_id", nullable = false)
     private Wallet wallet;
 }
