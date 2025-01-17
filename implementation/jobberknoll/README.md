@@ -37,7 +37,7 @@
 | `GET    /int/v1/health`        | 🟩         |
 | `GET    /int/v1/endpoints`     | 🟩         |
 | `GET    /int/v1/accounts/:id`  | 🟩         |
-| `GET    /int/v1/jwks`          | 🟥         |
+| `GET    /int/v1/jwks`          | 🟩         |
 
 ## Infrastructure
 

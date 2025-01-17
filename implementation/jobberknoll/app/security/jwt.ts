@@ -35,7 +35,7 @@ export class JwtHandler {
 
   public static async setup(algorithm: string, privateKeyPkcs8: string, publicKeySpki: string): Promise<JwtHandler> {
     const privateKey = await importPKCS8(privateKeyPkcs8, algorithm);
-    const publicKey = await importSPKI(publicKeySpki, algorithm);
+    const publicKey = await importSPKI(publicKeySpki, algorithm, { extractable: true });
     return new JwtHandler(algorithm, privateKey, publicKey);
   }
 

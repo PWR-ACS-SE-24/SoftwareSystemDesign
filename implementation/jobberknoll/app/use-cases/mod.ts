@@ -5,4 +5,5 @@ export * from "./edit-account-password-use-case.ts";
 export * from "./edit-account-phone-use-case.ts";
 export * from "./get-account-by-id-use-case.ts";
 export * from "./get-health-use-case.ts";
+export * from "./get-jwks-use-case.ts";
 export * from "./register-use-case.ts";

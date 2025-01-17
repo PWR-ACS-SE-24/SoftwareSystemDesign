@@ -11,6 +11,7 @@ export type Service = {
   editAccountPassword: c.EditAccountPasswordUseCase;
   editAccountPhone: c.EditAccountPhoneUseCase;
   getHealth: c.GetHealthUseCase;
+  getJwks: c.GetJwksUseCase;
 };
 
 export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandler: JwtHandler): Service {
@@ -22,6 +23,7 @@ export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandle
   const editAccountPassword = new c.EditAccountPasswordUseCase(logger, accountRepo, getAccountById);
   const editAccountPhone = new c.EditAccountPhoneUseCase(logger, accountRepo, getAccountById);
   const getHealth = new c.GetHealthUseCase(logger, accountRepo);
+  const getJwks = new c.GetJwksUseCase(logger, jwtHandler);
 
   return {
     register,
@@ -32,5 +34,6 @@ export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandle
     editAccountPassword,
     editAccountPhone,
     getHealth,
+    getJwks,
   };
 }

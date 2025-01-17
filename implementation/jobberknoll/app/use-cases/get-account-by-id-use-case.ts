@@ -1,7 +1,7 @@
 import type { Account, AccountNotFoundError } from "@jobberknoll/core/domain";
 import type { Result, UUID } from "@jobberknoll/core/shared";
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
-import type { Ctx } from "~/shared/ctx.ts";
+import type { Ctx } from "~/shared/mod.ts";
 import { UseCase } from "./use-case.ts";
 
 type GetAccountByIdReq = { accountId: UUID };

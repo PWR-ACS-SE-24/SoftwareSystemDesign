@@ -23,6 +23,10 @@ export class IntController implements Controller {
       .openapi(
         r.getAccountByIdRoute,
         r.getAccountByIdHandler(this.service.getAccountById),
+      )
+      .openapi(
+        r.getJwksRoute,
+        r.getJwksHandler(this.service.getJwks),
       );
 
     configureDocs(app, {
