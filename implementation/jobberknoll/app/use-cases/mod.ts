@@ -7,3 +7,4 @@ export * from "./get-account-by-id-use-case.ts";
 export * from "./get-health-use-case.ts";
 export * from "./get-jwks-use-case.ts";
 export * from "./register-use-case.ts";
+export * from "./revoke-tokens-use-case.ts";

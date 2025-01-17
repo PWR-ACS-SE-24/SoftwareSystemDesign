@@ -17,6 +17,10 @@ export class ExtController implements Controller {
         r.registerHandler(this.service.register),
       )
       .openapi(
+        r.revokeTokensRoute,
+        r.revokeTokensHandler(this.service.revokeTokens),
+      )
+      .openapi(
         r.getSelfRoute,
         r.getSelfHandler(this.service.getAccountById),
       )

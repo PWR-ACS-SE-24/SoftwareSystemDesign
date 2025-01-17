@@ -14,6 +14,7 @@ const Jwk = z.object({
     examples: [JWK_EXAMPLE.kty],
   }),
   kid: z.string().optional().openapi({ description: "The key ID.", examples: [JWK_EXAMPLE.kid] }),
+  // NOTE: the JWK technically has many more fields, but it's not necessary to include them all here
 }).openapi({ description: "A JSON Web Key object.", examples: [JWK_EXAMPLE] });
 
 export const JwksDto = z.object({
