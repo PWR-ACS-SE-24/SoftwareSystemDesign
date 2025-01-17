@@ -23,7 +23,7 @@
 | ------------------------------ | ---------- |
 | `POST   /ext/v1/register`      | 🟩         |
 | `POST   /ext/v1/login`         | 🟩         |
-| `POST   /ext/v1/refresh`       | 🟥         |
+| `POST   /ext/v1/refresh`       | 🟩         |
 | `POST   /ext/v1/revoke`        | 🟩         |
 | `GET    /ext/v1/self`          | 🟩         |
 | `PUT    /ext/v1/self/name`     | 🟩         |

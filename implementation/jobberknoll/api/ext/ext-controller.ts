@@ -21,8 +21,12 @@ export class ExtController implements Controller {
         r.loginHandler(this.service.login),
       )
       .openapi(
-        r.revokeTokensRoute,
-        r.revokeTokensHandler(this.service.revokeTokens),
+        r.refreshRoute,
+        r.refreshHandler(this.service.refresh),
+      )
+      .openapi(
+        r.revokeRoute,
+        r.revokeHandler(this.service.revoke),
       )
       .openapi(
         r.getSelfRoute,

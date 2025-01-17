@@ -11,7 +11,8 @@ export type Service = {
   editAccountName: c.EditAccountNameUseCase;
   editAccountPassword: c.EditAccountPasswordUseCase;
   editAccountPhone: c.EditAccountPhoneUseCase;
-  revokeTokens: c.RevokeTokensUseCase;
+  refresh: c.RefreshUseCase;
+  revoke: c.RevokeUseCase;
   getHealth: c.GetHealthUseCase;
   getJwks: c.GetJwksUseCase;
 };
@@ -25,7 +26,8 @@ export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandle
   const editAccountName = new c.EditAccountNameUseCase(logger, accountRepo, getAccountById);
   const editAccountPassword = new c.EditAccountPasswordUseCase(logger, accountRepo, getAccountById);
   const editAccountPhone = new c.EditAccountPhoneUseCase(logger, accountRepo, getAccountById);
-  const revokeTokens = new c.RevokeTokensUseCase(logger, accountRepo, getAccountById);
+  const refresh = new c.RefreshUseCase(logger, getAccountById, jwtHandler);
+  const revoke = new c.RevokeUseCase(logger, accountRepo, getAccountById);
   const getHealth = new c.GetHealthUseCase(logger, accountRepo);
   const getJwks = new c.GetJwksUseCase(logger, jwtHandler);
 
@@ -38,7 +40,8 @@ export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandle
     editAccountName,
     editAccountPassword,
     editAccountPhone,
-    revokeTokens,
+    refresh,
+    revoke,
     getHealth,
     getJwks,
   };

@@ -11,7 +11,7 @@ async function setup() {
   const accountRepo = new MemoryAccountRepo(logger);
   const jwtHandler = await JwtHandler.setupMockForTesting("ES384");
   const login = new LoginUseCase(logger, accountRepo, jwtHandler);
-  return { logger, accountRepo, jwtHandler, login };
+  return { logger, accountRepo, login };
 }
 
 Deno.test("LoginUseCase should return tokens in the happy path", async () => {

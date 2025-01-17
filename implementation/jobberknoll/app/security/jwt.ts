@@ -1,5 +1,5 @@
 import type { Account } from "@jobberknoll/core/domain";
-import type { UUID } from "@jobberknoll/core/shared";
+import { expect, none, type Option, some, type UUID, uuid } from "@jobberknoll/core/shared";
 import {
   calculateJwkThumbprint,
   exportJWK,
@@ -26,6 +26,8 @@ export const EXPIRES_IN_S_REFRESH = 7 * 24 * 60 * 60; // 7 days
 
 type AccessTokenArgs = Pick<Account, "id" | "type">;
 
+type RefreshTokenData = { accountId: UUID; issuedAt: number };
+
 export type Tokens = {
   accessToken: string;
   refreshToken: string;
@@ -33,7 +35,7 @@ export type Tokens = {
   expiresIn: number;
 };
 
-const expiration = (expiresInS: number): number => Math.floor(Date.now() / 1000) + expiresInS;
+const expiration = (expiresInS: number): Date => new Date(Date.now() + expiresInS * 1000);
 
 export class JwtHandler {
   private constructor(
@@ -87,17 +89,19 @@ export class JwtHandler {
     };
   }
 
-  public async verifyRefreshToken(refreshToken: string, accountId: UUID): Promise<boolean> {
+  public async verifyRefreshToken(refreshToken: string): Promise<Option<RefreshTokenData>> {
     try {
-      await jwtVerify(refreshToken, this.publicKey, {
+      const { payload } = await jwtVerify(refreshToken, this.publicKey, {
         algorithms: [this.algorithm],
         issuer: ISSUER,
         audience: AUDIENCE_REFRESH,
-        subject: accountId,
+        requiredClaims: ["sub", "iat"],
       });
-      return true;
+      const accountId = expect(uuid(payload.sub!), "refresh token sub must be a UUID"); // SAFETY: sub is present since it is a required claim
+      const issuedAt = payload.iat!; // SAFETY: iat is present since it is a required claim
+      return some({ accountId, issuedAt });
     } catch {
-      return false;
+      return none();
     }
   }
 

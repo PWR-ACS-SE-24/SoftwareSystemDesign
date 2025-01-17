@@ -7,5 +7,6 @@ export * from "./edit-self-phone-route.ts";
 export * from "./get-account-by-id-route.ts";
 export * from "./get-self-route.ts";
 export * from "./login-route.ts";
+export * from "./refresh-route.ts";
 export * from "./register-route.ts";
-export * from "./revoke-tokens-route.ts";
+export * from "./revoke-route.ts";

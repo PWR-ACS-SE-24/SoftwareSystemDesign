@@ -1,5 +1,5 @@
 import { createRoute } from "@hono/zod-openapi";
-import type { RevokeTokensUseCase } from "@jobberknoll/app";
+import type { RevokeUseCase } from "@jobberknoll/app";
 import { isOk } from "@jobberknoll/core/shared";
 import { authorize } from "~/ext/authorization.ts";
 import { UserUnauthorizedResponse } from "~/ext/contracts/mod.ts";
@@ -7,7 +7,7 @@ import { extHeadersSchema } from "~/ext/openapi.ts";
 import { AccountNotFoundResponse, SchemaMismatchResponse } from "~/shared/contracts/mod.ts";
 import type { JkHandler } from "~/shared/hooks.ts";
 
-export const revokeTokensRoute = createRoute({
+export const revokeRoute = createRoute({
   method: "post",
   path: "/revoke",
   summary: "Revoke all refresh tokens",
@@ -24,10 +24,10 @@ export const revokeTokensRoute = createRoute({
   },
 });
 
-export function revokeTokensHandler(revokeTokens: RevokeTokensUseCase): JkHandler<typeof revokeTokensRoute> {
+export function revokeHandler(revoke: RevokeUseCase): JkHandler<typeof revokeRoute> {
   return authorize("member", async (c) => {
     const { "jp-user-id": accountId } = c.req.valid("header");
-    const res = await revokeTokens.invoke(c.get("ctx"), { accountId });
+    const res = await revoke.invoke(c.get("ctx"), { accountId });
     return isOk(res) ? c.body(null, 204) : c.json(res.value, res.value.code);
   });
 }
