@@ -1245,4 +1245,4 @@ Poniżej znajdują się zagregowane punkty wrażliwości (_sensitivity points_),
 
 # Wnioski
 
-TODO
+Projekt analizowanego systemu Deskly zawiera mocne oraz słabe strony. Zespół projektowy zadbał odpowiednio o zapewnienie niezawodności oraz bezpieczeństwa systemu. Widzimy jednak braki mechanizmów zapewniających wydajność oraz użyteczność systemu. Ponadto, nie zostały wymienione żadne cele powiązane z kompatybilnością, przenośnością oraz utrzymywalnością. Podejścia architektoniczne są dobrze wymienione oraz uzasadnione, natomiast ryzykiem może być poprawność ich skonfigurowania. W szczególności należy zwrócić uwagę na połączenie z AWS Cognito, z uwagi na jego rolę w systemie oraz logi audytowalne wymuszone przez wymagania systemu. Opis obu etapów zawiera literówki, warto natomiast pochwalić usystematyzowaną dokumentację mechanizmów architektonicznych w formie ADR.
