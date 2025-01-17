@@ -35,7 +35,7 @@ Deno.test("redactSensitiveKeysDeep should redact keys from the top level", async
     password: 123456,
     hashedPassword: "$2a$12$9ANxmspzFpoEN.4hCKnuue.obvvT1s3GRIO.rz04ZJlfsLVMvID/K",
     phoneNumber: "123456789",
-    jwtPrivateKey: "-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----"
+    jwtPrivateKey: "-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----",
   };
 
   const data = JSON.stringify(await redactSensitiveKeysDeep(object));
