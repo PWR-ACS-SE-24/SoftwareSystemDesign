@@ -1,4 +1,5 @@
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
+import type { JwtHandler } from "~/security/mod.ts";
 import * as c from "~/use-cases/mod.ts";
 
 export type Service = {
@@ -12,7 +13,7 @@ export type Service = {
   getHealth: c.GetHealthUseCase;
 };
 
-export function buildService(logger: Logger, accountRepo: AccountRepo): Service {
+export function buildService(logger: Logger, accountRepo: AccountRepo, jwtHandler: JwtHandler): Service {
   const register = new c.RegisterUseCase(logger, accountRepo);
   const createAccount = new c.CreateAccountUseCase(logger, accountRepo);
   const deleteAccount = new c.DeleteAccountUseCase(logger, accountRepo);

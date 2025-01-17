@@ -7,6 +7,9 @@ services:
       PROD: "true"
       SERVER_PORT: "8000"
       DATABASE_URL: "postgres://postgres:password@jobberknoll-db:5432/postgres"
+      JWT_ALGORITHM: "ES384"
+      # JWT_PRIVATE_KEY and JWT_PUBLIC_KEY set in .env
+    env_file: [".env"]
     healthcheck:
       test:
         ["CMD-SHELL", "curl -f http://localhost:$$SERVER_PORT/int/v1/health"]

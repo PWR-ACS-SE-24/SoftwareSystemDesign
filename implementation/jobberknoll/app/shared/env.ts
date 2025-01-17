@@ -20,10 +20,16 @@ export function envReader<S extends z.ZodType>(key: string, schema: S): Reader<z
 const ProdSchema = z.coerce.boolean();
 const ServerPortSchema = z.coerce.number().min(1).max(65535).default(8000);
 const DatabaseUrlSchema = z.string().url().startsWith("postgres://");
+const JwtAlgorithmSchema = z.string().default("ES384");
+const JwtPrivateKeySchema = z.string().startsWith("-----BEGIN PRIVATE KEY-----").endsWith("-----END PRIVATE KEY-----");
+const JwtPublicKeySchema = z.string().startsWith("-----BEGIN PUBLIC KEY-----").endsWith("-----END PUBLIC KEY-----");
 
 export const envProd: Reader<boolean> = envReader("PROD", ProdSchema);
 export const envServerPort: Reader<number> = envReader("SERVER_PORT", ServerPortSchema);
 export const envDatabaseUrl: Reader<string> = envReader("DATABASE_URL", DatabaseUrlSchema);
+export const envJwtAlgorithm: Reader<string> = envReader("JWT_ALGORITHM", JwtAlgorithmSchema);
+export const envJwtPrivateKey: Reader<string> = envReader("JWT_PRIVATE_KEY", JwtPrivateKeySchema);
+export const envJwtPublicKey: Reader<string> = envReader("JWT_PUBLIC_KEY", JwtPublicKeySchema);
 
 const envDatabaseUrlOpt = envReader("DATABASE_URL", DatabaseUrlSchema.optional());
 
@@ -34,6 +40,9 @@ export function logEnvironment(logger: Logger, getter = defaultGetter) {
     prod,
     serverPort: envServerPort(getter),
     databaseUrl: envDatabaseUrlOpt(getter),
+    jwtAlgorithm: envJwtAlgorithm(getter),
+    jwtPrivateKey: envJwtPrivateKey(getter),
+    jwtPublicKey: envJwtPublicKey(getter),
   });
 
   if (!prod) {
