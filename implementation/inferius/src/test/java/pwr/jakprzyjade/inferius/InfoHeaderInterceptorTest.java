@@ -56,7 +56,7 @@ class InfoHeaderInterceptorTest {
         // Then
         assertTrue(result);
         verify(response).setHeader("jp-request-id", VALID_UUID);
-        verify(response).setHeader("user-agent", "inferius/" + APP_VERSION);
+        verify(response).setHeader("user-agent", "Inferius/" + APP_VERSION);
     }
 
     @Test
@@ -72,7 +72,7 @@ class InfoHeaderInterceptorTest {
         // Then
         assertTrue(result);
         verify(response).setHeader("jp-request-id", VALID_UUID);
-        verify(response).setHeader("user-agent", "inferius/" + APP_VERSION);
+        verify(response).setHeader("user-agent", "Inferius/" + APP_VERSION);
     }
 
     @Test
@@ -87,7 +87,7 @@ class InfoHeaderInterceptorTest {
         // Then
         assertTrue(result);
         verify(response).setHeader("jp-request-id", VALID_UUID);
-        verify(response).setHeader("user-agent", "inferius/" + APP_VERSION);
+        verify(response).setHeader("user-agent", "Inferius/" + APP_VERSION);
     }
 
     @Test
@@ -101,7 +101,7 @@ class InfoHeaderInterceptorTest {
 
         // Then
         assertTrue(result);
-        verify(response).setHeader("user-agent", "inferius/" + APP_VERSION);
+        verify(response).setHeader("user-agent", "Inferius/" + APP_VERSION);
     }
 
     @Test
@@ -116,6 +116,6 @@ class InfoHeaderInterceptorTest {
         // Then
         assertTrue(result);
         verify(response).setHeader("jp-request-id", VALID_UUID);
-        verify(response).setHeader("user-agent", "inferius/" + APP_VERSION);
+        verify(response).setHeader("user-agent", "Inferius/" + APP_VERSION);
     }
 }

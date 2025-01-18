@@ -1,0 +1,57 @@
+name: inferius-ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "implementation/inferius/**"
+      - ".github/workflows/inferius.yml"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+    branches:
+      - main
+    paths:
+      - "implementation/inferius/**"
+      - ".github/workflows/inferius.yml"
+
+jobs:
+  build:
+    if: github.event.pull_request.draft == false
+    name: Build and test project
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: implementation/inferius
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "microsoft"
+
+      - name: Run Build
+        run: mvn clean package -DskipTests
+
+      - name: Run Unit Tests
+        run: mvn test
+
+      - name: Run Integration Tests
+        run: mvn failsafe:integration-test failsafe:verify
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/surefire-reports/
