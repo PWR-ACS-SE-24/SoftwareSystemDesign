@@ -5,12 +5,9 @@ import type { Ctx } from "~/shared/mod.ts";
 import type { GetAccountByIdUseCase } from "./get-account-by-id-use-case.ts";
 import { UseCase } from "./use-case.ts";
 
-type EditAccountNameReq = {
-  accountId: UUID;
-  fullName: string;
-};
+type RevokeReq = { accountId: UUID };
 
-export class EditAccountNameUseCase extends UseCase<EditAccountNameReq, void, AccountNotFoundError> {
+export class RevokeUseCase extends UseCase<RevokeReq, void, AccountNotFoundError> {
   public constructor(
     logger: Logger,
     private readonly accountRepo: AccountRepo,
@@ -19,18 +16,20 @@ export class EditAccountNameUseCase extends UseCase<EditAccountNameReq, void, Ac
     super(logger);
   }
 
-  protected async handle(ctx: Ctx, req: EditAccountNameReq): Promise<Result<void, AccountNotFoundError>> {
-    const accountResult = await this.getAccountById.invoke(ctx, { accountId: req.accountId });
+  protected async handle(
+    ctx: Ctx,
+    { accountId }: RevokeReq,
+  ): Promise<Result<void, AccountNotFoundError>> {
+    const accountResult = await this.getAccountById.invoke(ctx, { accountId });
     if (isErr(accountResult)) return accountResult;
     const account = accountResult.value;
 
     await this.accountRepo.editAccount(ctx, {
       ...account,
-      fullName: req.fullName,
-      lastModified: Math.floor(Date.now() / 1000),
+      lastModified: Math.floor(Date.now() / 1000), // NOTE: refresh tokens check the lastModified field to determine if they are still valid
     });
 
-    this.audit("AccountNameEdited", account.id);
+    this.audit("AccountTokensRevoked", account.id);
     return ok(undefined);
   }
 }

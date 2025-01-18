@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - "implementation/feather/**"
-      - "implementation/jobberknoll/**"
       - ".github/workflows/feather.yml"
   pull_request:
     types:
@@ -19,7 +18,6 @@ on:
       - main
     paths:
       - "implementation/feather/**"
-      - "implementation/jobberknoll/**"
       - ".github/workflows/feather.yml"
 
 jobs:

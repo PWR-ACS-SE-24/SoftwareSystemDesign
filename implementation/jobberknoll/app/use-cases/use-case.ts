@@ -1,6 +1,6 @@
 import type { Result, UUID } from "@jobberknoll/core/shared";
 import type { Logger } from "~/interfaces/mod.ts";
-import type { Ctx } from "~/shared/ctx.ts";
+import type { Ctx } from "~/shared/mod.ts";
 
 export abstract class UseCase<Req, Res, Err> {
   protected constructor(protected readonly logger: Logger) {

@@ -1,5 +1,11 @@
 import { AccountRepo, type ComponentHealth } from "@jobberknoll/app";
-import { type Account, type AccountNotFoundError, accountNotFoundError } from "@jobberknoll/core/domain";
+import {
+  type Account,
+  type AccountNotFoundError,
+  accountNotFoundError,
+  invalidAccountData,
+  type InvalidAccountDataError,
+} from "@jobberknoll/core/domain";
 import { err, none, ok, type Option, type Result, some, type UUID } from "@jobberknoll/core/shared";
 
 export class MemoryAccountRepo extends AccountRepo {
@@ -39,6 +45,16 @@ export class MemoryAccountRepo extends AccountRepo {
   protected handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>> {
     this.ensureHealthy();
     return Promise.resolve((id in this.accounts) ? ok(this.accounts[id]) : err(accountNotFoundError(id)));
+  }
+
+  protected handleGetAccountByEmail(email: string): Promise<Result<Account, InvalidAccountDataError>> {
+    this.ensureHealthy();
+    for (const account of Object.values(this.accounts)) {
+      if (account.email === email) {
+        return Promise.resolve(ok(account));
+      }
+    }
+    return Promise.resolve(err(invalidAccountData("email")));
   }
 
   protected handleEditAccount(account: Account): Promise<void> {

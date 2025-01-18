@@ -1,4 +1,4 @@
-import type { Account, AccountNotFoundError } from "@jobberknoll/core/domain";
+import type { Account, AccountNotFoundError, InvalidAccountDataError } from "@jobberknoll/core/domain";
 import type { Option, Result, UUID } from "@jobberknoll/core/shared";
 import type { Monitorable } from "~/interfaces/mod.ts";
 import type { ComponentHealth, Ctx } from "~/shared/mod.ts";
@@ -9,6 +9,7 @@ export abstract class AccountRepo implements Monitorable {
     this.createAccount = logger.instrument(this, this.handleCreateAccount);
     this.isEmailTaken = logger.instrument(this, this.handleIsEmailTaken);
     this.getAccountById = logger.instrument(this, this.handleGetAccountById);
+    this.getAccountByEmail = logger.instrument(this, this.handleGetAccountByEmail);
     this.editAccount = logger.instrument(this, this.handleEditAccount);
     this.deleteAccount = logger.instrument(this, this.handleDeleteAccount);
   }
@@ -23,6 +24,9 @@ export abstract class AccountRepo implements Monitorable {
 
   protected abstract handleGetAccountById(id: UUID): Promise<Result<Account, AccountNotFoundError>>;
   public readonly getAccountById: (ctx: Ctx, id: UUID) => Promise<Result<Account, AccountNotFoundError>>;
+
+  protected abstract handleGetAccountByEmail(email: string): Promise<Result<Account, InvalidAccountDataError>>;
+  public readonly getAccountByEmail: (ctx: Ctx, email: string) => Promise<Result<Account, InvalidAccountDataError>>;
 
   protected abstract handleEditAccount(account: Account): Promise<void>;
   public readonly editAccount: (ctx: Ctx, account: Account) => Promise<void>;

@@ -31,6 +31,9 @@ Deno.test("logEnvironment should log the environment", () => {
     PROD: undefined,
     SERVER_PORT: "123",
     DATABASE_URL: "postgres://example",
+    JWT_ALGORITHM: "ES384",
+    JWT_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----",
+    JWT_PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----",
   }[key]);
 
   logEnvironment(logger, getter);

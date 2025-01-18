@@ -5,7 +5,7 @@
 | **Requirement** | **Status** |
 | --------------- | ---------- |
 | `ACC/01`        | 🟩         |
-| `ACC/02`        | 🟥         |
+| `ACC/02`        | 🟩         |
 | `ACC/04`        | 🟩         |
 | `ACC/05`        | 🟩         |
 | `ACC/06`        | 🟩         |
@@ -22,9 +22,9 @@
 | **Endpoint**                   | **Status** |
 | ------------------------------ | ---------- |
 | `POST   /ext/v1/register`      | 🟩         |
-| `POST   /ext/v1/login`         | 🟥         |
-| `POST   /ext/v1/refresh`       | 🟥         |
-| `POST   /ext/v1/revoke`        | 🟥         |
+| `POST   /ext/v1/login`         | 🟩         |
+| `POST   /ext/v1/refresh`       | 🟩         |
+| `POST   /ext/v1/revoke`        | 🟩         |
 | `GET    /ext/v1/self`          | 🟩         |
 | `PUT    /ext/v1/self/name`     | 🟩         |
 | `PUT    /ext/v1/self/password` | 🟩         |
@@ -37,7 +37,7 @@
 | `GET    /int/v1/health`        | 🟩         |
 | `GET    /int/v1/endpoints`     | 🟩         |
 | `GET    /int/v1/accounts/:id`  | 🟩         |
-| `GET    /int/v1/jwks`          | 🟥         |
+| `GET    /int/v1/jwks`          | 🟩         |
 
 ## Infrastructure
 

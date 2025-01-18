@@ -2,7 +2,7 @@ import { type Account, invalidAccountData, type InvalidAccountDataError } from "
 import { err, ok, type Result, uuid } from "@jobberknoll/core/shared";
 import type { AccountRepo, Logger } from "~/interfaces/mod.ts";
 import { hashPassword } from "~/security/mod.ts";
-import type { Ctx } from "~/shared/ctx.ts";
+import type { Ctx } from "~/shared/mod.ts";
 import { UseCase } from "./use-case.ts";
 
 type RegisterReq = {
