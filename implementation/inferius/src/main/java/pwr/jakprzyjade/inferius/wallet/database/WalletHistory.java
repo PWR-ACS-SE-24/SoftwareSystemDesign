@@ -25,11 +25,11 @@ public class WalletHistory {
 
     @Min(value = 0)
     @Column(nullable = false, updatable = false, precision = 8, scale = 2)
-    @NotNull(message = "amountPln cannot be null")
+    @NotNull
     private BigDecimal amountPln;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "time cannot be null")
+    @NotNull
     private Instant time = Instant.now();
 
     @JoinColumn(name = "wallet_id", nullable = false)

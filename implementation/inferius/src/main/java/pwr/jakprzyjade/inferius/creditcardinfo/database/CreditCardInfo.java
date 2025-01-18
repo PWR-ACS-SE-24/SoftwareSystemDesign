@@ -26,17 +26,17 @@ public class CreditCardInfo {
     private String label;
 
     @Column(nullable = false, updatable = false, length = 16)
-    @NotNull(message = "number cannot be null")
+    @NotNull
     @Size(min = 16, max = 16, message = "number has 16 characters")
     private String number;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "holderName cannot be null")
+    @NotNull
     @Size(min = 1, max = 255, message = "holderName must be between 1 and 255 characters")
     private String holderName;
 
     @Column(nullable = false)
-    @NotNull(message = "expirationDate cannot be null")
+    @NotNull
     private String expirationDate;
 
     @ManyToOne

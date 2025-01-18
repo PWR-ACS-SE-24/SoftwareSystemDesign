@@ -26,34 +26,34 @@ public class Fine {
     private UUID id;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "passengerId cannot be null")
+    @NotNull
     private UUID passengerId;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "inspectorId cannot be null")
+    @NotNull
     private UUID inspectorId;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "recipient cannot be null")
+    @NotNull
     @Size(min = 1, max = 255, message = "recipient must be between 1 and 255 characters")
     private String recipient;
 
     @Min(value = 0)
     @Column(nullable = false, updatable = false, precision = 8, scale = 2)
-    @NotNull(message = "amountPln cannot be null")
+    @NotNull
     private BigDecimal amountPln;
 
     @Column(nullable = false, updatable = false)
-    @NotNull(message = "time cannot be null")
+    @NotNull
     private Instant time = Instant.now();
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "reason cannot be null")
+    @NotNull
     @Column(nullable = false, updatable = false, length = 32)
     private FineReason reason;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
-    @NotNull(message = "status cannot be null")
+    @NotNull
     private FineStatus status = FineStatus.UNPAID;
 }

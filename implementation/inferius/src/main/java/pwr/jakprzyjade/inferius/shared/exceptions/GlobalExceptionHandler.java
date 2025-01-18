@@ -1,9 +1,13 @@
 package pwr.jakprzyjade.inferius.shared.exceptions;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,6 +35,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserUnauthorizedException.class)
     public ResponseEntity<AppError> handleUserUnauthorized(UserUnauthorizedException ex) {
         return buildErrorResponse(401, "user-unauthorized", ex.getMessage(), "Użytkownik nie jest autoryzowany.");
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @ExceptionHandler(Exception.class)
