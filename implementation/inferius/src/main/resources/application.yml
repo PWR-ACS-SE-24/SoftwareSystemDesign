@@ -2,7 +2,7 @@ spring:
   application:
     name: inferius
   config:
-    import: classpath:env.properties
+    import: optional:classpath:env.properties
   messages:
     basename: messages
   datasource:
