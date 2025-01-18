@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { RouteService } from '../service/route.service';
 import { CreateRouteDto, UpdateRouteDto } from './route-create.dto';
+import { RouteFilter, RouteFilterOptions } from './route-filter.decorator';
 import { RouteDto } from './route.dto';
 
 @Controller('/ext/v1/routes')
@@ -30,9 +31,9 @@ export class RouteController {
   @ApiPaginatedResponse(RouteDto)
   async getAllRoutes(
     @Paginated() pagination: Pagination,
-    // @Query('filter') TODO: add filter
+    @RouteFilter() filter: RouteFilterOptions = {},
   ): Promise<PaginatedDto<RouteDto>> {
-    const { routes, total } = await this.routeService.getAll(pagination);
+    const { routes, total } = await this.routeService.listAll(pagination, filter);
     return PaginatedDto.fromEntities(total, pagination, RouteDto.fromEntities(routes));
   }
 

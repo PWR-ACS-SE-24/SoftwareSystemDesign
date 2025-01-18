@@ -5,6 +5,7 @@ import { EntityManager, EntityRepository, QueryFlag } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStopDto, UpdateStopDto } from '../controller/stop-create.dto';
+import { filterForLineNameLike, filterForStopNameLike, StopFilterOptions } from '../controller/stop-filter.decorator';
 import { Stop } from '../database/stop.entity';
 
 @Injectable()
@@ -22,12 +23,18 @@ export class StopService {
     private readonly stopLineMappingRepository: EntityRepository<StopLineMapping>,
   ) {}
 
-  async listAll(pagination: Pagination): Promise<{ stops: Stop[]; total: number }> {
+  async listAll(pagination: Pagination, filter: StopFilterOptions): Promise<{ stops: Stop[]; total: number }> {
+    const queryFilters = {
+      ...filterForStopNameLike(filter.lineNameLike),
+      ...filterForLineNameLike(filter.lineNameLike),
+    };
+
     const stops = await this.stopRepository.findAll({
+      where: queryFilters,
       limit: pagination.size,
       offset: pagination.page * pagination.size,
     });
-    const total = await this.stopRepository.count();
+    const total = await this.stopRepository.count(queryFilters);
 
     return { stops, total };
   }

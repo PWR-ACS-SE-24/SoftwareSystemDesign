@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { StopService } from '../service/stop.service';
 import { CreateStopDto, UpdateStopDto } from './stop-create.dto';
+import { StopFilter, StopFilterOptions } from './stop-filter.decorator';
 import { StopDto } from './stop.dto';
 
 @Controller('/ext/v1/stops')
@@ -27,9 +28,9 @@ export class StopController {
   @ApiPaginatedResponse(StopDto)
   async getAllStops(
     @Paginated() pagination: Pagination,
-    // @Query('filter') TODO: add filter
+    @StopFilter() filter: StopFilterOptions = {},
   ): Promise<PaginatedDto<StopDto>> {
-    const { stops, total } = await this.stopService.listAll(pagination);
+    const { stops, total } = await this.stopService.listAll(pagination, filter);
     return PaginatedDto.fromEntities(total, pagination, StopDto.fromEntities(stops));
   }
 

@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { VehicleService } from '../service/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './vehicle-create.dto';
+import { VehicleFilter, VehicleFilterOptions } from './vehicle-filter.decorator';
 import { VehicleDto } from './vehicle.dto';
 
 @Controller('/ext/v1/vehicles')
@@ -27,9 +28,9 @@ export class VehicleController {
   @ApiPaginatedResponse(VehicleDto)
   async getAllVehicles(
     @Paginated() pagination: Pagination,
-    // TODO: add filter
+    @VehicleFilter() filter: VehicleFilterOptions = {},
   ): Promise<PaginatedDto<VehicleDto>> {
-    const { vehicles, total } = await this.vehicleService.listAll(pagination);
+    const { vehicles, total } = await this.vehicleService.listAll(pagination, filter);
     return PaginatedDto.fromEntities(total, pagination, VehicleDto.fromEntities(vehicles));
   }
 

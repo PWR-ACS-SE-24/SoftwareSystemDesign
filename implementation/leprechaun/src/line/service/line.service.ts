@@ -5,6 +5,7 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { v7 } from 'uuid';
 import { CreateLineDto, UpdateLineDto } from '../controller/line-create.dto';
+import { filterForLineNameLike, filterForStopNameLike, LineFilterOptions } from '../controller/line-filter.decorator';
 import { Line } from '../database/line.entity';
 import { StopLineMapping } from '../database/stop-line-mapping.entity';
 
@@ -23,14 +24,20 @@ export class LineService {
     private readonly stopLineMappingRepository: EntityRepository<StopLineMapping>,
   ) {}
 
-  async listAll(pagination: Pagination): Promise<{ lines: Line[]; total: number }> {
+  async listAll(pagination: Pagination, filter: LineFilterOptions): Promise<{ lines: Line[]; total: number }> {
+    const queryFilters = {
+      ...filterForLineNameLike(filter.lineNameLike),
+      ...filterForStopNameLike(filter.stopNameLike),
+    };
+
     const lines = await this.lineRepository.findAll({
+      where: queryFilters,
       limit: pagination.size,
       offset: pagination.page * pagination.size,
       populate: ['mappings.line', 'mappings.stop'],
     });
-    const total = await this.lineRepository.count();
 
+    const total = await this.lineRepository.count(queryFilters);
     return { lines, total };
   }
 

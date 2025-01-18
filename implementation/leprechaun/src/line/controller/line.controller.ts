@@ -16,6 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { LineService } from '../service/line.service';
 import { CreateLineDto, UpdateLineDto } from './line-create.dto';
+import { LineFilter, LineFilterOptions } from './line-filter.decorator';
 import { LineDto } from './line.dto';
 
 @Controller('/ext/v1/lines')
@@ -29,9 +30,9 @@ export class LineController {
   @ApiPaginatedResponse(LineDto)
   async getAllLines(
     @Paginated() pagination: Pagination,
-    // @Query('filter') TODO: add filter
+    @LineFilter() filter: LineFilterOptions = {},
   ): Promise<PaginatedDto<LineDto>> {
-    const { lines, total } = await this.lineService.listAll(pagination);
+    const { lines, total } = await this.lineService.listAll(pagination, filter);
     return PaginatedDto.fromEntities(total, pagination, LineDto.fromEntities(lines));
   }
 

@@ -3,7 +3,7 @@ import { RouteService } from '@app/route/service/route.service';
 import { ApiInvalidSchema } from '@app/shared/api/api-invalid-schema.decorator';
 import { HttpExceptionDto } from '@app/shared/api/http-exceptions';
 import { ValidateCreatePipe } from '@app/shared/api/pipes';
-import { SideNumberDto } from '@app/vehicle/controller/vehicle.dto';
+import { SideNumberDto as SideNumberParam } from '@app/vehicle/controller/vehicle.dto';
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 
@@ -17,9 +17,9 @@ export class InternalVehiclesController {
   @ApiInvalidSchema({ description: 'Invalid sideNumber parameter' })
   async getCurrentVehicleRoute(
     // Packing the parameter into a DTO to leverage the validation
-    @Param('sideNumber', ValidateCreatePipe) sideNumberParameter: SideNumberDto,
+    @Param(ValidateCreatePipe) { sideNumber }: SideNumberParam,
   ): Promise<MinimalRouteDto> {
-    const route = await this.routeService.getRouteByVehicleSideNumber(sideNumberParameter.sideNumber);
+    const route = await this.routeService.getRouteByVehicleSideNumber(sideNumber);
     return MinimalRouteDto.fromEntity(route);
   }
 }
