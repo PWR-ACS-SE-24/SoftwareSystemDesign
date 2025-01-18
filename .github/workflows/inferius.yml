@@ -76,19 +76,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Run Unit Tests
-        env:
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_PORT: 5432
-          DATABASE_NAME: inferius
-          DATABASE_USER: postgres
-          DATABASE_PASSWORD: admin
         run: mvn test
 
       - name: Run Integration Tests
-        env:
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_PORT: 5432
-          DATABASE_NAME: inferius
-          DATABASE_USER: postgres
-          DATABASE_PASSWORD: admin
         run: mvn failsafe:integration-test failsafe:verify
