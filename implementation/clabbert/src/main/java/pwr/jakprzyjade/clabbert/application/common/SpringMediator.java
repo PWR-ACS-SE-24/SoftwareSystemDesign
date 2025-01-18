@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.Mediator;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.Request;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.RequestHandler;
+import pwr.jakprzyjade.clabbert.domain.exceptions.AppException;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class SpringMediator implements Mediator {
     private final ApplicationContext context;
 
     @Override
-    public <TResponse> TResponse send(Request<TResponse> request) {
+    public <TResponse> TResponse send(Request<TResponse> request) throws AppException {
         if (request == null) {
             throw new NullPointerException("The given request object cannot be null");
         }

@@ -3,6 +3,8 @@ package pwr.jakprzyjade.clabbert.infrastructure.repositories;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import pwr.jakprzyjade.clabbert.application.abstractions.repositories.TicketOfferRepository;
 import pwr.jakprzyjade.clabbert.domain.entities.TicketOffer;
 
-public interface TicketOfferRepository extends JpaRepository<TicketOffer, UUID> {}
+public interface JpaTicketOfferRepository
+        extends TicketOfferRepository, JpaRepository<TicketOffer, UUID> {}

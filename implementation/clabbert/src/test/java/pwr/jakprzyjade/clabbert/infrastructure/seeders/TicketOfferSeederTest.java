@@ -12,10 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pwr.jakprzyjade.clabbert.application.abstractions.repositories.TicketOfferRepository;
 import pwr.jakprzyjade.clabbert.domain.entities.LongTermOffer;
 import pwr.jakprzyjade.clabbert.domain.entities.SingleFareOffer;
 import pwr.jakprzyjade.clabbert.domain.entities.TimeLimitedOffer;
-import pwr.jakprzyjade.clabbert.infrastructure.repositories.TicketOfferRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class TicketOfferSeederTest {
