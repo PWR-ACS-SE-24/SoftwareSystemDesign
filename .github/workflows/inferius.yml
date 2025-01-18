@@ -63,14 +63,14 @@ jobs:
           done
           echo "PostgreSQL is ready!"
 
-      - name: Create env.properties
+      - name: Create env.properties from secrets
         run: |
-          echo "DATABASE_HOST=127.0.0.1" > src/main/resources/env.properties
-          echo "DATABASE_PORT=5432" >> src/main/resources/env.properties
-          echo "DATABASE_NAME=inferius" >> src/main/resources/env.properties
-          echo "DATABASE_USER=postgres" >> src/main/resources/env.properties
-          echo "DATABASE_PASSWORD=admin" >> src/main/resources/env.properties
-          echo "INFERIUS_VERSION=1.0.0" >> src/main/resources/env.properties
+          echo DATABASE_HOST=${{ secrets.DATABASE_HOST }} >> src/main/resources/env.properties
+          echo DATABASE_PORT=${{ secrets.DATABASE_PORT }} >> src/main/resources/env.properties
+          echo DATABASE_NAME=${{ secrets.DATABASE_NAME }} >> src/main/resources/env.properties
+          echo DATABASE_USER=${{ secrets.DATABASE_USER }} >> src/main/resources/env.properties
+          echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> src/main/resources/env.properties
+          echo INFERIUS_VERSION=${{ secrets.INFERIUS_VERSION }} >> src/main/resources/env.properties
 
       - name: Run Build
         run: mvn clean package -DskipTests
