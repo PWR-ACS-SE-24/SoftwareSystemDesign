@@ -34,6 +34,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create env.properties
+        run: |
+          echo DATABASE_HOST=${{ secrets.DATABASE_HOST }} >> src/main/resources/env.properties
+          echo DATABASE_PORT=${{ secrets.DATABASE_PORT }} >> src/main/resources/env.properties
+          echo DATABASE_NAME=${{ secrets.DATABASE_NAME }} >> src/main/resources/env.properties
+          echo DATABASE_USER=${{ secrets.DATABASE_USER }} >> src/main/resources/env.properties
+          echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> src/main/resources/env.properties
+          echo INFERIUS_VERSION=${{ secrets.INFERIUS_VERSION }} >> src/main/resources/env.properties
+
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
