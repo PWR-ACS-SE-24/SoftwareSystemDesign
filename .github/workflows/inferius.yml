@@ -48,10 +48,3 @@ jobs:
 
       - name: Run Integration Tests
         run: mvn failsafe:integration-test failsafe:verify
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: target/surefire-reports/
