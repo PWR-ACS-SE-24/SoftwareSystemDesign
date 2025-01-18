@@ -1,5 +1,6 @@
 package pwr.jakprzyjade.inferius.wallet.database;
 
+import jakarta.validation.constraints.Min;
 import pwr.jakprzyjade.inferius.shared.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class WalletHistory {
     @UUIDv7
     private UUID id;
 
+    @Min(value = 0)
     @Column(nullable = false, updatable = false, precision = 8, scale = 2)
     @NotNull(message = "amountPln cannot be null")
     private BigDecimal amountPln;

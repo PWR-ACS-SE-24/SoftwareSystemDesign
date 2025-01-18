@@ -1,5 +1,6 @@
 package pwr.jakprzyjade.inferius.fine.database;
 
+import jakarta.validation.constraints.Min;
 import pwr.jakprzyjade.inferius.shared.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -37,6 +38,7 @@ public class Fine {
     @Size(min = 1, max = 255, message = "recipient must be between 1 and 255 characters")
     private String recipient;
 
+    @Min(value = 0)
     @Column(nullable = false, updatable = false, precision = 8, scale = 2)
     @NotNull(message = "amountPln cannot be null")
     private BigDecimal amountPln;

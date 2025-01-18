@@ -1,5 +1,6 @@
 package pwr.jakprzyjade.inferius.wallet.database;
 
+import jakarta.validation.constraints.Min;
 import pwr.jakprzyjade.inferius.shared.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ public class Wallet {
     @NotNull(message = "passengerId cannot be null")
     private UUID passengerId;
 
+    @Min(value = 0)
     @Column(nullable = false, precision = 8, scale = 2)
     @NotNull(message = "passengerId cannot be null")
     private BigDecimal balancePln = BigDecimal.ZERO;
