@@ -40,8 +40,21 @@ jobs:
           java-version: "17"
           distribution: "microsoft"
 
-      - name: Create env.properties from secrets
+      - name: Test PostgreSQL connection
         run: |
+          until pg_isready -h ${{ secrets.DATABASE_HOST }} -p ${{ secrets.DATABASE_PORT }} -U ${{ secrets.DATABASE_USER }}; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 3
+          done
+          echo "PostgreSQL is ready!"
+
+      - name: Create env.properties
+        run: |
+          echo DATABASE_HOST=${{ secrets.DATABASE_HOST }} >> src/main/resources/env.properties
+          echo DATABASE_PORT=${{ secrets.DATABASE_PORT }} >> src/main/resources/env.properties
+          echo DATABASE_NAME=${{ secrets.DATABASE_NAME }} >> src/main/resources/env.properties
+          echo DATABASE_USER=${{ secrets.DATABASE_USER }} >> src/main/resources/env.properties
+          echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> src/main/resources/env.properties
           echo INFERIUS_VERSION=${{ secrets.INFERIUS_VERSION }} >> src/main/resources/env.properties
 
       - name: Run Build
