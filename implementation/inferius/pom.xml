@@ -78,22 +78,7 @@
 			<artifactId>java-uuid-generator</artifactId>
 			<version>5.1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>1.19.8</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>test</id>
-			<properties>
-				<spring.profiles.active>test</spring.profiles.active>
-			</properties>
-		</profile>
-	</profiles>
 
 	<build>
 		<plugins>
