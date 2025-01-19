@@ -25,8 +25,7 @@ public class Fine {
     @UUIDv7
     private UUID id;
 
-    @Column(nullable = false, updatable = false)
-    @NotNull
+    @Column(updatable = false)
     private UUID passengerId;
 
     @Column(nullable = false, updatable = false)
@@ -35,7 +34,7 @@ public class Fine {
 
     @Column(nullable = false, updatable = false)
     @NotNull
-    @Size(min = 1, max = 255, message = "recipient must be between 1 and 255 characters")
+    @Size(min = 1, max = 255)
     private String recipient;
 
     @Min(value = 0)

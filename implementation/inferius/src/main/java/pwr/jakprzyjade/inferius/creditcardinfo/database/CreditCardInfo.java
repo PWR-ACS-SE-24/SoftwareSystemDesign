@@ -22,17 +22,17 @@ public class CreditCardInfo {
     @UUIDv7
     private UUID id;
 
-    @Size(max = 255, message = "label max length is 255 characters")
+    @Size(max = 255)
     private String label;
 
     @Column(nullable = false, updatable = false, length = 16)
     @NotNull
-    @Size(min = 16, max = 16, message = "number has 16 characters")
+    @Size(min = 16, max = 16)
     private String number;
 
     @Column(nullable = false, updatable = false)
     @NotNull
-    @Size(min = 1, max = 255, message = "holderName must be between 1 and 255 characters")
+    @Size(min = 1, max = 255)
     private String holderName;
 
     @Column(nullable = false)
