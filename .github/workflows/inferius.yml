@@ -30,21 +30,6 @@ jobs:
       run:
         working-directory: implementation/inferius
 
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: admin
-          POSTGRES_DB: inferius
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,28 +40,15 @@ jobs:
           java-version: "17"
           distribution: "microsoft"
 
-      - name: Wait for PostgreSQL
-        run: |
-          until pg_isready -h 127.0.0.1 -p 5432 -U postgres -d inferius; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 3
-          done
-          echo "PostgreSQL is ready!"
-
       - name: Create env.properties from secrets
         run: |
-          echo DATABASE_HOST=${{ secrets.DATABASE_HOST }} >> src/main/resources/env.properties
-          echo DATABASE_PORT=${{ secrets.DATABASE_PORT }} >> src/main/resources/env.properties
-          echo DATABASE_NAME=${{ secrets.DATABASE_NAME }} >> src/main/resources/env.properties
-          echo DATABASE_USER=${{ secrets.DATABASE_USER }} >> src/main/resources/env.properties
-          echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> src/main/resources/env.properties
           echo INFERIUS_VERSION=${{ secrets.INFERIUS_VERSION }} >> src/main/resources/env.properties
 
       - name: Run Build
         run: mvn clean package -DskipTests
 
       - name: Run Unit Tests
-        run: mvn test
+        run: mvn test --activate-profiles test
 
       - name: Run Integration Tests
-        run: mvn failsafe:integration-test failsafe:verify
+        run: mvn failsafe:integration-test failsafe:verify --activate-profiles test
