@@ -57,6 +57,11 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<AppError> handleResourceNotFound(ResourceNotFoundException ex) {
+        return buildErrorResponse(404, "resource-not-found", ex.getMessage(), "Żądany zasób nie został znaleziony.");
+    }
+
     private ResponseEntity<AppError> buildErrorResponse(int code, String kind, String messageEn, String messagePl) {
         return ResponseEntity.status(code)
                 .body(new AppError(code, kind, messageEn, messagePl));
