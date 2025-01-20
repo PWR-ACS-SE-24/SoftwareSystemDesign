@@ -10,8 +10,8 @@ const CHECK_EXPRESSION = `
 CREATE OR REPLACE FUNCTION check_start_time_not_in_past_for_route()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.start_time < CURRENT_TIMESTAMP THEN
-        RAISE EXCEPTION 'The start_time field cannot be in the past: %', NEW.start_time;
+    IF NEW.start_time < statement_timestamp() THEN
+        RAISE EXCEPTION 'The start_time field cannot be in the past: NEW: % < CURRENT: %', NEW.start_time, statement_timestamp();
     END IF;
     RETURN NEW;
 END;

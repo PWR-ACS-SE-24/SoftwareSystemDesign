@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { Route, ROUTE_TRIGGER_NAME } from '@app/route/database/route.entity';
 import { RouteModule } from '@app/route/route.module';
 import { SharedModule } from '@app/shared/shared.module';
@@ -22,20 +22,27 @@ describe('AccidentServiceFilterTest', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MikroOrmModule.forRoot(testConfig), MikroOrmModule.forFeature([Accident]), SharedModule, RouteModule],
+      imports: [
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
+        MikroOrmModule.forFeature([Accident]),
+        SharedModule,
+        RouteModule,
+      ],
       providers: [AccidentService],
     }).compile();
 
     service = module.get<AccidentService>(AccidentService);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
   });
-
   afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 

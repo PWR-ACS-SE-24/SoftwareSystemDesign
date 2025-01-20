@@ -9,8 +9,8 @@ const CHECK_EXPRESSION = `
 CREATE OR REPLACE FUNCTION check_time_not_in_future_for_accident()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.time > CURRENT_TIMESTAMP THEN
-        RAISE EXCEPTION 'The time field cannot be in the future: %', NEW.time;
+    IF NEW.time > statement_timestamp() THEN
+        RAISE EXCEPTION 'The time field cannot be in the future: NEW: % > CURRENT: %', NEW.time, statement_timestamp();
     END IF;
     RETURN NEW;
 END;

@@ -4,13 +4,13 @@ import { v7 as uuidv7 } from 'uuid';
 import { StopLineMapping } from './stop-line-mapping.entity';
 
 @Entity()
-@Check<Line>({ name: 'stop_name_check', expression: (columns) => `${columns.name} <> ''` })
 @Filter({ name: 'active', cond: { isActive: true }, default: true })
+@Check<Line>({ name: 'line_name_check', expression: (columns) => `${columns.name} <> ''` })
+@Index<Line>({ name: 'line_name_index', properties: ['name'], type: 'fulltext' })
 export class Line {
   @PrimaryKey({ type: 'uuid' })
   id = uuidv7(); // TODO: redo as a custom type
 
-  @Index({ type: 'fulltext' })
   @Property({ length: 4, nullable: false })
   name: string;
 

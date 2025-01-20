@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { RouteModule } from '@app/route/route.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { createRoute, createTimeOffsetFromNow } from '@app/shared/test/helpers';
@@ -10,14 +10,19 @@ import { AccidentController } from '../controller/accident.controller';
 import { Accident } from '../database/accident.entity';
 import { AccidentService } from '../service/accident.service';
 
-describe('AccidentController', () => {
+describe.only('AccidentController', () => {
   let controller: AccidentController;
   let em: EntityManager;
   let orm: MikroORM;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MikroOrmModule.forRoot(testConfig), MikroOrmModule.forFeature([Accident]), SharedModule, RouteModule],
+      imports: [
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
+        MikroOrmModule.forFeature([Accident]),
+        SharedModule,
+        RouteModule,
+      ],
       controllers: [AccidentController],
       providers: [AccidentService],
     }).compile();
@@ -25,11 +30,20 @@ describe('AccidentController', () => {
     controller = module.get<AccidentController>(AccidentController);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
+  });
+
+  beforeEach(async () => {
     await em.begin();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
+  });
+
+  afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 
@@ -124,6 +138,9 @@ describe('AccidentController', () => {
     expect(newAccident.resolved).toEqual(false);
   });
 
+  // TODO: reproduce the bug in a sterile environment
+  // BUG? When accident is not explicitly put in persist and flush it fails, on the _next_ test, as if the
+  //      transaction did not purge that object from the _identity map_.
   it('should not accept future accident time', async () => {
     // given
     const { route, line, vehicle } = createRoute({
@@ -135,7 +152,7 @@ describe('AccidentController', () => {
     const accident = new Accident(createTimeOffsetFromNow({ hours: 0, seconds: 10 }), 'description', route, false);
 
     // then
-    await expect(() => em.persistAndFlush([line, vehicle])).rejects.toThrow(DriverException);
+    await expect(() => em.persistAndFlush([line, vehicle, accident])).rejects.toThrow(DriverException);
   });
 
   it('should update accident', async () => {

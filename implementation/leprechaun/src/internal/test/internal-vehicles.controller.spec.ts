@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { LineModule } from '@app/line/line.module';
 import { Route, ROUTE_TRIGGER_NAME } from '@app/route/database/route.entity';
 import { RouteService } from '@app/route/service/route.service';
@@ -17,10 +17,10 @@ describe('InternalVehiclesController', () => {
   let orm: MikroORM;
   let disableTrigger: (f: FuncOrPromise) => Promise<unknown>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MikroOrmModule.forRoot(testConfig),
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
         MikroOrmModule.forFeature([Route]),
         SharedModule,
         LineModule,
@@ -35,12 +35,19 @@ describe('InternalVehiclesController', () => {
     orm = module.get<MikroORM>(MikroORM);
 
     disableTrigger = withoutTrigger.bind(null, orm, Route, ROUTE_TRIGGER_NAME);
+    await orm.getSchemaGenerator().createSchema();
+  });
 
+  beforeEach(async () => {
     await em.begin();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
+  });
+  afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 

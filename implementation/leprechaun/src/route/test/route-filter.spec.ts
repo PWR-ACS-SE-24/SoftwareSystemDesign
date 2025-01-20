@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { Line } from '@app/line/database/line.entity';
 import { LineModule } from '@app/line/line.module';
 import { SharedModule } from '@app/shared/shared.module';
@@ -6,8 +6,9 @@ import { createLineWithStops, createRoute, createTimeOffsetFromNow, TimeType } f
 import { Stop } from '@app/stop/database/stop.entity';
 import { Vehicle } from '@app/vehicle/database/vehicle.entity';
 import { VehicleModule } from '@app/vehicle/vehicle.module';
-import { EntityManager, MikroORM } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RouteFilterOptions } from '../controller/route-filter.decorator';
 import { Route } from '../database/route.entity';
@@ -23,7 +24,6 @@ describe('RouteServiceFilterTest', () => {
   let lines: Array<Line>;
   let vehicles: Array<Vehicle>;
   let routes: Array<Route>;
-  let times: Array<Date>;
 
   let before: Date;
   let mid: Date;
@@ -32,7 +32,7 @@ describe('RouteServiceFilterTest', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MikroOrmModule.forRoot(testConfig),
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
         MikroOrmModule.forFeature([Route]),
         SharedModule,
         LineModule,
@@ -44,13 +44,15 @@ describe('RouteServiceFilterTest', () => {
     service = module.get<RouteService>(RouteService);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
   });
-
   afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 

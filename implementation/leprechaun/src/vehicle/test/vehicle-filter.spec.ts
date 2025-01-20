@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { SharedModule } from '@app/shared/shared.module';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
@@ -17,20 +17,26 @@ describe('VehicleServiceFilterTest', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MikroOrmModule.forRoot(testConfig), MikroOrmModule.forFeature([Vehicle]), SharedModule],
+      imports: [
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
+        MikroOrmModule.forFeature([Vehicle]),
+        SharedModule,
+      ],
       providers: [VehicleService],
     }).compile();
 
     service = module.get<VehicleService>(VehicleService);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
   });
-
   afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 

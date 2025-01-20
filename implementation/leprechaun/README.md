@@ -67,9 +67,7 @@
 
 ## TODOs
 
-- Implement filters!
 - Ultimately, we will HAVE to implement some kind of secret-manager support.
 - Make E2E tests for all endpoints.
 - Make tests for all input Dto's.
-- Change tests to create connection once, and close it once, instead of doing it for each test.'
 - Health check should check if the database is up.

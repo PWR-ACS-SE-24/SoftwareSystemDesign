@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { SharedModule } from '@app/shared/shared.module';
 import { Stop } from '@app/stop/database/stop.entity';
 import { StopService } from '@app/stop/service/stop.service';
@@ -17,10 +17,10 @@ describe('LineController', () => {
   let em: EntityManager;
   let orm: MikroORM;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MikroOrmModule.forRoot(testConfig),
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
         MikroOrmModule.forFeature([Stop, Line, StopLineMapping]),
         SharedModule,
       ],
@@ -31,11 +31,19 @@ describe('LineController', () => {
     controller = module.get<LineController>(LineController);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
+  });
+
+  beforeEach(async () => {
     await em.begin();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
+  });
+  afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 

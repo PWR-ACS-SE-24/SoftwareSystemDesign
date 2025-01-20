@@ -17,10 +17,7 @@ type Entity = {
 
 export type FuncOrPromise<T = unknown> = (() => Promise<T>) | Promise<T>;
 
-export function createTimeOffsetFromNow({ hours, seconds }: TimeType): Date {
-  if (seconds === undefined) {
-    seconds = 0;
-  }
+export function createTimeOffsetFromNow({ hours, seconds = 0 }: TimeType): Date {
   return new Date(new Date().valueOf() + (3600 * hours + seconds) * 1000);
 }
 

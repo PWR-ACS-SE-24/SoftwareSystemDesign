@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { createLineWithStops } from '@app/shared/test/helpers';
 import { Stop } from '@app/stop/database/stop.entity';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
@@ -20,19 +20,21 @@ describe('LineServiceFilterTest', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MikroOrmModule.forRoot(testConfig), LineModule],
+      imports: [MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)), LineModule],
     }).compile();
 
     service = module.get<LineService>(LineService);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
   });
-
   afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 
