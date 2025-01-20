@@ -10,3 +10,10 @@ export const testConfig: Options = {
   debug: [],
   dbName: `test_${defaultConfig.dbName}`,
 };
+
+export const getConfiguredTestconfig = (id: string) => {
+  return {
+    ...testConfig,
+    dbName: `${testConfig.dbName}_${id}`,
+  };
+};

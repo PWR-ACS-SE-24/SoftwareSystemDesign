@@ -16,6 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { AccidentService } from '../service/accident.service';
 import { CreateAccidentDto, UpdateAccidentDto } from './accident-create.dto';
+import { AccidentFilter, AccidentFilterOptions } from './accident-filter.decorator';
 import { AccidentDto } from './accident.dto';
 
 @Controller('/ext/v1/accidents')
@@ -29,9 +30,9 @@ export class AccidentController {
   @ApiPaginatedResponse(AccidentDto)
   async getAllAccidents(
     @Paginated() pagination: Pagination,
-    // @Query('filter') TODO: add filter
+    @AccidentFilter() filter: AccidentFilterOptions = {},
   ): Promise<PaginatedDto<AccidentDto>> {
-    const { accidents, total } = await this.accidentService.listAll(pagination);
+    const { accidents, total } = await this.accidentService.listAll(pagination, filter);
     return PaginatedDto.fromEntities(total, pagination, AccidentDto.fromEntities(accidents));
   }
 

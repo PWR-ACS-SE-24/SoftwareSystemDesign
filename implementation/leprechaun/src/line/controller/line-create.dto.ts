@@ -3,7 +3,7 @@ import { IsArray, IsOptional, IsUUID } from 'class-validator';
 import { LineDto } from './line.dto';
 
 export class CreateLineDto extends PickType(LineDto, ['name'] as const) {
-  readonly name: string;
+  readonly name!: string;
 
   @IsOptional()
   @IsArray()
@@ -25,13 +25,7 @@ export class CreateLineDto extends PickType(LineDto, ['name'] as const) {
       ],
     ],
   })
-  readonly stops: string[];
-
-  constructor(name: string, stops: string[] = []) {
-    super();
-    this.name = name;
-    this.stops = stops;
-  }
+  readonly stops?: string[];
 }
 
 export class UpdateLineDto extends PartialType(CreateLineDto) {}

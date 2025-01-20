@@ -6,6 +6,16 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateRouteDto, UpdateRouteDto } from '../controller/route-create.dto';
+import {
+  filterForEndTimeAfter,
+  filterForEndTimeBefore,
+  filterForLineNameLike,
+  filterForStartTimeAfter,
+  filterForStartTimeBefore,
+  filterForStopNameLike,
+  filterForVehicleSideNumberLike,
+  RouteFilterOptions,
+} from '../controller/route-filter.decorator';
 import { Route } from '../database/route.entity';
 
 @Injectable()
@@ -19,13 +29,25 @@ export class RouteService {
     private readonly routeRepository: EntityRepository<Route>,
   ) {}
 
-  async getAll(pagination: Pagination): Promise<{ routes: Route[]; total: number }> {
+  async listAll(pagination: Pagination, filter: RouteFilterOptions): Promise<{ routes: Route[]; total: number }> {
+    const queryFilters = {
+      ...filterForLineNameLike(filter.lineNameLike),
+      ...filterForStopNameLike(filter.stopNameLike),
+      ...filterForVehicleSideNumberLike(filter.vehicleSideNumberLike),
+      ...filterForStartTimeAfter(filter.startTimeAfter),
+      ...filterForStartTimeBefore(filter.startTimeBefore),
+      ...filterForEndTimeAfter(filter.endTimeAfter),
+      ...filterForEndTimeBefore(filter.endTimeBefore),
+    };
+
     const routes = await this.routeRepository.findAll({
+      where: queryFilters,
       limit: pagination.size,
       offset: pagination.page * pagination.size,
       populate: ['line.mappings.stop', 'vehicle'],
+      orderBy: { startTime: 'ASC', line: 'ASC' },
     });
-    const total = await this.routeRepository.count();
+    const total = await this.routeRepository.count(queryFilters);
 
     return { routes, total };
   }
@@ -57,6 +79,22 @@ export class RouteService {
         failHandler: () => new NotFoundException({ details: routeId }),
         populate: ['line.mappings.stop', 'vehicle'],
         filters,
+      },
+    );
+  }
+
+  async getRouteByVehicleSideNumber(vehicleSideNumber: string, filters: boolean = true): Promise<Route> {
+    const now = new Date();
+
+    return await this.routeRepository.findOneOrFail(
+      {
+        vehicle: { sideNumber: vehicleSideNumber },
+        $and: [{ startTime: { $lte: now } }, { endTime: { $gte: now } }],
+      },
+      {
+        failHandler: () => new NotFoundException({ details: vehicleSideNumber }),
+        populate: ['vehicle', 'line'],
+        filters, // filters in both route and vehicle should be set
       },
     );
   }

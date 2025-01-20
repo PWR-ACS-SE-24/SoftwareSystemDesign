@@ -28,7 +28,13 @@ export class MonitoringService {
         const httpMethod = this.reflector.get<number>(METHOD_METADATA, methodHandler);
         const roles = this.reflector.get<RoutePermission[]>('roles', methodHandler) ?? [];
 
-        routes.push(new EndpointDto(RequestMethod[httpMethod], controllerPath + methodPath, roles));
+        routes.push(
+          EndpointDto.fromEntity({
+            method: RequestMethod[httpMethod],
+            path: controllerPath + methodPath,
+            roles: roles,
+          }),
+        );
       }
     }
     return routes;

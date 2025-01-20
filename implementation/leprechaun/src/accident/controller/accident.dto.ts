@@ -1,4 +1,4 @@
-import { AccidentRouteDto } from '@app/route/controller/route.dto';
+import { MinimalRouteDto } from '@app/route/controller/route.dto';
 import { GenericIdDto } from '@app/shared/api/generic.dto';
 import { IsNotInFuture } from '@app/shared/api/not-in-future.validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -16,7 +16,7 @@ export class AccidentDto extends GenericIdDto {
     nullable: false,
     example: '2021-07-29T08:00:00.000Z',
   })
-  readonly time: string;
+  readonly time!: string;
 
   @IsOptional()
   @IsBoolean()
@@ -36,31 +36,23 @@ export class AccidentDto extends GenericIdDto {
     nullable: true,
     example: 'Styrta is on fire at the intersection of Wkoło Poczty and Łączna 43',
   })
-  readonly description: string;
+  readonly description!: string;
 
   @ApiProperty({
     description: 'Route of the accident',
     nullable: false,
-    type: AccidentRouteDto,
+    type: MinimalRouteDto,
   })
-  readonly route: AccidentRouteDto;
-
-  constructor(id: string, time: string, description: string, route: AccidentRouteDto, resolved: boolean = false) {
-    super(id);
-    this.time = time;
-    this.resolved = resolved;
-    this.description = description;
-    this.route = route;
-  }
+  readonly route!: MinimalRouteDto;
 
   public static fromEntity(entity: Accident): AccidentDto {
-    return new AccidentDto(
-      entity.id,
-      entity.time.toISOString(),
-      entity.description,
-      AccidentRouteDto.fromEntity(entity.route),
-      entity.resolved,
-    );
+    return Object.assign(new AccidentDto(), <AccidentDto>{
+      id: entity.id,
+      time: entity.time.toISOString(),
+      description: entity.description,
+      route: MinimalRouteDto.fromEntity(entity.route),
+      resolved: entity.resolved,
+    });
   }
 
   public static fromEntities(entities: Accident[]): AccidentDto[] {

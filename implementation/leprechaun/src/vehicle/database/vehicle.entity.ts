@@ -4,7 +4,7 @@ import { v7 as uuidv7 } from 'uuid';
 
 @Entity()
 @Check<Vehicle>({ name: 'vehicle_name_check', expression: (columns) => `${columns.sideNumber} <> ''` })
-@Index<Vehicle>({ name: 'vehicle_side_number_index', properties: ['sideNumber'] })
+@Index<Vehicle>({ name: 'vehicle_side_number_index', properties: ['sideNumber'], type: 'fulltext' })
 @Filter({ name: 'active', cond: { isActive: true }, default: true })
 export class Vehicle {
   @PrimaryKey({ type: 'uuid' })

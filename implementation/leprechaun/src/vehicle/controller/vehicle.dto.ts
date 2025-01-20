@@ -1,5 +1,5 @@
 import { GenericIdActiveDto } from '@app/shared/api/generic.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { Vehicle } from '../database/vehicle.entity';
 
@@ -14,18 +14,19 @@ export class VehicleDto extends GenericIdActiveDto {
     nullable: false,
     examples: ['2137', '94102-3170150114'],
   })
-  readonly sideNumber: string;
-
-  constructor(id: string, sideNumber: string, isActive: boolean) {
-    super(id, isActive);
-    this.sideNumber = sideNumber;
-  }
+  readonly sideNumber!: string;
 
   static fromEntity(entity: Vehicle): VehicleDto {
-    return new VehicleDto(entity.id, entity.sideNumber, entity.isActive);
+    return Object.assign(new VehicleDto(), <VehicleDto>{
+      id: entity.id,
+      sideNumber: entity.sideNumber,
+      isActive: entity.isActive,
+    });
   }
 
   static fromEntities(entities: Vehicle[]): VehicleDto[] {
     return entities.map((entity) => VehicleDto.fromEntity(entity));
   }
 }
+
+export class SideNumberDto extends PickType(VehicleDto, ['sideNumber'] as const) {}

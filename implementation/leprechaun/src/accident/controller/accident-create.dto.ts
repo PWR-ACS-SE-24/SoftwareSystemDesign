@@ -10,11 +10,6 @@ export class CreateAccidentDto extends PickType(AccidentDto, ['time', 'descripti
     type: 'string',
   })
   readonly route!: string;
-
-  constructor(time: Date, resolved: boolean, description: string, route: string) {
-    super(time, resolved, description);
-    this.route = route;
-  }
 }
 
 export class UpdateAccidentDto extends PartialType(PickType(CreateAccidentDto, ['description'] as const)) {}
