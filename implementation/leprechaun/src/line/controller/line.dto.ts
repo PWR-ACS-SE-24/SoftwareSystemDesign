@@ -29,14 +29,12 @@ export class LineDto extends GenericIdActiveDto {
   readonly stops!: StopDto[];
 
   static fromEntity(entity: Line): LineDto {
-    const dto = new LineDto();
-    Object.assign(dto, <LineDto>{
+    return Object.assign(new LineDto(), <LineDto>{
       id: entity.id,
       stops: entity.mappings.map((i) => StopDto.fromEntity(i.stop)),
       name: entity.name,
       isActive: entity.isActive,
     });
-    return dto;
   }
 
   static fromEntities(entities: Line[]): LineDto[] {

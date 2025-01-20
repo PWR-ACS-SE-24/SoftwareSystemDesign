@@ -47,7 +47,7 @@ describe('VehicleServiceFilterTest', () => {
 
     await em.persistAndFlush(vehicles);
 
-    testCase = async (filter: VehicleFilterOptions, expected: Array<number>) => {
+    testCase = async (filter: VehicleFilterOptions, expected: number[]) => {
       // when
       const { vehicles: foundVehicles, total } = await service.listAll({ page: 0, size: 10 }, filter);
       const foundVehiclesIds = foundVehicles.map((l) => l.id);

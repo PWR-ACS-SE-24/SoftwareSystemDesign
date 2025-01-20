@@ -1,5 +1,5 @@
 import { Route } from '@app/route/database/route.entity';
-import { Check, Collection, Entity, Filter, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
+import { Check, Collection, Entity, Filter, Index, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 import { StopLineMapping } from './stop-line-mapping.entity';
 
@@ -10,6 +10,7 @@ export class Line {
   @PrimaryKey({ type: 'uuid' })
   id = uuidv7(); // TODO: redo as a custom type
 
+  @Index({ type: 'fulltext' })
   @Property({ length: 4, nullable: false })
   name: string;
 

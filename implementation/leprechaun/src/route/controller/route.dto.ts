@@ -39,8 +39,7 @@ export class RouteDto extends GenericIdActiveDto {
   readonly vehicle!: VehicleDto;
 
   public static fromEntity(entity: Route): RouteDto {
-    const dto = new RouteDto();
-    Object.assign(dto, <RouteDto>{
+    return Object.assign(new RouteDto(), <RouteDto>{
       id: entity.id,
       startTime: entity.startTime.toISOString(),
       endTime: entity.endTime.toISOString(),
@@ -48,7 +47,6 @@ export class RouteDto extends GenericIdActiveDto {
       vehicle: VehicleDto.fromEntity(entity.vehicle),
       isActive: entity.isActive,
     });
-    return dto;
   }
 
   public static fromEntities(entities: Route[]): RouteDto[] {

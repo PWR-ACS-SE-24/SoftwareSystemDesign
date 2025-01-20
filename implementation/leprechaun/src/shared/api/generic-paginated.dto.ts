@@ -12,13 +12,11 @@ export class PaginatedDto<TDto> {
   readonly page!: number;
 
   static fromEntities<TDto>(total: number, pagination: Pagination, data: TDto[]): PaginatedDto<TDto> {
-    const dto = new PaginatedDto<TDto>();
-    Object.assign(dto, <PaginatedDto<TDto>>{
+    return Object.assign(new PaginatedDto<TDto>(), <PaginatedDto<TDto>>{
       total,
       size: pagination.size,
       page: pagination.page,
       data,
     });
-    return dto;
   }
 }

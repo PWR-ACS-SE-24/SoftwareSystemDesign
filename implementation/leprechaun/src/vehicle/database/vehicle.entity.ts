@@ -10,6 +10,7 @@ export class Vehicle {
   @PrimaryKey({ type: 'uuid' })
   id = uuidv7(); // TODO: redo as a custom type
 
+  @Index({ type: 'fulltext' })
   @Property({ length: 16, nullable: false, unique: true })
   sideNumber: string;
 

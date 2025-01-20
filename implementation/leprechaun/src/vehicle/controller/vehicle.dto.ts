@@ -17,13 +17,11 @@ export class VehicleDto extends GenericIdActiveDto {
   readonly sideNumber!: string;
 
   static fromEntity(entity: Vehicle): VehicleDto {
-    const dto = new VehicleDto();
-    Object.assign(dto, <VehicleDto>{
+    return Object.assign(new VehicleDto(), <VehicleDto>{
       id: entity.id,
       sideNumber: entity.sideNumber,
       isActive: entity.isActive,
     });
-    return dto;
   }
 
   static fromEntities(entities: Vehicle[]): VehicleDto[] {

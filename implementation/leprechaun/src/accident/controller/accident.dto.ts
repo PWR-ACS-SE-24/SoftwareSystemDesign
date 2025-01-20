@@ -46,15 +46,13 @@ export class AccidentDto extends GenericIdDto {
   readonly route!: MinimalRouteDto;
 
   public static fromEntity(entity: Accident): AccidentDto {
-    const dto = new AccidentDto();
-    Object.assign(dto, <AccidentDto>{
+    return Object.assign(new AccidentDto(), <AccidentDto>{
       id: entity.id,
       time: entity.time.toISOString(),
       description: entity.description,
       route: MinimalRouteDto.fromEntity(entity.route),
       resolved: entity.resolved,
     });
-    return dto;
   }
 
   public static fromEntities(entities: Accident[]): AccidentDto[] {

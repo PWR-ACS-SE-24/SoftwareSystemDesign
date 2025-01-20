@@ -36,15 +36,13 @@ export class StopDto extends GenericIdActiveDto {
   readonly longitude!: number;
 
   static fromEntity(entity: Stop): StopDto {
-    const dto = new StopDto();
-    Object.assign(dto, <StopDto>{
+    return Object.assign(new StopDto(), <StopDto>{
       id: entity.id,
       name: entity.name,
       latitude: entity.latitude,
       longitude: entity.longitude,
       isActive: entity.isActive,
     });
-    return dto;
   }
 
   static fromEntities(entities: Stop[]): StopDto[] {
