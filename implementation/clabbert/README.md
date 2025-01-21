@@ -44,7 +44,7 @@
 | **Integration**             | **Status** |
 | --------------------------- | ---------- |
 | Database (PostgreSQL)       | 🟩         |
-| Leprechaun (REST API)       | 🟥         |
-| Inferius (REST API)         | 🟥         |
+| Leprechaun (REST API)       | 🟩         |
+| Inferius (REST API)         | 🟩         |
 | Payment messaging (AWS SQS) | 🟥         |
 | Logging                     | 🟥         |
