@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pwr.jakprzyjade.inferius.fine.database.FineDto;
 import pwr.jakprzyjade.inferius.fine.service.FineService;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserRole;
@@ -34,5 +31,16 @@ public class FineController {
     ) {
         Page<FineDto> fines = fineService.getFines(userId, pageable);
         return ResponseEntity.ok(fines);
+    }
+
+    @UserRoles(UserRole.PASSENGER)
+    @GetMapping("/{id}")
+    @Operation(summary = "Retrieve fine details", description = "Pobranie informacji o mandacie.")
+    public ResponseEntity<FineDto> getFineDetails(
+            @RequestHeader("jp-user-id") UUID userId,
+            @PathVariable("id") UUID fineId
+    ) {
+        FineDto fine = fineService.getFineDetails(userId, fineId);
+        return ResponseEntity.ok(fine);
     }
 }
