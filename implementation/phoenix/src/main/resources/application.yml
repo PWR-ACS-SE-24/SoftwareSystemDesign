@@ -18,7 +18,7 @@ spring:
           filters:
             - RewritePath=/api/account/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
-            - AddRequestHeader=user-agent, Phoenix/${PHOENIX_VERSION}
+            - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
 
         - id: tickets_route
           uri: http://${CLABBERT_SERVICE_HOST}:${CLABBERT_SERVICE_PORT}
@@ -27,7 +27,7 @@ spring:
           filters:
             - RewritePath=/api/ticket/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
-            - AddRequestHeader=user-agent, Phoenix/${PHOENIX_VERSION}
+            - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
 
         - id: payments_route
           uri: http://${INFERIUS_SERVICE_HOST}:${INFERIUS_SERVICE_PORT}
@@ -36,7 +36,7 @@ spring:
           filters:
             - RewritePath=/api/payment/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
-            - AddRequestHeader=user-agent, Phoenix/${PHOENIX_VERSION}
+            - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
 
         - id: logistics_route
           uri: http://${LEPRECHAUN_SERVICE_HOST}:${LEPRECHAUN_SERVICE_PORT}
@@ -45,4 +45,4 @@ spring:
           filters:
             - RewritePath=/api/logistics/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
-            - AddRequestHeader=user-agent, Phoenix/${PHOENIX_VERSION}
+            - AddRequestHeader=user-agent, Phoenix/${phoenix.version}

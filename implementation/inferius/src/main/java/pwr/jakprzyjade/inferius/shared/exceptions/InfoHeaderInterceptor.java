@@ -14,7 +14,7 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
 
     private final UUIDv7Validator uuidv7Validator;
 
-    @Value("${INFERIUS_VERSION}")
+    @Value("${inferius.version}")
     private String appVersion;
 
     @Override
