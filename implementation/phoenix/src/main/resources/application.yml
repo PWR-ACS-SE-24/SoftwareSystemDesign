@@ -7,7 +7,7 @@ logging:
 
 spring:
   config:
-    import: classpath:env.properties
+    import: optional:classpath:env.properties
   cloud:
     gateway:
       routes:
