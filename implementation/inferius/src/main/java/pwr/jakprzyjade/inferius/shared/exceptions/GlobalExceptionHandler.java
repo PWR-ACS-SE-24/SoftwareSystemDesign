@@ -62,6 +62,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(404, "resource-not-found", ex.getMessage(), "Żądany zasób nie został znaleziony.");
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<AppError> handleIllegalStateException(IllegalStateException ex) {
+        return buildErrorResponse(400, "illegal-state", ex.getMessage(), "Operacja jest niedozwolona.");
+    }
+
     private ResponseEntity<AppError> buildErrorResponse(int code, String kind, String messageEn, String messagePl) {
         return ResponseEntity.status(code)
                 .body(new AppError(code, kind, messageEn, messagePl));

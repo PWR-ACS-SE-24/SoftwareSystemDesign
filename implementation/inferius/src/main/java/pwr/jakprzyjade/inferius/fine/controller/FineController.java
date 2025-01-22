@@ -43,4 +43,15 @@ public class FineController {
         FineDto fine = fineService.getFineDetails(userId, fineId);
         return ResponseEntity.ok(fine);
     }
+
+    @UserRoles(UserRole.INSPECTOR)
+    @PutMapping("/{id}/cancel")
+    @Operation(summary = "Cancel a fine", description = "Anulowanie mandatu.")
+    public ResponseEntity<FineDto> cancelFine(
+            @RequestHeader("jp-user-id") UUID inspectorId,
+            @PathVariable("id") UUID fineId
+    ) {
+        FineDto cancelledFine = fineService.cancelFine(inspectorId, fineId);
+        return ResponseEntity.ok(cancelledFine);
+    }
 }
