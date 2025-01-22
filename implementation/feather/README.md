@@ -4,14 +4,14 @@
 
 | **Endpoint**          | **Status** |
 | --------------------- | ---------- |
-| `GET  /int/v1/health` | 🟥         |
+| `GET  /int/v1/health` | 🟩         |
 | `POST /int/v1/verify` | 🟥         |
 
 ## Infrastructure
 
 | **Integration**             | **Status** |
 | --------------------------- | ---------- |
-| JWKS Provider (Jobberknoll) | 🟥         |
+| JWKS Provider (Jobberknoll) | 🟩         |
 | Logging                     | 🟥         |
 
 ## ADRs
@@ -23,4 +23,4 @@
 The service requires the following capabilities to be enabled:
 
 - `--allow-net` - required to host the web server
-- `--allow-ffi` - Feather reuses Jobberknoll, which uses FFI
+- `--allow-ffi` - Feather reuses Jobberknoll, which uses FFI (TODO: this should be fixable)

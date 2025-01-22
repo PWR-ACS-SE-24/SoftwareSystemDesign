@@ -19,7 +19,7 @@ export const healthRoute = createRoute({
 });
 
 export function healthHandler(
-  jwksProvider: JwksProvider
+  jwksProvider: JwksProvider,
 ): RouteHandler<typeof healthRoute> {
   return async (c) => {
     const jwksProviderHealth = await jwksProvider.health();

@@ -7,14 +7,14 @@ import { SERVICE_VERSION } from "./util/metadata.ts";
 export function buildApi(jwksProvider: JwksProvider) {
   const int = new OpenAPIHono().openapi(
     healthRoute,
-    healthHandler(jwksProvider)
+    healthHandler(jwksProvider),
   );
 
   configureDocs(int, {
     path: "/int/v1",
     title: "Feather Internal API",
     version: SERVICE_VERSION,
-    description: "The internal API for JakPrzyjade account management.",
+    description: "The internal API for JakPrzyjade auth sidecar.",
     externalDocs: {
       url: "https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign",
     },
