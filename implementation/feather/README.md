@@ -23,3 +23,4 @@
 The service requires the following capabilities to be enabled:
 
 - `--allow-net` - required to host the web server
+- `--allow-ffi` - Feather reuses Jobberknoll, which uses FFI

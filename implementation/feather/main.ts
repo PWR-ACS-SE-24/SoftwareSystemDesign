@@ -1,7 +1,9 @@
-import { setupDev } from "./setup.ts";
+import { setupProd } from "./util/setup.ts";
 
 if (import.meta.main) {
-  const { api } = setupDev();
+  const jobberknollAddress = "http://localhost:8000";
+
+  const { api } = setupProd(jobberknollAddress);
 
   Deno.serve(
     {
