@@ -3,6 +3,8 @@ package pwr.jakprzyjade.inferius.wallet.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -36,8 +38,10 @@ public class WalletController {
     @UserRoles(UserRole.PASSENGER)
     @GetMapping("/history")
     @Operation(summary = "Retrieve wallet transaction history", description = "Pobranie historii doładowań portfela.")
-    public ResponseEntity<List<WalletHistoryDto>> getWalletHistory(@RequestHeader("jp-user-id") UUID passengerId) {
-        List<WalletHistoryDto> history = walletService.getWalletHistory(passengerId);
+    public ResponseEntity<Page<WalletHistoryDto>> getWalletHistory(
+            @RequestHeader("jp-user-id") UUID passengerId,
+            Pageable pageable) {
+        Page<WalletHistoryDto> history = walletService.getWalletHistory(passengerId, pageable);
         return ResponseEntity.ok(history);
     }
 }
