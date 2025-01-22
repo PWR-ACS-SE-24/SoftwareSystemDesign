@@ -1,16 +1,20 @@
 package pwr.jakprzyjade.inferius.fine.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pwr.jakprzyjade.inferius.fine.database.Fine;
-import pwr.jakprzyjade.inferius.fine.database.FineDto;
-import pwr.jakprzyjade.inferius.fine.database.FineRepository;
-import pwr.jakprzyjade.inferius.fine.database.FineStatus;
+import org.springframework.transaction.annotation.Isolation;
+import pwr.jakprzyjade.inferius.fine.database.*;
+import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
 import pwr.jakprzyjade.inferius.shared.exceptions.ResourceNotFoundException;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserUnauthorizedException;
 
+import java.io.Console;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -18,6 +22,7 @@ import java.util.UUID;
 public class FineService {
 
     private final FineRepository fineRepository;
+    private final UUIDv7Validator uuiDv7Validator;
 
     public Page<FineDto> getFines(UUID userId, Pageable pageable) {
         Page<Fine> fines = fineRepository.findByPassengerIdOrInspectorId(userId, userId, pageable);
@@ -74,6 +79,31 @@ public class FineService {
                 .recipient(updatedFine.getRecipient())
                 .reason(updatedFine.getReason())
                 .status(updatedFine.getStatus())
+                .build();
+    }
+
+    public FineDto createFine(FineCreateDto fineCreateDto, UUID inspectorId) {
+        if (fineCreateDto.getPassengerId() == null && fineCreateDto.getRecipient() == null) {
+            throw new IllegalArgumentException("Either passengerId or recipient must be provided.");
+        }
+
+        Fine fine = Fine.builder()
+                .passengerId(fineCreateDto.getPassengerId())
+                .inspectorId(inspectorId)
+                .recipient(fineCreateDto.getRecipient())
+                .amountPln(fineCreateDto.getAmountPln())
+                .reason(fineCreateDto.getReason())
+                .build();
+
+        Fine savedFine = fineRepository.save(fine);
+
+        return FineDto.builder()
+                .id(savedFine.getId())
+                .amountPln(savedFine.getAmountPln())
+                .time(savedFine.getTime())
+                .recipient(savedFine.getRecipient())
+                .reason(savedFine.getReason())
+                .status(savedFine.getStatus())
                 .build();
     }
 }

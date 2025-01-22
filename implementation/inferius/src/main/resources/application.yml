@@ -12,8 +12,9 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: false
+    open-in-view: false
     properties:
       hibernate:
         format_sql: true
@@ -48,3 +49,10 @@ springdoc:
     path: /int/v1/docs/openapi
   swagger-ui:
     path: /int/v1/docs/swagger
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.transaction: DEBUG
+    org.springframework.orm.jpa: DEBUG

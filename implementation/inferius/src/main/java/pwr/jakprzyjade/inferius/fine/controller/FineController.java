@@ -2,11 +2,14 @@ package pwr.jakprzyjade.inferius.fine.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pwr.jakprzyjade.inferius.fine.database.FineCreateDto;
 import pwr.jakprzyjade.inferius.fine.database.FineDto;
 import pwr.jakprzyjade.inferius.fine.service.FineService;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserRole;
@@ -53,5 +56,16 @@ public class FineController {
     ) {
         FineDto cancelledFine = fineService.cancelFine(inspectorId, fineId);
         return ResponseEntity.ok(cancelledFine);
+    }
+
+    @UserRoles(UserRole.INSPECTOR)
+    @PostMapping
+    @Operation(summary = "Issue a fine", description = "Wystawienie mandatu.")
+    public ResponseEntity<FineDto> createFine(
+            @RequestHeader("jp-user-id") UUID inspectorId,
+            @Valid @RequestBody FineCreateDto fineCreateDto
+    ) {
+        FineDto createdFine = fineService.createFine(fineCreateDto, inspectorId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFine);
     }
 }
