@@ -11,6 +11,6 @@ public class TicketAlreadyValidatedException extends AppException {
         super(
                 HttpStatus.BAD_REQUEST,
                 "Ticket is already validated.",
-                "Bilet jest już zwalidowany.");
+                "Bilet był już skasowany.");
     }
 }
