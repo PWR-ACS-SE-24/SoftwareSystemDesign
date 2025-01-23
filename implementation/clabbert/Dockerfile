@@ -1,16 +1,16 @@
-FROM openjdk:21-jdk AS build
-RUN microdnf install findutils
+FROM gradle:8.12.0-jdk21 AS build
 
-COPY build.gradle settings.gradle gradlew /
-COPY gradle /gradle
-RUN ./gradlew clean assemble --no-daemon > /dev/null 2>&1 || true
-RUN ./gradlew clean --no-daemon
 
-COPY src /src
-RUN ./gradlew assemble --no-daemon
+WORKDIR /clabbert/
+COPY build.gradle settings.gradle /clabbert/
+COPY src/ /clabbert/src/
 
-FROM openjdk:21-jdk
-COPY --from=build /build/libs/clabbert-0.0.1.jar .
+RUN --mount=type=cache,target=/root/.gradle gradle assemble --no-daemon
+
+FROM eclipse-temurin:21-jre-alpine AS runtime
+RUN apk add --no-cache curl
+
+COPY --from=build /clabbert/build/libs/clabbert-0.0.1.jar .
 CMD ["java","-jar","clabbert-0.0.1.jar"]
 
 EXPOSE 8080
