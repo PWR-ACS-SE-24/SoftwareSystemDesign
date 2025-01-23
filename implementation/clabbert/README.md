@@ -37,7 +37,7 @@
 | `DELETE /ext/v1/offers/:id`           | 🟩         |
 | `GET    /int/v1/health`               | 🟩         |
 | `GET    /int/v1/health/:component`    | 🟩         |
-| `GET    /int/v1/endpoints`            | 🟥         |
+| `GET    /int/v1/endpoints`            | 🟩         |
 
 ## Infrastructure
 
@@ -47,4 +47,4 @@
 | Leprechaun (REST API)       | 🟩         |
 | Inferius (REST API)         | 🟩         |
 | Payment messaging (AWS SQS) | 🟥         |
-| Logging                     | 🟥         |
+| Logging                     | 🟨         |

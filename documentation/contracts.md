@@ -6,7 +6,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## Healthchecks
 
-Healthchecks to the microservices MUST be done by calling the `GET /int/v1/health` endpoint. The response SHOULD be a `HealthDto` object, conforming to the Spring Boot Actuator health check response format:
+Healthchecks to the microservices MUST be done by calling the `GET /int/v1/health` endpoint. And healthchecks to the microservice components MAY be done by calling the `GET /int/v1/healt/:component` endpoint. The response SHOULD be a `HealthDto` object, conforming to the Spring Boot Actuator health check response format:
 
 - https://docs.spring.io/spring-boot/api/rest/actuator/health.html
 - https://docs.spring.io/spring-boot/api/java/org/springframework/boot/actuate/health/Status.html
@@ -137,6 +137,14 @@ Well known error codes and kinds are presented below:
     <td><code>server-failure</code></td>
   </tr>
   <tr>
+    <td><code>503</code></td>
+    <td><code>internal-service-unavailable</code></td>
+  </tr>
+  <tr>
+    <td><code>404</code></td>
+    <td><code>not-found</code></td>
+  </tr>
+  <tr>
     <th colspan="2">Jobberknoll</th>
   </tr>
   <tr>
@@ -165,6 +173,38 @@ Well known error codes and kinds are presented below:
   <tr>
     <td><code>400</code></td>
     <td><code>user-role-not-supported</code></td>
+  </tr>
+  <tr>
+    <td><code>400</code></td>
+    <td><code>user-account-cannot-be-charge</code></td>
+  </tr>
+  <tr>
+    <td><code>404</code></td>
+    <td><code>vehicle-not-found</code></td>
+  </tr>
+  <tr>
+    <td><code>400</code></td>
+    <td><code>ticket-already-validated</code></td>
+  </tr>
+  <tr>
+    <td><code>404</code></td>
+    <td><code>ticket-not-found</code></td>
+  </tr>
+  <tr>
+    <td><code>404</code></td>
+    <td><code>ticket-offer-not-found</code></td>
+  </tr>
+  <tr>
+    <td><code>400</code></td>
+    <td><code>ticket-offer-type-cannot-be-changed</code></td>
+  </tr>
+  <tr>
+    <td><code>400</code></td>
+    <td><code>invalid-request-data</code></td>
+  </tr>
+  <tr>
+    <td><code>400</code></td>
+    <td><code>invalid-path-parameters</code></td>
   </tr>
     <tr>
     <th colspan="2">Leperechaun</th>
@@ -319,3 +359,5 @@ The Feather sidecar SHOULD NOT require the `jp-user-id` and `jp-user-role` heade
 The `SERVER_PORT` environment variable SHOULD be supported by all services. The default value for the port SHOULD be defined by the service itself. The service SHOULD listen on the configured port.
 
 The `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD` environment variables SHOULD be supported by all services. The service SHOULD connect to the configured database.
+
+The `${INTERNAL_SERVICE}_SERVICE_HOST` and `${INTERNAL_SERVICE}_SERVICE_PORT` environment variables MAY be supported by services. The service MAY connect to the configured service, where `${INTERNAL_SERVICE}` MUST be the name of any other microservice.
