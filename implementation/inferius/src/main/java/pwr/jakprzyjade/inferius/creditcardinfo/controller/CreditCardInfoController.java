@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pwr.jakprzyjade.inferius.creditcardinfo.database.CreateCreditCardDto;
 import pwr.jakprzyjade.inferius.creditcardinfo.database.CreditCardDto;
 import pwr.jakprzyjade.inferius.creditcardinfo.database.UpdateCreditCardDto;
 import pwr.jakprzyjade.inferius.creditcardinfo.service.CreditCardInfoService;
@@ -67,5 +69,16 @@ public class CreditCardInfoController {
         UUID cardId = UUID.fromString(id);
         creditCardInfoService.deleteCreditCard(cardId, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @UserRoles(UserRole.PASSENGER)
+    @PostMapping
+    @Operation(summary = "Add a new credit card", description = "Dodanie nowej karty płatniczej.")
+    public ResponseEntity<CreditCardDto> addCreditCard(
+            @RequestHeader("jp-user-id") UUID userId,
+            @Valid @RequestBody CreateCreditCardDto createDto
+    ) {
+        CreditCardDto newCard = creditCardInfoService.addCreditCard(userId, createDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newCard);
     }
 }

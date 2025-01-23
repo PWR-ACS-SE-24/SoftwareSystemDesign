@@ -2,10 +2,7 @@ package pwr.jakprzyjade.inferius.creditcardinfo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pwr.jakprzyjade.inferius.creditcardinfo.database.CreditCardInfo;
-import pwr.jakprzyjade.inferius.creditcardinfo.database.CreditCardInfoRepository;
-import pwr.jakprzyjade.inferius.creditcardinfo.database.CreditCardDto;
-import pwr.jakprzyjade.inferius.creditcardinfo.database.UpdateCreditCardDto;
+import pwr.jakprzyjade.inferius.creditcardinfo.database.*;
 import pwr.jakprzyjade.inferius.fine.database.Fine;
 import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
 import pwr.jakprzyjade.inferius.shared.exceptions.ResourceNotFoundException;
@@ -21,6 +18,7 @@ import java.util.UUID;
 public class CreditCardInfoService {
 
     private final CreditCardInfoRepository creditCardInfoRepository;
+    private final WalletRepository walletRepository;
 
     public List<CreditCardDto> getCreditCards(UUID userId) {
         List<CreditCardInfo> creditCards = creditCardInfoRepository.findByWalletPassengerId(userId);
@@ -69,5 +67,28 @@ public class CreditCardInfoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Credit card not found or you are not authorized."));
 
         creditCardInfoRepository.delete(card);
+    }
+
+    public CreditCardDto addCreditCard(UUID userId, CreateCreditCardDto createDto) {
+        Wallet wallet = walletRepository.findByPassengerId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for user ID: " + userId));
+
+        CreditCardInfo newCard = CreditCardInfo.builder()
+                .label(createDto.getLabel())
+                .number(createDto.getNumber())
+                .holderName(createDto.getHolderName())
+                .expirationDate(createDto.getExpirationDate())
+                .wallet(wallet)
+                .build();
+
+        CreditCardInfo savedCard = creditCardInfoRepository.save(newCard);
+
+        return CreditCardDto.builder()
+                .id(savedCard.getId())
+                .label(savedCard.getLabel())
+                .number(savedCard.getNumber())
+                .holderName(savedCard.getHolderName())
+                .expirationDate(savedCard.getExpirationDate())
+                .build();
     }
 }
