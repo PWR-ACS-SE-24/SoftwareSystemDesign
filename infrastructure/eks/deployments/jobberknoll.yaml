@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobberknoll
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jobberknoll
+  template:
+    metadata:
+      labels:
+        app: jobberknoll
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - name: jobberknoll
+        image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/jobberknoll:latest
+        resources:
+          limits:
+            memory: "768Mi"
+            cpu: "200m"
+
+        envFrom:
+        - configMapRef:
+            name: jobberknoll-config-map
+
+        ports:
+        - containerPort: 8080
+          name: http
+      
+        env:
+        - name: SERVER_PORT
+          value: "8080"
+
+        - name: PROD
+          value: "true"
+
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: JOBBERKNOLL_DATABASE_URL
+
+        - name: JWT_ALGORITHM
+          valueFrom:
+            secretKeyRef:
+              name: jobberknoll-secret-map
+              key: JWT_ALGORITHM
+
+        - name: JWT_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: jobberknoll-secret-map
+              key: JWT_PRIVATE_KEY
+
+        - name: JWT_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: jobberknoll-secret-map
+              key: JWT_PUBLIC_KEY

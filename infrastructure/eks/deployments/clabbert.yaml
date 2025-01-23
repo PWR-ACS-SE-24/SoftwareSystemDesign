@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clabbert
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clabbert
+  template:
+    metadata:
+      labels:
+        app: clabbert
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - name: clabbert
+        image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/clabbert:latest
+        resources:
+          limits:
+            memory: "768Mi"
+            cpu: "100m"
+
+        envFrom:
+        - configMapRef:
+            name: clabbert-config-map
+
+        ports:
+        - containerPort: 8080
+          name: http
+
+        env:
+        - name: SERVER_PORT
+          value: "8080"
+
+        - name: DATABASE_PORT
+          value: "5432"
+          
+        - name: DATABASE_NAME
+          value: "clabbert"
+
+        - name: DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: DATABASE_HOST
+
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: DATABASE_USER
+
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: DATABASE_PASSWORD
