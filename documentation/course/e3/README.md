@@ -32,8 +32,9 @@ Skład zespołu:
   - [Kod serwisu Jobberknoll (TypeScript)](../../../implementation/jobberknoll/)
   - [Kod serwisu Leprechaun (TypeScript)](../../../implementation/leprechaun/)
   - [Kod serwisu Phoenix (Java)](../../../implementation/phoenix/)
+- **Infrastruktura:**
   - [Kod CI/CD (GitHub Actions)](../../../.github/workflows/)
-- **Infrastruktura:** [Definicja usług AWS (Terraform) i konfiguracja Kubernetes](../../../infrastructure/)
+  - [Definicja usług AWS (Terraform) i konfiguracja Kubernetes](../../../infrastructure/)
 
 # Procent ukończenia projektu
 
@@ -73,7 +74,7 @@ Estimated People Required (organic) 4.89
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
-TODO @tchojnacki: opis powyższego + zaktualizować powyższe na świeżo przed zajęciami?
+TODO @tchojnacki: opis powyższego + zaktualizować powyższe na świeżo przed zajęciami
 
 TODO @tchojnacki: screen Milestones z GitHub
 
