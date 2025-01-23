@@ -40,21 +40,18 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
                 return Mono.error(new RuntimeException("Missing or invalid Authorization header"));
             }
 
-            String token = authorizationHeader.substring(7); // Usuń prefiks "Bearer "
+            String token = authorizationHeader.substring(7);
 
-            // Przygotuj ciało żądania jako JSON
             Map<String, String> requestBody = Map.of("accessToken", token);
 
             System.out.println(requestBody);
 
-            // Wyślij POST z ciałem JSON
             return webClient.post()
                     .uri("/int/v1/verify")
                     .bodyValue(requestBody)
                     .retrieve()
                     .bodyToMono(AuthResponse.class)
                     .flatMap(authResponse -> {
-                        // Dodaj nowe nagłówki na podstawie odpowiedzi
                         ServerWebExchange modifiedExchange = exchange.mutate()
                                 .request(r -> r.headers(headers -> {
                                     headers.add("jp-user-id", authResponse.getUserId());
