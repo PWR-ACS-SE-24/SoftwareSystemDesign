@@ -63,4 +63,11 @@ public class CreditCardInfoService {
                 .expirationDate(savedCard.getExpirationDate())
                 .build();
     }
+
+    public void deleteCreditCard(UUID cardId, UUID userId) {
+        CreditCardInfo card = creditCardInfoRepository.findByIdAndWalletPassengerId(cardId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Credit card not found or you are not authorized."));
+
+        creditCardInfoRepository.delete(card);
+    }
 }

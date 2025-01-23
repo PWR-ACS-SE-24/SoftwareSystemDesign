@@ -52,4 +52,20 @@ public class CreditCardInfoController {
         CreditCardDto updatedCard = creditCardInfoService.updateCreditCard(cardId, updateDto, userId);
         return ResponseEntity.ok(updatedCard);
     }
+
+    @UserRoles(UserRole.PASSENGER)
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete credit card", description = "Usunięcie karty płatniczej.")
+    public ResponseEntity<Void> deleteCreditCard(
+            @RequestHeader("jp-user-id") UUID userId,
+            @PathVariable("id") String id
+    ) {
+        if (!uuiDv7Validator.isStringValidUUID(id)) {
+            throw new IllegalArgumentException("Invalid cardId format. It must be a valid UUIDv7.");
+        }
+
+        UUID cardId = UUID.fromString(id);
+        creditCardInfoService.deleteCreditCard(cardId, userId);
+        return ResponseEntity.noContent().build();
+    }
 }
