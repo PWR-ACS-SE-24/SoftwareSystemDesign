@@ -1,4 +1,4 @@
-package pwr.jakprzyjade.inferius.shared.exceptions;
+package pwr.jakprzyjade.inferius.shared;
 
 public enum UserRole {
     GUEST,

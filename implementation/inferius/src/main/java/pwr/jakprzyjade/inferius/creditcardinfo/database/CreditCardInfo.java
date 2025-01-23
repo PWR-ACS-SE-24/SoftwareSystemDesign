@@ -1,5 +1,6 @@
 package pwr.jakprzyjade.inferius.creditcardinfo.database;
 
+import org.hibernate.annotations.GenericGenerator;
 import pwr.jakprzyjade.inferius.shared.UUIDv7;
 import pwr.jakprzyjade.inferius.wallet.database.Wallet;
 import jakarta.persistence.*;
@@ -19,6 +20,8 @@ import java.util.UUID;
 @Entity
 public class CreditCardInfo {
     @Id
+    @GeneratedValue(generator = "uuidv7-gen")
+    @GenericGenerator(name = "uuidv7-gen", strategy = "src/main/java/pwr/jakprzyjade/inferius/shared/UUIDv7Generator.java")
     @UUIDv7
     private UUID id;
 

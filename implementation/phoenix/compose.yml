@@ -17,4 +17,3 @@ services:
       - INFERIUS_SERVICE_PORT=1082
       - LEPRECHAUN_SERVICE_HOST=host.docker.internal
       - LEPRECHAUN_SERVICE_PORT=1083
-      - PHOENIX_VERSION=1.0.0
