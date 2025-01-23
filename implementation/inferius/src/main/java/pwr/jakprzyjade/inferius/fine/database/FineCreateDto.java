@@ -1,9 +1,7 @@
 package pwr.jakprzyjade.inferius.fine.database;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +26,8 @@ public class FineCreateDto {
 
     @NotNull
     @Min(0)
-    private BigDecimal amountPln;
+    @Digits(integer = 8, fraction = 0)
+    private Integer amountGrosze;
 
     @NotNull
     private FineReason reason;

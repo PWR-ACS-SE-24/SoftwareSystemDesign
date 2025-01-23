@@ -13,6 +13,7 @@ import pwr.jakprzyjade.inferius.shared.exceptions.ResourceNotFoundException;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserUnauthorizedException;
 
 import java.io.Console;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
@@ -87,11 +88,13 @@ public class FineService {
             throw new IllegalArgumentException("Either passengerId or recipient must be provided.");
         }
 
+        BigDecimal amountPln = BigDecimal.valueOf(fineCreateDto.getAmountGrosze()).divide(BigDecimal.valueOf(100));
+
         Fine fine = Fine.builder()
                 .passengerId(fineCreateDto.getPassengerId())
                 .inspectorId(inspectorId)
                 .recipient(fineCreateDto.getRecipient())
-                .amountPln(fineCreateDto.getAmountPln())
+                .amountPln(amountPln)
                 .reason(fineCreateDto.getReason())
                 .build();
 
