@@ -6,7 +6,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## Healthchecks
 
-Healthchecks to the microservices MUST be done by calling the `GET /int/v1/health` endpoint. And healthchecks to the microservice components MAY be done by calling the `GET /int/v1/healt/:component` endpoint. The response SHOULD be a `HealthDto` object, conforming to the Spring Boot Actuator health check response format:
+Healthchecks to the microservices MUST be done by calling the `GET /int/v1/health` endpoint. And healthchecks to the microservice components MAY be done by calling the `GET /int/v1/health/:component` endpoint. The response SHOULD be a `HealthDto` object, conforming to the Spring Boot Actuator health check response format:
 
 - https://docs.spring.io/spring-boot/api/rest/actuator/health.html
 - https://docs.spring.io/spring-boot/api/java/org/springframework/boot/actuate/health/Status.html
