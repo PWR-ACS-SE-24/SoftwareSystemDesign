@@ -1,6 +1,12 @@
 /* @jakubzehner (C) 2025 */
 package pwr.jakprzyjade.clabbert.api.controllers.external.v1;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pwr.jakprzyjade.clabbert.api.annotations.UserRoles;
+import pwr.jakprzyjade.clabbert.api.contracts.ErrorDto;
 import pwr.jakprzyjade.clabbert.api.contracts.ticket.CreateTicketDto;
 import pwr.jakprzyjade.clabbert.api.contracts.ticket.InspectTicketDto;
 import pwr.jakprzyjade.clabbert.api.contracts.ticket.InspectionDto;
@@ -39,12 +46,38 @@ import pwr.jakprzyjade.clabbert.domain.exceptions.AppException;
 @RequestMapping("/ext/v1/tickets")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Tickets", description = "Operations related to ticket management.")
 public class TicketsController {
     private final Mediator mediator;
     private final TicketMapper ticketMapper;
     private final ValidationMapper validationMapper;
     private final InspectionMapper inspectionMapper;
 
+    @Operation(
+            summary = "Retrieve all tickets",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "List of tickets",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = TicketDto[].class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Invalid request data or missing headers",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized access",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class)))
+            })
     @GetMapping
     @UserRoles({UserRole.PASSENGER})
     public ResponseEntity<List<TicketDto>> getAllTickets(
@@ -61,6 +94,45 @@ public class TicketsController {
         return ResponseEntity.ok(resultDto);
     }
 
+    @Operation(
+            summary = "Retrieve a ticket by ID",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        description = "UUID of the ticket",
+                        example = "123e4567-e89b-12d3-a456-426614174000",
+                        required = true)
+            },
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ticket details",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = TicketDto.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Invalid path parameters or missing headers",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "404",
+                        description = "Ticket not found",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized access",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class)))
+            })
     @GetMapping("/{id}")
     @UserRoles({UserRole.PASSENGER})
     public ResponseEntity<TicketDto> getTicketById(
@@ -81,6 +153,45 @@ public class TicketsController {
         return ResponseEntity.ok(resultDto);
     }
 
+    @Operation(
+            summary = "Create a new ticket",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ticket created successfully",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = TicketDto.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Invalid request data or missing headers",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "404",
+                        description = "Ticket offer not found",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "User account cannot be charged",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized access",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class)))
+            })
     @PostMapping
     @UserRoles({UserRole.PASSENGER})
     public ResponseEntity<TicketDto> createTicket(
@@ -101,6 +212,45 @@ public class TicketsController {
         return ResponseEntity.ok(resultDto);
     }
 
+    @Operation(
+            summary = "Validate a ticket",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        description = "UUID of the ticket",
+                        example = "123e4567-e89b-12d3-a456-426614174000",
+                        required = true)
+            },
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ticket validated successfully",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ValidationDto.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Ticket already validated",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "404",
+                        description = "Ticket or vehicle not found",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized access",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class)))
+            })
     @PostMapping("/{id}/validate")
     @UserRoles({UserRole.PASSENGER})
     public ResponseEntity<ValidationDto> validateTicket(
@@ -123,6 +273,38 @@ public class TicketsController {
         return ResponseEntity.ok(resultDto);
     }
 
+    @Operation(
+            summary = "Inspect a ticket",
+            parameters = {
+                @Parameter(
+                        name = "id",
+                        description = "UUID of the ticket",
+                        example = "123e4567-e89b-12d3-a456-426614174000",
+                        required = true)
+            },
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ticket inspected successfully",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = InspectionDto.class))),
+                @ApiResponse(
+                        responseCode = "404",
+                        description = "Vehicle not found",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized access",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorDto.class)))
+            })
     @PostMapping("/{id}/inspect")
     @UserRoles({UserRole.INSPECTOR})
     public ResponseEntity<InspectionDto> inspectTicket(

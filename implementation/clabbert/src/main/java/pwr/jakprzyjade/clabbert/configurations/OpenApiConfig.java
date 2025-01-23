@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.parameters.HeaderParameter;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,5 +45,15 @@ public class OpenApiConfig {
                             .example("PASSENGER"));
             return operation;
         };
+    }
+
+    @Bean
+    GroupedOpenApi externalApi() {
+        return GroupedOpenApi.builder().group("external").pathsToMatch("/ext/**").build();
+    }
+
+    @Bean
+    GroupedOpenApi internalApi() {
+        return GroupedOpenApi.builder().group("internal").pathsToMatch("/int/**").build();
     }
 }

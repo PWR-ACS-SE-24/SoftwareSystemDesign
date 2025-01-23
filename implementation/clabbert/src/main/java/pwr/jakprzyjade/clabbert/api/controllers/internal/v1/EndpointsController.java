@@ -1,6 +1,8 @@
 /* @jakubzehner (C) 2025 */
 package pwr.jakprzyjade.clabbert.api.controllers.internal.v1;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import pwr.jakprzyjade.clabbert.api.contracts.EndpointInfo;
 @RestController
 @RequestMapping("/int/v1/endpoints")
 @RequiredArgsConstructor
+@Tag(name = "Endpoints", description = "Listing all available endpoints")
 public class EndpointsController {
     private final ApplicationContext applicationContext;
 
@@ -35,6 +38,7 @@ public class EndpointsController {
                     DeleteMapping.class, "DELETE",
                     PatchMapping.class, "PATCH");
 
+    @Operation(summary = "List all available endpoints")
     @GetMapping("/endpoints")
     public List<EndpointInfo> listEndpoints() {
         final var endpoints = new ArrayList<EndpointInfo>();
