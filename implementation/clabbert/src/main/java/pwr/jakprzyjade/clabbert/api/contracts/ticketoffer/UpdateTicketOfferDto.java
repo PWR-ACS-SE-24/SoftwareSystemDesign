@@ -48,17 +48,6 @@ public final class UpdateTicketOfferDto {
     private Integer priceGrosze;
 
     @Schema(
-            description = "Updated scope of the ticket: long-term, single-fare, or time-limited",
-            example = "single-fare",
-            allowableValues = {"long-term", "single-fare", "time-limited"},
-            nullable = true)
-    @Nullable
-    @Pattern(
-            regexp = "(?i)long-term|single-fare|time-limited",
-            message = "scope must be either long-term, single-fare or time-limited")
-    private String scope;
-
-    @Schema(
             description = "Updated interval in days for long-term tickets (if applicable)",
             example = "60",
             minimum = "1",

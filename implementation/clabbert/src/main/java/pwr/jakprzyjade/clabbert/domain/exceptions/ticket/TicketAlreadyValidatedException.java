@@ -8,9 +8,6 @@ import pwr.jakprzyjade.clabbert.domain.exceptions.AppException;
 @Getter
 public class TicketAlreadyValidatedException extends AppException {
     public TicketAlreadyValidatedException() {
-        super(
-                HttpStatus.BAD_REQUEST,
-                "Ticket is already validated.",
-                "Bilet był już skasowany.");
+        super(HttpStatus.BAD_REQUEST, "Ticket is already validated.", "Bilet był już skasowany.");
     }
 }

@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.Request;
-import pwr.jakprzyjade.clabbert.application.abstractions.ticketoffer.TicketOfferKind;
+import pwr.jakprzyjade.clabbert.application.abstractions.ticketoffer.TicketOfferType;
 import pwr.jakprzyjade.clabbert.domain.entities.TicketKind;
 
 @Data
@@ -18,7 +18,7 @@ public class CreateTicketOfferReq implements Request<CreateTicketOfferRes> {
     private String displayNamePl;
     private TicketKind kind;
     private BigDecimal pricePln;
-    private TicketOfferKind ticketOfferKind;
+    private TicketOfferType ticketOfferType;
     private Integer intervalInDays;
     private Duration duration;
 }

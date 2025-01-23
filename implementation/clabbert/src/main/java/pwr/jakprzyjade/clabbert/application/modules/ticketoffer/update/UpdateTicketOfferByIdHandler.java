@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.RequestHandler;
 import pwr.jakprzyjade.clabbert.application.abstractions.repositories.TicketOfferRepository;
-import pwr.jakprzyjade.clabbert.application.abstractions.ticketoffer.TicketOfferKind;
+import pwr.jakprzyjade.clabbert.application.abstractions.ticketoffer.TicketOfferType;
 import pwr.jakprzyjade.clabbert.domain.entities.LongTermOffer;
 import pwr.jakprzyjade.clabbert.domain.entities.SingleFareOffer;
 import pwr.jakprzyjade.clabbert.domain.entities.TicketOffer;
@@ -26,10 +26,7 @@ public class UpdateTicketOfferByIdHandler
                 ticketOfferRepository
                         .findByIsActiveTrueAndId(request.getId())
                         .orElseThrow(TicketOfferNotFoundException::new);
-        final var offerKind = getTicketOfferKind(offer);
-        if (request.getTicketOfferKind() != null && offerKind != request.getTicketOfferKind()) {
-            throw new TicketOfferTypeCannotBeChangedException();
-        }
+        final var offerKind = TicketOfferType.fromOffer(offer);
 
         offer.setActive(false);
         offer = ticketOfferRepository.save(offer);
@@ -40,20 +37,9 @@ public class UpdateTicketOfferByIdHandler
         return UpdateTicketOfferByIdRes.builder().ticketOffer(updatedOffer).build();
     }
 
-    private TicketOfferKind getTicketOfferKind(TicketOffer offer) {
-        return switch (offer) {
-            case SingleFareOffer o -> TicketOfferKind.SINGLE_FARE;
-            case LongTermOffer o -> TicketOfferKind.LONG_TERM;
-            case TimeLimitedOffer o -> TicketOfferKind.TIME_LIMITED;
-            default -> throw new IllegalArgumentException("That should not happen");
-        };
-    }
-
     private TicketOffer updateTicketOffer(
-            UpdateTicketOfferByIdReq request, TicketOffer offer, TicketOfferKind offerKind) {
-        return switch (request.getTicketOfferKind() != null
-                ? request.getTicketOfferKind()
-                : offerKind) {
+            UpdateTicketOfferByIdReq request, TicketOffer offer, TicketOfferType offerType) {
+        return switch (offerType) {
             case SINGLE_FARE ->
                     SingleFareOffer.builder()
                             .displayNameEn(

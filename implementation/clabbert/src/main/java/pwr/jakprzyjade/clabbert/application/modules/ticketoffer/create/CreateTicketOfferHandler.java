@@ -24,7 +24,7 @@ public class CreateTicketOfferHandler
     }
 
     private TicketOffer createTicketOffer(CreateTicketOfferReq request) {
-        return switch (request.getTicketOfferKind()) {
+        return switch (request.getTicketOfferType()) {
             case SINGLE_FARE ->
                     SingleFareOffer.builder()
                             .displayNameEn(request.getDisplayNameEn())

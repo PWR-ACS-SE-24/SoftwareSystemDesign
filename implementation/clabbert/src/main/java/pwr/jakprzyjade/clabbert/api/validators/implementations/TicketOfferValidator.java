@@ -12,7 +12,7 @@ public class TicketOfferValidator
     @Override
     public boolean isValid(CreateTicketOfferDto dto, ConstraintValidatorContext context) {
         if (dto == null) {
-            return true; // Other validator will handle this case
+            return true; // Parent validator will handle this case
         }
 
         final var scope = dto.getScope();
@@ -54,7 +54,7 @@ public class TicketOfferValidator
             }
 
             default -> {
-                return true; // Other validator will handle this case
+                return true; // Parent validator will handle this case
             }
         }
 

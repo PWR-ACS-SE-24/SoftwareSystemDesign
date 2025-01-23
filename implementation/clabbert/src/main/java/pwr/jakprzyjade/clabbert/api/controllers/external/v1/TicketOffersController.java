@@ -241,13 +241,6 @@ public class TicketOffersController {
                         content =
                                 @Content(
                                         mediaType = "application/json",
-                                        schema = @Schema(implementation = ErrorDto.class))),
-                @ApiResponse(
-                        responseCode = "400",
-                        description = "Ticket offer type cannot be changed",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
                                         schema = @Schema(implementation = ErrorDto.class)))
             })
     @PatchMapping("/{id}")

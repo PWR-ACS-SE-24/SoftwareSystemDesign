@@ -14,7 +14,7 @@ import pwr.jakprzyjade.clabbert.api.contracts.ticketoffer.SingleFareOfferDto;
 import pwr.jakprzyjade.clabbert.api.contracts.ticketoffer.TicketOfferDto;
 import pwr.jakprzyjade.clabbert.api.contracts.ticketoffer.TimeLimitedOfferDto;
 import pwr.jakprzyjade.clabbert.api.contracts.ticketoffer.UpdateTicketOfferDto;
-import pwr.jakprzyjade.clabbert.application.abstractions.ticketoffer.TicketOfferKind;
+import pwr.jakprzyjade.clabbert.application.abstractions.ticketoffer.TicketOfferType;
 import pwr.jakprzyjade.clabbert.application.modules.ticketoffer.create.CreateTicketOfferReq;
 import pwr.jakprzyjade.clabbert.application.modules.ticketoffer.update.UpdateTicketOfferByIdReq;
 import pwr.jakprzyjade.clabbert.domain.entities.LongTermOffer;
@@ -40,8 +40,8 @@ public interface TicketOfferMapper {
     @Mapping(source = "kind", target = "kind", qualifiedByName = "kindFromString")
     @Mapping(
             source = "scope",
-            target = "ticketOfferKind",
-            qualifiedByName = "ticketOfferKindFromScope")
+            target = "ticketOfferType",
+            qualifiedByName = "ticketOfferTypeFromScope")
     @Mapping(
             source = "durationMinutes",
             target = "duration",
@@ -51,10 +51,6 @@ public interface TicketOfferMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "priceGrosze", target = "pricePln", qualifiedByName = "priceGroszeToPln")
     @Mapping(source = "kind", target = "kind", qualifiedByName = "kindFromString")
-    @Mapping(
-            source = "scope",
-            target = "ticketOfferKind",
-            qualifiedByName = "ticketOfferKindFromScope")
     @Mapping(
             source = "durationMinutes",
             target = "duration",
@@ -105,12 +101,12 @@ public interface TicketOfferMapper {
         return BigDecimal.valueOf(priceGrosze).divide(BigDecimal.valueOf(100));
     }
 
-    @Named("ticketOfferKindFromScope")
-    default TicketOfferKind ticketOfferKindFromScope(String scope) {
+    @Named("ticketOfferTypeFromScope")
+    default TicketOfferType ticketOfferTypeFromScope(String scope) {
         if (scope == null) {
             return null;
         }
-        return TicketOfferKind.valueOf(scope.toUpperCase().replace("-", "_"));
+        return TicketOfferType.valueOf(scope.toUpperCase().replace("-", "_"));
     }
 
     @Named("durationFromMinutes")
