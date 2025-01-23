@@ -1,7 +1,6 @@
 import { swaggerUI } from "@hono/swagger-ui";
-import type { OpenAPIHono } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
-import type { Env, Schema } from "hono";
+import type { JkApp } from "~/shared/hooks.ts";
 
 type SetupDocsOptions = {
   path: string;
@@ -11,8 +10,8 @@ type SetupDocsOptions = {
   externalDocs?: { url: string };
 };
 
-export function configureDocs<E extends Env, S extends Schema, B extends string>(
-  app: OpenAPIHono<E, S, B>,
+export function configureDocs(
+  app: JkApp,
   { path, title, version, description, externalDocs }: SetupDocsOptions,
 ) {
   app.get("/docs", (c) =>

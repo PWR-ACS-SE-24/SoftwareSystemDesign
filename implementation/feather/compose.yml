@@ -1,3 +1,5 @@
+include:
+  - "../jobberknoll/compose.yml"
 services:
   feather-app:
     build: "."

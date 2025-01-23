@@ -1,5 +1,5 @@
-import { createRoute, RouteHandler } from "@hono/zod-openapi";
-import { HealthDto, IntHeadersSchema, jsonRes } from "@jobberknoll/api";
+import { createRoute } from "@hono/zod-openapi";
+import { HealthDto, IntHeadersSchema, JkHandler, jsonRes } from "@jobberknoll/api";
 import { JwksProvider } from "../jwks-provider/mod.ts";
 
 export const healthRoute = createRoute({
@@ -20,7 +20,7 @@ export const healthRoute = createRoute({
 
 export function healthHandler(
   jwksProvider: JwksProvider,
-): RouteHandler<typeof healthRoute> {
+): JkHandler<typeof healthRoute> {
   return async (c) => {
     const jwksProviderHealth = await jwksProvider.health();
     const serviceHealth = {
