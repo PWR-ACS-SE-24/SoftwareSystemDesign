@@ -13,8 +13,8 @@ import pwr.jakprzyjade.inferius.fine.database.FineCreateDto;
 import pwr.jakprzyjade.inferius.fine.database.FineDto;
 import pwr.jakprzyjade.inferius.fine.service.FineService;
 import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
-import pwr.jakprzyjade.inferius.shared.exceptions.UserRole;
-import pwr.jakprzyjade.inferius.shared.exceptions.UserRoles;
+import pwr.jakprzyjade.inferius.shared.UserRole;
+import pwr.jakprzyjade.inferius.shared.UserRoles;
 
 import java.util.UUID;
 

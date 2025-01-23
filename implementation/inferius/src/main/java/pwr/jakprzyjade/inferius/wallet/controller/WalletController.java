@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pwr.jakprzyjade.inferius.shared.exceptions.UserRole;
-import pwr.jakprzyjade.inferius.shared.exceptions.UserRoles;
+import pwr.jakprzyjade.inferius.shared.UserRole;
+import pwr.jakprzyjade.inferius.shared.UserRoles;
 import pwr.jakprzyjade.inferius.wallet.database.WalletDto;
 import pwr.jakprzyjade.inferius.wallet.database.WalletHistoryDto;
 import pwr.jakprzyjade.inferius.wallet.service.WalletService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController

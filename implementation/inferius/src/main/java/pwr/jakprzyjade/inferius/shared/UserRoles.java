@@ -1,4 +1,4 @@
-package pwr.jakprzyjade.inferius.shared.exceptions;
+package pwr.jakprzyjade.inferius.shared;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
