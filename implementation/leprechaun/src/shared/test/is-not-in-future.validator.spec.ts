@@ -11,8 +11,8 @@ class TestIsNotInFutureDto {
 }
 
 describe('IsNotInFutureValidator', () => {
-  const dateInFuture = createTimeOffsetFromNow(+1).toISOString();
-  const dateInPast = createTimeOffsetFromNow(-1).toISOString();
+  const dateInFuture = createTimeOffsetFromNow({ hours: +1 }).toISOString();
+  const dateInPast = createTimeOffsetFromNow({ hours: -1 }).toISOString();
 
   it('should accept valid date', async () => {
     // given

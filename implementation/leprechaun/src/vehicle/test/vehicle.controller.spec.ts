@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { SharedModule } from '@app/shared/shared.module';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
@@ -13,9 +13,13 @@ describe('VehicleController', () => {
   let em: EntityManager;
   let orm: MikroORM;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MikroOrmModule.forRoot(testConfig), MikroOrmModule.forFeature([Vehicle]), SharedModule],
+      imports: [
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
+        MikroOrmModule.forFeature([Vehicle]),
+        SharedModule,
+      ],
       controllers: [VehicleController],
       providers: [VehicleService],
     }).compile();
@@ -23,11 +27,19 @@ describe('VehicleController', () => {
     controller = module.get<VehicleController>(VehicleController);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
+  });
+
+  beforeEach(async () => {
     await em.begin();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
+  });
+  afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 
@@ -69,7 +81,7 @@ describe('VehicleController', () => {
 
   it('should create vehicle', async () => {
     // given
-    const newVehicle = new CreateVehicleDto('2139');
+    const newVehicle = <CreateVehicleDto>{ sideNumber: '2139' };
 
     // when
     const response = await controller.createVehicle(newVehicle);

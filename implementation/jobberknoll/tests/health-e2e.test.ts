@@ -1,4 +1,4 @@
-import { MemoryAccountRepo } from "@jobberknoll/infra";
+import type { MemoryAccountRepo } from "@jobberknoll/infra";
 import { assertEquals, assertObjectMatch } from "@std/assert";
 import { setupTest } from "../setup.ts";
 

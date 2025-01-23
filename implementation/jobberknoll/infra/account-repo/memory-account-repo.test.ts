@@ -62,6 +62,24 @@ Deno.test("getAccountById should return account-not-found if the account does no
   assertEquals(result.value.kind, "account-not-found");
 });
 
+Deno.test("getAccountByEmail should return an account if it exists", async () => {
+  const accountRepo = new MemoryAccountRepo(new TestLogger());
+  await accountRepo.createAccount(newCtx(), accountMock);
+
+  const result = await accountRepo.getAccountByEmail(newCtx(), accountMock.email);
+
+  assertEquals(result, ok(accountMock));
+});
+
+Deno.test("getAccountByEmail should return invalid-account-data if the account does not exist", async () => {
+  const accountRepo = new MemoryAccountRepo(new TestLogger());
+
+  const result = await accountRepo.getAccountByEmail(newCtx(), accountMock.email);
+
+  assert(isErr(result));
+  assertEquals(result.value.kind, "invalid-account-data");
+});
+
 Deno.test("editAccount should update the account in the repo if it exists", async () => {
   const accountRepo = new MemoryAccountRepo(new TestLogger());
   await accountRepo.createAccount(newCtx(), accountMock);

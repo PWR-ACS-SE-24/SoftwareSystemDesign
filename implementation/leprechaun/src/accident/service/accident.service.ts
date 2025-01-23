@@ -4,6 +4,13 @@ import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccidentDto, UpdateAccidentDto } from '../controller/accident-create.dto';
+import {
+  AccidentFilterOptions,
+  filterForLineNameLike,
+  filterForTimeAfter,
+  filterForTimeBefore,
+  filterForVehicleSideNumberLike,
+} from '../controller/accident-filter.decorator';
 import { Accident } from '../database/accident.entity';
 
 @Injectable()
@@ -17,14 +24,25 @@ export class AccidentService {
     private readonly accidentRepository: EntityRepository<Accident>,
   ) {}
 
-  async listAll(pagination: Pagination): Promise<{ accidents: Accident[]; total: number }> {
+  async listAll(
+    pagination: Pagination,
+    filter: AccidentFilterOptions,
+  ): Promise<{ accidents: Accident[]; total: number }> {
+    const queryFilters = {
+      ...filterForVehicleSideNumberLike(filter.vehicleSideNumberLike),
+      ...filterForLineNameLike(filter.lineNameLike),
+      ...filterForTimeAfter(filter.startTime),
+      ...filterForTimeBefore(filter.endTime),
+    };
+
     const accidents = await this.accidentRepository.findAll({
+      where: queryFilters,
       limit: pagination.size,
       offset: pagination.page * pagination.size,
       populate: ['route.line', 'route.vehicle'],
       orderBy: [{ time: 'ASC' }],
     });
-    const total = await this.accidentRepository.count();
+    const total = await this.accidentRepository.count(queryFilters);
 
     return { accidents, total };
   }

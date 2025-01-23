@@ -12,6 +12,9 @@ const SENSITIVE_KEYS = new Set([
   "password",
   "hashedPassword",
   "phoneNumber",
+  "jwtPrivateKey",
+  "accessToken",
+  "refreshToken",
 ]);
 
 export async function redactSensitiveKeysDeep(object: Record<string, unknown>): Promise<Record<string, unknown>> {

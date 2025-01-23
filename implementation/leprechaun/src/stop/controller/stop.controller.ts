@@ -1,20 +1,21 @@
 import { RequiredPermissions } from '@app/internal/service/auth.guard';
+import { ApiInvalidSchema } from '@app/shared/api/api-invalid-schema.decorator';
 import { ApiPaginatedResponse } from '@app/shared/api/generic-paginated';
 import { PaginatedDto } from '@app/shared/api/generic-paginated.dto';
 import { HttpExceptionDto } from '@app/shared/api/http-exceptions';
 import { Paginated, Pagination } from '@app/shared/api/pagination.decorator';
 import { UUIDPipe, ValidateCreatePipe, ValidateUpdatePipe } from '@app/shared/api/pipes';
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiResponse,
 } from '@nestjs/swagger';
 import { StopService } from '../service/stop.service';
 import { CreateStopDto, UpdateStopDto } from './stop-create.dto';
+import { StopFilter, StopFilterOptions } from './stop-filter.decorator';
 import { StopDto } from './stop.dto';
 
 @Controller('/ext/v1/stops')
@@ -27,9 +28,9 @@ export class StopController {
   @ApiPaginatedResponse(StopDto)
   async getAllStops(
     @Paginated() pagination: Pagination,
-    // @Query('filter') TODO: add filter
+    @StopFilter() filter: StopFilterOptions = {},
   ): Promise<PaginatedDto<StopDto>> {
-    const { stops, total } = await this.stopService.listAll(pagination);
+    const { stops, total } = await this.stopService.listAll(pagination, filter);
     return PaginatedDto.fromEntities(total, pagination, StopDto.fromEntities(stops));
   }
 
@@ -45,7 +46,7 @@ export class StopController {
   @Post('/')
   @RequiredPermissions('admin')
   @ApiCreatedResponse({ type: StopDto, description: 'Created stop' })
-  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY, type: HttpExceptionDto, description: 'Invalid stop data' })
+  @ApiInvalidSchema({ description: 'Invalid stop data' })
   async createStop(@Body(ValidateCreatePipe) createStop: CreateStopDto): Promise<StopDto> {
     const stop = await this.stopService.createStop(createStop);
     return StopDto.fromEntity(stop);
@@ -63,7 +64,7 @@ export class StopController {
   @Patch('/:id')
   @RequiredPermissions('admin')
   @ApiOkResponse({ type: StopDto, description: 'Updated stop' })
-  @ApiResponse({ status: HttpStatus.UNPROCESSABLE_ENTITY, type: HttpExceptionDto, description: 'Invalid stop data' })
+  @ApiInvalidSchema({ description: 'Invalid stop data' })
   @ApiNotFoundResponse({ type: HttpExceptionDto, description: 'Stop not found' })
   async updateStopById(
     @Param('id', UUIDPipe) id: string,

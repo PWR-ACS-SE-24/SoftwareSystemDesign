@@ -4,7 +4,7 @@ import { MonitoringService } from '../service/monitoring.service';
 import { HealthcheckDto } from './healthcheck.dto';
 import { EndpointDto } from './routes.dto';
 
-@Controller('/int/v1/')
+@Controller('/int/v1')
 export class MonitoringController {
   constructor(private readonly monitoringService: MonitoringService) {}
 

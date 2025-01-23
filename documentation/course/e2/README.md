@@ -2172,7 +2172,7 @@ Do implementacji podsystemu Jobberknoll wybrano język **Typescript** na środow
 
 Przy wyborze języka programowania kierowano się następującymi kryteriami (od najważniejszego):
 
-1. **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKs;
+1. **dostępność bibliotek do uwierzytelniania i autoryzacji** - zgodnie z poprzednimi ustaleniami, system implementuje własne mechanizmy do uwierzytelniania i autoryzacji, jednakże z uwagi na to, jak istotne są te części systemu, powinny one korzystać z wiarygodnych, wspieranych i popularnych bibliotek - są to m.in. BCrypt, JWT, JWKS;
 2. **obsługa AWS SDK** - system integruje się z kolejką SQS celem wysyłania maili, więc istotne jest, aby język wspierał obsługę AWS SDK;
 3. **statyczne typowanie** - z uwagi na istotność bezpieczeństwa i niezawodności podsystemu Jobberknoll, istnieje potrzeba przesunięcia możliwie dużej liczby błędów na etap kompilacji;
 4. **znajomość języka** w zespole realizującym podsystem oraz poza systemem (przez co najmniej jedną osobę spoza zespołu) - wymóg wymieniony powyżej, który ma na celu zapewnienie sprawnego i bezstronnego code review;
@@ -2227,7 +2227,7 @@ Poszczególne foldery zawierają odpowiednio:
   - `middlewares` - funkcje pośredniczące, np. CORS (wzorzec projektowy [Chain of Responsibility](https://refactoring.guru/design-patterns/chain-of-responsibility));
 - `app` - podfolder biblioteki `@jobberknoll/app`:
   - `interfaces` - klasy abstrakcyjne i interfejsy dla zależności zewnętrznych, np. baza danych, serwis e-mail (wzorzec projektowy [Strategy](https://refactoring.guru/design-patterns/strategy));
-  - `security` - odpowiednio opakowane i ujednolicone wywołania do bibliotek obsługujących JWT, JWKs, BCrypt, itd.;
+  - `security` - odpowiednio opakowane i ujednolicone wywołania do bibliotek obsługujących JWT, JWKS, BCrypt, itd.;
   - `use-cases` - implementacje przypadków użycia, po jednym przypadku na plik, niefortunnie, zawiera również implementacje funkcjonalności, które nie mapują się bezpośrednio na przypadki użycia, ponieważ realizują endpointy wewnętrzne (wzorzec projektowy [Command](https://refactoring.guru/design-patterns/command));
 - `core` - podfolder biblioteki `@jobberknoll/core`:
   - `domain` - model dziedzinowy systemu:
@@ -2251,7 +2251,7 @@ Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruj
         <li><code>api.ts</code> - definicje endpointów API oraz ich obsługa (warstwa prezentacji);</li>
         <li><code>app.ts</code> - definicja logiki biznesowej (warstwa aplikacji);</li>
         <li><code>security.ts</code> - obsługa JWT (warstwa aplikacji);</li>
-        <li><code>jwks.ts</code> - obsługa sejfu JWKs, w tym pobieranie z Jobberknoll i cachowanie (warstwa infrastruktury);</li>
+        <li><code>jwks.ts</code> - obsługa sejfu JWKS, w tym pobieranie z Jobberknoll i cachowanie (warstwa infrastruktury);</li>
       </ul>
     </td>
     <td>
@@ -2259,7 +2259,7 @@ Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruj
         <li><code>api.test.ts</code> - testy integracyjne oraz end-to-end dla API;</li>
         <li><code>app.test.ts</code> - testy jednostkowe dla logiki biznesowej;</li>
         <li><code>security.test.ts</code> - testy jednostkowe dla obsługi JWT;</li>
-        <li><code>jwks.test.ts</code> - testy jednostkowe dla obsługi JWKs.</li>
+        <li><code>jwks.test.ts</code> - testy jednostkowe dla obsługi JWKS.</li>
       </ul>
     </td>
   </tr>
@@ -2305,7 +2305,7 @@ Komponent ten jest na tyle mały (nie ma żadnego modelu dziedzinowego; integruj
 | `GET`      | `/int/v1/accounts/:id` | Jobberknoll   | Inferius      | Pobranie informacji o koncie.                                                  |
 | `GET`      | `/int/v1/jwks`         | Jobberknoll   | Feather       | Pobranie kluczy publicznych ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).  |
 | `GET`      | `/int/v1/health`       | Feather       | —             | Sprawdzenie stanu sidecar ([`M/03`](#m03-healthchecki-dla-serwisów)).          |
-| `POST`     | `/int/v1/validate`     | Feather       | Phoenix       | Walidacja tokenu dostępu ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).     |
+| `POST`     | `/int/v1/verify`       | Feather       | Phoenix       | Walidacja tokenu dostępu ([`M/12`](#m12-wzorzec-sidecar-dla-autoryzacji)).     |
 
 ## Bilet
 

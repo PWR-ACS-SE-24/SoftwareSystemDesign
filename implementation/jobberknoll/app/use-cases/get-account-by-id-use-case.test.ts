@@ -1,7 +1,7 @@
 import { accountMock, isErr, ok, uuid } from "@jobberknoll/core/shared";
 import { MemoryAccountRepo, TestLogger } from "@jobberknoll/infra";
 import { assert, assertEquals } from "@std/assert";
-import { newCtx } from "~/shared/ctx.ts";
+import { newCtx } from "~/shared/mod.ts";
 import { GetAccountByIdUseCase } from "./get-account-by-id-use-case.ts";
 
 function setup() {

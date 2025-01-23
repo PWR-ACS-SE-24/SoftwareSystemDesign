@@ -3,3 +3,6 @@
 
 # Test coverage
 /coverage
+
+# JWT keys for local testing
+.env

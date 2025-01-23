@@ -1,4 +1,4 @@
-import { testConfig } from '@app/config/mikro-orm.test.config';
+import { getConfiguredTestconfig } from '@app/config/mikro-orm.test.config';
 import { Line } from '@app/line/database/line.entity';
 import { StopLineMapping } from '@app/line/database/stop-line-mapping.entity';
 import { LineService } from '@app/line/service/line.service';
@@ -16,10 +16,10 @@ describe('StopController', () => {
   let em: EntityManager;
   let orm: MikroORM;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MikroOrmModule.forRoot({ ...testConfig }),
+        MikroOrmModule.forRoot(getConfiguredTestconfig(process.env.JEST_WORKER_ID!)),
         MikroOrmModule.forFeature([Stop, Line, StopLineMapping]),
         SharedModule,
       ],
@@ -30,11 +30,19 @@ describe('StopController', () => {
     controller = module.get<StopController>(StopController);
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
+    await orm.getSchemaGenerator().createSchema();
+  });
+
+  beforeEach(async () => {
     await em.begin();
   });
 
   afterEach(async () => {
+    em.clear();
     await em.rollback();
+  });
+  afterAll(async () => {
+    await orm.getSchemaGenerator().dropDatabase();
     await orm.close(true);
   });
 
@@ -70,7 +78,7 @@ describe('StopController', () => {
 
   it('should create a stop', async () => {
     // given
-    const stop = new CreateStopDto('PWR', 21.37, 37.21);
+    const stop = <CreateStopDto>{ name: 'PWR', latitude: 21.37, longitude: 37.21 };
 
     // when
     const stopResponse = await controller.createStop(stop);

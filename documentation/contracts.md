@@ -152,6 +152,10 @@ Well known error codes and kinds are presented below:
     <td><code>invalid-account-data</code></td>
   </tr>
   <tr>
+    <td><code>403</code></td>
+    <td><code>invalid-credentials</code></td>
+  </tr>
+  <tr>
     <td><code>404</code></td>
     <td><code>account-not-found</code></td>
   </tr>

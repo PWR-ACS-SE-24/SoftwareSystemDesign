@@ -6,40 +6,24 @@ import { ValidateCreatePipe, ValidateUpdatePipe } from '../api/pipes';
 
 class TestDto {
   @IsString()
-  readonly text: string;
-
-  constructor(text: any) {
-    this.text = text;
-  }
+  readonly text!: string;
 }
 
 class TestInheritanceDto extends TestDto {
   @IsString()
-  readonly text2: string;
+  readonly text2!: string;
 
   @IsNumber()
-  readonly number: number;
+  readonly number!: number;
 
   @IsBoolean()
-  readonly bool: boolean;
-
-  constructor(text: any, text2: any) {
-    super(text);
-    this.text2 = text2;
-    this.number = 1;
-    this.bool = true;
-  }
+  readonly bool!: boolean;
 }
 
 class UpdateTestInheritanceDto extends PartialType(TestInheritanceDto) {}
 class PickTypeTestInheritanceDto extends PickType(TestInheritanceDto, ['bool'] as const) {
   @IsString()
-  readonly newText: string;
-
-  constructor(bool: boolean, newText: string) {
-    super(bool);
-    this.newText = newText;
-  }
+  readonly newText!: string;
 }
 
 export function getTestMetadata(type: Type<unknown>): ArgumentMetadata {

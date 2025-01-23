@@ -1,9 +1,10 @@
 import { z } from "@hono/zod-openapi";
 import { EmailSchema, FullNameSchema, PhoneNumberSchema } from "@jobberknoll/app";
 import { uuid } from "@jobberknoll/core/shared";
+import { UuidSchema } from "~/shared/openapi.ts";
 
 export const AccountDto = z.object({
-  id: z.string().uuid().openapi({
+  id: UuidSchema.openapi({
     description: "Account identifier as UUIDv7.",
     examples: [uuid()],
   }),

@@ -6,12 +6,12 @@ import { RouteDto } from './route.dto';
 export class CreateRouteDto extends PickType(RouteDto, ['startTime', 'endTime']) {
   @IsISO8601()
   @IsNotEmpty()
-  readonly startTime: string;
+  readonly startTime!: string;
 
   @IsISO8601()
   @IsNotEmpty()
   @IsLaterThan<CreateRouteDto>('startTime')
-  readonly endTime: string;
+  readonly endTime!: string;
 
   @IsNotEmpty()
   @IsUUID('7')
@@ -22,7 +22,7 @@ export class CreateRouteDto extends PickType(RouteDto, ['startTime', 'endTime'])
     nullable: false,
     example: 'a7f8b7c0-2b4f-7b6e-9e1e-6f2b1b4c4f4d',
   })
-  readonly line: string;
+  readonly line!: string;
 
   @IsNotEmpty()
   @IsUUID('7')
@@ -33,15 +33,7 @@ export class CreateRouteDto extends PickType(RouteDto, ['startTime', 'endTime'])
     nullable: false,
     example: '0194137a-3faf-70fb-8388-6586b32d9c8a',
   })
-  readonly vehicle: string;
-
-  constructor(startTime: string, endTime: string, line: string, vehicle: string) {
-    super();
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.line = line;
-    this.vehicle = vehicle;
-  }
+  readonly vehicle!: string;
 }
 
 export class UpdateRouteDto extends PartialType(PickType(CreateRouteDto, ['line', 'vehicle'])) {
@@ -52,10 +44,4 @@ export class UpdateRouteDto extends PartialType(PickType(CreateRouteDto, ['line'
   @IsISO8601()
   @IsOptional()
   readonly endTime?: string;
-
-  constructor(line: string, vehicle: string, startTime?: string, endTime?: string) {
-    super(line, vehicle);
-    this.startTime = startTime;
-    this.endTime = endTime;
-  }
 }

@@ -1,5 +1,11 @@
 import { AccountRepo, type ComponentHealth, type Logger } from "@jobberknoll/app";
-import { type Account, type AccountNotFoundError, accountNotFoundError } from "@jobberknoll/core/domain";
+import {
+  type Account,
+  type AccountNotFoundError,
+  accountNotFoundError,
+  invalidAccountData,
+  type InvalidAccountDataError,
+} from "@jobberknoll/core/domain";
 import { err, none, ok, type Option, type Result, some, type UUID } from "@jobberknoll/core/shared";
 import { Pool } from "postgres";
 
@@ -40,7 +46,7 @@ export class PostgresAccountRepo extends AccountRepo {
         type ACCOUNT_TYPE NOT NULL,
         full_name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
-        hashed_password CHAR(60) NOT NULL,
+        hashed_password VARCHAR(255) NOT NULL,
         last_modified INTEGER NOT NULL,
         phone_number VARCHAR(16),
         CHECK (full_name <> ''),
@@ -82,6 +88,18 @@ export class PostgresAccountRepo extends AccountRepo {
       camelCase: true,
     });
     return rows.length > 0 ? ok(rows[0]) : err(accountNotFoundError(id));
+  }
+
+  protected async handleGetAccountByEmail(email: string): Promise<Result<Account, InvalidAccountDataError>> {
+    using client = await this.pool.connect();
+    const { rows } = await client.queryObject<Account>({
+      text: `
+        SELECT id, type, full_name, email, hashed_password, last_modified, phone_number
+        FROM account WHERE email = $email`,
+      args: { email },
+      camelCase: true,
+    });
+    return rows.length > 0 ? ok(rows[0]) : err(invalidAccountData("email"));
   }
 
   protected async handleEditAccount(account: Account): Promise<void> {

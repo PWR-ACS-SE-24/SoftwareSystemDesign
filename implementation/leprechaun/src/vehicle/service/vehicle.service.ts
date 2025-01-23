@@ -3,6 +3,7 @@ import { EntityManager, EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVehicleDto, UpdateVehicleDto } from '../controller/vehicle-create.dto';
+import { filterForVehicleSideNumberLike, VehicleFilterOptions } from '../controller/vehicle-filter.decorator';
 import { Vehicle } from '../database/vehicle.entity';
 
 @Injectable()
@@ -14,12 +15,15 @@ export class VehicleService {
     private readonly em: EntityManager,
   ) {}
 
-  async listAll(pagination: Pagination): Promise<{ vehicles: Vehicle[]; total: number }> {
+  async listAll(pagination: Pagination, filter: VehicleFilterOptions): Promise<{ vehicles: Vehicle[]; total: number }> {
+    const queryFilters = filterForVehicleSideNumberLike(filter.vehicleSideNumberLike);
+
     const vehicles = await this.vehicleRepository.findAll({
+      where: queryFilters,
       limit: pagination.size,
       offset: pagination.page * pagination.size,
     });
-    const total = await this.vehicleRepository.count();
+    const total = await this.vehicleRepository.count(queryFilters);
 
     return { vehicles, total };
   }

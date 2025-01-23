@@ -7,8 +7,6 @@ const jestConfig: JestConfigWithTsJest = {
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
   moduleFileExtensions: ['js', 'json', 'ts'],
-  globalSetup: './src/test-setup.ts',
-  globalTeardown: './src/test-teardown.ts',
   slowTestThreshold: 10,
   testRegex: '.*\\.spec\\.ts$',
   transform: {

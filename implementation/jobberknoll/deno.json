@@ -1,13 +1,19 @@
 {
-  "version": "0.6.0",
+  "version": "0.9.0",
   "workspace": ["api", "app", "core", "infra"],
   "tasks": {
-    "dev": "deno run --allow-net --allow-env main.ts",
-    "test": "deno test --coverage && deno coverage --html && deno coverage",
-    "compile": "deno compile --allow-net --allow-env --output jobberknoll main.ts"
+    "dev": "deno run --env-file --allow-net --allow-env --allow-ffi main.ts",
+    "test": "deno test --coverage --allow-ffi && deno coverage --html && deno coverage",
+    "compile": "deno compile --allow-net --allow-env --allow-ffi --output jobberknoll main.ts",
+    "generate-keypair": "deno run ./app/security/jwt.ts"
   },
   "fmt": {
     "lineWidth": 120
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-slow-types"]
+    }
   },
   "imports": {
     "$workspace": "./deno.json",
@@ -18,7 +24,9 @@
     "@std/collections": "jsr:@std/collections@^1.0.9",
     "@std/encoding": "jsr:@std/encoding@^1.0.6",
     "@std/fmt": "jsr:@std/fmt@^1.0.3",
+    "@std/testing": "jsr:@std/testing@^1.0.9",
     "hono": "npm:hono@^4.6.14",
+    "jose": "npm:jose@^5.9.6",
     "postgres": "https://deno.land/x/postgres@v0.19.3/mod.ts",
     "uuid": "npm:uuid@^11.0.3",
     "zod": "npm:zod@^3.24.1"

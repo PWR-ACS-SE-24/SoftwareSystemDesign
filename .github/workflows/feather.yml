@@ -1,0 +1,44 @@
+name: feather-ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "implementation/feather/**"
+      - ".github/workflows/feather.yml"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+    branches:
+      - main
+    paths:
+      - "implementation/feather/**"
+      - ".github/workflows/feather.yml"
+
+jobs:
+  build:
+    if: github.event.pull_request.draft == false
+    name: Build and test project
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: implementation/feather
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: "~2.1"
+      - name: Format code
+        run: deno fmt --check
+      - name: Typecheck code
+        run: deno check .
+      - name: Lint code
+        run: deno lint
+      - name: Compile code
+        run: deno task compile

@@ -4,18 +4,20 @@ import { Vehicle } from '@app/vehicle/database/vehicle.entity';
 import { Check, Collection, Entity, Filter, Index, ManyToOne, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 as uuidv7 } from 'uuid';
 
+export const ROUTE_TRIGGER_NAME = 'check_start_time_not_in_past_route';
+
 const CHECK_EXPRESSION = `
 CREATE OR REPLACE FUNCTION check_start_time_not_in_past_for_route()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.start_time < CURRENT_TIMESTAMP THEN
-        RAISE EXCEPTION 'The start_time field cannot be in the past: %', NEW.start_time;
+    IF NEW.start_time < statement_timestamp() THEN
+        RAISE EXCEPTION 'The start_time field cannot be in the past: NEW: % < CURRENT: %', NEW.start_time, statement_timestamp();
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER check_start_time_not_in_past_route BEFORE INSERT OR UPDATE ON route FOR EACH ROW
+CREATE OR REPLACE TRIGGER ${ROUTE_TRIGGER_NAME} BEFORE INSERT OR UPDATE ON route FOR EACH ROW
 EXECUTE FUNCTION check_start_time_not_in_past_for_route()`;
 
 @Entity()
