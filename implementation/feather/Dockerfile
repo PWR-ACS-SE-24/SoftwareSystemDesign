@@ -4,7 +4,7 @@
 FROM ubuntu:24.10 AS runner-base
 
 RUN apt-get -y update
-RUN apt-get -y install curl libargon2-1
+RUN apt-get -y install curl
 
 
 FROM denoland/deno:2.1.4 AS builder
