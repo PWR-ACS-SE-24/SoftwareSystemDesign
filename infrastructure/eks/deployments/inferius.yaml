@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inferius
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inferius
+  template:
+    metadata:
+      labels:
+        app: inferius
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - name: inferius
+        image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/inferius:latest
+        resources:
+          limits:
+            memory: "768Mi"
+            cpu: "200m"
+
+        envFrom:
+        - configMapRef:
+            name: inferius-config-map
+
+        ports:
+        - containerPort: 8080
+          name: http
+
+        env:
+        - name: SERVER_PORT
+          value: "8080"
+
+        - name: DATABASE_PORT
+          value: "5432"
+          
+        - name: DATABASE_NAME
+          value: "inferius"
+
+        - name: INFERIUS_VERSION
+          value: "1.0.0"
+
+        - name: DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: DATABASE_HOST
+
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: DATABASE_USER
+
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: DATABASE_PASSWORD

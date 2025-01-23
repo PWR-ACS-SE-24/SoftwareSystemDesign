@@ -1,0 +1,5 @@
+# secret files (keys, passwords, etc.)
+eks/secrets
+
+# ansible inventory file
+inventory.ini
