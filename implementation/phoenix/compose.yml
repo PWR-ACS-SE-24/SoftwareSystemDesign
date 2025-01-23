@@ -17,3 +17,5 @@ services:
       - INFERIUS_SERVICE_PORT=1082
       - LEPRECHAUN_SERVICE_HOST=host.docker.internal
       - LEPRECHAUN_SERVICE_PORT=1083
+      - FEATHER_SERVICE_HOST=localhost
+      - FEATHER_SERVICE_PORT=8001
