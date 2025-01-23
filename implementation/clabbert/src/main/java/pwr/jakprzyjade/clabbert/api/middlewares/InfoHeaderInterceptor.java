@@ -27,6 +27,7 @@ public class InfoHeaderInterceptor implements HandlerInterceptor {
                         ? uuidv7Service.generate()
                         : UUID.fromString(requestId);
 
+        request.setAttribute("jp-request-id", requestIdUUID);
         response.setHeader("jp-request-id", requestIdUUID.toString());
 
         // This piece of code is not required to fulfill our contract, but it's a nice touch

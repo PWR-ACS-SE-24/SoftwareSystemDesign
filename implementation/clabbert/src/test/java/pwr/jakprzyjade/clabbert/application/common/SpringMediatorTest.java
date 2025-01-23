@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.Request;
 import pwr.jakprzyjade.clabbert.application.abstractions.mediator.RequestHandler;
+import pwr.jakprzyjade.clabbert.domain.exceptions.AppException;
 
 @ExtendWith(MockitoExtension.class)
 public class SpringMediatorTest {
@@ -33,7 +34,7 @@ public class SpringMediatorTest {
     }
 
     @Test
-    void springMediatorShouldInvokeHandler() {
+    void springMediatorShouldInvokeHandler() throws AppException {
         // given
         var request = new TestRequest();
         var handler = spy(new TestHandler());

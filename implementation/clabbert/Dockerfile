@@ -4,9 +4,10 @@ RUN microdnf install findutils
 COPY build.gradle settings.gradle gradlew /
 COPY gradle /gradle
 RUN ./gradlew clean assemble --no-daemon > /dev/null 2>&1 || true
+RUN ./gradlew clean --no-daemon
 
 COPY src /src
-RUN ./gradlew clean assemble --no-daemon
+RUN ./gradlew assemble --no-daemon
 
 FROM openjdk:21-jdk
 COPY --from=build /build/libs/clabbert-0.0.1.jar .

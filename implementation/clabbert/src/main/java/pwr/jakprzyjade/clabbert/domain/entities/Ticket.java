@@ -33,8 +33,7 @@ public class Ticket {
 
     @Column(nullable = false, updatable = false)
     @NotNull(message = "purchaseTime cannot be null")
-    @Builder.Default
-    private Instant purchaseTime = Instant.now();
+    private Instant purchaseTime;
 
     @Column(nullable = false)
     @NotNull(message = "status cannot be null")
@@ -49,5 +48,6 @@ public class Ticket {
 
     @JoinColumn(name = "validation_id")
     @OneToOne
-    private Validation validation;
+    @Builder.Default
+    private Validation validation = null;
 }

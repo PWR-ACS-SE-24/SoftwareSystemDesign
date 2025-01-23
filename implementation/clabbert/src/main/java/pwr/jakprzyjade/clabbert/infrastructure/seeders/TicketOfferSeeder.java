@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import pwr.jakprzyjade.clabbert.application.abstractions.repositories.TicketOfferRepository;
 import pwr.jakprzyjade.clabbert.domain.entities.LongTermOffer;
 import pwr.jakprzyjade.clabbert.domain.entities.SingleFareOffer;
 import pwr.jakprzyjade.clabbert.domain.entities.TicketKind;
 import pwr.jakprzyjade.clabbert.domain.entities.TimeLimitedOffer;
-import pwr.jakprzyjade.clabbert.infrastructure.repositories.TicketOfferRepository;
 
 @Component
 @RequiredArgsConstructor

@@ -31,7 +31,14 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=postgres
       - SERVER_PORT=8080 # If not set, the default port is 8080
-      - LEPRECHAUN_SERVICE_HOST=leprechaun
-      - LEPRECHAUN_SERVICE_PORT=8080
-      - INFERIUS_SERVICE_HOST=inferius
-      - INFERIUS_SERVICE_PORT=8080
+      - LEPRECHAUN_SERVICE_HOST=internal-services-mock
+      - LEPRECHAUN_SERVICE_PORT=8081
+      - INFERIUS_SERVICE_HOST=internal-services-mock
+      - INFERIUS_SERVICE_PORT=8081
+
+  internal-services-mock:
+    image: "internal-services-mock"
+    build: ./internal-services-mock
+    container_name: internal-services-mock
+    ports:
+      - "8081:8081"
