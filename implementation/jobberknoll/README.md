@@ -57,6 +57,6 @@
 
 The service requires the following capabilities to be enabled:
 
-- `--allow-ffi` - required for Argon2id
 - `--allow-net` - required to host the web server
 - `--allow-env` - required to read config from environment variables
+- `--allow-ffi` - required for Argon2id

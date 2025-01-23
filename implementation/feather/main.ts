@@ -1,14 +1,15 @@
+import { envJobberknollAddress, envServerPort, logEnvironment } from "./util/env.ts";
 import { setupProd } from "./util/setup.ts";
 
 if (import.meta.main) {
-  const jobberknollAddress = "http://localhost:8000";
+  const { api, logger } = setupProd(envJobberknollAddress());
 
-  const { api } = setupProd(jobberknollAddress);
+  logEnvironment(logger);
 
   Deno.serve(
     {
-      port: 8001,
-      onListen: (addr) => console.log(`http://${addr.hostname}:${addr.port}`),
+      port: envServerPort(),
+      onListen: (addr) => logger.info(null, "listen", { host: `http://${addr.hostname}:${addr.port}` }),
     },
     api.fetch,
   );

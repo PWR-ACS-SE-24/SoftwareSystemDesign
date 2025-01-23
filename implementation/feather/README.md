@@ -5,14 +5,14 @@
 | **Endpoint**          | **Status** |
 | --------------------- | ---------- |
 | `GET  /int/v1/health` | 🟩         |
-| `POST /int/v1/verify` | 🟥         |
+| `POST /int/v1/verify` | 🟩         |
 
 ## Infrastructure
 
 | **Integration**             | **Status** |
 | --------------------------- | ---------- |
 | JWKS Provider (Jobberknoll) | 🟩         |
-| Logging                     | 🟥         |
+| Logging                     | 🟨         |
 
 ## ADRs
 
@@ -23,4 +23,5 @@
 The service requires the following capabilities to be enabled:
 
 - `--allow-net` - required to host the web server
-- `--allow-ffi` - Feather reuses Jobberknoll, which uses FFI (TODO: this should be fixable)
+- `--allow-env` - required to read config from environment variables
+- `--allow-ffi` - required for Argon2id

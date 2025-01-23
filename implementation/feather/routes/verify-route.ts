@@ -25,7 +25,7 @@ export function verifyHandler(
   jwksProvider: JwksProvider,
 ): JkHandler<typeof verifyRoute> {
   return async (c) => {
-    const jwksResolver = await jwksProvider.getJwksResolver();
+    const jwksResolver = await jwksProvider.getJwksResolver(c.get("ctx"));
 
     try {
       const { payload } = await jwtVerify(
