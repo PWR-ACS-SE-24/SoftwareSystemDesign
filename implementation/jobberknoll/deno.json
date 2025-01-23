@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.9.0",
   "workspace": ["api", "app", "core", "infra"],
   "tasks": {
     "dev": "deno run --env-file --allow-net --allow-env --allow-ffi main.ts",
@@ -9,6 +9,11 @@
   },
   "fmt": {
     "lineWidth": 120
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-slow-types"]
+    }
   },
   "imports": {
     "$workspace": "./deno.json",
