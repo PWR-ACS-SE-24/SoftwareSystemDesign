@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pwr.jakprzyjade.inferius.fine.database.FineCreateDto;
 import pwr.jakprzyjade.inferius.fine.database.FineDto;
 import pwr.jakprzyjade.inferius.fine.service.FineService;
+import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserRole;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserRoles;
 
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class FineController {
 
     private final FineService fineService;
+    private final UUIDv7Validator uuiDv7Validator;
 
     @UserRoles({UserRole.PASSENGER, UserRole.INSPECTOR})
     @GetMapping
@@ -52,8 +54,14 @@ public class FineController {
     @Operation(summary = "Cancel a fine", description = "Anulowanie mandatu.")
     public ResponseEntity<FineDto> cancelFine(
             @RequestHeader("jp-user-id") UUID inspectorId,
-            @PathVariable("id") UUID fineId
+            @PathVariable("id") String id
     ) {
+        if (!uuiDv7Validator.isStringValidUUID(id)) {
+            throw new IllegalArgumentException("Invalid fineId format. It must be a valid UUIDv7.");
+        }
+
+        UUID fineId = UUID.fromString(id);
+
         FineDto cancelledFine = fineService.cancelFine(inspectorId, fineId);
         return ResponseEntity.ok(cancelledFine);
     }

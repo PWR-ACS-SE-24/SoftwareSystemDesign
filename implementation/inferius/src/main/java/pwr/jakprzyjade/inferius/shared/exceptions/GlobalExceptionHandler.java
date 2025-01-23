@@ -1,6 +1,8 @@
 package pwr.jakprzyjade.inferius.shared.exceptions;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -8,6 +10,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,6 +68,40 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<AppError> handleIllegalStateException(IllegalStateException ex) {
         return buildErrorResponse(400, "illegal-state", ex.getMessage(), "Operacja jest niedozwolona.");
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<AppError> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        Throwable rootCause = ex.getRootCause();
+
+        if (rootCause instanceof InvalidFormatException) {
+            InvalidFormatException formatException = (InvalidFormatException) rootCause;
+            if (formatException.getTargetType() == UUID.class) {
+                return buildErrorResponse(
+                        400,
+                        "invalid-uuidv7",
+                        "Invalid UUIDv7 format.",
+                        "Nieprawidłowy format UUIDv7."
+                );
+            }
+        }
+
+        return buildErrorResponse(
+                400,
+                "invalid-input",
+                "Invalid input data.",
+                "Nieprawidłowe dane wejściowe."
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<AppError> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return buildErrorResponse(
+                400,
+                "invalid-argument",
+                ex.getMessage(),
+                "Nieprawidłowe dane wejściowe."
+        );
     }
 
     private ResponseEntity<AppError> buildErrorResponse(int code, String kind, String messageEn, String messagePl) {
