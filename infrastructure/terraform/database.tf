@@ -20,7 +20,7 @@ resource "aws_db_instance" "jakprzyjade_database" {
 }
 
 resource "aws_db_parameter_group" "jakprzyjade_parameter_group" {
-  family = "postgres12"
+  family = "postgres17"
   name   = "jakprzyjade-db-parameter-group"
 
   parameter {
@@ -45,13 +45,6 @@ resource "aws_security_group" "database_sg" {
     to_port     = -1
     protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.deployment_sg.id]
   }
   egress {
     from_port   = 0
