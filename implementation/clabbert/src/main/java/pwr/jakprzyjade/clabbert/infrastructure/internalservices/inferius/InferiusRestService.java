@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import pwr.jakprzyjade.clabbert.application.abstractions.internalservices.inferius.InferiusService;
 import pwr.jakprzyjade.clabbert.application.abstractions.internalservices.inferius.dtos.ChargeRequestDto;
+import pwr.jakprzyjade.clabbert.domain.exceptions.internalservices.InternalServiceUnavailableException;
+import pwr.jakprzyjade.clabbert.domain.exceptions.internalservices.inferius.UserAccountCannotBeChargeException;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -46,7 +48,16 @@ public class InferiusRestService implements InferiusService {
                 .uri(CHARGE_URI)
                 .header("jp-request-id", requestId.toString())
                 .body(Mono.just(request), ChargeRequestDto.class)
-                .exchangeToMono(response -> Mono.just(response.statusCode()))
+                .exchangeToMono(
+                        response -> {
+                            if (response.statusCode().is4xxClientError()) {
+                                throw new UserAccountCannotBeChargeException();
+                            } else if (response.statusCode().is5xxServerError()) {
+                                throw new InternalServiceUnavailableException();
+                            } else {
+                                return Mono.just(response.statusCode());
+                            }
+                        })
                 .block();
     }
 }

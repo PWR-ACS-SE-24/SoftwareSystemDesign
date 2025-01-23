@@ -29,4 +29,8 @@ public class Validation {
     @NotNull(message = "time cannot be null")
     @Builder.Default
     private Instant time = Instant.now();
+
+    @Column(nullable = false, updatable = false)
+    @NotNull(message = "vehicleSideNumber cannot be null")
+    private String vehicleSideNumber;
 }

@@ -116,7 +116,7 @@ public class ApiExceptionHandler {
                 ErrorDto.builder()
                         .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .kind("server-failure")
-                        .messageEn("An internal server error occurred. " + exception.getMessage())
+                        .messageEn("An internal server error occurred.")
                         .messagePl("Wystąpił wewnętrzny błąd serwera.")
                         .build();
 

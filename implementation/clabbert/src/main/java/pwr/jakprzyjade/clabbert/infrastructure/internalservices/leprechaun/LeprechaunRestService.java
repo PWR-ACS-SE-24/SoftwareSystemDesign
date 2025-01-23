@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import pwr.jakprzyjade.clabbert.application.abstractions.internalservices.lepreachaun.LeprechaunService;
 import pwr.jakprzyjade.clabbert.application.abstractions.internalservices.lepreachaun.dtos.RouteIdResponseDto;
+import pwr.jakprzyjade.clabbert.domain.exceptions.internalservices.InternalServiceUnavailableException;
+import pwr.jakprzyjade.clabbert.domain.exceptions.internalservices.leprechaun.VehicleNotFoundException;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -39,6 +41,16 @@ public class LeprechaunRestService implements LeprechaunService {
                 .uri(GET_ROUTE_URI, vehicleSideNumber)
                 .header("jp-request-id", requestId.toString())
                 .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError(),
+                        response -> {
+                            throw new VehicleNotFoundException();
+                        })
+                .onStatus(
+                        status -> status.is5xxServerError(),
+                        response -> {
+                            throw new InternalServiceUnavailableException();
+                        })
                 .bodyToMono(RouteIdResponseDto.class)
                 .block();
     }
