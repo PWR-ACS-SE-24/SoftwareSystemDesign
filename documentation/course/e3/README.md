@@ -147,7 +147,10 @@ Każdy serwis posiada zdefiniowany proces CI/CD w GitHub Actions, który automat
 
 ## Infrastruktura
 
-TODO @mlodybercik
+![Infrastructure](./images/infrastructure.drawio.svg)
+
+> [!NOTE]
+> Ze względu na wysokie ograniczenia infrastruktury narzucone na nas przez studenckie konta AWS, nie jesteśmy w stanie dostarczyć pełnej infrastruktury zgodnie z założeniami z [Etapu II](../e2/README.md#diagram-rozmieszczenia). Stworzone pliki konfiguracyjne wystarczą na uruchomienie wszystkich serwisów, jednak nie będą one w pełni zgodne z założeniami z poprzedniego etapu.
 
 # Wkład pracy
 
@@ -232,6 +235,8 @@ Time: 12.896 s
 Ran all test suites.
 
 ```
+
+![Coverage Leprechaun](./images/coverage-leprechaun.png)
 
 ## Testy bezpieczeństwa
 
