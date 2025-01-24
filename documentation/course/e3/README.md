@@ -91,7 +91,7 @@ Skład zespołu:
   </tr>
   <tr>
     <th>Infrastruktura</th>
-    <td>🟩🟥</td>
+    <td>🟩🟥🟥</td>
   </tr>
   <tr>
     <th rowspan="3">Jobberknoll <br/> (konta)</th>
