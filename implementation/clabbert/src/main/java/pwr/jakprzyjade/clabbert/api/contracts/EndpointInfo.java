@@ -26,8 +26,8 @@ public class EndpointInfo {
 
     @Schema(
             description = "The roles allowed to access the endpoint.",
-            example = "[\"PASSENGER\", \"ADMIN\"]",
+            example = "[\"passenger\", \"admin\"]",
             required = true,
-            allowableValues = {"GUEST", "PASSENGER", "DRIVER", "ADMIN", "INSPECTOR"})
+            allowableValues = {"guest", "passenger", "driver", "admin", "inspector"})
     private List<String> roles;
 }
