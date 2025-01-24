@@ -123,7 +123,14 @@ Skład zespołu:
 
 Każdy serwis wspiera OpenAPI specification, a dodatkowo wspiera Swagger UI stanowiący interaktywną dokumentację API.
 
-TODO @tchojnacki: screeny ze Swaggerów
+![Swagger Clabbert Ext](./images/swagger-clabbert-ext.png)
+![Swagger Clabbert Int](./images/swagger-clabbert-int.png)
+![Swagger Feather Int](./images/swagger-feather-int.png)
+![Swagger Inferius Ext](./images/swagger-inferius-ext.png)
+![Swagger Jobberknoll Ext](./images/swagger-jobberknoll-ext.png)
+![Swagger Jobberknoll Int](./images/swagger-jobberknoll-int.png)
+![Swagger Leprechaun Ext](./images/swagger-leprechaun-ext.png)
+![Swagger Leprechaun Int](./images/swagger-leprechaun-int.png)
 
 ## CI/CD
 
@@ -136,6 +143,10 @@ Każdy serwis posiada zdefiniowany proces CI/CD w GitHub Actions, który automat
 - [`leprechaun-ci`](https://github.com/PWR-ACS-SE-24/SoftwareSystemDesign/actions/workflows/leprechaun.yml)
 
 ![GitHub Actions](./images/gh-actions.png)
+
+## Infrastruktura
+
+TODO @mlodybercik
 
 # Wkład pracy
 
@@ -165,14 +176,44 @@ Estimated People Required (organic) 4.89
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
-TODO @tchojnacki: opis powyższego + zaktualizować powyższe na świeżo przed zajęciami
+Powyższy diagram pokazuje wolumen wytworzonego przez nas kodu. Zgodnie z estymatami zapewnionymi przez narzędzie, nasz system kosztowałby ponad pół miliona dolarów i wymagałby ponad 11 miesięcy pracy około 5 osób. Dominującymi językami są bez wątpienia TypeScript i Java, które są naczelnymi technologiami w naszych serwisach.
 
-TODO @tchojnacki: screen Milestones z GitHub
+![GitHub Milestones](./images/gh-milestones.png)
 
 # Testy
 
-TODO @tchojnacki: liczba testów, pokrycie testów
+## Testy funkcjonalne
+
+**Clabbert:**
+TODO @jakubzehner
+
+**Inferius:**
+TODO @piterek130
+
+**Jobberknoll:**
+
+```
+ok | 260 passed | 0 failed | 3 ignored (11s)
+```
+
+![Coverage Jobberknoll](./images/coverage-jobberknoll.png)
+
+**Leprechaun:**
+
+```
+Test Suites: 16 passed, 16 total
+Tests:       126 passed, 126 total
+Snapshots:   0 total
+Time:        12.896 s
+Ran all test suites.
+```
+
+## Testy bezpieczeństwa
+
+Uruchomiliśmy narzędzie OWASP ZAP na naszych serwisach, aby sprawdzić, czy nie ma w nich luk bezpieczeństwa.
+
+![ZAP](./images/zap.png)
+
+## Testy obciążeniowe
 
 TODO @tchojnacki: jakby mi się udało to testy obciążeniowe
-
-TODO anyone: coś gdzieś z Dockera/Terraforma/Kubernetesa ktoś?
