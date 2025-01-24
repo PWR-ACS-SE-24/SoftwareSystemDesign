@@ -158,29 +158,33 @@ Każdy serwis posiada zdefiniowany proces CI/CD w GitHub Actions, który automat
 ───────────────────────────────────────────────────────────────────────────────
 Language                 Files     Lines   Blanks  Comments     Code Complexity
 ───────────────────────────────────────────────────────────────────────────────
-TypeScript                 249     11165     1740       333     9092        415
-Java                       158      5642      815       275     4552        121
-JSON                        19       244        2         0      242          0
-YAML                        10      6188     1318         1     4869          0
-Dockerfile                   7       127       42         2       83          5
-Properties File              6        58        1        32       25          0
-gitignore                    6       170       22        25      123          0
-Markdown                     4       211       32         0      179          0
+TypeScript                 250     11286     1750       345     9191        423
+Java                       174      6475      947       275     5253        143
+SVG                         45       180        0        45      135          2
+YAML                        23      6918     1401         1     5516          0
+JSON                        21       271        2         0      269          0
+Markdown                    19      6155      993         0     5162          0
+gitignore                   10       214       31        42      141          0
+Dockerfile                   7       125       41         2       82          4
+Properties File              6        60        1        32       27          0
+Shell                        5       852       77       202      573         85
+Terraform                    5       264       47         3      214          2
 Batch                        3       392       51         0      341         49
-Shell                        3       770       56       199      515         81
 Gradle                       2       123       23         0      100          0
-XML                          2       213        6         0      207          0
+XML                          2       237        6         0      231          0
+Docker ignore                1         1        0         0        1          0
+HTML                         1        44        1         5       38          0
 Python                       1        23        9         0       14          1
 ───────────────────────────────────────────────────────────────────────────────
-Total                      470     25326     4117       867    20342        672
+Total                      575     33620     5380       952    27288        709
 ───────────────────────────────────────────────────────────────────────────────
-Estimated Cost to Develop (organic) $638,864
-Estimated Schedule Effort (organic) 11.60 months
-Estimated People Required (organic) 4.89
+Estimated Cost to Develop (organic) $869,692
+Estimated Schedule Effort (organic) 13.04 months
+Estimated People Required (organic) 5.92
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
-Powyższy diagram pokazuje wolumen wytworzonego przez nas kodu. Zgodnie z estymatami zapewnionymi przez narzędzie, nasz system kosztowałby ponad pół miliona dolarów i wymagałby ponad 11 miesięcy pracy około 5 osób. Dominującymi językami są bez wątpienia TypeScript i Java, które są naczelnymi technologiami w naszych serwisach.
+Powyższy diagram pokazuje wolumen wytworzonego przez nas kodu. Zgodnie z estymatami zapewnionymi przez narzędzie, nasz system kosztowałby prawie milion dolarów i wymagałby ponad 11 miesięcy pracy około 6 osób. Dominującymi językami są bez wątpienia TypeScript i Java, które są naczelnymi technologiami w naszych serwisach.
 
 ![GitHub Milestones](./images/gh-milestones.png)
 
