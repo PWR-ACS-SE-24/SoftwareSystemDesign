@@ -12,7 +12,7 @@
 | **Integration**             | **Status** |
 | --------------------------- | ---------- |
 | JWKS Provider (Jobberknoll) | 🟩         |
-| Logging                     | 🟨         |
+| Logging                     | 🟩         |
 
 ## ADRs
 
