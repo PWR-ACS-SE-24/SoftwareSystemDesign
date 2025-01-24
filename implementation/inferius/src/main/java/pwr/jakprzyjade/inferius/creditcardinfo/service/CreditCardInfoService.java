@@ -3,11 +3,8 @@ package pwr.jakprzyjade.inferius.creditcardinfo.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pwr.jakprzyjade.inferius.creditcardinfo.database.*;
-import pwr.jakprzyjade.inferius.fine.database.Fine;
-import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
 import pwr.jakprzyjade.inferius.shared.exceptions.ResourceNotFoundException;
 import pwr.jakprzyjade.inferius.wallet.database.Wallet;
-import pwr.jakprzyjade.inferius.wallet.database.WalletHistoryRepository;
 import pwr.jakprzyjade.inferius.wallet.database.WalletRepository;
 
 import java.util.List;

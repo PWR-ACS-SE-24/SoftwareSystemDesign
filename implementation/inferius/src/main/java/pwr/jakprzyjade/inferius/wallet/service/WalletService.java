@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import pwr.jakprzyjade.inferius.shared.exceptions.ResourceNotFoundException;
 import pwr.jakprzyjade.inferius.wallet.database.*;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

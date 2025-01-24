@@ -1,7 +1,6 @@
 package pwr.jakprzyjade.inferius.wallet.database;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import pwr.jakprzyjade.inferius.shared.UUIDv7;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
