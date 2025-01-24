@@ -46,6 +46,16 @@ spec:
         ports:
         - containerPort: 8081
           name: http
+
+        env:
+        - name: SERVER_PORT
+          value: "8081"
+
+        - name: JOBBERKNOLL_SERVICE_HOST
+          value: "http://jobberknoll"
+          
+        - name: JOBBERKNOLL_SERVICE_PORT
+          value: "8080"
         
         envFrom:
         - configMapRef:
