@@ -31,6 +31,7 @@ Skład zespołu:
     - [ADR-001: Vertical partitioning of the Jobberknoll API package structure](../../adrs/001-jobberknoll-api-structure.md)
     - [ADR-002: Domain model and database schema changes for Jobberknoll](../../adrs/002-jobberknoll-domain-model.md)
     - [ADR-003: Password hashing and storage requirements for Jobberknoll](../../adrs/003-password-hashing.md)
+    - [ADR-004: Adding vehicle side number to Validation table for single fare ticket verification in Clabbert](../../adrs/004-clabbert-sidenumber-in-validation-table.md)
 - **Implementacja:**
   - [Kod serwisu biletów Clabbert (Java)](../../../implementation/clabbert/)
   - [Kod serwisu autoryzacji Feather (TypeScript)](../../../implementation/feather/)
