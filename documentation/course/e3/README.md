@@ -191,6 +191,7 @@ Powyższy diagram pokazuje wolumen wytworzonego przez nas kodu. Zgodnie z estyma
 **Clabbert:**
 
 ```
+
 Unit tests:
   Tests:        26
   Failures:     0
@@ -207,12 +208,26 @@ Integration tests:
   Duration:     0.512s
 
   Successfull:  100%
+  
 ```
 
 ![Coverage Clabbert](./images/coverage-clabbert.png)
 
 **Inferius:**
-TODO @piterek130
+
+```
+
+Unit tests:
+  Tests:        15
+  Failures:     0
+  Ignored:      0
+  Duration:     1.600s
+
+  Successfull:  100%
+  
+```
+
+![Coverage Inferius](./images/coverage-inferius.png)
 
 **Jobberknoll:**
 
