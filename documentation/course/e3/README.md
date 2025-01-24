@@ -217,3 +217,5 @@ Uruchomiliśmy narzędzie OWASP ZAP na naszych serwisach, aby sprawdzić, czy ni
 ## Testy obciążeniowe
 
 TODO @tchojnacki: jakby mi się udało to testy obciążeniowe
+
+> _© 2025 JakPrzyjade Team (Przemysław Barcicki, Tomasz Chojnacki, Piotr Kot, Jakub Zehner)_
