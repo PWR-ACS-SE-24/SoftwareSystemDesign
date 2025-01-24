@@ -49,7 +49,12 @@ public class OpenApiConfig {
 
     @Bean
     GroupedOpenApi externalApi() {
-        return GroupedOpenApi.builder().group("external").pathsToMatch("/ext/**").build();
+        return GroupedOpenApi.builder()
+                .group("external")
+                .pathsToMatch("/ext/**")
+                .addOperationCustomizer(addUserIdHeader())
+                .addOperationCustomizer(addUserRoleHeader())
+                .build();
     }
 
     @Bean
