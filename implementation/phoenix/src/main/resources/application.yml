@@ -16,6 +16,7 @@ spring:
           predicates:
             - Path=/api/account/**
           filters:
+            - name: AuthorizationFilter
             - RewritePath=/api/account/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
             - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
@@ -25,6 +26,7 @@ spring:
           predicates:
             - Path=/api/ticket/**
           filters:
+            - name: AuthorizationFilter
             - RewritePath=/api/ticket/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
             - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
@@ -34,6 +36,7 @@ spring:
           predicates:
             - Path=/api/payment/**
           filters:
+            - name: AuthorizationFilter
             - RewritePath=/api/payment/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
             - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
@@ -43,6 +46,7 @@ spring:
           predicates:
             - Path=/api/logistics/**
           filters:
+            - name: AuthorizationFilter
             - RewritePath=/api/logistics/(?<remaining>.*), /ext/${remaining}
             - AddRequestIdFilter
             - AddRequestHeader=user-agent, Phoenix/${phoenix.version}
