@@ -246,10 +246,74 @@ Uruchomiliśmy narzędzie OWASP ZAP na naszych serwisach, aby sprawdzić, czy ni
 
 ## Testy obciążeniowe
 
-TODO @tchojnacki: jakby mi się udało to testy obciążeniowe
+Wykonano testy obciążeniowe dla serwisu kont. Uwzględniono trzy scenariusze:
+
+- `smoke` - test dymny, sprawdzający poprawność działania serwisu,
+- `average_load` - test sprawdzający zachowanie serwisu pod standardowym obciążeniem,
+- `spike` - test sprawdzający zachowanie serwisu pod nagłym wzrostem obciążenia.
+
+Sprawdzają one realizację wymagań dotyczących wydajności:
+
+- `NF/PRF/01` - System powinien obsługiwać zapytania użytkowników, zakładając brak problemów sieciowych:
+  1. dotyczące biletów w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
+  2. dotyczące kont w czasie poniżej 2 sekundy dla co najmniej 90% przypadków.
+  3. dotyczące płatności w czasie poniżej 10 sekundy dla co najmniej 90% przypadków.
+  4. dotyczące logistyki w czasie poniżej 1 sekundy dla co najmniej 90% przypadków.
+- `NF/PRF/02` - System powinien działać bez zarzutu przy jednoczesnym korzystaniu przez 5000 użytkowników.
+
+Pojedyncza instancja serwisu obsługuje 1/5 obciążenia (tj. 1000 użytkowników). W trakcie działania testów, serwis jest obciążony przez średnio 784 zapytań na sekundę. Łącznie 0% zapytań kończy się niepowodzeniem, a `p(90)` dla czasu odpowiedzi wynosi 1s (wymagania dopuszczają 2s). Poniżej znajduje się pełny raport z testów:
+
+```
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+     execution: local
+        script: accounts.k6.ts
+ web dashboard: http://127.0.0.1:5665
+        output: -
+
+     scenarios: (100.00%) 3 scenarios, 2001 max VUs, 10m10s max duration (incl. graceful stop):
+              * smoke: 1 iterations shared among 1 VUs (maxDuration: 10m0s, gracefulStop: 10s)
+              * average_load: Up to 1000 looping VUs for 5m0s over 3 stages (gracefulRampDown: 30s, startTime: 10s, gracefulStop: 10s)
+              * spike: Up to 2000 looping VUs for 1m0s over 2 stages (gracefulRampDown: 30s, startTime: 5m20s, gracefulStop: 10s)
+
+
+     ✓ Jobberknoll healthy
+     ✓ Feather healthy
+     ✓ account registered
+     ✓ account logged in
+     ✓ account verified
+     ✓ user-id correct
+     ✓ user-role correct
+
+     checks.........................: 100.00% 884403 out of 884403
+     data_received..................: 67 MB   172 kB/s
+     data_sent......................: 187 MB  480 kB/s
+     http_req_blocked...............: avg=15.89µs min=1.57µs   med=5.36µs   max=78.5ms  p(90)=10.61µs p(95)=12.73µs
+     http_req_connecting............: avg=7.15µs  min=0s       med=0s       max=78.43ms p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=1.05s   min=1.32ms   med=809.25ms max=47.57s  p(90)=1.11s   p(95)=1.45s
+       { expected_response:true }...: avg=1.05s   min=1.32ms   med=809.25ms max=47.57s  p(90)=1.11s   p(95)=1.45s
+   ✓ http_req_failed................: 0.00%   0 out of 306157
+     http_req_receiving.............: avg=57.38µs min=9.8µs    med=40.85µs  max=26.15ms p(90)=94.62µs p(95)=119.39µs
+     http_req_sending...............: avg=29.84µs min=4.32µs   med=16.76µs  max=9.41ms  p(90)=47.11µs p(95)=75.92µs
+     http_req_tls_handshaking.......: avg=0s      min=0s       med=0s       max=0s      p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=1.05s   min=893.59µs med=809.16ms max=47.57s  p(90)=1.11s   p(95)=1.45s
+     http_reqs......................: 306157  784.602413/s
+     iteration_duration.............: avg=1m42s   min=9.63s    med=1m50s    max=2m57s   p(90)=2m50s   p(95)=2m55s
+     iterations.....................: 2341    5.999387/s
+     vus............................: 1283    min=0                max=2000
+     vus_max........................: 2001    min=2001             max=2001
+
+
+running (06m30.2s), 0000/2001 VUs, 2341 complete and 2785 interrupted iterations
+smoke        ✓ [======================================] 1 VUs          00m09.6s/10m0s  1/1 shared iters
+average_load ✓ [======================================] 0638/1000 VUs  5m0s
+spike        ✓ [======================================] 1265/2000 VUs  1m0s
+```
+
+![K6 Accounts](./images/k6-accounts.png)
 
 > _© 2025 JakPrzyjade Team (Przemysław Barcicki, Tomasz Chojnacki, Piotr Kot, Jakub Zehner)_
-
-```
-
-```
