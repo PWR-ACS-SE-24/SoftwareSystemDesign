@@ -185,7 +185,27 @@ Powyższy diagram pokazuje wolumen wytworzonego przez nas kodu. Zgodnie z estyma
 ## Testy funkcjonalne
 
 **Clabbert:**
-TODO @jakubzehner
+
+```
+Unit tests:
+  Tests:        26
+  Failures:     0
+  Ignored:      0
+  Duration:     3.400s
+
+  Successfull:  100%
+
+
+Integration tests:
+  Tests:        1
+  Failures:     0
+  Ignored:      0
+  Duration:     0.512s
+
+  Successfull:  100%
+```
+
+![Coverage Clabbert](./images/coverage-clabbert.png)
 
 **Inferius:**
 TODO @piterek130
@@ -193,7 +213,9 @@ TODO @piterek130
 **Jobberknoll:**
 
 ```
+
 ok | 260 passed | 0 failed | 3 ignored (11s)
+
 ```
 
 ![Coverage Jobberknoll](./images/coverage-jobberknoll.png)
@@ -201,11 +223,13 @@ ok | 260 passed | 0 failed | 3 ignored (11s)
 **Leprechaun:**
 
 ```
+
 Test Suites: 16 passed, 16 total
-Tests:       126 passed, 126 total
-Snapshots:   0 total
-Time:        12.896 s
+Tests: 126 passed, 126 total
+Snapshots: 0 total
+Time: 12.896 s
 Ran all test suites.
+
 ```
 
 ## Testy bezpieczeństwa
@@ -219,3 +243,7 @@ Uruchomiliśmy narzędzie OWASP ZAP na naszych serwisach, aby sprawdzić, czy ni
 TODO @tchojnacki: jakby mi się udało to testy obciążeniowe
 
 > _© 2025 JakPrzyjade Team (Przemysław Barcicki, Tomasz Chojnacki, Piotr Kot, Jakub Zehner)_
+
+```
+
+```
