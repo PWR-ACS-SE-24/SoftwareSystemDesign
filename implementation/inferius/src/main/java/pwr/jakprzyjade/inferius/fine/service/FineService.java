@@ -1,21 +1,15 @@
 package pwr.jakprzyjade.inferius.fine.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import pwr.jakprzyjade.inferius.fine.database.*;
 import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
 import pwr.jakprzyjade.inferius.shared.exceptions.ResourceNotFoundException;
 import pwr.jakprzyjade.inferius.shared.exceptions.UserUnauthorizedException;
 
-import java.io.Console;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.UUID;
 
 @Service

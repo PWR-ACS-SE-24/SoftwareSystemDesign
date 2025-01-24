@@ -45,5 +45,7 @@
 ## Infrastructure
 
 | **Integration**             | **Status** |
-| --------------------------- | ---------- |
+|-----------------------------|------------|
 | Database (PostgreSQL)       | 🟩         |
+| Payment messaging (AWS SQS) | 🟥         |
+| Payment gateway (Tpay)      | 🟥         |
