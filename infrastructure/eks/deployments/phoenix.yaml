@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phoenix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phoenix
+  template:
+    metadata:
+      labels:
+        app: phoenix
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - name: phoenix
+        image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/phoenix:latest
+        resources:
+          limits:
+            memory: "384Mi"
+            cpu: "100m"
+
+        envFrom:
+        - configMapRef:
+            name: phoenix-config-map
+
+        ports:
+        - containerPort: 8080
+          name: http
+
+        env:
+        - name: SERVER_PORT
+          value: "8080"
+        - name: PHOENIX_VERSION
+          value: "1.0.0"
+
+      - name: feather
+        image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/feather:latest
+        resources:
+          limits:
+            memory: "384Mi"
+            cpu: "100m"
+        
+        ports:
+        - containerPort: 8081
+          name: http
+        
+        envFrom:
+        - configMapRef:
+            name: feather-config-map

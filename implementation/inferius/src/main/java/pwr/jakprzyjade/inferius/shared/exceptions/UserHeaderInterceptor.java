@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import pwr.jakprzyjade.inferius.shared.UserRole;
+import pwr.jakprzyjade.inferius.shared.UserRoles;
 
 import java.util.EnumSet;
 import java.util.List;

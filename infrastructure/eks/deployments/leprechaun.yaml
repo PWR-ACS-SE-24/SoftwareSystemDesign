@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leprechaun
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: leprechaun
+  template:
+    metadata:
+      labels:
+        app: leprechaun
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - name: leprechaun
+        image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/leprechaun:latest
+        resources:
+          limits:
+            memory: "768Mi"
+            cpu: "200m"
+
+        envFrom:
+        - configMapRef:
+            name: leprechaun-config-map
+
+        ports:
+        - containerPort: 8080
+          name: http
+
+        env:
+        - name: LEPRECHAUN_APP_PORT
+          value: "8080"
+
+        - name: NODE_ENV
+          value: "production"
+
+        - name: LEPRECHAUN_DATABASE_DBNAME
+          value: "leprechaun"
+
+        - name: LEPRECHAUN_DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: generic-database-info
+              key: LEPRECHAUN_DATABASE_HOST

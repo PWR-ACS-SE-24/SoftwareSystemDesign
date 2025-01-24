@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clabbert-config-map
+data:
+  LEPRECHAUN_SERVICE_HOST: leprechaun
+  LEPRECHAUN_SERVICE_PORT: "8080"
+
+  INFERIUS_SERVICE_HOST: inferius
+  INFERIUS_SERVICE_PORT: "8080"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feather-config-map
+
+--- 
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inferius-config-map
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jobberknoll-config-map
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: leprechaun-config-map
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: phoenix-config-map
+data:
+  JOBBERKNOLL_SERVICE_HOST: jobberknoll
+  JOBBERKNOLL_SERVICE_PORT: "8080"
+
+  CLABBERT_SERVICE_HOST: clabbert
+  CLABBERT_SERVICE_PORT: "8080"
+
+  INFERIUS_SERVICE_HOST: inferius
+  INFERIUS_SERVICE_PORT: "8080"
+
+  LEPRECHAUN_SERVICE_HOST: leprechaun
+  LEPRECHAUN_SERVICE_PORT: "8080"

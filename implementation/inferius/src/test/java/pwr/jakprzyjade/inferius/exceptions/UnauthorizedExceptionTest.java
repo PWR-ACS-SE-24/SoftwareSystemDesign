@@ -1,4 +1,4 @@
-package pwr.jakprzyjade.inferius;
+package pwr.jakprzyjade.inferius.exceptions;
 
 import pwr.jakprzyjade.inferius.shared.exceptions.AppError;
 import pwr.jakprzyjade.inferius.shared.exceptions.GlobalExceptionHandler;

@@ -1,4 +1,4 @@
-package pwr.jakprzyjade.inferius;
+package pwr.jakprzyjade.inferius.exceptions;
 
 import pwr.jakprzyjade.inferius.shared.UUIDv7Validator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.method.HandlerMethod;
+import pwr.jakprzyjade.inferius.shared.UserRole;
+import pwr.jakprzyjade.inferius.shared.UserRoles;
 import pwr.jakprzyjade.inferius.shared.exceptions.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
