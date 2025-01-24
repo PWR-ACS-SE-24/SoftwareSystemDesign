@@ -116,7 +116,7 @@ Skład zespołu:
   </tr>
 </table>
 
-> ![NOTE]
+> [!NOTE]
 > Zgodnie z wytycznymi Pani Dziekan Hnatkowskiej obowiązywała implementacja jednego wymagania na członka zespołu.
 
 ## API
