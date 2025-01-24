@@ -42,7 +42,7 @@ public class OpenApiConfig {
                             .name("jp-user-role")
                             .description("User Role")
                             .required(true)
-                            .example("PASSENGER"));
+                            .example("passenger"));
             return operation;
         };
     }
