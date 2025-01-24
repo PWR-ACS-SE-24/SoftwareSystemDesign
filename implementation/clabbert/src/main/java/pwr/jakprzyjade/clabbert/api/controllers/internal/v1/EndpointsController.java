@@ -26,7 +26,7 @@ import pwr.jakprzyjade.clabbert.api.contracts.EndpointInfo;
 @RestController
 @RequestMapping("/int/v1/endpoints")
 @RequiredArgsConstructor
-@Tag(name = "Endpoints", description = "Listing all available endpoints")
+@Tag(name = "Endpoints", description = "Endpoints management")
 public class EndpointsController {
     private final ApplicationContext applicationContext;
 
@@ -38,8 +38,8 @@ public class EndpointsController {
                     DeleteMapping.class, "DELETE",
                     PatchMapping.class, "PATCH");
 
-    @Operation(summary = "List all available endpoints")
-    @GetMapping("/endpoints")
+    @Operation(summary = "List all available external endpoints")
+    @GetMapping
     public List<EndpointInfo> listEndpoints() {
         final var endpoints = new ArrayList<EndpointInfo>();
 
@@ -102,7 +102,10 @@ public class EndpointsController {
     private List<String> resolveRoles(Method method) {
         final var userRoles = AnnotationUtils.findAnnotation(method, UserRoles.class);
         if (userRoles != null) {
-            return Arrays.stream(userRoles.value()).map(Enum::name).toList();
+            return Arrays.stream(userRoles.value())
+                    .map(Enum::name)
+                    .map(String::toLowerCase)
+                    .toList();
         }
         return new ArrayList<>();
     }
