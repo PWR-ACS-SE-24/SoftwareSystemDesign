@@ -106,7 +106,7 @@ Skład zespołu:
     <td>🟩🟥🟩</td>
   </tr>
   <tr>
-    <th rowspan="3">Leprechaun <br/> (logistyka)</th>
+    <th rowspan="2">Leprechaun <br/> (logistyka)</th>
     <th>Wymagania</th>
     <td>🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩</td>
   </tr>
