@@ -19,8 +19,8 @@ spec:
         image: 143137682504.dkr.ecr.us-east-1.amazonaws.com/jakprzyjade/jobberknoll:latest
         resources:
           limits:
-            memory: "768Mi"
-            cpu: "200m"
+            memory: "1Gi"
+            cpu: "1"
 
         envFrom:
         - configMapRef:

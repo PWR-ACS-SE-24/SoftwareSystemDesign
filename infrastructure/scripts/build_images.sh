@@ -56,7 +56,7 @@ for repository in $(echo $REPOSITORIES | jq -r 'to_entries | .[].key'); do
   service=$(echo $repository | awk '{split($0,a,"/"); print a[2]}');
   repository_uri=$(echo $REPOSITORIES | jq -r ".[\"$repository\"]")
 
-  tag_image jakprzyjade/$service:latest \
+  tag_image $service:latest \
             "$repository_uri:latest
              $repository_uri:$CURRENT_TAG";
 
