@@ -64,8 +64,68 @@
   </tbody>
 </table>
 
-## Repository structure
+## Repository 🗃️
 
+- [`/.github/workflows`](./.github/workflows/) - contains GitHub Actions workflows for CI/CD
 - [`/documentation`](./documentation/) - contains all documentation related to the project
+  - [`/adrs`](./documentation/adrs/) - contains architectural decision records (ADRs)
   - [`/course`](./documentation/course/) - documentation required by the course curriculum (in Polish)
+  - [`/contracts.md`](./documentation/contracts.md) - contains contracts respected by all microservices
+  - [`/system-parts.md`](./documentation/system-parts.md) - contains the responsibility breakdown of the system
 - [`/implementation`](./implementation/) - contains subfolders with the implementation of different microservices
+- [`/infrastructure`](./infrastructure/) - contains infrastructure-related files, such as Terraform scripts
+
+## Tools 🛠️
+
+<table align="center">
+  <tbody>
+    <tr>
+      <th>Documentation</th>
+      <td>Figma, UML, OpenAPI, Markdown, draw.io, Mermaid, ATAM</td>
+    </tr>
+    <tr>
+      <th>Implementation</th>
+      <td>Java, Spring Boot, Lombok, MapStruct, TypeScript, Hono, NestJS, RxJS, MikroORM, Deno, PostgreSQL, REST, JWT</td>
+    </tr>
+    <tr>
+      <th>Testing</th>
+      <td>Jest, JUnit, Cypress, Testcontainers, Grafana k6, OWASP ZAP</td>
+    </tr>
+    <tr>
+      <th>Deployment</th>
+      <td>AWS (EKS, ECR, RDS, SQS, SES, VPC, Lambda), Kubernetes, Docker, Terraform, GitHub Actions</td>
+    </tr>
+    <tr>
+      <th>Other</th>
+      <td>Git, GitHub, VSCode</td>
+    </tr>
+  </tbody>
+</table>
+
+## Stages 🚦
+
+### E1: Business modeling, specification, and requirements analysis
+
+- **Full documentation (in Polish)**: [Wyniki etapu I: Modelowanie biznesowe, specyfikacja i analiza wymagań](./documentation/course/e1/)
+
+![](./documentation/course/e1/images/information-model-class-diagram.drawio.svg)
+![](./documentation/course/e1/images/Stop1.png)
+![](./documentation/course/e1/images/Account3.png)
+
+### E2: System architecture definition
+
+- **Full documentation (in Polish)**: [Wyniki etapu II: Definicja architektury systemu](./documentation/course/e2/)
+
+![](./documentation/course/e2/images/sequence-diagram-mechanism-12.drawio.svg)
+![](./documentation/course/e2/images/component-diagram-main.drawio.svg)
+![](./documentation/course/e2/images/deployment-diagram.drawio.svg)
+![](./documentation/course/e2/images/package-diagram-jobberknoll.drawio.svg)
+
+### E3: Implementation
+
+- **Full documentation (in Polish)**: [Wyniki etapu III: Implementacja](./documentation/course/e3/)
+
+![](./documentation/course/e3/images/swagger-leprechaun-ext.png)
+![](./documentation/course/e3/images/gh-actions.png)
+![](./documentation/course/e3/images/infrastructure.drawio.svg)
+![](./documentation/course/e3/images/k6-accounts.png)
