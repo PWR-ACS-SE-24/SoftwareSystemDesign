@@ -85,7 +85,7 @@
     </tr>
     <tr>
       <th>Implementation</th>
-      <td>Java, Spring Boot, Lombok, MapStruct, TypeScript, Hono, NestJS, RxJS, MikroORM, Deno, PostgreSQL, REST, JWT</td>
+      <td>Java, Spring Boot, Lombok, MapStruct, TypeScript, Hono, NestJS, RxJS, MikroORM, Deno, Node.js, PostgreSQL, SQL, REST, JWT</td>
     </tr>
     <tr>
       <th>Testing</th>
@@ -97,7 +97,7 @@
     </tr>
     <tr>
       <th>Other</th>
-      <td>Git, GitHub, VSCode</td>
+      <td>Git, Agile (Scrum), GitHub, VSCode</td>
     </tr>
   </tbody>
 </table>
